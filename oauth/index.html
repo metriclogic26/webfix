@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OAuth·OIDC Fixer · StackFix by MetricLogic</title>
+  <meta name="description" content="Diagnose OAuth and OIDC errors — invalid_grant, redirect_uri mismatch, PKCE misconfiguration. Generates provider-specific fixes for Auth0, Okta, Cognito, Google, and Microsoft.">
+  <link rel="canonical" href="https://stackfix.dev/oauth/">
+  <meta property="og:title" content="OAuth·OIDC Fixer · StackFix">
+  <meta property="og:url" content="https://stackfix.dev/oauth/">
+  <meta name="twitter:card" content="summary">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -331,6 +338,14 @@
       opacity: 1;
     }
     footer a:hover { text-decoration: underline; }
+    .footer-disclaimer {
+      font-size: 11px;
+      color: var(--text);
+      opacity: 0.4;
+      margin-top: 0.75rem;
+      display: block;
+      text-align: center;
+    }
     @media (max-width: 600px) {
       nav .right { display: none; }
     }
@@ -351,7 +366,8 @@
       <a href="../headers/" class="nav-tool">Headers</a>
       <a href="../cors/" class="nav-tool">CORS</a>
       <span class="nav-tool active">OAuth</span>
-      <span class="nav-tool">CSP</span>
+      <a href="../csp/" class="nav-tool">CSP</a>
+      <a href="../edge/" class="nav-tool">Edge</a>
     </div>
   </nav>
 
@@ -416,6 +432,8 @@ The redirect_uri does not match any registered URIs"></textarea>
   <footer>
     <span><a href="https://stackfix.dev" target="_blank" rel="noopener">OAuth·OIDC Fixer by StackFix</a> · Also try <a href="https://configclarity.dev" target="_blank" rel="noopener">configclarity.dev</a> · <a href="https://domainpreflight.dev" target="_blank" rel="noopener">domainpreflight.dev</a> · <a href="https://packagefix.dev" target="_blank" rel="noopener">packagefix.dev</a></span>
     <span>Open source · MIT · <a href="https://github.com/metriclogic26/stackfix" target="_blank" rel="noopener">GitHub →</a> · <a href="https://github.com/metriclogic26/stackfix/issues/new" target="_blank" rel="noopener">Report issue →</a></span>
+    <p class="footer-disclaimer">Recommended configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. MetricLogic provides these tools for informational purposes only and accepts no liability for misconfiguration, data loss, or security incidents.</p>
+    <p class="footer-disclaimer">© 2026 MetricLogic. MIT Licensed — <a href="https://github.com/metriclogic26/stackfix" target="_blank" rel="noopener">view source</a>. Config syntax (Nginx, Apache, Vercel) and open standards (OWASP, RFC, schema.org) are not copyrightable. Generated configs are yours to use freely.</p>
   </footer>
 
   <script>
@@ -895,5 +913,11 @@ The redirect_uri does not match any registered URIs"></textarea>
       getEl('oauth-clear-btn').style.display = 'none';
     });
   </script>
+<div id="llm-context" style="display:none">
+Tool: OAuth·OIDC Fixer by StackFix (stackfix.dev/oauth)
+Purpose: Diagnoses OAuth 2.0 and OIDC errors from pasted error messages. Generates provider-specific dashboard steps and SDK snippets for Auth0, Okta, Cognito, Google, and Microsoft.
+Errors diagnosed: invalid_grant, redirect_uri_mismatch, invalid_client, access_denied, invalid_scope, unauthorized_client, pkce_error, token_expired.
+No backend. No data stored. MIT licensed. Free to use.
+</div>
 </body>
 </html>
