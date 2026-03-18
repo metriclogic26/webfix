@@ -515,6 +515,15 @@
       opacity: 0.55;
     }
 
+    .audit-card .card-body .fix-asgi-note {
+      margin: 0;
+      margin-top: 0.35rem;
+      font-size: 11px;
+      color: var(--text);
+      opacity: 0.6;
+      display: none;
+    }
+
     .audit-card .card-body .hsts-danger-warn {
       color: var(--red);
       font-size: 12px;
@@ -1184,6 +1193,8 @@ strict-transport-security: max-age=3600
         return 'async headers() {\n  return [{\n    source: \'/(.*)\',\n    headers: [\n      { key: \'' + key + '\', value: \'' + v + '\' },\n    ]\n  }]\n}';
       };
       var out = { nginx: '', apache: '', vercel: '', cloudflare: '', express: '', caddy: '', nextjs: '', fastapi: '' };
+      var GRADIO_STREAMLIT_APPEND = '\n\n---\n\n# Gradio app (runs on FastAPI internally):\nimport gradio as gr\ndemo = gr.Interface(...)\ndemo.launch(\n    server_name="0.0.0.0",\n    # Gradio handles CORS via FastAPI — add headers via custom app:\n)\n# For full control, wrap in FastAPI:\nfrom fastapi import FastAPI\nfrom fastapi.middleware.cors import CORSMiddleware\napp = FastAPI()\napp.add_middleware(CORSMiddleware, allow_origins=["https://your-frontend.com"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])\nimport gradio as gr\ngr.mount_gradio_app(app, gr.Interface(...), path="/")\n\n# Streamlit (uses its own server, set via config):\n# .streamlit/config.toml\n[server]\nenableCORS = false\nenableXsrfProtection = false\n# Or via environment:\n# STREAMLIT_SERVER_ENABLE_CORS=false\n';
+      var GRADIO_STREAMLIT_PROXY_NOTE = '\n# Gradio/Streamlit: set this header in your reverse proxy (Nginx/Caddy)\n# These frameworks delegate transport security to the proxy layer';
       var fastapiMiddleware = function (headerName, value) {
         return '@app.middleware("http")\nasync def add_security_header(request, call_next):\n    response = await call_next(request)\n    response.headers["' + headerName + '"] = "' + value.replace(/"/g, '\\"') + '"\n    return response';
       };
@@ -1196,7 +1207,7 @@ strict-transport-security: max-age=3600
           out.express = 'app.use(helmet.hsts({ maxAge: 31536000, includeSubDomains: true, preload: true }));';
           out.caddy = 'header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"';
           out.nextjs = nextJsHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-          out.fastapi = 'from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware\napp.add_middleware(HTTPSRedirectMiddleware)\n# Then in your reverse proxy (Nginx/Caddy), set the HSTS header';
+          out.fastapi = 'from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware\napp.add_middleware(HTTPSRedirectMiddleware)\n# Then in your reverse proxy (Nginx/Caddy), set the HSTS header' + GRADIO_STREAMLIT_APPEND + GRADIO_STREAMLIT_PROXY_NOTE;
           break;
         case 'Content-Security-Policy':
           out.nginx = '# Customize to your app\'s actual sources\nadd_header Content-Security-Policy "default-src \'self\'; script-src \'self\'; style-src \'self\'; img-src \'self\' data:;" always;';
@@ -1206,7 +1217,7 @@ strict-transport-security: max-age=3600
           out.express = 'app.use(helmet.contentSecurityPolicy({ directives: { defaultSrc: ["\'self\'"], scriptSrc: ["\'self\'"], styleSrc: ["\'self\'"], imgSrc: ["\'self\'", "data:"] } }));';
           out.caddy = 'header Content-Security-Policy "default-src \'self\'; script-src \'self\'; style-src \'self\'; img-src \'self\' data:;"';
           out.nextjs = nextJsHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;");
-          out.fastapi = fastapiMiddleware('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;");
+          out.fastapi = fastapiMiddleware('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;") + GRADIO_STREAMLIT_APPEND;
           break;
         case 'X-Frame-Options':
           out.nginx = 'add_header X-Frame-Options "SAMEORIGIN" always;';
@@ -1216,7 +1227,7 @@ strict-transport-security: max-age=3600
           out.express = 'app.use(helmet.frameguard({ action: \'sameorigin\' }));';
           out.caddy = 'header X-Frame-Options "SAMEORIGIN"';
           out.nextjs = nextJsHeader('X-Frame-Options', 'SAMEORIGIN');
-          out.fastapi = '@app.middleware("http")\nasync def add_xframe(request, call_next):\n    response = await call_next(request)\n    response.headers["X-Frame-Options"] = "SAMEORIGIN"\n    return response';
+          out.fastapi = '@app.middleware("http")\nasync def add_xframe(request, call_next):\n    response = await call_next(request)\n    response.headers["X-Frame-Options"] = "SAMEORIGIN"\n    return response' + GRADIO_STREAMLIT_APPEND;
           break;
         case 'X-Content-Type-Options':
           out.nginx = 'add_header X-Content-Type-Options "nosniff" always;';
@@ -1226,7 +1237,7 @@ strict-transport-security: max-age=3600
           out.express = 'app.use(helmet.noSniff());';
           out.caddy = 'header X-Content-Type-Options "nosniff"';
           out.nextjs = nextJsHeader('X-Content-Type-Options', 'nosniff');
-          out.fastapi = fastapiMiddleware('X-Content-Type-Options', 'nosniff');
+          out.fastapi = fastapiMiddleware('X-Content-Type-Options', 'nosniff') + GRADIO_STREAMLIT_APPEND;
           break;
         case 'Referrer-Policy':
           out.nginx = 'add_header Referrer-Policy "strict-origin-when-cross-origin" always;';
@@ -1236,7 +1247,7 @@ strict-transport-security: max-age=3600
           out.express = 'app.use(helmet.referrerPolicy({ policy: \'strict-origin-when-cross-origin\' }));';
           out.caddy = 'header Referrer-Policy "strict-origin-when-cross-origin"';
           out.nextjs = nextJsHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-          out.fastapi = fastapiMiddleware('Referrer-Policy', 'strict-origin-when-cross-origin');
+          out.fastapi = fastapiMiddleware('Referrer-Policy', 'strict-origin-when-cross-origin') + GRADIO_STREAMLIT_APPEND;
           break;
         case 'Permissions-Policy':
           out.nginx = 'add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;';
@@ -1246,7 +1257,7 @@ strict-transport-security: max-age=3600
           out.express = 'app.use(helmet.permittedCrossDomainPolicies()); // then set manually: res.setHeader(\'Permissions-Policy\', \'camera=(), microphone=(), geolocation=()\')';
           out.caddy = 'header Permissions-Policy "camera=(), microphone=(), geolocation=()"';
           out.nextjs = nextJsHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-          out.fastapi = fastapiMiddleware('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+          out.fastapi = fastapiMiddleware('Permissions-Policy', 'camera=(), microphone=(), geolocation=()') + GRADIO_STREAMLIT_APPEND;
           break;
         case 'Server / X-Powered-By exposure':
           out.nginx = 'Remove server_tokens directive: add \'server_tokens off;\' inside your http {} block in nginx.conf';
@@ -1256,7 +1267,7 @@ strict-transport-security: max-age=3600
           out.express = 'Remove X-Powered-By: app.disable(\'x-powered-by\'); — add this before your route handlers';
           out.caddy = 'Add \'servers off\' in your global Caddyfile options block to suppress version info';
           out.nextjs = 'Next.js on Vercel does not expose server version — no action needed';
-          out.fastapi = 'FastAPI/uvicorn do not expose version by default — no action needed.\nConfirm by checking your uvicorn startup config.';
+          out.fastapi = 'FastAPI/uvicorn do not expose version by default — no action needed.\nConfirm by checking your uvicorn startup config.' + GRADIO_STREAMLIT_APPEND + GRADIO_STREAMLIT_PROXY_NOTE;
           break;
         case 'Cross-Origin-Opener-Policy':
           out.nginx = 'add_header Cross-Origin-Opener-Policy "same-origin" always;';
@@ -1266,7 +1277,7 @@ strict-transport-security: max-age=3600
           out.express = "res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');";
           out.caddy = 'header Cross-Origin-Opener-Policy "same-origin"';
           out.nextjs = nextJsHeader('Cross-Origin-Opener-Policy', 'same-origin');
-          out.fastapi = 'response.headers["Cross-Origin-Opener-Policy"] = "same-origin"';
+          out.fastapi = 'response.headers["Cross-Origin-Opener-Policy"] = "same-origin"' + GRADIO_STREAMLIT_APPEND;
           break;
         case 'Cross-Origin-Embedder-Policy':
           out.nginx = 'add_header Cross-Origin-Embedder-Policy "require-corp" always;';
@@ -1276,7 +1287,7 @@ strict-transport-security: max-age=3600
           out.express = "res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');";
           out.caddy = 'header Cross-Origin-Embedder-Policy "require-corp"';
           out.nextjs = nextJsHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-          out.fastapi = 'response.headers["Cross-Origin-Embedder-Policy"] = "require-corp"';
+          out.fastapi = 'response.headers["Cross-Origin-Embedder-Policy"] = "require-corp"' + GRADIO_STREAMLIT_APPEND;
           break;
         default:
           out.nginx = out.apache = out.vercel = out.cloudflare = out.express = out.caddy = out.nextjs = out.fastapi = '(No fix template for this header)';
@@ -1563,6 +1574,7 @@ strict-transport-security: max-age=3600
                 '<pre><code class="fix-code"></code></pre>' +
               '</div>' +
               (r.name === 'Strict-Transport-Security' ? '<p class="hsts-danger-warn">⚠ Only apply HSTS if HTTPS is fully working and your SSL certificate is valid. Applying this on a non-HTTPS site will lock users out of your domain.</p>' : '') +
+              '<p class="fix-asgi-note">Works for FastAPI, Starlette, vLLM, Gradio, Streamlit, and any ASGI framework</p>' +
               '<p class="fix-note">Generated from live headers on ' + (function () { var d = new Date(); var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear(); })() + '. Always test in staging before deploying.</p>' +
             '</div>' +
           '</div>';
@@ -1583,11 +1595,13 @@ strict-transport-security: max-age=3600
         var codeEl = fixBlock.querySelector('.fix-code');
         var tabBtns = fixBlock.querySelectorAll('.fix-tabs button');
         var copyBtn = fixBlock.querySelector('.fix-copy');
+        var asgiNote = fixBlock.querySelector('.fix-asgi-note');
         function showTab(tabKey) {
           tabBtns.forEach(function (btn) {
             btn.classList.toggle('active', btn.getAttribute('data-tab') === tabKey);
           });
           codeEl.textContent = fixes[tabKey] || '';
+          if (asgiNote) asgiNote.style.display = tabKey === 'fastapi' ? 'block' : 'none';
         }
         showTab(defaultTab);
         tabBtns.forEach(function (btn) {
