@@ -242,7 +242,18 @@
     .fix-section { margin-top: 1.5rem; }
     .fix-section h3 { font-size: 14px; margin: 0 0 0.75rem; color: var(--text); opacity: 0.9; }
     .fix-section .fix-placeholder { padding: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; color: var(--text); opacity: 0.7; }
-    .fix-section .no-provider-note { font-size: 13px; color: var(--text); opacity: 0.8; margin-bottom: 1rem; }
+    .provider-label-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .provider-label-row > span:first-child {
+      font-size: 12px;
+      color: var(--text);
+      opacity: 0.85;
+    }
+    #provider-prompt-msg { font-size: 11px; color: var(--orange); margin: 0; opacity: 1; }
 
     .unknown-checklist { margin-top: 1rem; }
     .unknown-checklist h3 { font-size: 14px; margin: 0 0 0.75rem; color: var(--text); opacity: 0.9; }
@@ -320,6 +331,9 @@
       opacity: 1;
     }
     footer a:hover { text-decoration: underline; }
+    @media (max-width: 600px) {
+      nav .right { display: none; }
+    }
     @media (max-width: 768px) {
       footer { flex-direction: column; text-align: center; }
     }
@@ -367,7 +381,10 @@ The redirect_uri does not match any registered URIs"></textarea>
     </div>
 
     <div class="input-group">
-      <label>Your provider</label>
+      <div class="provider-label-row">
+        <span>Your provider</span>
+        <span id="provider-prompt-msg">← Select your provider above to see the exact dashboard steps and SDK fix</span>
+      </div>
       <div class="option-row" id="provider-row">
         <button type="button" data-provider="Auth0">Auth0</button>
         <button type="button" data-provider="Okta">Okta</button>
@@ -706,13 +723,6 @@ The redirect_uri does not match any registered URIs"></textarea>
         fixTitle.textContent = 'Fix by provider';
         fixSection.appendChild(fixTitle);
 
-        if (!provider) {
-          var noProviderNote = document.createElement('p');
-          noProviderNote.className = 'no-provider-note';
-          noProviderNote.textContent = 'Select your provider above to see the specific dashboard steps.';
-          fixSection.appendChild(noProviderNote);
-        }
-
         var fixes = generateOAuthFix(code, provider, flow);
         var tabLabels = [{ key: 'auth0', label: 'Auth0' }, { key: 'okta', label: 'Okta' }, { key: 'cognito', label: 'Cognito' }, { key: 'google', label: 'Google' }, { key: 'microsoft', label: 'Microsoft' }, { key: 'generic', label: 'Generic' }];
         var defaultKey = providerToKey(provider) || 'auth0';
@@ -830,6 +840,7 @@ The redirect_uri does not match any registered URIs"></textarea>
         selectedProvider = btn.getAttribute('data-provider');
         document.querySelectorAll('#provider-row button').forEach(function (b) { b.classList.remove('active'); });
         btn.classList.add('active');
+        getEl('provider-prompt-msg').style.display = 'none';
       });
     });
 
@@ -877,6 +888,7 @@ The redirect_uri does not match any registered URIs"></textarea>
       if (firstFlow) firstFlow.classList.add('active');
       selectedProvider = null;
       selectedFlow = 'auth-code-pkce';
+      getEl('provider-prompt-msg').style.display = '';
       var res = getEl('results');
       res.innerHTML = '';
       res.classList.remove('visible');
