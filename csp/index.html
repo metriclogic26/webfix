@@ -664,29 +664,29 @@
         }
 
         var rec = [];
-        rec.push("default-src 'self'");
+        rec.push("default-src 'self'".trim());
 
         var scriptOrigins = (extractedSources && extractedSources.scriptSrc) ? extractedSources.scriptSrc : [];
-        rec.push("script-src 'self' " + scriptOrigins.join(' '));
+        rec.push(("script-src 'self' " + scriptOrigins.join(' ')).trim());
 
         var styleOrigins = (extractedSources && extractedSources.styleSrc) ? extractedSources.styleSrc : [];
-        rec.push("style-src 'self' 'unsafe-inline' " + styleOrigins.join(' '));
+        rec.push(("style-src 'self' 'unsafe-inline' " + styleOrigins.join(' ')).trim());
 
         var imgOrigins = (extractedSources && extractedSources.imgSrc) ? extractedSources.imgSrc : [];
-        rec.push("img-src 'self' data: " + imgOrigins.join(' '));
+        rec.push(("img-src 'self' data: " + imgOrigins.join(' ')).trim());
 
         var fontOrigins = (extractedSources && extractedSources.fontSrc) ? extractedSources.fontSrc : [];
-        rec.push("font-src 'self' " + fontOrigins.join(' '));
+        rec.push(("font-src 'self' " + fontOrigins.join(' ')).trim());
 
         var frameOrigins = (extractedSources && extractedSources.frameSrc) ? extractedSources.frameSrc : [];
         if (frameOrigins.length) {
-          rec.push("frame-src 'self' " + frameOrigins.join(' '));
+          rec.push(("frame-src 'self' " + frameOrigins.join(' ')).trim());
         } else {
           rec.push("frame-src 'none'");
         }
 
-        rec.push("frame-ancestors 'self'");
-        rec.push("upgrade-insecure-requests");
+        rec.push("frame-ancestors 'self'".trim());
+        rec.push("upgrade-insecure-requests".trim());
 
         var recommendedCSP = rec.join('; ');
 
