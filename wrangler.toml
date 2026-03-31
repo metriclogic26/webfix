@@ -1,0 +1,7 @@
+name = "speedfixer-proxy"
+main = "speedfixer-worker.js"
+compatibility_date = "2024-01-01"
+
+[[kv_namespaces]]
+binding = "SPEEDFIXER_KV"
+id = "fe259f9239d04b6fae712ce0d81e2d67"
