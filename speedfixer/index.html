@@ -1206,6 +1206,137 @@
         return 'WP Rocket → Media → enable WebP, LazyLoad, and image dimensions';
       }
 
+      if (auditId === 'cache-insight') {
+        if (k === 'nginx') {
+          return (
+            'location ~* \\.(js|css|png|jpg|gif|ico|woff2|svg)$ {\n' +
+            '  expires 1y;\n' +
+            '  add_header Cache-Control "public, immutable";\n' +
+            '}'
+          );
+        }
+        if (k === 'apache') {
+          return (
+            '<FilesMatch "\\.(js|css|png|jpg|gif|ico|woff2|svg)$">\n' +
+            '  Header set Cache-Control "public, max-age=31536000, immutable"\n' +
+            '</FilesMatch>'
+          );
+        }
+        if (k === 'cloudflare') {
+          return (
+            'Cloudflare Dashboard → Caching → Cache Rules → Create rule → ' +
+            'File extension matches js|css|png|jpg|woff2 → Edge Cache TTL: 1 year'
+          );
+        }
+        if (k === 'vercel') {
+          return (
+            '{\n' +
+            '  "headers": [\n' +
+            '    {\n' +
+            '      "source": "/static/(.*)",\n' +
+            '      "headers": [\n' +
+            '        {\n' +
+            '          "key": "Cache-Control",\n' +
+            '          "value": "public, max-age=31536000, immutable"\n' +
+            '        }\n' +
+            '      ]\n' +
+            '    }\n' +
+            '  ]\n' +
+            '}'
+          );
+        }
+        if (k === 'netlify') {
+          return (
+            '/static/*\n' +
+            '  Cache-Control: public, max-age=31536000, immutable'
+          );
+        }
+        return (
+          'WP Rocket → Browser Cache tab → Enable static file caching → ' +
+          'Set CSS/JS/Images to 1 year'
+        );
+      }
+
+      if (auditId === 'image-delivery-insight') {
+        if (k === 'nginx') {
+          return (
+            '# Serve WebP when browser supports it:\n' +
+            'location ~* \\.(png|jpg|jpeg)$ {\n' +
+            '  add_header Vary Accept;\n' +
+            '  try_files $uri$webp_suffix $uri =404;\n' +
+            '}'
+          );
+        }
+        if (k === 'apache') {
+          return (
+            'RewriteEngine On\n' +
+            'RewriteCond %{HTTP_ACCEPT} image/webp\n' +
+            'RewriteCond %{DOCUMENT_ROOT}/$1.webp -f\n' +
+            'RewriteRule ^(.*)\\.(png|jpg)$ $1.webp [T=image/webp,E=accept:1]'
+          );
+        }
+        if (k === 'cloudflare') {
+          return (
+            'Cloudflare Dashboard → Speed → Optimization → Images → Enable Polish ' +
+            '(Lossy or Lossless) and Mirage'
+          );
+        }
+        if (k === 'vercel') {
+          return (
+            'Vercel automatically optimizes images via next/image — use <Image> ' +
+            'component instead of <img>'
+          );
+        }
+        if (k === 'netlify') {
+          return (
+            'Use Netlify Large Media or a CDN like Cloudinary for automatic WebP conversion'
+          );
+        }
+        return (
+          'Install Imagify or ShortPixel plugin → Convert images to WebP automatically on upload'
+        );
+      }
+
+      if (auditId === 'network-dependency-tree-insight') {
+        if (k === 'nginx') {
+          return (
+            '# Enable HTTP/2 to allow multiplexing:\n' +
+            'listen 443 ssl http2;\n' +
+            '# Add DNS prefetch for external domains:\n' +
+            'add_header Link "<//fonts.googleapis.com>; rel=dns-prefetch" always;'
+          );
+        }
+        if (k === 'apache') {
+          return (
+            '# Enable HTTP/2:\n' +
+            'Protocols h2 http/1.1\n' +
+            '# Add prefetch headers:\n' +
+            'Header add Link "<//fonts.googleapis.com>; rel=dns-prefetch"'
+          );
+        }
+        if (k === 'cloudflare') {
+          return (
+            'Cloudflare automatically uses HTTP/2 and HTTP/3 — enable Rocket Loader ' +
+            'in Speed → Optimization for JS deferral'
+          );
+        }
+        if (k === 'vercel') {
+          return (
+            'Vercel uses HTTP/2 by default — add <link rel="dns-prefetch"> tags ' +
+            'for external domains in your HTML head'
+          );
+        }
+        if (k === 'netlify') {
+          return (
+            'Netlify uses HTTP/2 by default — add dns-prefetch link tags for external domains'
+          );
+        }
+        return (
+          'WP Rocket → Preload → DNS Prefetch → Add external domains ' +
+          '(fonts.googleapis.com, etc.)'
+        );
+      }
+
       return (
         'No stack-specific fix template for audit "' +
         auditId +
