@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fix PageSpeed Score on Nginx — StackFix</title>
+  <meta name="description" content="Enable gzip/brotli, HTTP/2, long-cache static assets, and tuned buffer settings for Core Web Vitals.">
+  <link rel="canonical" href="https://stackfix.dev/fix/pagespeed/nginx/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="Fix PageSpeed Score on Nginx — StackFix">
+  <meta property="og:description" content="Enable gzip/brotli, HTTP/2, long-cache static assets, and tuned buffer settings for Core Web Vitals.">
+  <meta property="og:url" content="https://stackfix.dev/fix/pagespeed/nginx/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix PageSpeed Score on Nginx", "description": "Enable gzip/brotli, HTTP/2, long-cache static assets, and tuned buffer settings for Core Web Vitals.", "url": "https://stackfix.dev/fix/pagespeed/nginx/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://stackfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Pagespeed", "item": "https://stackfix.dev/fix/pagespeed/"}, {"@type": "ListItem", "position": 4, "name": "Nginx"}]}]}</script>
+  <style>
+    :root {
+      --bg: #0B0D14; --surface: #12151F; --border: #252836;
+      --purple: #6C63FF; --green: #22C55E; --orange: #F97316;
+      --red: #EF4444; --text: #E2E4F0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); }
+    nav .brand { font-weight: 600; color: var(--text); text-decoration: none; }
+    nav .brand span { color: var(--purple); }
+    nav .right { display: flex; gap: 1rem; align-items: center; }
+    nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; }
+    nav a:hover { color: var(--purple); opacity: 1; }
+    main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; }
+    .breadcrumb a { color: var(--purple); text-decoration: none; }
+    h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; }
+    h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); }
+    p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; }
+    .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; }
+    .tool-cta:hover { filter: brightness(1.1); }
+    .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre; }
+    .tag { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 0.5rem; }
+    .tag-fix { background: rgba(34,197,94,0.15); color: var(--green); }
+    .tag-error { background: rgba(239,68,68,0.15); color: var(--red); }
+    .tag-provider { background: rgba(108,99,255,0.15); color: var(--purple); }
+    .index-list { list-style: none; margin: 1rem 0; }
+    .index-list li { margin-bottom: 0.65rem; }
+    .index-list a { color: var(--purple); text-decoration: none; }
+    .index-list a:hover { text-decoration: underline; }
+    footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
+    footer a { color: var(--text); text-decoration: none; }
+    @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="brand">StackFix <span>/</span> Fix</a>
+    <div class="right">
+      <a href="/headers/">Headers</a>
+      <a href="/cors/">CORS</a>
+      <a href="/oauth/">OAuth</a>
+      <a href="/csp/">CSP</a>
+      <a href="/edge/">Edge</a>
+      <a href="/speedfixer/">Speed</a>
+    </div>
+  </nav>
+  <main>
+    <div class="breadcrumb"><a href="/">StackFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/pagespeed/">Pagespeed</a> → Fix PageSpeed Score on Nginx</div>
+    <h1>Fix PageSpeed Score on Nginx</h1>
+    <p>PageSpeed penalizes large uncompressed text, short cache lifetimes on static files, and slow server response. Nginx can enable <code>gzip</code> or a brotli module, HTTP/2, and sendfile tuning without changing application code.</p><p>Preconnect and preload hints sometimes belong in upstream HTML, but Nginx can inject <code>Link</code> headers for critical LCP resources. Measure after each change—some optimizations trade CPU for bytes.</p>
+    <a href="/speedfixer/" class="tool-cta">Open SpeedFixer →</a>
+  </main>
+  <footer>
+    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+  </footer>
+</body>
+</html>
