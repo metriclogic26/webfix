@@ -604,9 +604,9 @@
       font-size: 11px;
       color: var(--text);
       opacity: 0.4;
-      margin-top: 0.75rem;
-      display: block;
       text-align: center;
+      display: block;
+      margin-top: 0.75rem;
     }
     footer a.footer-link-config,
     footer a.footer-link-domain,
@@ -624,6 +624,42 @@
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "description": "Sends a live OPTIONS preflight to your API and generates middleware fixes for Express, Nginx, FastAPI, Django, Laravel, and Cloudflare Workers.",
   "creator": { "@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev" }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to fix CORS errors",
+  "description": "Send a live OPTIONS preflight from your browser and get exact middleware fixes for your API stack.",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "name": "Enter your API URL and frontend origin", "text": "Paste your API URL and the frontend origin that calls it." },
+    { "@type": "HowToStep", "position": 2, "name": "Run the live preflight", "text": "WebFix sends a live OPTIONS preflight and captures the response headers." },
+    { "@type": "HowToStep", "position": 3, "name": "Copy the middleware fix", "text": "Select your framework tab and copy the exact middleware or server config for Express, Nginx, FastAPI, Django, or your stack." }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Why am I getting CORS errors even though my server returns 200?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The browser blocks the response if CORS headers are missing or incorrect. The server must return Access-Control-Allow-Origin and handle OPTIONS preflight requests." }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I fix CORS on Express?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Install the cors package and add app.use(cors({ origin: 'your-frontend.com' })). CORSFixer generates the exact config based on your live preflight response." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use Access-Control-Allow-Origin: * with credentials?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No — browsers reject this combination per the CORS spec. You must specify an explicit origin when using credentials: true." }
+    }
+  ]
 }
   </script>
 </head>
@@ -709,10 +745,11 @@ access-control-allow-credentials: true
   </main>
 
   <footer>
-    <span><a href="https://webfix.dev" target="_blank" rel="noopener" class="footer-link-stack">CORSFixer by WebFix</a> · Also try <a href="https://configclarity.dev" target="_blank" rel="noopener" class="footer-link-config">configclarity.dev</a> · <a href="https://domainpreflight.dev" target="_blank" rel="noopener" class="footer-link-domain">domainpreflight.dev</a> · <a href="https://packagefix.dev" target="_blank" rel="noopener" class="footer-link-package">packagefix.dev</a></span>
+    <span style="flex-basis:100%;font-size:12px;">WebFix tools: <a href="/headers/">Headers</a> · <a href="/cors/">CORS</a> · <a href="/oauth/">OAuth</a> · <a href="/csp/">CSP</a> · <a href="/edge/">Edge</a> · <a href="/speedfixer/">Speed</a></span>
+    <span style="flex-basis:100%;font-size:12px;">WebFix by StackFix · Also try <a href="https://configclarity.dev" target="_blank" rel="noopener" class="footer-link-config">configclarity.dev</a> · <a href="https://domainpreflight.dev" target="_blank" rel="noopener" class="footer-link-domain">domainpreflight.dev</a> · <a href="https://packagefix.dev" target="_blank" rel="noopener" class="footer-link-package">packagefix.dev</a></span>
     <span>Open source · MIT · <a href="https://github.com/metriclogic26/webfix" target="_blank" rel="noopener">GitHub →</a> · <a href="https://github.com/metriclogic26/webfix/issues/new" target="_blank" rel="noopener">Report issue →</a></span>
-    <p class="footer-disclaimer">Recommended configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. MetricLogic provides these tools for informational purposes only and accepts no liability for misconfiguration, data loss, or security incidents.</p>
-    <p class="footer-disclaimer">© 2026 MetricLogic. MIT Licensed — <a href="https://github.com/metriclogic26/webfix" target="_blank" rel="noopener">view source</a>. Config syntax (Nginx, Apache, Vercel) and open standards (OWASP, RFC, schema.org) are not copyrightable. Generated configs are yours to use freely.</p>
+    <p class="footer-disclaimer">Recommended configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. WebFix provides these tools for informational purposes only and accepts no liability for misconfiguration, data loss, or security incidents.</p>
+    <p class="footer-disclaimer">© 2026 MetricLogic. MIT Licensed. Config syntax (Nginx, Apache, Vercel) and open standards (OWASP, RFC) are not copyrightable. Generated configs are yours to use freely.</p>
   </footer>
 
   <script>

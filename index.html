@@ -565,9 +565,9 @@
       font-size: 11px;
       color: var(--text);
       opacity: 0.4;
-      margin-top: 0.75rem;
-      display: block;
       text-align: center;
+      display: block;
+      margin-top: 0.75rem;
     }
     @media (max-width: 600px) {
       nav .right { display: none; }
@@ -840,6 +840,42 @@
 }
   </script>
   <meta name="google-site-verification" content="lS2Y5NSt9abqoHae3RYaIiAhlF4VbwVf5NA5ACcz46Y" />
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to fix missing security headers",
+  "description": "Scan your URL, detect your stack, and get exact copy-paste config fixes for missing security headers.",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "name": "Enter your URL", "text": "Paste your site URL into the input field." },
+    { "@type": "HowToStep", "position": 2, "name": "Scan headers", "text": "WebFix fetches your live HTTP headers and detects your stack automatically." },
+    { "@type": "HowToStep", "position": 3, "name": "Copy the fix", "text": "Select your stack tab and copy the exact config block to paste into your server config." }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I fix missing security headers on Nginx?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Add add_header directives to your nginx.conf server block. WebFix generates the exact lines for HSTS, CSP, X-Frame-Options, and more based on your live headers." }
+    },
+    {
+      "@type": "Question",
+      "name": "What security headers should every site have?",
+      "acceptedAnswer": { "@type": "Answer", "text": "At minimum: Strict-Transport-Security, Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, and Referrer-Policy. WebFix checks all of these plus Permissions-Policy, COOP, and COEP." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does WebFix store my URL or headers?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Everything runs client-side in your browser. Your URL and headers never leave your machine." }
+    }
+  ]
+}
+  </script>
 </head>
 <body>
   <nav>
@@ -911,10 +947,11 @@ strict-transport-security: max-age=3600
   </main>
 
   <footer>
-    <span><a href="https://webfix.dev" target="_blank" rel="noopener">HeadersFixer by WebFix</a> · Also try <a href="https://configclarity.dev" target="_blank" rel="noopener">configclarity.dev</a> · <a href="https://domainpreflight.dev" target="_blank" rel="noopener">domainpreflight.dev</a> · <a href="https://packagefix.dev" target="_blank" rel="noopener">packagefix.dev</a></span>
+    <span style="flex-basis:100%;font-size:12px;">WebFix tools: <a href="/headers/">Headers</a> · <a href="/cors/">CORS</a> · <a href="/oauth/">OAuth</a> · <a href="/csp/">CSP</a> · <a href="/edge/">Edge</a> · <a href="/speedfixer/">Speed</a></span>
+    <span style="flex-basis:100%;font-size:12px;">WebFix by StackFix · Also try <a href="https://configclarity.dev" target="_blank" rel="noopener">configclarity.dev</a> · <a href="https://domainpreflight.dev" target="_blank" rel="noopener">domainpreflight.dev</a> · <a href="https://packagefix.dev" target="_blank" rel="noopener">packagefix.dev</a></span>
     <span>Open source · MIT · <a href="https://github.com/metriclogic26/webfix" target="_blank" rel="noopener">GitHub →</a> · <a href="https://github.com/metriclogic26/webfix/issues/new" target="_blank" rel="noopener">Report issue →</a></span>
-    <p class="footer-disclaimer">Recommended configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. MetricLogic provides these tools for informational purposes only and accepts no liability for misconfiguration, data loss, or security incidents.</p>
-    <p class="footer-disclaimer">© 2026 MetricLogic. MIT Licensed — <a href="https://github.com/metriclogic26/webfix" target="_blank" rel="noopener">view source</a>. Config syntax (Nginx, Apache, Vercel) and open standards (OWASP, RFC, schema.org) are not copyrightable. Generated configs are yours to use freely.</p>
+    <p class="footer-disclaimer">Recommended configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. WebFix provides these tools for informational purposes only and accepts no liability for misconfiguration, data loss, or security incidents.</p>
+    <p class="footer-disclaimer">© 2026 MetricLogic. MIT Licensed. Config syntax (Nginx, Apache, Vercel) and open standards (OWASP, RFC) are not copyrightable. Generated configs are yours to use freely.</p>
   </footer>
 
   <script>
@@ -1588,7 +1625,7 @@ strict-transport-security: max-age=3600
                 '<button type="button" class="fix-copy">Copy</button>' +
                 '<pre><code class="fix-code"></code></pre>' +
               '</div>' +
-              (r.name === 'Strict-Transport-Security' ? '<p class="hsts-danger-warn">⚠ Only apply HSTS if HTTPS is fully working and your SSL certificate is valid. Applying this on a non-HTTPS site will lock users out of your domain.</p>' : '') +
+              (r.name === 'Strict-Transport-Security' ? '<p class="hsts-danger-warn">Only apply HSTS if your SSL certificate is valid and HTTPS is fully configured. Applying HSTS on a non-HTTPS site will lock users out.</p>' : '') +
               '<p class="fix-asgi-note">Works for FastAPI, Starlette, vLLM, Gradio, Streamlit, and any ASGI framework</p>' +
               '<p class="fix-note">Generated from live headers on ' + (function () { var d = new Date(); var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear(); })() + '. Always test in staging before deploying.</p>' +
             '</div>' +

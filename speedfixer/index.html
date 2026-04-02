@@ -654,9 +654,9 @@
       font-size: 11px;
       color: var(--text);
       opacity: 0.4;
-      margin-top: 0.75rem;
-      display: block;
       text-align: center;
+      display: block;
+      margin-top: 0.75rem;
       flex-basis: 100%;
     }
     footer a.footer-link-config,
@@ -675,6 +675,43 @@
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "description": "Fetches live Google PageSpeed Insights results, detects your stack, and generates exact config fixes for Nginx, Cloudflare, Vercel, Apache, Netlify, and WordPress.",
   "creator": { "@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev" }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to fix PageSpeed score with server config",
+  "description": "Run a live PageSpeed Insights audit and copy server or CDN configuration fixes for your stack.",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "name": "Enter your URL", "text": "Paste the public URL you want SpeedFixer to analyze." },
+    { "@type": "HowToStep", "position": 2, "name": "Fetch PSI audit results", "text": "SpeedFixer fetches live PageSpeed Insights audit results for your page." },
+    { "@type": "HowToStep", "position": 3, "name": "Select your stack", "text": "Confirm or override the detected stack (Nginx, Cloudflare, Vercel, WordPress, and others)." },
+    { "@type": "HowToStep", "position": 4, "name": "Copy the config fix", "text": "Copy the generated snippet for compression, caching, render-blocking, or image-related audits." }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What PageSpeed issues can be fixed with server config?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Cache-Control headers, text compression (gzip/brotli), image optimization settings, and CDN configuration can all be fixed at the server level." }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does my PageSpeed score vary between runs?",
+      "acceptedAnswer": { "@type": "Answer", "text": "PSI measures real user conditions and lab data — results can vary based on server load, network conditions, and third-party scripts." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does SpeedFixer work for WordPress sites?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes — SpeedFixer detects WordPress and generates WP Rocket / LiteSpeed Cache plugin settings instead of server config blocks." }
+    }
+  ]
 }
   </script>
 </head>
@@ -733,10 +770,12 @@
   </main>
 
   <footer>
-    <span><a href="https://webfix.dev" target="_blank" rel="noopener" class="footer-link-stack">SpeedFixer by WebFix</a> · Also try <a href="https://configclarity.dev" target="_blank" rel="noopener" class="footer-link-config">configclarity.dev</a> · <a href="https://domainpreflight.dev" target="_blank" rel="noopener" class="footer-link-domain">domainpreflight.dev</a> · <a href="https://packagefix.dev" target="_blank" rel="noopener" class="footer-link-package">packagefix.dev</a></span>
+    <span style="flex-basis:100%;font-size:12px;">WebFix tools: <a href="/headers/">Headers</a> · <a href="/cors/">CORS</a> · <a href="/oauth/">OAuth</a> · <a href="/csp/">CSP</a> · <a href="/edge/">Edge</a> · <a href="/speedfixer/">Speed</a></span>
+    <span style="flex-basis:100%;font-size:12px;">WebFix by StackFix · Also try <a href="https://configclarity.dev" target="_blank" rel="noopener" class="footer-link-config">configclarity.dev</a> · <a href="https://domainpreflight.dev" target="_blank" rel="noopener" class="footer-link-domain">domainpreflight.dev</a> · <a href="https://packagefix.dev" target="_blank" rel="noopener" class="footer-link-package">packagefix.dev</a></span>
     <span>Open source · MIT · <a href="https://github.com/metriclogic26/webfix" target="_blank" rel="noopener">GitHub →</a> · <a href="https://github.com/metriclogic26/webfix/issues/new" target="_blank" rel="noopener">Report issue →</a></span>
-    <p class="footer-disclaimer">Recommended configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. MetricLogic provides these tools for informational purposes only and accepts no liability for misconfiguration, data loss, or security incidents.</p>
-    <p class="footer-disclaimer">© 2026 MetricLogic. MIT Licensed — <a href="https://github.com/metriclogic26/webfix" target="_blank" rel="noopener">view source</a>. Config syntax (Nginx, Apache, Vercel) and open standards (OWASP, RFC, schema.org) are not copyrightable. Generated configs are yours to use freely.</p>
+    <p class="footer-disclaimer">Recommended configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. WebFix provides these tools for informational purposes only and accepts no liability for misconfiguration, data loss, or security incidents.</p>
+    <p class="footer-disclaimer">PageSpeed scores vary between runs. Recommended configurations are based on live audit data and open standards — results may differ depending on your specific setup.</p>
+    <p class="footer-disclaimer">© 2026 MetricLogic. MIT Licensed. Config syntax (Nginx, Apache, Vercel) and open standards (OWASP, RFC) are not copyrightable. Generated configs are yours to use freely.</p>
   </footer>
 
   <script>
