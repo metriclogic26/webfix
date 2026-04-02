@@ -65,7 +65,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → Learn → CORS — How It Works and How to Fix It</div>
     <article>
       <h1>CORS — How It Works and How to Fix It</h1>
-      <p class="lead">Cross-Origin Resource Sharing is not a server bug you toggle off—it is the browser enforcing a contract between your frontend origin and your API origin. When the contract is wrong, the network tab shows a failed request even though the origin returned HTTP 200.</p>
+      <p class="lead">Cross-Origin Resource Sharing is not a server bug you toggle off—it’s the browser enforcing a contract between your frontend origin and your API origin. When the contract is wrong, the network tab shows a failed request even though the origin returned HTTP 200.</p>
 
       <h2>Why browsers enforce it</h2>
       <p>Documents at <code>https://app.example</code> cannot read responses from <code>https://api.example</code> unless the API explicitly opts in with <code>Access-Control-Allow-Origin</code> (and related headers). That keeps third-party sites from scraping authenticated JSON with your users’ cookies. The pain shows up when <em>your</em> SPA and API are cross-origin by design.</p>
@@ -131,7 +131,7 @@ CSRF_TRUSTED_ORIGINS = ["https://app.example"]</div>
       <p>Django separates CSRF trusted origins from CORS—you need both when the SPA posts cookies across sites. Missing <code>CSRF_TRUSTED_ORIGINS</code> surfaces as 403s that look like CORS failures in the console because the preflight succeeded.</p>
 
       <h2>Debugging checklist</h2>
-      <p>When stuck, capture the failing request in DevTools: confirm whether it is “simple” or preflight, verify the response includes every allowed header name the browser asked for (case-insensitive match on names, not values), and replay with <code>curl -v -X OPTIONS</code> using the same <code>Origin</code>. If middleware order matters—auth before CORS—swap so CORS answers fail fast for browsers while still logging security events server-side.</p>
+      <p>When stuck, capture the failing request in DevTools: confirm whether it’s “simple” or preflight, verify the response includes every allowed header name the browser asked for (case-insensitive match on names, not values), and replay with <code>curl -v -X OPTIONS</code> using the same <code>Origin</code>. If middleware order matters—auth before CORS—swap so CORS answers fail fast for browsers while still logging security events server-side.</p>
 
       <h2>Local development hosts</h2>
       <p>Adding <code>http://localhost:5173</code> to <code>allow_origins</code> is fine for dev, but strip those entries before production deploys or you create predictable reflection points. Use environment-driven arrays and reject requests when <code>NODE_ENV=production</code> still sees dev origins in configuration.</p>

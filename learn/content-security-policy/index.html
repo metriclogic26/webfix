@@ -66,7 +66,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → Learn → Content Security Policy — From Zero to Working CSP</div>
     <article>
       <h1>Content Security Policy — From Zero to Working CSP</h1>
-      <p class="lead">CSP is how you tell the browser which origins are allowed to execute or render subresources for a document. Done well, it shrinks your XSS blast radius. Done lazily—think <code>unsafe-inline</code> everywhere—it is theater. This page walks from motivation to a policy grounded in what your page actually loads.</p>
+      <p class="lead">CSP is how you tell the browser which origins are allowed to execute or render subresources for a document. Done well, it shrinks your XSS blast radius. Done lazily—think <code>unsafe-inline</code> everywhere—it’s theater. Below: why CSP exists, then how to build a policy from what your page actually loads.</p>
 
       <h2>Why CSP exists</h2>
       <p>Server-side escaping helps, but templates drift, admin panels grow inline scripts, and marketing drops tags you never reviewed. CSP adds a second gate: even if someone injects markup, the browser refuses to run or load what the policy forbids. That is why auditors ask for it beside <code>HttpOnly</code> cookies and framework defaults.</p>

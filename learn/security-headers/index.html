@@ -66,11 +66,11 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → Learn → HTTP Security Headers — Complete Guide</div>
     <article>
       <h1>HTTP Security Headers — Complete Guide</h1>
-      <p class="lead">Response headers are the cheapest defense-in-depth layer you own: the browser reads them on every navigation and applies policy before your JavaScript runs. This guide maps the headers teams actually ship, the ways they get misconfigured, and the exact snippets that fix them on common stacks.</p>
+      <p class="lead">Response headers are the cheapest defense-in-depth layer you own: the browser reads them on every navigation and applies policy before your JavaScript runs. Here’s what teams actually ship, how those headers get misconfigured, and copy-paste snippets that fix them on common stacks.</p>
 
       <h2>What each header does</h2>
       <p><strong>HSTS</strong> pins HTTPS for a host so bookmarks and typed HTTP URLs upgrade instead of falling through cleartext. You want a sane <code>max-age</code>, <code>includeSubDomains</code> only when every subdomain is TLS-clean, and <code>preload</code> only after you mean it.</p>
-      <p><strong>CSP</strong> lists where scripts, styles, images, frames, and connections may load from. It is the main XSS mitigation for modern apps when you move off <code>unsafe-inline</code> toward nonces or hashes.</p>
+      <p><strong>CSP</strong> lists where scripts, styles, images, frames, and connections may load from. It’s the main XSS mitigation for modern apps when you move off <code>unsafe-inline</code> toward nonces or hashes.</p>
       <p><strong>X-Frame-Options</strong> (or <code>frame-ancestors</code> in CSP) blocks clickjacking by refusing to render your site inside foreign iframes.</p>
       <p><strong>X-Content-Type-Options: nosniff</strong> stops the browser from MIME-sniffing responses into executable contexts—especially important for user-upload directories and static hosts that serve <code>text/plain</code> wrong.</p>
       <p><strong>Referrer-Policy</strong> trims what lands in the <code>Referer</code> header so query tokens and internal paths do not leak to analytics or OAuth intermediaries.</p>

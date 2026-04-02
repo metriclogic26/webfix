@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/glossary/">Glossary</a> → Time to First Byte (TTFB)</div>
     <h1>Time to First Byte (TTFB)</h1>
     <p class="lead">How long it takes for the browser to receive the first byte from the server.</p>
-<p>TTFB covers DNS, TLS, connection setup, queueing at the CDN, and origin processing until the response head starts streaming. It is not a Core Web Vital by itself, but it sets the lower bound for document-linked metrics: you cannot hit a good LCP if HTML arrives a second late.</p>
+<p>TTFB covers DNS, TLS, connection setup, queueing at the CDN, and origin processing until the response head starts streaming. It’s not a Core Web Vital by itself, but it sets the lower bound for document-linked metrics: you cannot hit a good LCP if HTML arrives a second late.</p>
 <h2>Why developers care</h2>
 <p>High TTFB usually means cold starts, missing edge cache on HTML, slow database queries on the critical path, or geographic distance from origin. Fixing it is “back end and edge,” not CSS tweaks. Rule of thumb: sustained document TTFB above ~600 ms on mobile deserves profiling—CDN caching, regional deploys, or DB indexing—not more client JS.</p>
 <h2>Example</h2>
