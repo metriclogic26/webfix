@@ -121,7 +121,7 @@ Header always set Referrer-Policy "strict-origin-when-cross-origin"</div>
       <div class="code-block">Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(self "https://pay.example")</div>
 
       <h2>Operational habit</h2>
-      <p>Scan your live deployment, then diff what you ship versus what your HTML actually loads—that is fewer iterations than guessing in staging. Store the header block in version control next to infra code so reviews catch regressions when someone bumps a CDN preset. HeadersFixer reads your canonical URL and mirrors the stack tabs you already deploy—paste, reload, and verify Security panel before closing the ticket.</p>
+      <p>Scan your live deployment, then diff what you ship versus what your HTML actually loads—that is fewer iterations than guessing in staging. Store the header block in version control next to infra code so reviews catch regressions when someone bumps a CDN preset. HeadersFixer reads your site URL and mirrors the stack tabs you already deploy—paste, reload, and verify Security panel before closing the ticket.</p>
     </article>
 
     <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS</a> · <a href="/glossary/content-security-policy/">Content-Security-Policy</a> · <a href="/glossary/x-frame-options/">X-Frame-Options</a> · <a href="/glossary/referrer-policy/">Referrer-Policy</a> · <a href="/glossary/permissions-policy/">Permissions-Policy</a> · <a href="/glossary/coop-coep/">COOP / COEP</a> · <a href="/fix/headers/nginx/">Fix headers (Nginx)</a> · <a href="/fix/headers/apache/">Fix headers (Apache)</a> · <a href="/fix/headers/vercel/">Fix headers (Vercel)</a></div>

@@ -47,6 +47,10 @@
     .index-list a:hover { text-decoration: underline; }
     .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
     .related-links a { color: var(--purple); text-decoration: none; }
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 13px; }
+    th, td { padding: 0.6rem 0.75rem; border: 1px solid var(--border); text-align: left; }
+    th { background: var(--surface); color: var(--purple); font-weight: 600; }
+    tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -67,13 +71,33 @@
   <main>
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/vs/">Comparisons</a> → WebFix vs security header checkers</div>
     <h1>WebFix vs security header checkers — Why Fixers Beat Checkers</h1>
-    <p>Security header checkers attract massive traffic—on the order of <strong>251K monthly visits</strong>—because teams want a quick grade. The scan is valuable, but the output stops at diagnosis: you still translate red rows into nginx.conf, Cloudflare Transform Rules, or vercel.json on your own.</p><h2>Comparison</h2><div class='code-block'>| | security header checkers | WebFix |
-| --- | --- | --- |
-| Output | Letter grade + header checklist | Same audits + stack-specific snippets |
-| Config | None (manual research) | Copy-paste for Nginx, Apache, CF, Vercel, Express… |
-| Scope | Headers snapshot | Headers, CORS preflight, CSP resource graph, OAuth errors, cache audits, PSI |
-| Price | Free | Free (MIT) |
-</div><p>WebFix fills the gap between <em>knowing</em> you are missing HSTS and <em>shipping</em> the exact directive. Run HeadersFixer on your canonical URL, then deploy the recommended block and re-scan.</p><p>Related: <a href='/fix/headers/nginx/'>Fix headers on Nginx</a>, <a href='/providers/cloudflare/'>Cloudflare hub</a>, <a href='/headers/'>HeadersFixer tool</a>.</p>
+    <p>Most security header tools give you a grade. You see a red row,
+Google the header name, read three blog posts, and eventually paste
+something into your nginx.conf that may or may not be right for your
+setup.</p>
+
+    <p>WebFix skips the research step. It fetches your live headers,
+detects whether you're on Nginx, Cloudflare, Vercel, or Express,
+and outputs the exact block to paste. Same audit — just with the
+fix attached.</p>
+
+    <h2>How they compare</h2>
+
+    <table>
+      <thead>
+        <tr><th></th><th>Header checkers</th><th>WebFix</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Output</td><td>Letter grade</td><td>Grade + copy-paste config</td></tr>
+        <tr><td>Config</td><td>None — you research it</td><td>Nginx, Apache, Cloudflare, Vercel, Express</td></tr>
+        <tr><td>Scope</td><td>Headers only</td><td>Headers, CORS, CSP, OAuth, cache, PageSpeed</td></tr>
+        <tr><td>Price</td><td>Free</td><td>Free (MIT)</td></tr>
+      </tbody>
+    </table>
+
+    <p>If you already know which header is missing, you don't need another
+checker. You need the fix. That's what WebFix is for.</p>
+    <p>Related: <a href='/fix/headers/nginx/'>Fix headers on Nginx</a>, <a href='/providers/cloudflare/'>Cloudflare hub</a>, <a href='/headers/'>HeadersFixer tool</a>.</p>
     <div class="related-links"><span>Related:</span> <a href="/fix/headers/nginx/">Fix headers (Nginx)</a> · <a href="/glossary/">Glossary</a> · <a href="/vs/">Comparisons hub</a></div>
     <a href="/headers/" class="tool-cta">Try HeadersFixer →</a>
   </main>
