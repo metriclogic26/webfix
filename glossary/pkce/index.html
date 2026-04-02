@@ -70,7 +70,7 @@
     <p class="lead">An OAuth extension that prevents authorization code interception attacks.</p>
 <p>Public clients (SPAs, mobile apps) cannot hold a client secret in the binary. An attacker who steals the authorization code from a redirect could exchange it at the token endpoint unless you bind the exchange to a secret only the real app knows. PKCE does that with <code>code_verifier</code> (random, 43–128 chars) and <code>code_challenge</code> (S256 hash of the verifier) sent on the authorize request, then the plaintext verifier on the token request.</p>
 <h2>Why developers care</h2>
-<p>OAuth 2.1 requires PKCE for public clients. Auth servers reject flows or emit insecure grants if you skip it. Desktop loopback and mobile custom-URL redirects are especially exposed to interception without PKCE. Server-side apps with secrets use confidential client mode, but PKCE is still recommended for defense in depth.</p>
+<p>OAuth 2.1 requires PKCE for public clients. Auth servers reject flows or emit insecure grants if you skip it. Desktop loopback and mobile custom-URL redirects are especially exposed to interception without PKCE. Server-side apps with secrets use confidential client mode, but PKCE still tightens defense in depth.</p>
 <h2>Example</h2>
 <div class="code-block"># Authorization request (query or body):
 code_challenge_method=S256
