@@ -1,21 +1,21 @@
-# StackFix
+# WebFix
 
 > Free browser-based web app security fixers. Every tool fetches your live URL, detects your stack, and generates the exact copy-paste config to fix each issue. No backend, no signup, MIT licensed.
 
-StackFix is part of the MetricLogic network (metriclogic.dev).
+WebFix is part of the MetricLogic network (metriclogic.dev).
 
 ## Tools
 
-- HeadersFixer: https://stackfix.dev/headers/ — Audits security headers (HSTS, CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy, COOP, COEP). Generates stack-specific fixes for Nginx, Apache, Vercel, Cloudflare, Express, Caddy, Next.js, FastAPI.
-- CORSFixer: https://stackfix.dev/cors/ — Sends live OPTIONS preflight, detects misconfiguration type, generates middleware fix for Express, Nginx, FastAPI, Django, Laravel, Cloudflare Workers, vLLM, Ollama.
-- OAuthFixer: https://stackfix.dev/oauth/ — Diagnoses OAuth/OIDC errors (invalid_grant, redirect_uri_mismatch, PKCE errors). Generates provider-specific fixes for Auth0, Okta, Cognito, Google, Microsoft.
-- CSPFixer: https://stackfix.dev/csp/ — Fetches your page, extracts all resource origins, generates a working Content Security Policy. Detects gaps and unsafe-inline usage.
-- EdgeFix: https://stackfix.dev/edge/ — Audits caching headers (Cache-Control, Vary, Age, X-Cache). Detects accidentally cached authenticated responses.
-- SpeedFixer: https://stackfix.dev/speedfixer/ — Fetches live Google PageSpeed Insights results, detects stack, generates exact config to fix failing audits. Fixes for Nginx, Cloudflare, Vercel, Apache, Netlify, WordPress.
+- HeadersFixer: https://webfix.dev/headers/ — Audits security headers (HSTS, CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy, COOP, COEP). Generates stack-specific fixes for Nginx, Apache, Vercel, Cloudflare, Express, Caddy, Next.js, FastAPI.
+- CORSFixer: https://webfix.dev/cors/ — Sends live OPTIONS preflight, detects misconfiguration type, generates middleware fix for Express, Nginx, FastAPI, Django, Laravel, Cloudflare Workers, vLLM, Ollama.
+- OAuthFixer: https://webfix.dev/oauth/ — Diagnoses OAuth/OIDC errors (invalid_grant, redirect_uri_mismatch, PKCE errors). Generates provider-specific fixes for Auth0, Okta, Cognito, Google, Microsoft.
+- CSPFixer: https://webfix.dev/csp/ — Fetches your page, extracts all resource origins, generates a working Content Security Policy. Detects gaps and unsafe-inline usage.
+- EdgeFix: https://webfix.dev/edge/ — Audits caching headers (Cache-Control, Vary, Age, X-Cache). Detects accidentally cached authenticated responses.
+- SpeedFixer: https://webfix.dev/speedfixer/ — Fetches live Google PageSpeed Insights results, detects stack, generates exact config to fix failing audits. Fixes for Nginx, Cloudflare, Vercel, Apache, Netlify, WordPress.
 
 ## Recent content
 
-- Blog: SharePoint CSP "Refused to Load" Fix — https://stackfix.dev/blog/sharepoint-csp-fix-2026/
+- Blog: SharePoint CSP "Refused to Load" Fix — https://webfix.dev/blog/sharepoint-csp-fix-2026/
 
 ## Standards referenced
 
@@ -29,4 +29,4 @@ StackFix is part of the MetricLogic network (metriclogic.dev).
 
 ## License
 
-MIT — https://github.com/metriclogic26/stackfix
+MIT — https://github.com/metriclogic26/webfix

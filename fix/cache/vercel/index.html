@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fix Cache-Control Headers on Vercel — StackFix</title>
+  <title>Fix Cache-Control Headers on Vercel — WebFix</title>
   <meta name="description" content="Use vercel.json and framework headers to mark ISR, static immutable assets, and dynamic API routes.">
-  <link rel="canonical" href="https://stackfix.dev/fix/cache/vercel/">
+  <link rel="canonical" href="https://webfix.dev/fix/cache/vercel/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Fix Cache-Control Headers on Vercel — StackFix">
+  <meta property="og:title" content="Fix Cache-Control Headers on Vercel — WebFix">
   <meta property="og:description" content="Use vercel.json and framework headers to mark ISR, static immutable assets, and dynamic API routes.">
-  <meta property="og:url" content="https://stackfix.dev/fix/cache/vercel/">
+  <meta property="og:url" content="https://webfix.dev/fix/cache/vercel/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix Cache-Control Headers on Vercel", "description": "Use vercel.json and framework headers to mark ISR, static immutable assets, and dynamic API routes.", "url": "https://stackfix.dev/fix/cache/vercel/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://stackfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Cache", "item": "https://stackfix.dev/fix/cache/"}, {"@type": "ListItem", "position": 4, "name": "Vercel"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix Cache-Control Headers on Vercel", "description": "Use vercel.json and framework headers to mark ISR, static immutable assets, and dynamic API routes.", "url": "https://webfix.dev/fix/cache/vercel/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://webfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Cache", "item": "https://webfix.dev/fix/cache/"}, {"@type": "ListItem", "position": 4, "name": "Vercel"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -45,6 +45,8 @@
     .index-list li { margin-bottom: 0.65rem; }
     .index-list a { color: var(--purple); text-decoration: none; }
     .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -52,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">StackFix <span>/</span> Fix</a>
+    <a href="/" class="brand">WebFix <span>/</span> Fix</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,14 +65,15 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">StackFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/cache/">Cache</a> → Fix Cache-Control Headers on Vercel</div>
+    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/cache/">Cache</a> → Fix Cache-Control Headers on Vercel</div>
     <h1>Fix Cache-Control Headers on Vercel</h1>
     <p>Vercel’s CDN respects framework signals: Next.js route segment config and <code>fetch</code> cache options influence <code>s-maxage</code>. APIs default to dynamic—opt into edge caching only when responses are anonymous.</p><p>Set <code>stale-while-revalidate</code> thoughtfully for marketing pages; never for per-user JSON. Pair with <a href="/fix/pagespeed/vercel/">PageSpeed on Vercel</a>.</p>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/cache-control/">Cache-Control</a> · <a href="/glossary/vary-header/">Vary</a> · <a href="/glossary/etag/">ETag</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
     <a href="/edge/" class="tool-cta">Open EdgeFix →</a>
   </main>
   <footer>
-    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
 </html>

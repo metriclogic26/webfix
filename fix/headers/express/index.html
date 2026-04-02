@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fix Missing Security Headers on Express — StackFix</title>
+  <title>Fix Missing Security Headers on Express — WebFix</title>
   <meta name="description" content="Use helmet middleware to set HSTS, CSP, X-Frame-Options, and related headers with sensible defaults.">
-  <link rel="canonical" href="https://stackfix.dev/fix/headers/express/">
+  <link rel="canonical" href="https://webfix.dev/fix/headers/express/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Fix Missing Security Headers on Express — StackFix">
+  <meta property="og:title" content="Fix Missing Security Headers on Express — WebFix">
   <meta property="og:description" content="Use helmet middleware to set HSTS, CSP, X-Frame-Options, and related headers with sensible defaults.">
-  <meta property="og:url" content="https://stackfix.dev/fix/headers/express/">
+  <meta property="og:url" content="https://webfix.dev/fix/headers/express/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix Missing Security Headers on Express", "description": "Use helmet middleware to set HSTS, CSP, X-Frame-Options, and related headers with sensible defaults.", "url": "https://stackfix.dev/fix/headers/express/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://stackfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Headers", "item": "https://stackfix.dev/fix/headers/"}, {"@type": "ListItem", "position": 4, "name": "Express"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix Missing Security Headers on Express", "description": "Use helmet middleware to set HSTS, CSP, X-Frame-Options, and related headers with sensible defaults.", "url": "https://webfix.dev/fix/headers/express/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://webfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Headers", "item": "https://webfix.dev/fix/headers/"}, {"@type": "ListItem", "position": 4, "name": "Express"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -45,6 +45,8 @@
     .index-list li { margin-bottom: 0.65rem; }
     .index-list a { color: var(--purple); text-decoration: none; }
     .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -52,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">StackFix <span>/</span> Fix</a>
+    <a href="/" class="brand">WebFix <span>/</span> Fix</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,14 +65,15 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">StackFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/headers/">Headers</a> → Fix Missing Security Headers on Express</div>
+    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/headers/">Headers</a> → Fix Missing Security Headers on Express</div>
     <h1>Fix Missing Security Headers on Express</h1>
     <p>Express serves API and SSR apps without security headers until you add them. The <code>helmet</code> package centralizes modern defaults and lets you override each middleware for CSP, HSTS length, and cross-origin policies.</p><p>Mount <code>helmet()</code> early in the chain so every route inherits the baseline; tighten <code>contentSecurityPolicy</code> directives when you drop inline scripts. For APIs, disable framing and lock down <code>crossOriginEmbedderPolicy</code> only if your clients require it.</p><p>For CORS plus headers, see <a href="/fix/cors/express/">CORS on Express</a>.</p>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS (glossary)</a> · <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
     <a href="/headers/" class="tool-cta">Open HeadersFixer →</a>
   </main>
   <footer>
-    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
 </html>

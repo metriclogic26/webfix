@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apache Security & Performance Fixes — StackFix</title>
+  <title>Apache Security & Performance Fixes — WebFix</title>
   <meta name="description" content="httpd modules for headers, compression, and CSP on Apache.">
-  <link rel="canonical" href="https://stackfix.dev/providers/apache/">
+  <link rel="canonical" href="https://webfix.dev/providers/apache/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Apache Security & Performance Fixes — StackFix">
+  <meta property="og:title" content="Apache Security & Performance Fixes — WebFix">
   <meta property="og:description" content="httpd modules for headers, compression, and CSP on Apache.">
-  <meta property="og:url" content="https://stackfix.dev/providers/apache/">
+  <meta property="og:url" content="https://webfix.dev/providers/apache/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Apache Security & Performance Fixes", "description": "httpd modules for headers, compression, and CSP on Apache.", "url": "https://stackfix.dev/providers/apache/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Providers", "item": "https://stackfix.dev/providers/"}, {"@type": "ListItem", "position": 3, "name": "Apache Security & Performance Fixes"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Apache Security & Performance Fixes", "description": "httpd modules for headers, compression, and CSP on Apache.", "url": "https://webfix.dev/providers/apache/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Providers", "item": "https://webfix.dev/providers/"}, {"@type": "ListItem", "position": 3, "name": "Apache Security & Performance Fixes"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -45,6 +45,8 @@
     .index-list li { margin-bottom: 0.65rem; }
     .index-list a { color: var(--purple); text-decoration: none; }
     .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -52,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">StackFix <span>/</span> Providers</a>
+    <a href="/" class="brand">WebFix <span>/</span> Providers</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,14 +65,15 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">StackFix</a> → <a href="/providers/">Providers</a> → Apache Security & Performance Fixes</div>
+    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/providers/">Providers</a> → Apache Security & Performance Fixes</div>
     <h1>Apache Security & Performance Fixes</h1>
-    <p>Apache deployments rely on <code>mod_headers</code>, <code>mod_rewrite</code>, and sometimes <code>mod_security</code>. StackFix documents <a href="/fix/headers/apache/">security headers</a> and connects to CORS patterns when you proxy to a backend.</p><p>Because .htaccess and VirtualHost differ per host, live scans prevent guessing which directives apply. SpeedFixer still helps when Apache serves static build output behind TLS termination.</p><p>Compare <a href="/providers/nginx/">Nginx hub</a> for the same categories.</p>
+    <p>Apache deployments rely on <code>mod_headers</code>, <code>mod_rewrite</code>, and sometimes <code>mod_security</code>. WebFix documents <a href="/fix/headers/apache/">security headers</a> and connects to CORS patterns when you proxy to a backend.</p><p>Because .htaccess and VirtualHost differ per host, live scans prevent guessing which directives apply. SpeedFixer still helps when Apache serves static build output behind TLS termination.</p><p>Compare <a href="/providers/nginx/">Nginx hub</a> for the same categories.</p>
+    <div class="related-links"><span>Related:</span> <a href="/fix/headers/apache/">Fix headers (Apache)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
     <a href="/headers/" class="tool-cta">Open HeadersFixer →</a>
   </main>
   <footer>
-    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
 </html>

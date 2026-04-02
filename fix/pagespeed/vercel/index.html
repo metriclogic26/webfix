@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fix PageSpeed Score on Vercel — StackFix</title>
+  <title>Fix PageSpeed Score on Vercel — WebFix</title>
   <meta name="description" content="Leverage next/image, edge functions, and Vercel Analytics to address CLS, LCP, and bundle size.">
-  <link rel="canonical" href="https://stackfix.dev/fix/pagespeed/vercel/">
+  <link rel="canonical" href="https://webfix.dev/fix/pagespeed/vercel/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Fix PageSpeed Score on Vercel — StackFix">
+  <meta property="og:title" content="Fix PageSpeed Score on Vercel — WebFix">
   <meta property="og:description" content="Leverage next/image, edge functions, and Vercel Analytics to address CLS, LCP, and bundle size.">
-  <meta property="og:url" content="https://stackfix.dev/fix/pagespeed/vercel/">
+  <meta property="og:url" content="https://webfix.dev/fix/pagespeed/vercel/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix PageSpeed Score on Vercel", "description": "Leverage next/image, edge functions, and Vercel Analytics to address CLS, LCP, and bundle size.", "url": "https://stackfix.dev/fix/pagespeed/vercel/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://stackfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Pagespeed", "item": "https://stackfix.dev/fix/pagespeed/"}, {"@type": "ListItem", "position": 4, "name": "Vercel"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix PageSpeed Score on Vercel", "description": "Leverage next/image, edge functions, and Vercel Analytics to address CLS, LCP, and bundle size.", "url": "https://webfix.dev/fix/pagespeed/vercel/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://webfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Pagespeed", "item": "https://webfix.dev/fix/pagespeed/"}, {"@type": "ListItem", "position": 4, "name": "Vercel"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -45,6 +45,8 @@
     .index-list li { margin-bottom: 0.65rem; }
     .index-list a { color: var(--purple); text-decoration: none; }
     .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -52,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">StackFix <span>/</span> Fix</a>
+    <a href="/" class="brand">WebFix <span>/</span> Fix</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,14 +65,15 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">StackFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/pagespeed/">Pagespeed</a> → Fix PageSpeed Score on Vercel</div>
+    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/pagespeed/">Pagespeed</a> → Fix PageSpeed Score on Vercel</div>
     <h1>Fix PageSpeed Score on Vercel</h1>
     <p>Vercel optimizes images and splits deployments geographically by default, but client-side JavaScript bloat still hurts TBT. Adopt dynamic imports, review third-party tags, and ensure fonts use <code>display=swap</code> or self-host.</p><p>Compare field vs lab data: SpeedFixer surfaces PageSpeed’s view of your canonical URL after CDN behavior.</p>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/core-web-vitals/">Core Web Vitals</a> · <a href="/glossary/largest-contentful-paint/">LCP</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
     <a href="/speedfixer/" class="tool-cta">Open SpeedFixer →</a>
   </main>
   <footer>
-    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
 </html>

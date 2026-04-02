@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mixed Content Error — StackFix</title>
+  <title>Mixed Content Error — WebFix</title>
   <meta name="description" content="HTTPS pages loading HTTP subresources are blocked; fix by upgrading URLs and redirects.">
-  <link rel="canonical" href="https://stackfix.dev/error/mixed-content/">
+  <link rel="canonical" href="https://webfix.dev/error/mixed-content/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Mixed Content Error — StackFix">
+  <meta property="og:title" content="Mixed Content Error — WebFix">
   <meta property="og:description" content="HTTPS pages loading HTTP subresources are blocked; fix by upgrading URLs and redirects.">
-  <meta property="og:url" content="https://stackfix.dev/error/mixed-content/">
+  <meta property="og:url" content="https://webfix.dev/error/mixed-content/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Mixed Content Error", "description": "HTTPS pages loading HTTP subresources are blocked; fix by upgrading URLs and redirects.", "url": "https://stackfix.dev/error/mixed-content/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Errors", "item": "https://stackfix.dev/error/"}, {"@type": "ListItem", "position": 3, "name": "Mixed Content Error"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Mixed Content Error", "description": "HTTPS pages loading HTTP subresources are blocked; fix by upgrading URLs and redirects.", "url": "https://webfix.dev/error/mixed-content/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Errors", "item": "https://webfix.dev/error/"}, {"@type": "ListItem", "position": 3, "name": "Mixed Content Error"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -45,6 +45,8 @@
     .index-list li { margin-bottom: 0.65rem; }
     .index-list a { color: var(--purple); text-decoration: none; }
     .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -52,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">StackFix <span>/</span> Errors</a>
+    <a href="/" class="brand">WebFix <span>/</span> Errors</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,14 +65,15 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">StackFix</a> → <a href="/error/">Errors</a> → Mixed Content Error</div>
+    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/error/">Errors</a> → Mixed Content Error</div>
     <h1>Mixed Content Error</h1>
     <p>Mixed content errors occur when an HTML page loads over HTTPS but pulls scripts, iframes, or images over plaintext HTTP. Modern browsers block active mixed content and may warn on passive assets.</p><p>Remediation: use relative URLs, scheme-relative upgrades to <code>https://</code>, or Content Security Policy <code>upgrade-insecure-requests</code> after verifying every dependency supports TLS. HeadersFixer pairs with CSPFixer to validate production HTML.</p>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/fix/csp/nginx/">Fix CSP (Nginx)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
     <a href="/headers/" class="tool-cta">Open HeadersFixer →</a>
   </main>
   <footer>
-    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
 </html>

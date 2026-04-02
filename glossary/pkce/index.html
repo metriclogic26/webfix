@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What is PKCE? — WebFix Glossary</title>
+  <meta name="description" content="PKCE protects public OAuth clients from authorization code interception.">
+  <link rel="canonical" href="https://webfix.dev/glossary/pkce/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="What is PKCE? — WebFix Glossary">
+  <meta property="og:description" content="PKCE protects public OAuth clients from authorization code interception.">
+  <meta property="og:url" content="https://webfix.dev/glossary/pkce/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "Proof Key for Code Exchange (PKCE)", "description": "An OAuth extension that prevents authorization code interception attacks.", "url": "https://webfix.dev/glossary/pkce/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "WebFix Security Glossary", "url": "https://webfix.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://webfix.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "Proof Key for Code Exchange (PKCE)"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does PKCE replace client secret for SPAs?", "acceptedAnswer": {"@type": "Answer", "text": "For public clients, yes—you should not ship a secret to the browser. PKCE proves possession without a static secret."}}, {"@type": "Question", "name": "What if code_verifier does not match?", "acceptedAnswer": {"@type": "Answer", "text": "The token endpoint returns invalid_grant. Ensure the same verifier is stored client-side until the callback completes."}}]}]}</script>
+  <style>
+    :root {
+      --bg: #0B0D14; --surface: #12151F; --border: #252836;
+      --purple: #6C63FF; --green: #22C55E; --orange: #F97316;
+      --red: #EF4444; --text: #E2E4F0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); }
+    nav .brand { font-weight: 600; color: var(--text); text-decoration: none; }
+    nav .brand span { color: var(--purple); }
+    nav .right { display: flex; gap: 1rem; align-items: center; }
+    nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; }
+    nav a:hover { color: var(--purple); opacity: 1; }
+    main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    main.wide { max-width: 1000px; }
+    .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; }
+    .breadcrumb a { color: var(--purple); text-decoration: none; }
+    h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; }
+    h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); }
+    p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; }
+    .lead { font-size: 1.05rem; opacity: 0.95; margin-bottom: 1.25rem; }
+    .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; }
+    .tool-cta:hover { filter: brightness(1.1); }
+    .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
+    footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
+    footer a { color: var(--text); text-decoration: none; }
+    .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+    .glossary-grid a { display: block; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); text-decoration: none; }
+    .glossary-grid a:hover { border-color: var(--purple); }
+    .glossary-grid .term-title { color: var(--purple); font-weight: 600; font-size: 13px; margin-bottom: 0.4rem; }
+    .glossary-grid .term-d { font-size: 12px; opacity: 0.8; line-height: 1.5; }
+    article a { color: var(--purple); }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
+    @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="brand">WebFix <span>/</span> Glossary</a>
+    <div class="right">
+      <a href="/headers/">Headers</a>
+      <a href="/cors/">CORS</a>
+      <a href="/oauth/">OAuth</a>
+      <a href="/csp/">CSP</a>
+      <a href="/edge/">Edge</a>
+      <a href="/speedfixer/">Speed</a>
+    </div>
+  </nav>
+  <main class="">
+    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/glossary/">Glossary</a> → Proof Key for Code Exchange (PKCE)</div>
+    <h1>Proof Key for Code Exchange (PKCE)</h1>
+    <p class="lead">An OAuth extension that prevents authorization code interception attacks.</p>
+<p>Public clients (SPAs, mobile apps) cannot hold a client secret in the binary. An attacker who steals the authorization code from a redirect could exchange it at the token endpoint unless you bind the exchange to a secret only the real app knows. PKCE does that with <code>code_verifier</code> (random, 43–128 chars) and <code>code_challenge</code> (S256 hash of the verifier) sent on the authorize request, then the plaintext verifier on the token request.</p>
+<h2>Why developers care</h2>
+<p>OAuth 2.1 requires PKCE for public clients. Auth servers reject flows or emit insecure grants if you skip it. Desktop loopback and mobile custom-URL redirects are especially exposed to interception without PKCE. Server-side apps with secrets use confidential client mode, but PKCE is still recommended for defense in depth.</p>
+<h2>Example</h2>
+<div class="code-block"># Authorization request (query or body):
+code_challenge_method=S256
+code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
+
+# Token request:
+grant_type=authorization_code
+code=...
+redirect_uri=...
+client_id=...
+code_verifier=dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk</div>
+<h2>Spec</h2>
+<p><a href="https://www.rfc-editor.org/rfc/rfc7636">RFC 7636</a></p>
+    <div class="related-links"><span>Related:</span> <a href="/fix/oauth/auth0/">Fix OAuth (Auth0)</a> · <a href="/error/pkce-required/">PKCE required error</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <a href="/oauth/" class="tool-cta">Fix OAuth with OAuthFixer →</a>
+  </main>
+  <footer>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
+  </footer>
+</body>
+</html>

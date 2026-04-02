@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nginx Security & Performance Fixes — StackFix</title>
+  <title>Nginx Security & Performance Fixes — WebFix</title>
   <meta name="description" content="Headers, CORS, CSP, caching, and PageSpeed-related configuration for Nginx.">
-  <link rel="canonical" href="https://stackfix.dev/providers/nginx/">
+  <link rel="canonical" href="https://webfix.dev/providers/nginx/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Nginx Security & Performance Fixes — StackFix">
+  <meta property="og:title" content="Nginx Security & Performance Fixes — WebFix">
   <meta property="og:description" content="Headers, CORS, CSP, caching, and PageSpeed-related configuration for Nginx.">
-  <meta property="og:url" content="https://stackfix.dev/providers/nginx/">
+  <meta property="og:url" content="https://webfix.dev/providers/nginx/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Nginx Security & Performance Fixes", "description": "Headers, CORS, CSP, caching, and PageSpeed-related configuration for Nginx.", "url": "https://stackfix.dev/providers/nginx/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Providers", "item": "https://stackfix.dev/providers/"}, {"@type": "ListItem", "position": 3, "name": "Nginx Security & Performance Fixes"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Nginx Security & Performance Fixes", "description": "Headers, CORS, CSP, caching, and PageSpeed-related configuration for Nginx.", "url": "https://webfix.dev/providers/nginx/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Providers", "item": "https://webfix.dev/providers/"}, {"@type": "ListItem", "position": 3, "name": "Nginx Security & Performance Fixes"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -45,6 +45,8 @@
     .index-list li { margin-bottom: 0.65rem; }
     .index-list a { color: var(--purple); text-decoration: none; }
     .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -52,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">StackFix <span>/</span> Providers</a>
+    <a href="/" class="brand">WebFix <span>/</span> Providers</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,14 +65,15 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">StackFix</a> → <a href="/providers/">Providers</a> → Nginx Security & Performance Fixes</div>
+    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/providers/">Providers</a> → Nginx Security & Performance Fixes</div>
     <h1>Nginx Security & Performance Fixes</h1>
-    <p>Nginx fronts a huge share of APIs and static sites. StackFix targets Nginx for <strong>security headers</strong> (<a href="/fix/headers/nginx/">guide</a>), <strong>CORS</strong> (<a href="/fix/cors/nginx/">guide</a>), <strong>CSP</strong> (<a href="/fix/csp/nginx/">guide</a>), <strong>cache headers</strong> (<a href="/fix/cache/nginx/">guide</a>), and <strong>PageSpeed-oriented tuning</strong> (<a href="/fix/pagespeed/nginx/">guide</a>).</p><p>Use HeadersFixer and CORSFixer against public URLs to capture real header and preflight behavior before editing <code>nginx.conf</code>. EdgeFix validates <code>Cache-Control</code> after changes; SpeedFixer maps Core Web Vitals gaps to concrete directives.</p><p>Related errors: <a href="/error/cors-blocked/">CORS blocked</a>, <a href="/error/cache-authenticated-response/">cached auth responses</a>.</p>
+    <p>Nginx fronts a huge share of APIs and static sites. WebFix targets Nginx for <strong>security headers</strong> (<a href="/fix/headers/nginx/">guide</a>), <strong>CORS</strong> (<a href="/fix/cors/nginx/">guide</a>), <strong>CSP</strong> (<a href="/fix/csp/nginx/">guide</a>), <strong>cache headers</strong> (<a href="/fix/cache/nginx/">guide</a>), and <strong>PageSpeed-oriented tuning</strong> (<a href="/fix/pagespeed/nginx/">guide</a>).</p><p>Use HeadersFixer and CORSFixer against public URLs to capture real header and preflight behavior before editing <code>nginx.conf</code>. EdgeFix validates <code>Cache-Control</code> after changes; SpeedFixer maps Core Web Vitals gaps to concrete directives.</p><p>Related errors: <a href="/error/cors-blocked/">CORS blocked</a>, <a href="/error/cache-authenticated-response/">cached auth responses</a>.</p>
+    <div class="related-links"><span>Related:</span> <a href="/fix/headers/nginx/">Fix headers (Nginx)</a> · <a href="/fix/cors/nginx/">Fix CORS (Nginx)</a> · <a href="/fix/csp/nginx/">Fix CSP (Nginx)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
     <a href="/headers/" class="tool-cta">Open HeadersFixer →</a>
   </main>
   <footer>
-    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
 </html>

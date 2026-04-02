@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fix Guides — StackFix</title>
+  <title>Fix Guides — WebFix</title>
   <meta name="description" content="Stack-specific fixes for security headers, CORS, CSP, OAuth, caching, and PageSpeed.">
-  <link rel="canonical" href="https://stackfix.dev/fix/">
+  <link rel="canonical" href="https://webfix.dev/fix/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Fix Guides — StackFix">
+  <meta property="og:title" content="Fix Guides — WebFix">
   <meta property="og:description" content="Stack-specific fixes for security headers, CORS, CSP, OAuth, caching, and PageSpeed.">
-  <meta property="og:url" content="https://stackfix.dev/fix/">
+  <meta property="og:url" content="https://webfix.dev/fix/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "name": "StackFix fix guides", "description": "All stack-specific fix guides for headers, CORS, CSP, OAuth, cache, and PageSpeed.", "url": "https://stackfix.dev/fix/"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "name": "WebFix fix guides", "description": "All stack-specific fix guides for headers, CORS, CSP, OAuth, cache, and PageSpeed.", "url": "https://webfix.dev/fix/"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides"}]}, {"@type": "ItemList", "name": "WebFix — Security & Performance Fix Guides", "description": "Copy-paste config fixes for security headers, CORS, CSP, OAuth, cache headers, and PageSpeed — for Nginx, Cloudflare, Vercel, Apache, and more.", "numberOfItems": 27, "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Fix Missing Security Headers on Nginx", "url": "https://webfix.dev/fix/headers/nginx/"}, {"@type": "ListItem", "position": 2, "name": "Fix Missing Security Headers on Cloudflare", "url": "https://webfix.dev/fix/headers/cloudflare/"}, {"@type": "ListItem", "position": 3, "name": "Fix SharePoint CSP Refused to Load", "url": "https://webfix.dev/fix/headers/sharepoint/"}, {"@type": "ListItem", "position": 4, "name": "Fix CORS Errors on Express", "url": "https://webfix.dev/fix/cors/express/"}, {"@type": "ListItem", "position": 5, "name": "Fix CORS Errors on FastAPI", "url": "https://webfix.dev/fix/cors/fastapi/"}, {"@type": "ListItem", "position": 6, "name": "Fix CORS Errors on Nginx", "url": "https://webfix.dev/fix/cors/nginx/"}, {"@type": "ListItem", "position": 7, "name": "Fix OAuth invalid_grant on Auth0", "url": "https://webfix.dev/fix/oauth/auth0/"}, {"@type": "ListItem", "position": 8, "name": "Fix OAuth Errors on Cognito", "url": "https://webfix.dev/fix/oauth/cognito/"}, {"@type": "ListItem", "position": 9, "name": "Fix PageSpeed Score on Nginx", "url": "https://webfix.dev/fix/pagespeed/nginx/"}, {"@type": "ListItem", "position": 10, "name": "Fix PageSpeed Score on Cloudflare", "url": "https://webfix.dev/fix/pagespeed/cloudflare/"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -45,6 +45,8 @@
     .index-list li { margin-bottom: 0.65rem; }
     .index-list a { color: var(--purple); text-decoration: none; }
     .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -52,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">StackFix <span>/</span> Fix</a>
+    <a href="/" class="brand">WebFix <span>/</span> Fix</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,14 +65,15 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">StackFix</a> → Fix guides</div>
+    <div class="breadcrumb"><a href="/">WebFix</a> → Fix guides</div>
     <h1>Fix guides</h1>
-    <p>Browse fixes by category, then open the matching StackFix tool to validate your live deployment.</p><ul class='index-list'><li><a href='/fix/headers/'>Headers fixes</a></li><li><a href='/fix/cors/'>Cors fixes</a></li><li><a href='/fix/csp/'>Csp fixes</a></li><li><a href='/fix/oauth/'>Oauth fixes</a></li><li><a href='/fix/cache/'>Cache fixes</a></li><li><a href='/fix/pagespeed/'>Pagespeed fixes</a></li></ul><p>Errors: <a href='/error/'>error hub</a>. Providers: <a href='/providers/'>provider hub</a>.</p>
+    <p>Browse fixes by category, then open the matching WebFix tool to validate your live deployment.</p><ul class='index-list'><li><a href='/fix/headers/'>Headers fixes</a></li><li><a href='/fix/cors/'>Cors fixes</a></li><li><a href='/fix/csp/'>Csp fixes</a></li><li><a href='/fix/oauth/'>Oauth fixes</a></li><li><a href='/fix/cache/'>Cache fixes</a></li><li><a href='/fix/pagespeed/'>Pagespeed fixes</a></li></ul><p>Errors: <a href='/error/'>error hub</a>. Providers: <a href='/providers/'>provider hub</a>.</p>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/">Glossary</a> · <a href="/error/">Errors</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
     <a href="/headers/" class="tool-cta">Open HeadersFixer →</a>
   </main>
   <footer>
-    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
 </html>

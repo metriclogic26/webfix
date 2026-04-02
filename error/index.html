@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Error Guides — StackFix</title>
+  <title>Error Guides — WebFix</title>
   <meta name="description" content="CORS, CSP, OAuth, cache, and PageSpeed errors explained with fixes.">
-  <link rel="canonical" href="https://stackfix.dev/error/">
+  <link rel="canonical" href="https://webfix.dev/error/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Error Guides — StackFix">
+  <meta property="og:title" content="Error Guides — WebFix">
   <meta property="og:description" content="CORS, CSP, OAuth, cache, and PageSpeed errors explained with fixes.">
-  <meta property="og:url" content="https://stackfix.dev/error/">
+  <meta property="og:url" content="https://webfix.dev/error/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "name": "StackFix error guides", "description": "Explain browser and OAuth errors with remediation paths.", "url": "https://stackfix.dev/error/"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Errors"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "name": "WebFix error guides", "description": "Explain browser and OAuth errors with remediation paths.", "url": "https://webfix.dev/error/"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Errors"}]}, {"@type": "ItemList", "name": "WebFix — Web Error Fix Guides", "description": "Fix guides for CORS blocked errors, CSP refused to load, OAuth invalid_grant, redirect_uri mismatch, PageSpeed failures, and more.", "numberOfItems": 12, "itemListElement": [{"@type": "ListItem", "position": 1, "name": "CORS Error: Access Blocked", "url": "https://webfix.dev/error/cors-blocked/"}, {"@type": "ListItem", "position": 2, "name": "CSP: Refused to Load Script", "url": "https://webfix.dev/error/csp-refused-to-load/"}, {"@type": "ListItem", "position": 3, "name": "OAuth Error: invalid_grant", "url": "https://webfix.dev/error/invalid-grant/"}, {"@type": "ListItem", "position": 4, "name": "OAuth Error: redirect_uri_mismatch", "url": "https://webfix.dev/error/redirect-uri-mismatch/"}, {"@type": "ListItem", "position": 5, "name": "PageSpeed: Render-Blocking Resources", "url": "https://webfix.dev/error/pagespeed-render-blocking/"}, {"@type": "ListItem", "position": 6, "name": "Security: Authenticated Response Cached", "url": "https://webfix.dev/error/cache-authenticated-response/"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -45,6 +45,8 @@
     .index-list li { margin-bottom: 0.65rem; }
     .index-list a { color: var(--purple); text-decoration: none; }
     .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -52,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">StackFix <span>/</span> Errors</a>
+    <a href="/" class="brand">WebFix <span>/</span> Errors</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,14 +65,15 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">StackFix</a> → Errors</div>
+    <div class="breadcrumb"><a href="/">WebFix</a> → Errors</div>
     <h1>Error guides</h1>
-    <p>Each page describes the symptom, why it happens, and links to the StackFix tool that diagnoses it.</p><ul class='index-list'><li><a href='/error/cors-blocked/'>CORS Error: Access Blocked</a></li><li><a href='/error/csp-refused-to-load/'>CSP: Refused to Load Script</a></li><li><a href='/error/hsts-missing/'>HSTS Header Missing</a></li><li><a href='/error/mixed-content/'>Mixed Content Error</a></li><li><a href='/error/invalid-grant/'>OAuth Error: invalid_grant</a></li><li><a href='/error/redirect-uri-mismatch/'>OAuth Error: redirect_uri_mismatch</a></li><li><a href='/error/pkce-required/'>OAuth Error: PKCE Required</a></li><li><a href='/error/cache-authenticated-response/'>Security: Authenticated Response Cached</a></li><li><a href='/error/x-frame-options-missing/'>X-Frame-Options Missing</a></li><li><a href='/error/pagespeed-render-blocking/'>PageSpeed: Render-Blocking Resources</a></li><li><a href='/error/pagespeed-cache-policy/'>PageSpeed: Inefficient Cache Policy</a></li><li><a href='/error/pagespeed-no-compression/'>PageSpeed: Enable Text Compression</a></li></ul>
+    <p>Each page describes the symptom, why it happens, and links to the WebFix tool that diagnoses it.</p><ul class='index-list'><li><a href='/error/cors-blocked/'>CORS Error: Access Blocked</a></li><li><a href='/error/csp-refused-to-load/'>CSP: Refused to Load Script</a></li><li><a href='/error/hsts-missing/'>HSTS Header Missing</a></li><li><a href='/error/mixed-content/'>Mixed Content Error</a></li><li><a href='/error/invalid-grant/'>OAuth Error: invalid_grant</a></li><li><a href='/error/redirect-uri-mismatch/'>OAuth Error: redirect_uri_mismatch</a></li><li><a href='/error/pkce-required/'>OAuth Error: PKCE Required</a></li><li><a href='/error/cache-authenticated-response/'>Security: Authenticated Response Cached</a></li><li><a href='/error/x-frame-options-missing/'>X-Frame-Options Missing</a></li><li><a href='/error/pagespeed-render-blocking/'>PageSpeed: Render-Blocking Resources</a></li><li><a href='/error/pagespeed-cache-policy/'>PageSpeed: Inefficient Cache Policy</a></li><li><a href='/error/pagespeed-no-compression/'>PageSpeed: Enable Text Compression</a></li></ul>
+    <div class="related-links"><span>Related:</span> <a href="/fix/cors/nginx/">Fix CORS (Nginx)</a> · <a href="/error/csp-refused-to-load/">CSP refused</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
     <a href="/cors/" class="tool-cta">Open CORSFixer →</a>
   </main>
   <footer>
-    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
 </html>

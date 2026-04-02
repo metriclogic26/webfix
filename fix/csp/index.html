@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Csp fixes — StackFix</title>
-  <meta name="description" content="All StackFix guides for fixing csp issues across stacks.">
-  <link rel="canonical" href="https://stackfix.dev/fix/csp//">
+  <title>Csp fixes — WebFix</title>
+  <meta name="description" content="All WebFix guides for fixing csp issues across stacks.">
+  <link rel="canonical" href="https://webfix.dev/fix/csp//">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Csp fixes — StackFix">
-  <meta property="og:description" content="All StackFix guides for fixing csp issues across stacks.">
-  <meta property="og:url" content="https://stackfix.dev/fix/csp//">
+  <meta property="og:title" content="Csp fixes — WebFix">
+  <meta property="og:description" content="All WebFix guides for fixing csp issues across stacks.">
+  <meta property="og:url" content="https://webfix.dev/fix/csp//">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "name": "Csp fixes — StackFix", "description": "Index of StackFix csp configuration guides.", "url": "https://stackfix.dev/fix/csp//"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix", "item": "https://stackfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Csp fixes"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "name": "Csp fixes — WebFix", "description": "Index of WebFix csp configuration guides.", "url": "https://webfix.dev/fix/csp//"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix", "item": "https://webfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Csp fixes"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -45,6 +45,8 @@
     .index-list li { margin-bottom: 0.65rem; }
     .index-list a { color: var(--purple); text-decoration: none; }
     .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -52,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">StackFix <span>/</span> Fix</a>
+    <a href="/" class="brand">WebFix <span>/</span> Fix</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,14 +65,15 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">StackFix</a> → <a href="/fix/">Fix</a> → Csp fixes</div>
+    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → Csp fixes</div>
     <h1>Csp fixes</h1>
-    <p>Step-by-step fixes for csp on the stacks below. Each page links to the matching StackFix tool for live diagnostics.</p><ul class='index-list'><li><a href='/fix/csp/nginx/'>Fix Content Security Policy on Nginx</a></li><li><a href='/fix/csp/cloudflare/'>Fix Content Security Policy on Cloudflare</a></li><li><a href='/fix/csp/vercel/'>Fix Content Security Policy on Vercel</a></li><li><a href='/fix/csp/sharepoint/'>Fix SharePoint Content Security Policy — 2026</a></li></ul>
+    <p>Step-by-step fixes for csp on the stacks below. Each page links to the matching WebFix tool for live diagnostics.</p><ul class='index-list'><li><a href='/fix/csp/nginx/'>Fix Content Security Policy on Nginx</a></li><li><a href='/fix/csp/cloudflare/'>Fix Content Security Policy on Cloudflare</a></li><li><a href='/fix/csp/vercel/'>Fix Content Security Policy on Vercel</a></li><li><a href='/fix/csp/sharepoint/'>Fix SharePoint Content Security Policy — 2026</a></li></ul>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/glossary/unsafe-inline/">unsafe-inline</a> · <a href="/glossary/csp-nonce/">CSP nonce</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
     <a href="/csp/" class="tool-cta">Open CSPFixer →</a>
   </main>
   <footer>
-    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
 </html>

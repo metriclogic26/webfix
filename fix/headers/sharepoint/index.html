@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fix SharePoint CSP 'Refused to Load' — 2026 Enforcement — StackFix</title>
+  <title>Fix SharePoint CSP 'Refused to Load' — 2026 Enforcement — WebFix</title>
   <meta name="description" content="SharePoint Online CSP allowlist steps for March–June 2026 enforcement.">
-  <link rel="canonical" href="https://stackfix.dev/fix/headers/sharepoint/">
+  <link rel="canonical" href="https://webfix.dev/fix/headers/sharepoint/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Fix SharePoint CSP 'Refused to Load' — 2026 Enforcement — StackFix">
+  <meta property="og:title" content="Fix SharePoint CSP 'Refused to Load' — 2026 Enforcement — WebFix">
   <meta property="og:description" content="SharePoint Online CSP allowlist steps for March–June 2026 enforcement.">
-  <meta property="og:url" content="https://stackfix.dev/fix/headers/sharepoint/">
+  <meta property="og:url" content="https://webfix.dev/fix/headers/sharepoint/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix SharePoint CSP 'Refused to Load' — 2026 Enforcement", "description": "<span class='tag tag-error'>Urgent</span> SharePoint Online CSP allowlist steps for March–June 2026 enforcement.", "url": "https://stackfix.dev/fix/headers/sharepoint/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://stackfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Headers", "item": "https://stackfix.dev/fix/headers/"}, {"@type": "ListItem", "position": 4, "name": "Sharepoint"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix SharePoint CSP 'Refused to Load' — 2026 Enforcement", "description": "<span class='tag tag-error'>Urgent</span> SharePoint Online CSP allowlist steps for March–June 2026 enforcement.", "url": "https://webfix.dev/fix/headers/sharepoint/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://webfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Headers", "item": "https://webfix.dev/fix/headers/"}, {"@type": "ListItem", "position": 4, "name": "Sharepoint"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -45,6 +45,8 @@
     .index-list li { margin-bottom: 0.65rem; }
     .index-list a { color: var(--purple); text-decoration: none; }
     .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -52,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">StackFix <span>/</span> Fix</a>
+    <a href="/" class="brand">WebFix <span>/</span> Fix</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,14 +65,15 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">StackFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/headers/">Headers</a> → Fix SharePoint CSP 'Refused to Load' — 2026 Enforcement</div>
+    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/headers/">Headers</a> → Fix SharePoint CSP 'Refused to Load' — 2026 Enforcement</div>
     <h1>Fix SharePoint CSP 'Refused to Load' — 2026 Enforcement</h1>
     <p><span class="tag tag-error">Time-sensitive</span> Microsoft tightened Content Security Policy enforcement for SharePoint Online in 2026. Custom scripts, SPFx bundles, and third-party widgets that load from CDNs outside the tenant allowlist now show <strong>Refused to load the script</strong> or stylesheet errors in the browser console.</p><p>Open <strong>SharePoint Admin Center → Policies → Other features → Content Security Policy</strong>. Add each legitimate <code>script-src</code> and <code>style-src</code> origin your solutions require, save, and allow up to ~15 minutes for propagation. This is the durable fix—not a browser workaround.</p><p>Deep dive: <a href="/blog/sharepoint-csp-fix-2026/">SharePoint CSP blog</a> and <a href="/fix/csp/sharepoint/">CSP allowlist guide</a>. Use CSPFixer on a public mirror page if you need to enumerate blocked hosts.</p>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS (glossary)</a> · <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
     <a href="/csp/" class="tool-cta">Open CSPFixer →</a>
   </main>
   <footer>
-    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
 </html>

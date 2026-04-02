@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Provider & Stack Hubs — StackFix</title>
-  <meta name="description" content="Nginx, Cloudflare, Vercel, frameworks, and identity providers on StackFix.">
-  <link rel="canonical" href="https://stackfix.dev/providers/">
+  <title>Provider & Stack Hubs — WebFix</title>
+  <meta name="description" content="Nginx, Cloudflare, Vercel, frameworks, and identity providers on WebFix.">
+  <link rel="canonical" href="https://webfix.dev/providers/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Provider & Stack Hubs — StackFix">
-  <meta property="og:description" content="Nginx, Cloudflare, Vercel, frameworks, and identity providers on StackFix.">
-  <meta property="og:url" content="https://stackfix.dev/providers/">
+  <meta property="og:title" content="Provider & Stack Hubs — WebFix">
+  <meta property="og:description" content="Nginx, Cloudflare, Vercel, frameworks, and identity providers on WebFix.">
+  <meta property="og:url" content="https://webfix.dev/providers/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "name": "StackFix provider hubs", "description": "All tools mapped to hosting and framework stacks.", "url": "https://stackfix.dev/providers/"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Providers"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "CollectionPage", "name": "WebFix provider hubs", "description": "All tools mapped to hosting and framework stacks.", "url": "https://webfix.dev/providers/"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Providers"}]}, {"@type": "ItemList", "name": "WebFix — Fix Guides by Stack", "description": "Security and performance fix guides for Nginx, Cloudflare, Vercel, Apache, Express, Next.js, FastAPI, WordPress, and more.", "numberOfItems": 14, "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Nginx Security & Performance Fixes", "url": "https://webfix.dev/providers/nginx/"}, {"@type": "ListItem", "position": 2, "name": "Cloudflare Security & Performance Fixes", "url": "https://webfix.dev/providers/cloudflare/"}, {"@type": "ListItem", "position": 3, "name": "Vercel Security & Performance Fixes", "url": "https://webfix.dev/providers/vercel/"}, {"@type": "ListItem", "position": 4, "name": "Express Security Fixes", "url": "https://webfix.dev/providers/express/"}, {"@type": "ListItem", "position": 5, "name": "FastAPI CORS & Security Fixes", "url": "https://webfix.dev/providers/fastapi/"}, {"@type": "ListItem", "position": 6, "name": "WordPress Performance Fixes", "url": "https://webfix.dev/providers/wordpress/"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -45,6 +45,8 @@
     .index-list li { margin-bottom: 0.65rem; }
     .index-list a { color: var(--purple); text-decoration: none; }
     .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -52,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">StackFix <span>/</span> Providers</a>
+    <a href="/" class="brand">WebFix <span>/</span> Providers</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,14 +65,15 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">StackFix</a> → Providers</div>
+    <div class="breadcrumb"><a href="/">WebFix</a> → Providers</div>
     <h1>Provider & stack hubs</h1>
     <p>Jump to the stack you operate; each hub links the relevant fix articles and tools.</p><ul class='index-list'><li><a href='/providers/nginx/'>Nginx Security & Performance Fixes</a></li><li><a href='/providers/apache/'>Apache Security & Performance Fixes</a></li><li><a href='/providers/cloudflare/'>Cloudflare Security & Performance Fixes</a></li><li><a href='/providers/vercel/'>Vercel Security & Performance Fixes</a></li><li><a href='/providers/netlify/'>Netlify Security & Performance Fixes</a></li><li><a href='/providers/express/'>Express.js Security Fixes</a></li><li><a href='/providers/nextjs/'>Next.js Security Fixes</a></li><li><a href='/providers/django/'>Django Security Fixes</a></li><li><a href='/providers/fastapi/'>FastAPI Security Fixes</a></li><li><a href='/providers/flask/'>Flask Security Fixes</a></li><li><a href='/providers/wordpress/'>WordPress Security & Performance Fixes</a></li><li><a href='/providers/auth0/'>Auth0 OAuth Fixes</a></li><li><a href='/providers/okta/'>Okta OAuth Fixes</a></li><li><a href='/providers/cognito/'>AWS Cognito OAuth Fixes</a></li></ul>
+    <div class="related-links"><span>Related:</span> <a href="/providers/nginx/">Nginx hub</a> · <a href="/fix/">All fixes</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
     <a href="/headers/" class="tool-cta">Open HeadersFixer →</a>
   </main>
   <footer>
-    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
 </html>

@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OAuth Error: PKCE Required — StackFix</title>
+  <title>OAuth Error: PKCE Required — WebFix</title>
   <meta name="description" content="Public clients must send code_challenge and code_verifier; failures surface as invalid_grant or policy errors.">
-  <link rel="canonical" href="https://stackfix.dev/error/pkce-required/">
+  <link rel="canonical" href="https://webfix.dev/error/pkce-required/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="OAuth Error: PKCE Required — StackFix">
+  <meta property="og:title" content="OAuth Error: PKCE Required — WebFix">
   <meta property="og:description" content="Public clients must send code_challenge and code_verifier; failures surface as invalid_grant or policy errors.">
-  <meta property="og:url" content="https://stackfix.dev/error/pkce-required/">
+  <meta property="og:url" content="https://webfix.dev/error/pkce-required/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "OAuth Error: PKCE Required", "description": "Public clients must send code_challenge and code_verifier; failures surface as invalid_grant or policy errors.", "url": "https://stackfix.dev/error/pkce-required/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Errors", "item": "https://stackfix.dev/error/"}, {"@type": "ListItem", "position": 3, "name": "OAuth Error: PKCE Required"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "OAuth Error: PKCE Required", "description": "Public clients must send code_challenge and code_verifier; failures surface as invalid_grant or policy errors.", "url": "https://webfix.dev/error/pkce-required/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Errors", "item": "https://webfix.dev/error/"}, {"@type": "ListItem", "position": 3, "name": "OAuth Error: PKCE Required"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -45,6 +45,8 @@
     .index-list li { margin-bottom: 0.65rem; }
     .index-list a { color: var(--purple); text-decoration: none; }
     .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -52,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">StackFix <span>/</span> Errors</a>
+    <a href="/" class="brand">WebFix <span>/</span> Errors</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,14 +65,15 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">StackFix</a> → <a href="/error/">Errors</a> → OAuth Error: PKCE Required</div>
+    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/error/">Errors</a> → OAuth Error: PKCE Required</div>
     <h1>OAuth Error: PKCE Required</h1>
     <p>Proof Key for Code Exchange prevents authorization code interception on mobile and SPA clients. If your library omits <code>code_challenge_method=S256</code> or drops the verifier on token exchange, the provider rejects the flow.</p><p>Ensure your OAuth library stores verifier in session storage or secure memory until the callback completes. Confidential server apps may opt out depending on provider policy—never ship client secrets to browsers.</p><p><a href="/fix/oauth/okta/">Okta PKCE</a>.</p>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/pkce/">PKCE (glossary)</a> · <a href="/fix/oauth/auth0/">Fix OAuth (Auth0)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
     <a href="/oauth/" class="tool-cta">Open OAuthFixer →</a>
   </main>
   <footer>
-    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
 </html>

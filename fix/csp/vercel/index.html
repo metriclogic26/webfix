@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fix Content Security Policy on Vercel — StackFix</title>
+  <title>Fix Content Security Policy on Vercel — WebFix</title>
   <meta name="description" content="Attach CSP through vercel.json headers; use nonces with Next.js when eliminating unsafe-inline.">
-  <link rel="canonical" href="https://stackfix.dev/fix/csp/vercel/">
+  <link rel="canonical" href="https://webfix.dev/fix/csp/vercel/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Fix Content Security Policy on Vercel — StackFix">
+  <meta property="og:title" content="Fix Content Security Policy on Vercel — WebFix">
   <meta property="og:description" content="Attach CSP through vercel.json headers; use nonces with Next.js when eliminating unsafe-inline.">
-  <meta property="og:url" content="https://stackfix.dev/fix/csp/vercel/">
+  <meta property="og:url" content="https://webfix.dev/fix/csp/vercel/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix Content Security Policy on Vercel", "description": "Attach CSP through vercel.json headers; use nonces with Next.js when eliminating unsafe-inline.", "url": "https://stackfix.dev/fix/csp/vercel/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://stackfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Csp", "item": "https://stackfix.dev/fix/csp/"}, {"@type": "ListItem", "position": 4, "name": "Vercel"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix Content Security Policy on Vercel", "description": "Attach CSP through vercel.json headers; use nonces with Next.js when eliminating unsafe-inline.", "url": "https://webfix.dev/fix/csp/vercel/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://webfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Csp", "item": "https://webfix.dev/fix/csp/"}, {"@type": "ListItem", "position": 4, "name": "Vercel"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -45,6 +45,8 @@
     .index-list li { margin-bottom: 0.65rem; }
     .index-list a { color: var(--purple); text-decoration: none; }
     .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -52,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">StackFix <span>/</span> Fix</a>
+    <a href="/" class="brand">WebFix <span>/</span> Fix</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,14 +65,15 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">StackFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/csp/">Csp</a> → Fix Content Security Policy on Vercel</div>
+    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/csp/">Csp</a> → Fix Content Security Policy on Vercel</div>
     <h1>Fix Content Security Policy on Vercel</h1>
     <p>Vercel deployments benefit from versioned CSP in <code>vercel.json</code>, often scoped with <code>source</code> globs. Frameworks like Next.js 13+ support nonced scripts—wire nonce generation through middleware and match <code>script-src &#39;nonce-...&#39;</code>.</p><p>Preview deployments may need relaxed <code>frame-ancestors</code> for design tools; isolate them on unique hostnames. CSPFixer still works against preview URLs if they are publicly reachable.</p>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/glossary/unsafe-inline/">unsafe-inline</a> · <a href="/glossary/csp-nonce/">CSP nonce</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
     <a href="/csp/" class="tool-cta">Open CSPFixer →</a>
   </main>
   <footer>
-    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
 </html>

@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Security: Authenticated Response Cached — StackFix</title>
+  <title>Security: Authenticated Response Cached — WebFix</title>
   <meta name="description" content="CDN or browser cached HTML or JSON that varies by cookie or Authorization—fix with private Cache-Control.">
-  <link rel="canonical" href="https://stackfix.dev/error/cache-authenticated-response/">
+  <link rel="canonical" href="https://webfix.dev/error/cache-authenticated-response/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Security: Authenticated Response Cached — StackFix">
+  <meta property="og:title" content="Security: Authenticated Response Cached — WebFix">
   <meta property="og:description" content="CDN or browser cached HTML or JSON that varies by cookie or Authorization—fix with private Cache-Control.">
-  <meta property="og:url" content="https://stackfix.dev/error/cache-authenticated-response/">
+  <meta property="og:url" content="https://webfix.dev/error/cache-authenticated-response/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Security: Authenticated Response Cached", "description": "CDN or browser cached HTML or JSON that varies by cookie or Authorization—fix with private Cache-Control.", "url": "https://stackfix.dev/error/cache-authenticated-response/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Errors", "item": "https://stackfix.dev/error/"}, {"@type": "ListItem", "position": 3, "name": "Security: Authenticated Response Cached"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Security: Authenticated Response Cached", "description": "CDN or browser cached HTML or JSON that varies by cookie or Authorization—fix with private Cache-Control.", "url": "https://webfix.dev/error/cache-authenticated-response/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Errors", "item": "https://webfix.dev/error/"}, {"@type": "ListItem", "position": 3, "name": "Security: Authenticated Response Cached"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -45,6 +45,8 @@
     .index-list li { margin-bottom: 0.65rem; }
     .index-list a { color: var(--purple); text-decoration: none; }
     .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -52,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">StackFix <span>/</span> Errors</a>
+    <a href="/" class="brand">WebFix <span>/</span> Errors</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,14 +65,15 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">StackFix</a> → <a href="/error/">Errors</a> → Security: Authenticated Response Cached</div>
+    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/error/">Errors</a> → Security: Authenticated Response Cached</div>
     <h1>Security: Authenticated Response Cached</h1>
     <p>When <code>Cache-Control</code> allows shared caching of responses that include user-specific data, another visitor might receive someone else’s payload from an edge POP. This is both a privacy incident and a compliance failure.</p><p>Mark dynamic responses <code>private, no-store</code> or bypass cache when <code>Authorization</code> or session cookies appear. Validate with EdgeFix on logged-in and logged-out sessions.</p><p><a href="/fix/cache/cloudflare/">Cloudflare cache</a>, <a href="/fix/cache/nginx/">Nginx cache</a>.</p>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/cache-control/">Cache-Control</a> · <a href="/fix/cache/nginx/">Fix cache (Nginx)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
     <a href="/edge/" class="tool-cta">Open EdgeFix →</a>
   </main>
   <footer>
-    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
 </html>

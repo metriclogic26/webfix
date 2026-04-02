@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fix SharePoint Content Security Policy — 2026 — StackFix</title>
+  <title>Fix SharePoint Content Security Policy — 2026 — WebFix</title>
   <meta name="description" content="Tenant CSP allowlist for SharePoint Online script-src and style-src.">
-  <link rel="canonical" href="https://stackfix.dev/fix/csp/sharepoint/">
+  <link rel="canonical" href="https://webfix.dev/fix/csp/sharepoint/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Fix SharePoint Content Security Policy — 2026 — StackFix">
+  <meta property="og:title" content="Fix SharePoint Content Security Policy — 2026 — WebFix">
   <meta property="og:description" content="Tenant CSP allowlist for SharePoint Online script-src and style-src.">
-  <meta property="og:url" content="https://stackfix.dev/fix/csp/sharepoint/">
+  <meta property="og:url" content="https://webfix.dev/fix/csp/sharepoint/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix SharePoint Content Security Policy — 2026", "description": "<span class='tag tag-error'>URGENT</span> Tenant CSP allowlist for SharePoint Online script-src and style-src.", "url": "https://stackfix.dev/fix/csp/sharepoint/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "StackFix", "item": "https://stackfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://stackfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Csp", "item": "https://stackfix.dev/fix/csp/"}, {"@type": "ListItem", "position": 4, "name": "Sharepoint"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix SharePoint Content Security Policy — 2026", "description": "<span class='tag tag-error'>URGENT</span> Tenant CSP allowlist for SharePoint Online script-src and style-src.", "url": "https://webfix.dev/fix/csp/sharepoint/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://webfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Csp", "item": "https://webfix.dev/fix/csp/"}, {"@type": "ListItem", "position": 4, "name": "Sharepoint"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -45,6 +45,8 @@
     .index-list li { margin-bottom: 0.65rem; }
     .index-list a { color: var(--purple); text-decoration: none; }
     .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
     footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
     footer a { color: var(--text); text-decoration: none; }
     @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
@@ -52,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">StackFix <span>/</span> Fix</a>
+    <a href="/" class="brand">WebFix <span>/</span> Fix</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,14 +65,15 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">StackFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/csp/">Csp</a> → Fix SharePoint Content Security Policy — 2026</div>
+    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/csp/">Csp</a> → Fix SharePoint Content Security Policy — 2026</div>
     <h1>Fix SharePoint Content Security Policy — 2026</h1>
     <p><span class="tag tag-error">URGENT</span> SharePoint enforces CSP against third-party CDNs and inline dependencies that are not tenant-approved. Add each required host under Admin Center CSP settings; SPFx packages that pull widgets remotely must either bundle locally or update manifest permissions.</p><p>Failure looks like console violations naming <code>script-src</code> or <code>style-src</code>. Document every external dependency during PR review so the allowlist stays intentional.</p><p>Read <a href="/fix/headers/sharepoint/">headers overview</a>, <a href="/error/csp-refused-to-load/">refused to load</a>, and <a href="/blog/sharepoint-csp-fix-2026/">blog</a>.</p>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/glossary/unsafe-inline/">unsafe-inline</a> · <a href="/glossary/csp-nonce/">CSP nonce</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
     <a href="/csp/" class="tool-cta">Open CSPFixer →</a>
   </main>
   <footer>
-    <span>StackFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/stackfix">GitHub →</a></span>
+    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
 </html>
