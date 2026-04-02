@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/headers/">Headers</a> → Fix SharePoint CSP 'Refused to Load' — 2026 Enforcement</div>
     <h1>Fix SharePoint CSP 'Refused to Load' — 2026 Enforcement</h1>
     <p><span class="tag tag-error">Time-sensitive</span> Microsoft tightened Content Security Policy enforcement for SharePoint Online in 2026. Custom scripts, SPFx bundles, and third-party widgets that load from CDNs outside the tenant allowlist now show <strong>Refused to load the script</strong> or stylesheet errors in the browser console.</p><p>Open <strong>SharePoint Admin Center → Policies → Other features → Content Security Policy</strong>. Add each legitimate <code>script-src</code> and <code>style-src</code> origin your solutions require, save, and allow up to ~15 minutes for propagation. This is the durable fix—not a browser workaround.</p><p>Deep dive: <a href="/blog/sharepoint-csp-fix-2026/">SharePoint CSP blog</a> and <a href="/fix/csp/sharepoint/">CSP allowlist guide</a>. Use CSPFixer on a public mirror page if you need to enumerate blocked hosts.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS (glossary)</a> · <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS (glossary)</a> · <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/csp/" class="tool-cta">Open CSPFixer →</a>
   </main>
   <footer>

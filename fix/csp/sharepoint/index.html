@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/csp/">Csp</a> → Fix SharePoint Content Security Policy — 2026</div>
     <h1>Fix SharePoint Content Security Policy — 2026</h1>
     <p><span class="tag tag-error">URGENT</span> SharePoint enforces CSP against third-party CDNs and inline dependencies that are not tenant-approved. Add each required host under Admin Center CSP settings; SPFx packages that pull widgets remotely must either bundle locally or update manifest permissions.</p><p>Failure looks like console violations naming <code>script-src</code> or <code>style-src</code>. Document every external dependency during PR review so the allowlist stays intentional.</p><p>Read <a href="/fix/headers/sharepoint/">headers overview</a>, <a href="/error/csp-refused-to-load/">refused to load</a>, and <a href="/blog/sharepoint-csp-fix-2026/">blog</a>.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/glossary/unsafe-inline/">unsafe-inline</a> · <a href="/glossary/csp-nonce/">CSP nonce</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/glossary/unsafe-inline/">unsafe-inline</a> · <a href="/glossary/csp-nonce/">CSP nonce</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/csp/" class="tool-cta">Open CSPFixer →</a>
   </main>
   <footer>

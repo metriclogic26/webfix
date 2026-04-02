@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/cors/">Cors</a> → Fix CORS Errors on Nginx</div>
     <h1>Fix CORS Errors on Nginx</h1>
     <p>Browsers block cross-origin calls when your API omits <code>Access-Control-Allow-Origin</code> or mishandles <code>OPTIONS</code>. Nginx can terminate CORS at the edge with <code>add_header</code> and a dedicated <code>location</code> for <code>OPTIONS</code> returning 204.</p><p>Avoid echoing arbitrary <code>Origin</code> in production unless you validate against an allowlist; misconfigured reflection becomes an open proxy pattern. Pair with correct <code>Vary: Origin</code> when responses differ by caller.</p><p>CORSFixer sends a live preflight to your URL and labels the failure mode. See <a href="/error/cors-blocked/">CORS blocked</a>.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/cors/">CORS (glossary)</a> · <a href="/glossary/preflight-request/">Preflight (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/cors/">CORS (glossary)</a> · <a href="/glossary/preflight-request/">Preflight (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/cors/" class="tool-cta">Open CORSFixer →</a>
   </main>
   <footer>

@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/headers/">Headers</a> → Fix Missing Security Headers on Cloudflare</div>
     <h1>Fix Missing Security Headers on Cloudflare</h1>
     <p>Cloudflare terminates TLS for many sites, so it is the right place to enforce <code>Strict-Transport-Security</code> and a baseline <code>Content-Security-Policy</code> before traffic hits your origin. Transform Rules can set static response headers per hostname or path without origin changes.</p><p>Edge headers apply globally and propagate quickly, which also means mistakes affect every user—roll out in report-only CSP mode first when migrating policies. Pair with Page Rules or Cache Rules only where they do not strip security headers.</p><p>See also <a href="/providers/cloudflare/">Cloudflare provider hub</a>. HeadersFixer detects your current header gaps from a live fetch.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS (glossary)</a> · <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS (glossary)</a> · <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/headers/" class="tool-cta">Open HeadersFixer →</a>
   </main>
   <footer>

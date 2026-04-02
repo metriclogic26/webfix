@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/csp/">Csp</a> → Fix Content Security Policy on Nginx</div>
     <h1>Fix Content Security Policy on Nginx</h1>
     <p>CSP belongs in HTTP headers, typically via <code>add_header Content-Security-Policy &quot;...&quot; always;</code> in Nginx. Start from report-only mode if you inherit a large legacy app, then tighten <code>script-src</code> once violations stop.</p><p>Inline bootstrap snippets need nonces or hashes—generate them in your template layer, not by permanently allowing <code>unsafe-inline</code>. Frame your API subdomains separately if they ship different asset tiers.</p><p>CSPFixer fetches HTML, lists origins, and proposes a policy that covers them.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/glossary/unsafe-inline/">unsafe-inline</a> · <a href="/glossary/csp-nonce/">CSP nonce</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/glossary/unsafe-inline/">unsafe-inline</a> · <a href="/glossary/csp-nonce/">CSP nonce</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/csp/" class="tool-cta">Open CSPFixer →</a>
   </main>
   <footer>

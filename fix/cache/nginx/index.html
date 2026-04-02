@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/cache/">Cache</a> → Fix Cache-Control Headers on Nginx</div>
     <h1>Fix Cache-Control Headers on Nginx</h1>
     <p>Nginx often ships static files with short or missing <code>Cache-Control</code>, causing repeat downloads or the opposite problem—immutable JS cached forever without hashed filenames. Set long TTLs only for fingerprinted assets; keep HTML at <code>no-cache</code> or short revalidate where auth might vary.</p><p>Reverse proxies must forward or strip <code>Set-Cookie</code> carefully: caching private responses is a security issue EdgeFix flags. Align <code>Vary</code> with compression and content negotiation.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/cache-control/">Cache-Control</a> · <a href="/glossary/vary-header/">Vary</a> · <a href="/glossary/etag/">ETag</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/cache-control/">Cache-Control</a> · <a href="/glossary/vary-header/">Vary</a> · <a href="/glossary/etag/">ETag</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/edge/" class="tool-cta">Open EdgeFix →</a>
   </main>
   <footer>

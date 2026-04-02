@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/csp/">Csp</a> → Fix Content Security Policy on Cloudflare</div>
     <h1>Fix Content Security Policy on Cloudflare</h1>
     <p>Cloudflare can inject or mutate <code>Content-Security-Policy</code> for all origins behind the zone. That centralizes policy when multiple microservices sit upstream and avoids configuring each Kubernetes ingress separately.</p><p>Reporting endpoints for <code>report-to</code> or legacy <code>report-uri</code> should hit infrastructure you operate; Cloudflare Logs can complement violation streams. Watch header size limits on very long allowlists.</p><p>Pair with <a href="/fix/cache/cloudflare/">cache tuning</a> so CSP headers are not stripped at the CDN.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/glossary/unsafe-inline/">unsafe-inline</a> · <a href="/glossary/csp-nonce/">CSP nonce</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/glossary/unsafe-inline/">unsafe-inline</a> · <a href="/glossary/csp-nonce/">CSP nonce</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/csp/" class="tool-cta">Open CSPFixer →</a>
   </main>
   <footer>

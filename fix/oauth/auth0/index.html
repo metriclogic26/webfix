@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/oauth/">Oauth</a> → Fix OAuth Errors on Auth0 — PKCE, redirect_uri, invalid_grant</div>
     <h1>Fix OAuth Errors on Auth0 — PKCE, redirect_uri, invalid_grant</h1>
     <p>Auth0 tenants reject tokens when <code>redirect_uri</code> does not exactly match an Allowed Callback URL—including trailing slashes and custom schemes. PKCE public clients must send <code>code_verifier</code> that matches the original challenge; rotation errors surface as <code>invalid_grant</code>.</p><p>Use Auth0’s debugger and OAuthFixer’s provider hints to compare authorization requests with Application settings. Enable refresh token rotation only when your server stores refresh tokens securely.</p><p>Also see <a href="/error/invalid-grant/">invalid_grant</a> and <a href="/error/pkce-required/">PKCE required</a>.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/pkce/">PKCE (glossary)</a> · <a href="/glossary/oauth-grant-types/">OAuth grants</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/pkce/">PKCE (glossary)</a> · <a href="/glossary/oauth-grant-types/">OAuth grants</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/oauth/" class="tool-cta">Open OAuthFixer →</a>
   </main>
   <footer>

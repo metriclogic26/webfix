@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/cors/">Cors</a> → Fix CORS Errors on Flask</div>
     <h1>Fix CORS Errors on Flask</h1>
     <p><code>Flask-Cors</code> decorates apps or blueprints with per-resource rules. Prefer <code>resources={r"/api/*": {"origins": [...]}}</code> over blanket open CORS so admin namespaces stay locked down.</p><p>When <code>supports_credentials</code> is true, never use <code>*</code> for <code>origins</code>. Flask sessions and JWT in cookies require exact origin reflection you control.</p><p>CORSFixer validates preflight against your live endpoint.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/cors/">CORS (glossary)</a> · <a href="/glossary/preflight-request/">Preflight (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/cors/">CORS (glossary)</a> · <a href="/glossary/preflight-request/">Preflight (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/cors/" class="tool-cta">Open CORSFixer →</a>
   </main>
   <footer>

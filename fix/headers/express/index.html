@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/headers/">Headers</a> → Fix Missing Security Headers on Express</div>
     <h1>Fix Missing Security Headers on Express</h1>
     <p>Express serves API and SSR apps without security headers until you add them. The <code>helmet</code> package centralizes modern defaults and lets you override each middleware for CSP, HSTS length, and cross-origin policies.</p><p>Mount <code>helmet()</code> early in the chain so every route inherits the baseline; tighten <code>contentSecurityPolicy</code> directives when you drop inline scripts. For APIs, disable framing and lock down <code>crossOriginEmbedderPolicy</code> only if your clients require it.</p><p>For CORS plus headers, see <a href="/fix/cors/express/">CORS on Express</a>.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS (glossary)</a> · <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS (glossary)</a> · <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/headers/" class="tool-cta">Open HeadersFixer →</a>
   </main>
   <footer>

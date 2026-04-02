@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/cors/">Cors</a> → Fix CORS Errors on FastAPI</div>
     <h1>Fix CORS Errors on FastAPI</h1>
     <p>FastAPI applications add <code>CORSMiddleware</code> with explicit <code>allow_origins</code>—wildcards and credentials do not mix per the Fetch spec. Mount the middleware first so every route, including OpenAPI and health checks, gets consistent headers.</p><p>AI gateways such as vLLM or Ollama HTTP frontends often omit CORS; put Nginx or FastAPI in front to add preflight support for browser-based chat UIs. Lock origins to your admin UI hostname.</p><p><a href="/providers/fastapi/">FastAPI provider hub</a> lists related fixes.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/cors/">CORS (glossary)</a> · <a href="/glossary/preflight-request/">Preflight (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/cors/">CORS (glossary)</a> · <a href="/glossary/preflight-request/">Preflight (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/cors/" class="tool-cta">Open CORSFixer →</a>
   </main>
   <footer>

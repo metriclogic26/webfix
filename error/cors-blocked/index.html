@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/error/">Errors</a> → CORS Error: Access Blocked</div>
     <h1>CORS Error: Access Blocked</h1>
     <p>When a web page on <code>https://app.example</code> calls <code>https://api.example</code>, the browser enforces CORS. If the API omits <code>Access-Control-Allow-Origin</code> or blocks the preflight <code>OPTIONS</code> request, DevTools shows a network error that sounds like a failure to fetch even though the server returned 200.</p><p>Fixes belong on the API: return explicit allowed origins, forward methods and headers your client sends, and use <code>Vary: Origin</code> when appropriate. The SPA cannot "disable CORS"—only the server or a deliberate proxy can.</p><p>Read <a href="/fix/cors/nginx/">Nginx CORS</a> or <a href="/fix/cors/express/">Express CORS</a> after CORSFixer identifies your failure mode.</p>
-    <div class="related-links"><span>Related:</span> <a href="/fix/cors/nginx/">Fix CORS (Nginx)</a> · <a href="/fix/cors/express/">Fix CORS (Express)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/fix/cors/nginx/">Fix CORS (Nginx)</a> · <a href="/fix/cors/express/">Fix CORS (Express)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/cors/" class="tool-cta">Open CORSFixer →</a>
   </main>
   <footer>

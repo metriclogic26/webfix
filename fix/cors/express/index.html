@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/cors/">Cors</a> → Fix CORS Errors on Express</div>
     <h1>Fix CORS Errors on Express</h1>
     <p>The <code>cors</code> package wraps preflight and response headers for Express. Pass an <code>origin</code> function that whitelists dev and prod frontends instead of <code>*</code> when cookies or Authorization headers are involved.</p><p>Order middleware so <code>cors</code> runs before routes; log rejected origins during integration tests. Combine with <a href="/fix/headers/express/">Helmet</a> for a full browser-facing hardening stack.</p><p>Instrument with CORSFixer to confirm <code>OPTIONS</code> returns the status and headers your SPA expects.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/cors/">CORS (glossary)</a> · <a href="/glossary/preflight-request/">Preflight (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/cors/">CORS (glossary)</a> · <a href="/glossary/preflight-request/">Preflight (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/cors/" class="tool-cta">Open CORSFixer →</a>
   </main>
   <footer>

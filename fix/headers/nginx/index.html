@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/headers/">Headers</a> → Fix Missing Security Headers on Nginx</div>
     <h1>Fix Missing Security Headers on Nginx</h1>
     <p>Nginx does not ship secure defaults for <code>HSTS</code>, <code>Content-Security-Policy</code>, or <code>X-Frame-Options</code>. Most breaches start with a missing or weak header set, so production <code>server { }</code> blocks should declare explicit policies instead of relying on application code.</p><p>Use <code>add_header</code> (and <code>always</code> where you need headers on error responses) for strict transport, framing, referrer, and permissions. Place policies once per server name, then reload with <code>nginx -t</code> before <code>systemctl reload nginx</code>.</p><p><a href="/fix/headers/apache/">Apache</a> and <a href="/fix/headers/cloudflare/">Cloudflare</a> guides cover the same controls on other stacks. HeadersFixer scans your live URL and outputs copy-paste snippets matched to what your site actually needs.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS (glossary)</a> · <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS (glossary)</a> · <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/headers/" class="tool-cta">Open HeadersFixer →</a>
   </main>
   <footer>

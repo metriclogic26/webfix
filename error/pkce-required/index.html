@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/error/">Errors</a> → OAuth Error: PKCE Required</div>
     <h1>OAuth Error: PKCE Required</h1>
     <p>Proof Key for Code Exchange prevents authorization code interception on mobile and SPA clients. If your library omits <code>code_challenge_method=S256</code> or drops the verifier on token exchange, the provider rejects the flow.</p><p>Ensure your OAuth library stores verifier in session storage or secure memory until the callback completes. Confidential server apps may opt out depending on provider policy—never ship client secrets to browsers.</p><p><a href="/fix/oauth/okta/">Okta PKCE</a>.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/pkce/">PKCE (glossary)</a> · <a href="/fix/oauth/auth0/">Fix OAuth (Auth0)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/pkce/">PKCE (glossary)</a> · <a href="/fix/oauth/auth0/">Fix OAuth (Auth0)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/oauth/" class="tool-cta">Open OAuthFixer →</a>
   </main>
   <footer>

@@ -68,7 +68,7 @@
     <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/cache/">Cache</a> → Fix Cache-Control Headers on Cloudflare</div>
     <h1>Fix Cache-Control Headers on Cloudflare</h1>
     <p>Cloudflare can override origin directives or honor them depending on Cache Rules and Business logic features. Misaligned TTL on authenticated pages leaks cached HTML containing PII—tighten <code>Cache-Control: private</code> upstream and bypass cache on cookie presence.</p><p>Use tiered rules: aggressive cache for <code>/static/*</code>, bypass for <code>/api/*</code>. EdgeFix reads response headers your users actually see.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/cache-control/">Cache-Control</a> · <a href="/glossary/vary-header/">Vary</a> · <a href="/glossary/etag/">ETag</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs securityheaders.com</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/cache-control/">Cache-Control</a> · <a href="/glossary/vary-header/">Vary</a> · <a href="/glossary/etag/">ETag</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
     <a href="/edge/" class="tool-cta">Open EdgeFix →</a>
   </main>
   <footer>
