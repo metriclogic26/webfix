@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORS Header Generator — Generate Access-Control Headers · HttpFixer</title>
+  <meta name="description" content="Build the exact CORS response headers for your API. Select your origin, methods, and headers — get copy-paste config for Nginx, Express, FastAPI, or Vercel.">
+  <link rel="canonical" href="https://httpfixer.dev/generators/cors/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="CORS Header Generator — Generate Access-Control Headers">
+  <meta property="og:description" content="Build the exact CORS response headers for your API. Select your origin, methods, and headers — get copy-paste config for Nginx, Express, FastAPI, or Vercel.">
+  <meta property="og:url" content="https://httpfixer.dev/generators/cors/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "HttpFixer",
+          "item": "https://httpfixer.dev"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "CORS Header Generator",
+          "item": "https://httpfixer.dev/generators/cors/"
+        }
+      ]
+    },
+    {
+      "@type": "TechArticle",
+      "headline": "CORS Header Generator",
+      "description": "Free browser-based CORS header generator for Nginx, Express, FastAPI, and Vercel.",
+      "url": "https://httpfixer.dev/generators/cors/",
+      "datePublished": "2026-04-03",
+      "dateModified": "2026-04-03",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "name": "CORS Header Generator",
+      "url": "https://httpfixer.dev/generators/cors/",
+      "description": "Free browser-based CORS header generator for Nginx, Express, FastAPI, and Vercel.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What CORS headers does my API need?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "At minimum: Access-Control-Allow-Origin. For authenticated requests: also Access-Control-Allow-Credentials: true with an explicit origin (not *). For non-simple requests: also Access-Control-Allow-Methods and Access-Control-Allow-Headers in the OPTIONS preflight response."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use * for Access-Control-Allow-Origin?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Only for fully public APIs with no authentication. If your API uses cookies, Authorization headers, or any credentials, you must specify an explicit origin."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to handle OPTIONS separately?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes for POST, PUT, DELETE, and requests with custom headers. The browser sends OPTIONS first. Your server must return 204 with CORS headers for the actual request to run."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem;align-items:center}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .note-box{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
+    .warn-box{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .warn-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+
+    .gen-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+    .gen-box label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.5;margin-bottom:0.5rem}
+    .gen-box select,.gen-box input[type=text]{width:100%;background:#080a0f;border:1px solid var(--border);border-radius:4px;padding:0.5rem 0.75rem;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:13px;margin-bottom:0.75rem}
+    .gen-box select:focus,.gen-box input[type=text]:focus{outline:none;border-color:var(--purple)}
+    .gen-output{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin-top:1rem;min-height:80px;white-space:pre-wrap;word-break:break-all;line-height:1.6;color:#a8b4c8}
+    .gen-btn{padding:0.5rem 1rem;background:var(--purple);color:white;border:none;border-radius:4px;font-family:"JetBrains Mono",monospace;font-size:13px;cursor:pointer;margin-right:0.5rem}
+    .gen-btn:hover{filter:brightness(1.1)}
+    .copy-btn{padding:0.5rem 1rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:"JetBrains Mono",monospace;font-size:13px;cursor:pointer}
+    .copy-btn:hover{background:rgba(108,99,255,0.1)}
+    .checkbox-group{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem}
+    .checkbox-group label{display:flex;align-items:center;gap:0.4rem;font-size:12px;cursor:pointer;opacity:0.8;background:#0d1117;padding:0.3rem 0.6rem;border-radius:4px;border:1px solid var(--border)}
+    .checkbox-group input{width:auto;margin:0}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Generators</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/speedfixer/">Speed</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/generators/">Generators</a> → CORS Generator</div>
+  <span class="tag" style="background:rgba(108,99,255,0.2);color:var(--purple)">Generator</span>
+  <h1>CORS Header Generator</h1>
+  
+<p class="lead">Select your configuration and get the exact CORS headers for your API — with copy-paste config for every major stack.</p>
+
+<div class="gen-box">
+  <label>Allowed Origin</label>
+  <input type="text" id="cors-origin" placeholder="https://app.example.com  (or * for public API)">
+
+  <label>Allowed Methods</label>
+  <div class="checkbox-group" id="cors-methods">
+    <label><input type="checkbox" value="GET" checked> GET</label>
+    <label><input type="checkbox" value="POST" checked> POST</label>
+    <label><input type="checkbox" value="PUT"> PUT</label>
+    <label><input type="checkbox" value="DELETE"> DELETE</label>
+    <label><input type="checkbox" value="PATCH"> PATCH</label>
+    <label><input type="checkbox" value="OPTIONS" checked> OPTIONS</label>
+  </div>
+
+  <label>Allowed Headers</label>
+  <div class="checkbox-group" id="cors-headers">
+    <label><input type="checkbox" value="Content-Type" checked> Content-Type</label>
+    <label><input type="checkbox" value="Authorization" checked> Authorization</label>
+    <label><input type="checkbox" value="X-Requested-With"> X-Requested-With</label>
+    <label><input type="checkbox" value="X-API-Key"> X-API-Key</label>
+    <label><input type="checkbox" value="Accept"> Accept</label>
+  </div>
+
+  <label>Options</label>
+  <div class="checkbox-group" id="cors-options">
+    <label><input type="checkbox" value="credentials"> Allow credentials (cookies / auth)</label>
+    <label><input type="checkbox" value="vary"> Add Vary: Origin header</label>
+    <label><input type="checkbox" value="maxage"> Cache preflight (86400s)</label>
+  </div>
+
+  <button class="gen-btn" onclick="buildCORS()">Generate Headers</button>
+  <button class="copy-btn" onclick="copyOutput('cors-nginx')">Copy Nginx</button>
+
+  <label style="margin-top:1rem">Nginx Config</label>
+  <div class="gen-output" id="cors-nginx">Click "Generate Headers" to build your config.</div>
+
+  <label style="margin-top:1rem">Express (Node.js)</label>
+  <div class="gen-output" id="cors-express"></div>
+
+  <label style="margin-top:1rem">FastAPI (Python)</label>
+  <div class="gen-output" id="cors-fastapi"></div>
+</div>
+
+<script>
+function buildCORS() {
+  const origin = document.getElementById('cors-origin').value.trim() || 'https://app.example.com';
+  const methods = getChecked('cors-methods').join(', ');
+  const headers = getChecked('cors-headers').join(', ');
+  const opts = getChecked('cors-options');
+  const creds = opts.includes('credentials');
+  const vary = opts.includes('vary');
+  const maxAge = opts.includes('maxage');
+
+  const nginx = [
+    'if ($request_method = OPTIONS) {',
+    '    add_header Access-Control-Allow-Origin "' + origin + '";',
+    '    add_header Access-Control-Allow-Methods "' + methods + '";',
+    '    add_header Access-Control-Allow-Headers "' + headers + '";',
+    creds ? '    add_header Access-Control-Allow-Credentials "true";' : '',
+    maxAge ? '    add_header Access-Control-Max-Age 86400;' : '',
+    '    add_header Content-Length 0;',
+    '    return 204;',
+    '}',
+    '',
+    'add_header Access-Control-Allow-Origin "' + origin + '" always;',
+    creds ? 'add_header Access-Control-Allow-Credentials "true" always;' : '',
+    vary ? 'add_header Vary Origin always;' : '',
+  ].filter(Boolean).join('\n');
+
+  const express = [
+    "app.use(cors({",
+    "  origin: '" + origin + "',",
+    "  methods: ['" + methods.split(', ').join("', '") + "'],",
+    "  allowedHeaders: ['" + headers.split(', ').join("', '") + "'],",
+    creds ? "  credentials: true," : "",
+    maxAge ? "  maxAge: 86400," : "",
+    "}));",
+    "",
+    "app.options('*', cors()); // Handle preflight",
+  ].filter(Boolean).join('\n');
+
+  const fastapi = [
+    "app.add_middleware(",
+    "    CORSMiddleware,",
+    "    allow_origins=['" + origin + "'],",
+    "    allow_methods=['" + methods.split(', ').join("', '") + "'],",
+    "    allow_headers=['" + headers.split(', ').join("', '") + "'],",
+    creds ? "    allow_credentials=True," : "",
+    ")",
+  ].filter(Boolean).join('\n');
+
+  document.getElementById('cors-nginx').textContent = nginx;
+  document.getElementById('cors-express').textContent = express;
+  document.getElementById('cors-fastapi').textContent = fastapi;
+}
+
+function getChecked(groupId) {
+  return [...document.querySelectorAll('#' + groupId + ' input:checked')].map(i => i.value);
+}
+
+function copyOutput(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+}
+</script>
+
+  <a href="/cors/" class="tool-cta">Test your CORS config with a live preflight → CORSFixer</a>
+  <div class="related">Related: <a href="/blog/cors/fix-cors-express/">Express CORS fix</a> <a href="/blog/cors/fix-cors-nginx/">Nginx CORS fix</a> <a href="/blog/reference/cors-headers-cheat-sheet/">CORS headers cheat sheet</a></div>
+</main>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. HttpFixer provides these tools for informational purposes only. © 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

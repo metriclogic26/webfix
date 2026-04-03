@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSP Header Generator — Build a Content Security Policy · HttpFixer</title>
+  <meta name="description" content="Generate a Content Security Policy header from scratch. Select your sources, copy the header value, and deploy to Nginx, Apache, Vercel, or Cloudflare.">
+  <link rel="canonical" href="https://httpfixer.dev/generators/csp/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="CSP Header Generator — Build a Content Security Policy">
+  <meta property="og:description" content="Generate a Content Security Policy header from scratch. Select your sources, copy the header value, and deploy to Nginx, Apache, Vercel, or Cloudflare.">
+  <meta property="og:url" content="https://httpfixer.dev/generators/csp/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "HttpFixer",
+          "item": "https://httpfixer.dev"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "CSP Header Generator",
+          "item": "https://httpfixer.dev/generators/csp/"
+        }
+      ]
+    },
+    {
+      "@type": "TechArticle",
+      "headline": "CSP Header Generator",
+      "description": "Free browser-based Content Security Policy generator. Select sources and get the exact header for your stack.",
+      "url": "https://httpfixer.dev/generators/csp/",
+      "datePublished": "2026-04-03",
+      "dateModified": "2026-04-03",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "WebApplication",
+      "name": "CSP Generator",
+      "url": "https://httpfixer.dev/generators/csp/",
+      "description": "Free browser-based Content Security Policy generator. Select sources and get the exact header for your stack.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How do I generate a Content Security Policy?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Select which external domains your site loads scripts, styles, images, and fonts from. The generator builds the directives automatically. Start with default-src 'self' and add sources as needed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the safest CSP I can add?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "default-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; \u2014 this blocks all external resources and inline scripts. Add sources incrementally as you identify what your page needs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I use report-only mode first?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Use Content-Security-Policy-Report-Only with your new policy first. Violations appear in the browser console without blocking anything. Enforce once violations stop."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem;align-items:center}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .note-box{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
+    .warn-box{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .warn-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+
+    .gen-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+    .gen-box label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.5;margin-bottom:0.5rem}
+    .gen-box select,.gen-box input[type=text]{width:100%;background:#080a0f;border:1px solid var(--border);border-radius:4px;padding:0.5rem 0.75rem;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:13px;margin-bottom:0.75rem}
+    .gen-box select:focus,.gen-box input[type=text]:focus{outline:none;border-color:var(--purple)}
+    .gen-output{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin-top:1rem;min-height:80px;white-space:pre-wrap;word-break:break-all;line-height:1.6;color:#a8b4c8}
+    .gen-btn{padding:0.5rem 1rem;background:var(--purple);color:white;border:none;border-radius:4px;font-family:"JetBrains Mono",monospace;font-size:13px;cursor:pointer;margin-right:0.5rem}
+    .gen-btn:hover{filter:brightness(1.1)}
+    .copy-btn{padding:0.5rem 1rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:"JetBrains Mono",monospace;font-size:13px;cursor:pointer}
+    .copy-btn:hover{background:rgba(108,99,255,0.1)}
+    .checkbox-group{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem}
+    .checkbox-group label{display:flex;align-items:center;gap:0.4rem;font-size:12px;cursor:pointer;opacity:0.8;background:#0d1117;padding:0.3rem 0.6rem;border-radius:4px;border:1px solid var(--border)}
+    .checkbox-group input{width:auto;margin:0}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Generators</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/speedfixer/">Speed</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/generators/">Generators</a> → CSP Generator</div>
+  <span class="tag" style="background:rgba(34,197,94,0.2);color:var(--green)">Generator</span>
+  <h1>CSP Header Generator</h1>
+  
+<p class="lead">Build a Content Security Policy header by selecting your sources. The generator outputs a header value ready to paste into Nginx, Apache, Vercel, or Cloudflare — and includes the config block for your stack.</p>
+
+<div class="gen-box">
+  <label>Script sources (script-src)</label>
+  <div class="checkbox-group" id="script-sources">
+    <label><input type="checkbox" value="'self'" checked> self</label>
+    <label><input type="checkbox" value="'nonce-REPLACE'"> nonce</label>
+    <label><input type="checkbox" value="'strict-dynamic'"> strict-dynamic</label>
+    <label><input type="checkbox" value="https://www.googletagmanager.com"> Google Tag Manager</label>
+    <label><input type="checkbox" value="https://www.google-analytics.com"> Google Analytics</label>
+    <label><input type="checkbox" value="https://js.stripe.com"> Stripe.js</label>
+    <label><input type="checkbox" value="https://js.intercomcdn.com"> Intercom</label>
+    <label><input type="checkbox" value="https://static.hotjar.com"> Hotjar</label>
+    <label><input type="checkbox" value="https://challenges.cloudflare.com"> CF Turnstile</label>
+    <label><input type="checkbox" value="'unsafe-inline'"> unsafe-inline ⚠</label>
+    <label><input type="checkbox" value="'unsafe-eval'"> unsafe-eval ⚠</label>
+  </div>
+
+  <label>Style sources (style-src)</label>
+  <div class="checkbox-group" id="style-sources">
+    <label><input type="checkbox" value="'self'" checked> self</label>
+    <label><input type="checkbox" value="'unsafe-inline'" checked> unsafe-inline</label>
+    <label><input type="checkbox" value="https://fonts.googleapis.com"> Google Fonts</label>
+  </div>
+
+  <label>Image sources (img-src)</label>
+  <div class="checkbox-group" id="img-sources">
+    <label><input type="checkbox" value="'self'" checked> self</label>
+    <label><input type="checkbox" value="data:" checked> data:</label>
+    <label><input type="checkbox" value="https:"> https: (all)</label>
+    <label><input type="checkbox" value="https://www.google-analytics.com"> GA images</label>
+  </div>
+
+  <label>Connect sources (connect-src — fetch, XHR, WebSocket)</label>
+  <div class="checkbox-group" id="connect-sources">
+    <label><input type="checkbox" value="'self'" checked> self</label>
+    <label><input type="checkbox" value="https://www.google-analytics.com"> Google Analytics</label>
+    <label><input type="checkbox" value="https://api.stripe.com"> Stripe API</label>
+    <label><input type="checkbox" value="https://*.hotjar.com"> Hotjar</label>
+    <label><input type="checkbox" value="https://api.intercom.io"> Intercom</label>
+  </div>
+
+  <label>Font sources (font-src)</label>
+  <div class="checkbox-group" id="font-sources">
+    <label><input type="checkbox" value="'self'" checked> self</label>
+    <label><input type="checkbox" value="https://fonts.gstatic.com"> Google Fonts</label>
+    <label><input type="checkbox" value="data:"> data:</label>
+  </div>
+
+  <label>Frame ancestors (who can embed your page)</label>
+  <div class="checkbox-group" id="frame-ancestors">
+    <label><input type="checkbox" value="'none'" checked> none (no iframes allowed)</label>
+    <label><input type="checkbox" value="'self'"> self only</label>
+  </div>
+
+  <label>Additional options</label>
+  <div class="checkbox-group" id="extras">
+    <label><input type="checkbox" value="object-src-none" checked> object-src 'none' (block Flash/plugins)</label>
+    <label><input type="checkbox" value="base-uri-self" checked> base-uri 'self'</label>
+    <label><input type="checkbox" value="upgrade"> upgrade-insecure-requests</label>
+    <label><input type="checkbox" value="report-only"> Start in report-only mode</label>
+  </div>
+
+  <label>Custom additional domain (optional)</label>
+  <input type="text" id="custom-domain" placeholder="https://api.yourdomain.com">
+
+  <button class="gen-btn" onclick="buildCSP()">Generate CSP</button>
+  <button class="copy-btn" onclick="copyOutput('csp-output')">Copy</button>
+
+  <label style="margin-top:1rem">Generated Header Value</label>
+  <div class="gen-output" id="csp-output">Click "Generate CSP" to build your policy.</div>
+
+  <label style="margin-top:1rem">Nginx Config</label>
+  <div class="gen-output" id="nginx-output"></div>
+
+  <label style="margin-top:1rem">Vercel (vercel.json)</label>
+  <div class="gen-output" id="vercel-output"></div>
+</div>
+
+<h2>What each directive controls</h2>
+<table>
+  <thead><tr><th>Directive</th><th>Controls</th><th>Tip</th></tr></thead>
+  <tbody>
+    <tr><td>default-src</td><td>Fallback for all types not listed</td><td>Start with 'self'</td></tr>
+    <tr><td>script-src</td><td>JavaScript files and inline scripts</td><td>Avoid unsafe-inline — use nonces</td></tr>
+    <tr><td>style-src</td><td>CSS files and inline styles</td><td>unsafe-inline usually required for CSS-in-JS</td></tr>
+    <tr><td>img-src</td><td>Images</td><td>Add data: for base64 images</td></tr>
+    <tr><td>connect-src</td><td>fetch, XHR, WebSocket, EventSource</td><td>Required for any API calls</td></tr>
+    <tr><td>font-src</td><td>Font files</td><td>Google Fonts needs fonts.gstatic.com</td></tr>
+    <tr><td>frame-ancestors</td><td>Who can embed your page in an iframe</td><td>'none' blocks clickjacking</td></tr>
+    <tr><td>object-src</td><td>Plugins (Flash, Java)</td><td>Always set to 'none'</td></tr>
+  </tbody>
+</table>
+
+<h2>Deploy in report-only mode first</h2>
+<p>Use <code>Content-Security-Policy-Report-Only</code> instead of <code>Content-Security-Policy</code> when first deploying. Violations appear in the browser console without blocking anything — letting you catch missing sources before enforcing.</p>
+
+<p>If you have a live page and want to generate a CSP from what it actually loads, use CSPFixer instead — it scans your URL and builds the policy automatically.</p>
+
+<script>
+function getChecked(groupId) {
+  return [...document.querySelectorAll('#' + groupId + ' input:checked')].map(i => i.value);
+}
+
+function buildCSP() {
+  const scripts = getChecked('script-sources');
+  const styles = getChecked('style-sources');
+  const imgs = getChecked('img-sources');
+  const connects = getChecked('connect-sources');
+  const fonts = getChecked('font-sources');
+  const frameAnc = getChecked('frame-ancestors');
+  const extras = getChecked('extras');
+  const custom = document.getElementById('custom-domain').value.trim();
+
+  const reportOnly = extras.includes('report-only');
+  const headerName = reportOnly ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
+
+  let parts = ["default-src 'self'"];
+  if (scripts.length) parts.push("script-src " + scripts.join(' '));
+  if (styles.length) parts.push("style-src " + styles.join(' '));
+  if (imgs.length) parts.push("img-src " + imgs.join(' '));
+  if (connects.length) parts.push("connect-src " + connects.join(' '));
+  if (fonts.length) parts.push("font-src " + fonts.join(' '));
+  if (frameAnc.length) parts.push("frame-ancestors " + frameAnc.join(' '));
+  if (extras.includes('object-src-none')) parts.push("object-src 'none'");
+  if (extras.includes('base-uri-self')) parts.push("base-uri 'self'");
+  if (extras.includes('upgrade')) parts.push("upgrade-insecure-requests");
+  if (custom) parts.push("connect-src 'self' " + custom);
+
+  const policy = parts.join('; ') + ';';
+  const headerVal = headerName + ': ' + policy;
+
+  document.getElementById('csp-output').textContent = headerVal;
+  document.getElementById('nginx-output').textContent = 'add_header ' + headerName + ' "' + policy + '" always;';
+  document.getElementById('vercel-output').textContent = JSON.stringify({
+    headers: [{ source: "/(.*)", headers: [{ key: headerName, value: policy }] }]
+  }, null, 2);
+}
+
+function copyOutput(id) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+}
+</script>
+
+  <a href="/csp/" class="tool-cta">Scan a live URL and auto-generate CSP → CSPFixer</a>
+  <div class="related">Related: <a href="/blog/csp/fix-csp-refused-to-load/">Fix refused to load</a> <a href="/blog/csp/csp-unsafe-inline-nonce-hash/">Nonce vs hash vs unsafe-inline</a> <a href="/blog/reference/csp-third-party-services/">Third-party CSP reference</a></div>
+</main>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. HttpFixer provides these tools for informational purposes only. © 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>
