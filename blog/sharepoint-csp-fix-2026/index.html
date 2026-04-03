@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SharePoint CSP "Refused to Load" — Fix for March 2026 Enforcement</title>
   <meta name="description" content="Microsoft enforced Content Security Policy for SharePoint Online on March 1, 2026. If you're seeing 'Refused to load script' errors in your tenant, here's the exact fix.">
-  <link rel="canonical" href="https://webfix.dev/blog/sharepoint-csp-fix-2026/">
+  <link rel="canonical" href="https://httpfixer.dev/blog/sharepoint-csp-fix-2026/">
   <meta name="robots" content="index, follow">
   <meta property="og:title" content="SharePoint CSP Refused to Load — Fix for 2026">
-  <meta property="og:url" content="https://webfix.dev/blog/sharepoint-csp-fix-2026/">
+  <meta property="og:url" content="https://httpfixer.dev/blog/sharepoint-csp-fix-2026/">
   <meta property="og:description" content="Microsoft enforced Content Security Policy for SharePoint Online on March 1, 2026. If you're seeing 'Refused to load script' errors in your tenant, here's the exact fix.">
   <meta name="twitter:card" content="summary">
   <meta name="author" content="MetricLogic">
@@ -51,7 +51,7 @@
         "name": "Is there a tool to scan which resources are being blocked?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Yes — CSPFixer (webfix.dev/csp) fetches your page and identifies all external resources that need to be added to your CSP."
+          "text": "Yes — CSPFixer (httpfixer.dev/csp) fetches your page and identifies all external resources that need to be added to your CSP."
         }
       }
     ]
@@ -240,7 +240,7 @@
 </head>
 <body>
   <nav>
-    <span class="brand">WebFix <span>/</span> Blog</span>
+    <span class="brand">HttpFixer <span>/</span> Blog</span>
     <div class="right">
       <a href="../../" class="nav-tool">Headers</a>
       <a href="../../cors/" class="nav-tool">CORS</a>
@@ -254,7 +254,7 @@
   <main>
     <article>
       <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="../../">WebFix</a><span class="sep">→</span><a href="../">Blog</a><span class="sep">→</span>SharePoint CSP Fix 2026
+        <a href="../../">HttpFixer</a><span class="sep">→</span><a href="../">Blog</a><span class="sep">→</span>SharePoint CSP Fix 2026
       </nav>
 
       <h1>SharePoint CSP "Refused to Load" Errors — March 2026 Fix</h1>
@@ -283,7 +283,7 @@
       <h2>Quick Check — Use CSPFixer</h2>
       <div class="cta-block">
         <p>Not sure which domains are being blocked? CSPFixer scans your page's actual resources and generates a working CSP automatically.</p>
-        <a class="cta-btn" href="https://webfix.dev/csp/">Scan your page with CSPFixer →</a>
+        <a class="cta-btn" href="https://httpfixer.dev/csp/">Scan your page with CSPFixer →</a>
       </div>
 
       <h2>Temporary Workaround (use with caution)</h2>
@@ -299,7 +299,7 @@
   </main>
 
   <footer>
-    <span><a href="https://webfix.dev" target="_blank" rel="noopener">CSPFixer by WebFix</a> · Also try <a href="https://configclarity.dev" target="_blank" rel="noopener">configclarity.dev</a> · <a href="https://domainpreflight.dev" target="_blank" rel="noopener">domainpreflight.dev</a> · <a href="https://packagefix.dev" target="_blank" rel="noopener">packagefix.dev</a></span>
+    <span><a href="https://httpfixer.dev" target="_blank" rel="noopener">CSPFixer by HttpFixer</a> · Also try <a href="https://configclarity.dev" target="_blank" rel="noopener">configclarity.dev</a> · <a href="https://domainpreflight.dev" target="_blank" rel="noopener">domainpreflight.dev</a> · <a href="https://packagefix.dev" target="_blank" rel="noopener">packagefix.dev</a></span>
     <span>Open source · MIT · <a href="https://github.com/metriclogic26/webfix" target="_blank" rel="noopener">GitHub →</a> · <a href="https://github.com/metriclogic26/webfix/issues/new" target="_blank" rel="noopener">Report issue →</a></span>
     <p class="footer-disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. MetricLogic provides these tools for informational purposes only and accepts no liability for misconfiguration, data loss, or security incidents.</p>
     <p class="footer-disclaimer">© 2026 MetricLogic. MIT Licensed — <a href="https://github.com/metriclogic26/webfix" target="_blank" rel="noopener">view source</a>. Config syntax (Nginx, Apache, Vercel) and open standards (OWASP, RFC, schema.org) are not copyrightable. Generated configs are yours to use freely.</p>

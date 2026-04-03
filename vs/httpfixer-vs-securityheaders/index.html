@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebFix vs security header checkers — Why Fixers Beat Checkers — WebFix</title>
-  <meta name="description" content="Security header checkers give letter grades; WebFix generates copy-paste fixes for Nginx, Cloudflare, Vercel, and more.">
-  <link rel="canonical" href="https://webfix.dev/vs/webfix-vs-securityheaders/">
+  <title>HttpFixer vs security header checkers — Why Fixers Beat Checkers — HttpFixer</title>
+  <meta name="description" content="Security header checkers give letter grades; HttpFixer generates copy-paste fixes for Nginx, Cloudflare, Vercel, and more.">
+  <link rel="canonical" href="https://httpfixer.dev/vs/httpfixer-vs-securityheaders/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="WebFix vs security header checkers — Why Fixers Beat Checkers — WebFix">
-  <meta property="og:description" content="Security header checkers give letter grades; WebFix generates copy-paste fixes for Nginx, Cloudflare, Vercel, and more.">
-  <meta property="og:url" content="https://webfix.dev/vs/webfix-vs-securityheaders/">
+  <meta property="og:title" content="HttpFixer vs security header checkers — Why Fixers Beat Checkers — HttpFixer">
+  <meta property="og:description" content="Security header checkers give letter grades; HttpFixer generates copy-paste fixes for Nginx, Cloudflare, Vercel, and more.">
+  <meta property="og:url" content="https://httpfixer.dev/vs/httpfixer-vs-securityheaders/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "WebFix vs securityheaders.com — Why Fixers Beat Checkers", "description": "securityheaders.com gives letter grades; WebFix generates copy-paste fixes for Nginx, Cloudflare, Vercel, and more.", "url": "https://webfix.dev/vs/webfix-vs-securityheaders/", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Comparisons", "item": "https://webfix.dev/vs/"}, {"@type": "ListItem", "position": 3, "name": "vs securityheaders.com"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "headline": "HttpFixer vs securityheaders.com — Why Fixers Beat Checkers", "description": "securityheaders.com gives letter grades; HttpFixer generates copy-paste fixes for Nginx, Cloudflare, Vercel, and more.", "url": "https://httpfixer.dev/vs/httpfixer-vs-securityheaders/", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Comparisons", "item": "https://httpfixer.dev/vs/"}, {"@type": "ListItem", "position": 3, "name": "vs securityheaders.com"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -58,7 +58,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">WebFix <span>/</span> Vs</a>
+    <a href="/" class="brand">HttpFixer <span>/</span> Vs</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -69,14 +69,14 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/vs/">Comparisons</a> → WebFix vs security header checkers</div>
-    <h1>WebFix vs security header checkers — Why Fixers Beat Checkers</h1>
+    <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/vs/">Comparisons</a> → HttpFixer vs security header checkers</div>
+    <h1>HttpFixer vs security header checkers — Why Fixers Beat Checkers</h1>
     <p>Most security header tools give you a grade. You see a red row,
 Google the header name, read three blog posts, and eventually paste
 something into your nginx.conf that may or may not be right for your
 setup.</p>
 
-    <p>WebFix skips the research step. It fetches your live headers,
+    <p>HttpFixer skips the research step. It fetches your live headers,
 detects whether you're on Nginx, Cloudflare, Vercel, or Express,
 and outputs the exact block to paste. Same audit — just with the
 fix attached.</p>
@@ -85,7 +85,7 @@ fix attached.</p>
 
     <table>
       <thead>
-        <tr><th></th><th>Header checkers</th><th>WebFix</th></tr>
+        <tr><th></th><th>Header checkers</th><th>HttpFixer</th></tr>
       </thead>
       <tbody>
         <tr><td>Output</td><td>Letter grade</td><td>Grade + copy-paste config</td></tr>
@@ -96,13 +96,13 @@ fix attached.</p>
     </table>
 
     <p>If you already know which header is missing, you don't need another
-checker. You need the fix. That's what WebFix is for.</p>
+checker. You need the fix. That's what HttpFixer is for.</p>
     <p>Related: <a href='/fix/headers/nginx/'>Fix headers on Nginx</a>, <a href='/providers/cloudflare/'>Cloudflare hub</a>, <a href='/headers/'>HeadersFixer tool</a>.</p>
     <div class="related-links"><span>Related:</span> <a href="/fix/headers/nginx/">Fix headers (Nginx)</a> · <a href="/glossary/">Glossary</a> · <a href="/vs/">Comparisons hub</a></div>
     <a href="/headers/" class="tool-cta">Try HeadersFixer →</a>
   </main>
   <footer>
-    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>HttpFixer by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
     <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>

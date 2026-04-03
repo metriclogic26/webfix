@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CORS — How It Works and How to Fix It — WebFix Learn</title>
+  <title>CORS — How It Works and How to Fix It — HttpFixer Learn</title>
   <meta name="description" content="Why browsers enforce CORS, how OPTIONS preflight works, the five misconfigurations teams hit most, and framework-specific fixes.">
-  <link rel="canonical" href="https://webfix.dev/learn/cors/">
+  <link rel="canonical" href="https://httpfixer.dev/learn/cors/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="CORS — How It Works and How to Fix It — WebFix Learn">
+  <meta property="og:title" content="CORS — How It Works and How to Fix It — HttpFixer Learn">
   <meta property="og:description" content="Preflight, credentials, wildcards, and Vary: Origin—explained with real fixes for Express, Nginx, FastAPI, and Django.">
-  <meta property="og:url" content="https://webfix.dev/learn/cors/">
+  <meta property="og:url" content="https://httpfixer.dev/learn/cors/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script type="application/ld+json">
-{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"WebFix","item":"https://webfix.dev/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://webfix.dev/learn/"},{"@type":"ListItem","position":3,"name":"CORS — How It Works and How to Fix It","item":"https://webfix.dev/learn/cors/"}]},{"@type":"TechArticle","headline":"CORS — How It Works and How to Fix It","description":"Developer guide to Cross-Origin Resource Sharing, preflight requests, and common API misconfigurations.","url":"https://webfix.dev/learn/cors/","datePublished":"2026-03-31","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does curl succeed but the browser fails?","acceptedAnswer":{"@type":"Answer","text":"curl does not enforce same-origin policy. The browser sends extra CORS headers and may send an OPTIONS preflight the server must answer with matching Allow-* metadata."}},{"@type":"Question","name":"Do all requests trigger a preflight?","acceptedAnswer":{"@type":"Answer","text":"No. Simple GET/HEAD requests with safelisted headers often skip preflight. JSON bodies, custom headers like Authorization, or methods like PUT trigger OPTIONS first."}},{"@type":"Question","name":"Why add Vary: Origin when CORS is dynamic?","acceptedAnswer":{"@type":"Answer","text":"CDNs cache one response per URL. If you echo different Access-Control-Allow-Origin values per caller, the cache can hand the wrong CORS headers to the next client without Vary: Origin."}}]}]}
+{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://httpfixer.dev/learn/"},{"@type":"ListItem","position":3,"name":"CORS — How It Works and How to Fix It","item":"https://httpfixer.dev/learn/cors/"}]},{"@type":"TechArticle","headline":"CORS — How It Works and How to Fix It","description":"Developer guide to Cross-Origin Resource Sharing, preflight requests, and common API misconfigurations.","url":"https://httpfixer.dev/learn/cors/","datePublished":"2026-03-31","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does curl succeed but the browser fails?","acceptedAnswer":{"@type":"Answer","text":"curl does not enforce same-origin policy. The browser sends extra CORS headers and may send an OPTIONS preflight the server must answer with matching Allow-* metadata."}},{"@type":"Question","name":"Do all requests trigger a preflight?","acceptedAnswer":{"@type":"Answer","text":"No. Simple GET/HEAD requests with safelisted headers often skip preflight. JSON bodies, custom headers like Authorization, or methods like PUT trigger OPTIONS first."}},{"@type":"Question","name":"Why add Vary: Origin when CORS is dynamic?","acceptedAnswer":{"@type":"Answer","text":"CDNs cache one response per URL. If you echo different Access-Control-Allow-Origin values per caller, the cache can hand the wrong CORS headers to the next client without Vary: Origin."}}]}]}
   </script>
   <style>
     :root {
@@ -51,7 +51,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">WebFix <span>/</span> Learn</a>
+    <a href="/" class="brand">HttpFixer <span>/</span> Learn</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -62,7 +62,7 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">WebFix</a> → Learn → CORS — How It Works and How to Fix It</div>
+    <div class="breadcrumb"><a href="/">HttpFixer</a> → Learn → CORS — How It Works and How to Fix It</div>
     <article>
       <h1>CORS — How It Works and How to Fix It</h1>
       <p class="lead">Cross-Origin Resource Sharing is not a server bug you toggle off—it’s the browser enforcing a contract between your frontend origin and your API origin. When the contract is wrong, the network tab shows a failed request even though the origin returned HTTP 200.</p>
@@ -141,7 +141,7 @@ CSRF_TRUSTED_ORIGINS = ["https://app.example"]</div>
     <a href="/cors/" class="tool-cta">Open CORSFixer →</a>
   </main>
   <footer>
-    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>HttpFixer by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
     <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>

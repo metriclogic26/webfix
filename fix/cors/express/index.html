@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fix CORS Errors on Express — WebFix</title>
+  <title>Fix CORS Errors on Express — HttpFixer</title>
   <meta name="description" content="Use the cors middleware with explicit origin callbacks and credentials options for Express APIs.">
-  <link rel="canonical" href="https://webfix.dev/fix/cors/express/">
+  <link rel="canonical" href="https://httpfixer.dev/fix/cors/express/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Fix CORS Errors on Express — WebFix">
+  <meta property="og:title" content="Fix CORS Errors on Express — HttpFixer">
   <meta property="og:description" content="Use the cors middleware with explicit origin callbacks and credentials options for Express APIs.">
-  <meta property="og:url" content="https://webfix.dev/fix/cors/express/">
+  <meta property="og:url" content="https://httpfixer.dev/fix/cors/express/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix CORS Errors on Express", "description": "Use the cors middleware with explicit origin callbacks and credentials options for Express APIs.", "url": "https://webfix.dev/fix/cors/express/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://webfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Cors", "item": "https://webfix.dev/fix/cors/"}, {"@type": "ListItem", "position": 4, "name": "Express"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix CORS Errors on Express", "description": "Use the cors middleware with explicit origin callbacks and credentials options for Express APIs.", "url": "https://httpfixer.dev/fix/cors/express/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://httpfixer.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Cors", "item": "https://httpfixer.dev/fix/cors/"}, {"@type": "ListItem", "position": 4, "name": "Express"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -54,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">WebFix <span>/</span> Fix</a>
+    <a href="/" class="brand">HttpFixer <span>/</span> Fix</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -65,14 +65,14 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/cors/">Cors</a> → Fix CORS Errors on Express</div>
+    <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/fix/">Fix</a> → <a href="/fix/cors/">Cors</a> → Fix CORS Errors on Express</div>
     <h1>Fix CORS Errors on Express</h1>
     <p>The <code>cors</code> package wraps preflight and response headers for Express. Pass an <code>origin</code> function that whitelists dev and prod frontends instead of <code>*</code> when cookies or Authorization headers are involved.</p><p>Order middleware so <code>cors</code> runs before routes; log rejected origins during integration tests. Combine with <a href="/fix/headers/express/">Helmet</a> for a full browser-facing hardening stack.</p><p>Instrument with CORSFixer to confirm <code>OPTIONS</code> returns the status and headers your SPA expects.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/cors/">CORS (glossary)</a> · <a href="/glossary/preflight-request/">Preflight (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/cors/">CORS (glossary)</a> · <a href="/glossary/preflight-request/">Preflight (glossary)</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div>
     <a href="/cors/" class="tool-cta">Open CORSFixer →</a>
   </main>
   <footer>
-    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>HttpFixer by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
     <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>

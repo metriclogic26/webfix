@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fix Missing Security Headers on Nginx — WebFix</title>
+  <title>Fix Missing Security Headers on Nginx — HttpFixer</title>
   <meta name="description" content="Add HSTS, CSP, X-Frame-Options, and related headers in nginx.conf server blocks with add_header directives.">
-  <link rel="canonical" href="https://webfix.dev/fix/headers/nginx/">
+  <link rel="canonical" href="https://httpfixer.dev/fix/headers/nginx/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Fix Missing Security Headers on Nginx — WebFix">
+  <meta property="og:title" content="Fix Missing Security Headers on Nginx — HttpFixer">
   <meta property="og:description" content="Add HSTS, CSP, X-Frame-Options, and related headers in nginx.conf server blocks with add_header directives.">
-  <meta property="og:url" content="https://webfix.dev/fix/headers/nginx/">
+  <meta property="og:url" content="https://httpfixer.dev/fix/headers/nginx/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix Missing Security Headers on Nginx", "description": "Add HSTS, CSP, X-Frame-Options, and related headers in nginx.conf server blocks with add_header directives.", "url": "https://webfix.dev/fix/headers/nginx/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://webfix.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Headers", "item": "https://webfix.dev/fix/headers/"}, {"@type": "ListItem", "position": 4, "name": "Nginx"}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix Missing Security Headers on Nginx", "description": "Add HSTS, CSP, X-Frame-Options, and related headers in nginx.conf server blocks with add_header directives.", "url": "https://httpfixer.dev/fix/headers/nginx/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://httpfixer.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Headers", "item": "https://httpfixer.dev/fix/headers/"}, {"@type": "ListItem", "position": 4, "name": "Nginx"}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -54,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">WebFix <span>/</span> Fix</a>
+    <a href="/" class="brand">HttpFixer <span>/</span> Fix</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -65,14 +65,14 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/fix/">Fix</a> → <a href="/fix/headers/">Headers</a> → Fix Missing Security Headers on Nginx</div>
+    <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/fix/">Fix</a> → <a href="/fix/headers/">Headers</a> → Fix Missing Security Headers on Nginx</div>
     <h1>Fix Missing Security Headers on Nginx</h1>
     <p>Nginx does not ship secure defaults for <code>HSTS</code>, <code>Content-Security-Policy</code>, or <code>X-Frame-Options</code>. Most breaches start with a missing or weak header set, so production <code>server { }</code> blocks should declare explicit policies instead of relying on application code.</p><p>Use <code>add_header</code> (and <code>always</code> where you need headers on error responses) for strict transport, framing, referrer, and permissions. Place policies once per server name, then reload with <code>nginx -t</code> before <code>systemctl reload nginx</code>.</p><p><a href="/fix/headers/apache/">Apache</a> and <a href="/fix/headers/cloudflare/">Cloudflare</a> guides cover the same controls on other stacks. HeadersFixer scans your live URL and outputs copy-paste snippets matched to what your site actually needs.</p>
-    <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS (glossary)</a> · <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS (glossary)</a> · <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div>
     <a href="/headers/" class="tool-cta">Open HeadersFixer →</a>
   </main>
   <footer>
-    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>HttpFixer by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
     <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>

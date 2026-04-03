@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HeadersFixer · WebFix by MetricLogic</title>
+  <title>HeadersFixer · HttpFixer by MetricLogic</title>
   <meta name="description" content="Security scanners give you a D. HeadersFixer gives you the exact Nginx, Apache, Vercel, or Express config to paste. Free, no signup, client-side only.">
   <meta name="keywords" content="security headers, HSTS, CSP, X-Frame-Options, fix security headers, Nginx security headers">
-  <link rel="canonical" href="https://webfix.dev/headers/">
-  <meta property="og:title" content="HeadersFixer · WebFix">
+  <link rel="canonical" href="https://httpfixer.dev/headers/">
+  <meta property="og:title" content="HeadersFixer · HttpFixer">
   <meta property="og:description" content="Detects missing or misconfigured security headers. Generates stack-specific fixes for Nginx, Apache, Vercel, Cloudflare, and Express.">
-  <meta property="og:url" content="https://webfix.dev/headers/">
+  <meta property="og:url" content="https://httpfixer.dev/headers/">
   <meta name="twitter:card" content="summary">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
@@ -825,7 +825,7 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "HeadersFixer",
-  "url": "https://webfix.dev/headers/",
+  "url": "https://httpfixer.dev/headers/",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Web",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
@@ -842,7 +842,7 @@
   "description": "Scan your URL, detect your stack, and get exact copy-paste config fixes for missing security headers.",
   "step": [
     { "@type": "HowToStep", "position": 1, "name": "Enter your URL", "text": "Paste your site URL into the input field." },
-    { "@type": "HowToStep", "position": 2, "name": "Scan headers", "text": "WebFix fetches your live HTTP headers and detects your stack automatically." },
+    { "@type": "HowToStep", "position": 2, "name": "Scan headers", "text": "HttpFixer fetches your live HTTP headers and detects your stack automatically." },
     { "@type": "HowToStep", "position": 3, "name": "Copy the fix", "text": "Select your stack tab and copy the exact config block to paste into your server config." }
   ]
 }
@@ -855,16 +855,16 @@
     {
       "@type": "Question",
       "name": "How do I fix missing security headers on Nginx?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Add add_header directives to your nginx.conf server block. WebFix generates the exact lines for HSTS, CSP, X-Frame-Options, and more based on your live headers." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Add add_header directives to your nginx.conf server block. HttpFixer generates the exact lines for HSTS, CSP, X-Frame-Options, and more based on your live headers." }
     },
     {
       "@type": "Question",
       "name": "What security headers should every site have?",
-      "acceptedAnswer": { "@type": "Answer", "text": "At minimum: Strict-Transport-Security, Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, and Referrer-Policy. WebFix checks all of these plus Permissions-Policy, COOP, and COEP." }
+      "acceptedAnswer": { "@type": "Answer", "text": "At minimum: Strict-Transport-Security, Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, and Referrer-Policy. HttpFixer checks all of these plus Permissions-Policy, COOP, and COEP." }
     },
     {
       "@type": "Question",
-      "name": "Does WebFix store my URL or headers?",
+      "name": "Does HttpFixer store my URL or headers?",
       "acceptedAnswer": { "@type": "Answer", "text": "No. Everything runs client-side in your browser. Your URL and headers never leave your machine." }
     }
   ]
@@ -873,7 +873,7 @@
 </head>
 <body>
   <nav>
-    <span class="brand">WebFix <span>/</span> HeadersFixer</span>
+    <span class="brand">HttpFixer <span>/</span> HeadersFixer</span>
     <div class="right">
       <span class="nav-tool active">Headers</span>
       <a href="./cors/" class="nav-tool">CORS</a>
@@ -941,9 +941,9 @@ strict-transport-security: max-age=3600
   </main>
 
   <footer>
-    <span class="footer-left">WebFix by MetricLogic · <a href="https://configclarity.dev" target="_blank" rel="noopener">configclarity.dev</a> · <a href="https://domainpreflight.dev" target="_blank" rel="noopener">domainpreflight.dev</a> · <a href="https://packagefix.dev" target="_blank" rel="noopener">packagefix.dev</a></span>
+    <span class="footer-left">HttpFixer by MetricLogic · <a href="https://configclarity.dev" target="_blank" rel="noopener">configclarity.dev</a> · <a href="https://domainpreflight.dev" target="_blank" rel="noopener">domainpreflight.dev</a> · <a href="https://packagefix.dev" target="_blank" rel="noopener">packagefix.dev</a></span>
     <span class="footer-right"><a href="https://github.com/metriclogic26/webfix" target="_blank" rel="noopener">Star on GitHub</a> · MIT Licensed · <a href="https://github.com/metriclogic26/webfix/issues/new" target="_blank" rel="noopener">Report issue →</a></span>
-    <p class="footer-disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. WebFix provides these tools for informational purposes only and accepts no liability for misconfiguration, data loss, or security incidents.</p>
+    <p class="footer-disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. HttpFixer provides these tools for informational purposes only and accepts no liability for misconfiguration, data loss, or security incidents.</p>
   </footer>
 
   <script>
@@ -1843,11 +1843,11 @@ strict-transport-security: max-age=3600
     });
   </script>
 <div id="llm-context" style="display:none">
-Tool: HeadersFixer by WebFix (webfix.dev/headers)
+Tool: HeadersFixer by HttpFixer (httpfixer.dev/headers)
 Purpose: Fetches live HTTP response headers from any URL and audits them for security misconfigurations. Generates copy-paste config fixes for Nginx, Apache, Vercel, Cloudflare, Express, Caddy, and Next.js.
 Headers checked: Strict-Transport-Security, Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, Server/X-Powered-By exposure.
 No backend. No data stored. MIT licensed. Free to use.
-Part of the MetricLogic network: configclarity.dev, domainpreflight.dev, webfix.dev.
+Part of the MetricLogic network: configclarity.dev, domainpreflight.dev, httpfixer.dev.
 </div>
 </body>
 </html>

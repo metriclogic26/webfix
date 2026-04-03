@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Performance — Server-Side Fixes That Actually Move the Score — WebFix Learn</title>
+  <title>Web Performance — Server-Side Fixes That Actually Move the Score — HttpFixer Learn</title>
   <meta name="description" content="Which PageSpeed audits yield to config versus code, Cache-Control for static assets and APIs, and compression settings that show up in the field.">
-  <link rel="canonical" href="https://webfix.dev/learn/web-performance/">
+  <link rel="canonical" href="https://httpfixer.dev/learn/web-performance/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Web Performance — Server-Side Fixes — WebFix Learn">
+  <meta property="og:title" content="Web Performance — Server-Side Fixes — HttpFixer Learn">
   <meta property="og:description" content="Server and CDN levers for PSI: caching, compression, and what still needs frontend work.">
-  <meta property="og:url" content="https://webfix.dev/learn/web-performance/">
+  <meta property="og:url" content="https://httpfixer.dev/learn/web-performance/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script type="application/ld+json">
-{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"WebFix","item":"https://webfix.dev/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://webfix.dev/learn/"},{"@type":"ListItem","position":3,"name":"Web Performance — Server-Side Fixes That Actually Move the Score","item":"https://webfix.dev/learn/web-performance/"}]},{"@type":"TechArticle","headline":"Web Performance — Server-Side Fixes That Actually Move the Score","description":"Guide mapping PageSpeed issues to server configuration, cache policies, and compression.","url":"https://webfix.dev/learn/web-performance/","datePublished":"2026-03-31","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I fix Largest Contentful Paint only with nginx?","acceptedAnswer":{"@type":"Answer","text":"Rarely entirely. You can shorten TTFB with gzip or brotli, HTTP/2, and good caching, but LCP usually also needs image sizing, priority hints, and fewer render-blocking scripts in HTML."}},{"@type":"Question","name":"Should APIs send Cache-Control: public?","acceptedAnswer":{"@type":"Answer","text":"Only for responses that are identical for every user and safe to store at shared caches. Authenticated JSON should use private or no-store unless you deeply understand your CDN semantics."}},{"@type":"Question","name":"Why does gzip not show up in PageSpeed sometimes?","acceptedAnswer":{"@type":"Answer","text":"PSI may fetch via a path that bypasses your compression filter, or your origin only compresses above a size threshold. Verify with curl -H Accept-Encoding: gzip against the exact URL Lighthouse hits."}}]}]}
+{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://httpfixer.dev/learn/"},{"@type":"ListItem","position":3,"name":"Web Performance — Server-Side Fixes That Actually Move the Score","item":"https://httpfixer.dev/learn/web-performance/"}]},{"@type":"TechArticle","headline":"Web Performance — Server-Side Fixes That Actually Move the Score","description":"Guide mapping PageSpeed issues to server configuration, cache policies, and compression.","url":"https://httpfixer.dev/learn/web-performance/","datePublished":"2026-03-31","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I fix Largest Contentful Paint only with nginx?","acceptedAnswer":{"@type":"Answer","text":"Rarely entirely. You can shorten TTFB with gzip or brotli, HTTP/2, and good caching, but LCP usually also needs image sizing, priority hints, and fewer render-blocking scripts in HTML."}},{"@type":"Question","name":"Should APIs send Cache-Control: public?","acceptedAnswer":{"@type":"Answer","text":"Only for responses that are identical for every user and safe to store at shared caches. Authenticated JSON should use private or no-store unless you deeply understand your CDN semantics."}},{"@type":"Question","name":"Why does gzip not show up in PageSpeed sometimes?","acceptedAnswer":{"@type":"Answer","text":"PSI may fetch via a path that bypasses your compression filter, or your origin only compresses above a size threshold. Verify with curl -H Accept-Encoding: gzip against the exact URL Lighthouse hits."}}]}]}
   </script>
   <style>
     :root {
@@ -52,7 +52,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">WebFix <span>/</span> Learn</a>
+    <a href="/" class="brand">HttpFixer <span>/</span> Learn</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,7 +63,7 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">WebFix</a> → Learn → Web Performance — Server-Side Fixes That Actually Move the Score</div>
+    <div class="breadcrumb"><a href="/">HttpFixer</a> → Learn → Web Performance — Server-Side Fixes That Actually Move the Score</div>
     <article>
       <h1>Web Performance — Server-Side Fixes That Actually Move the Score</h1>
       <p class="lead">PageSpeed Insights mixes lab signals with field data. Some audits you can fix with TLS, compression, and cache headers—the stuff your edge already owns. Others need bundle surgery. Knowing which is which saves you from rewrites that never show up in the score.</p>
@@ -117,7 +117,7 @@ gzip_min_length 256;</div>
     <a href="/edge/" class="tool-cta">Open EdgeFix →</a>
   </main>
   <footer>
-    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>HttpFixer by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
     <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>

@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>What is Content Security Policy (CSP)? — WebFix Glossary</title>
+  <title>What is Content Security Policy (CSP)? — HttpFixer Glossary</title>
   <meta name="description" content="CSP restricts which scripts, styles, and other resources a page may load—your main defense against XSS when applied strictly.">
-  <link rel="canonical" href="https://webfix.dev/glossary/content-security-policy/">
+  <link rel="canonical" href="https://httpfixer.dev/glossary/content-security-policy/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="What is Content Security Policy (CSP)? — WebFix Glossary">
+  <meta property="og:title" content="What is Content Security Policy (CSP)? — HttpFixer Glossary">
   <meta property="og:description" content="CSP restricts which scripts, styles, and other resources a page may load—your main defense against XSS when applied strictly.">
-  <meta property="og:url" content="https://webfix.dev/glossary/content-security-policy/">
+  <meta property="og:url" content="https://httpfixer.dev/glossary/content-security-policy/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "Content Security Policy (CSP)", "description": "A browser security mechanism that restricts which resources a page can load.", "url": "https://webfix.dev/glossary/content-security-policy/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "WebFix Security Glossary", "url": "https://webfix.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://webfix.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "Content Security Policy (CSP)"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What happens if CSP blocks a legitimate script?", "acceptedAnswer": {"@type": "Answer", "text": "The browser refuses to run or load it and logs a violation. Add the origin to the right directive (e.g. script-src), use a nonce/hash for inline code, or serve the script from an already-allowed host."}}, {"@type": "Question", "name": "Is unsafe-inline safe in CSP?", "acceptedAnswer": {"@type": "Answer", "text": "No. 'unsafe-inline' for scripts removes most XSS protection. Prefer nonces with templating, or hashes for static inline blocks."}}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "Content Security Policy (CSP)", "description": "A browser security mechanism that restricts which resources a page can load.", "url": "https://httpfixer.dev/glossary/content-security-policy/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "HttpFixer Security Glossary", "url": "https://httpfixer.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://httpfixer.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "Content Security Policy (CSP)"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What happens if CSP blocks a legitimate script?", "acceptedAnswer": {"@type": "Answer", "text": "The browser refuses to run or load it and logs a violation. Add the origin to the right directive (e.g. script-src), use a nonce/hash for inline code, or serve the script from an already-allowed host."}}, {"@type": "Question", "name": "Is unsafe-inline safe in CSP?", "acceptedAnswer": {"@type": "Answer", "text": "No. 'unsafe-inline' for scripts removes most XSS protection. Prefer nonces with templating, or hashes for static inline blocks."}}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -54,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">WebFix <span>/</span> Glossary</a>
+    <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -65,7 +65,7 @@
     </div>
   </nav>
   <main class="">
-    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/glossary/">Glossary</a> → Content Security Policy (CSP)</div>
+    <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → Content Security Policy (CSP)</div>
     <h1>Content Security Policy (CSP)</h1>
     <p class="lead">A browser security mechanism that restricts which resources a page can load.</p>
 <p>Content Security Policy is delivered as an HTTP header (or, less ideally, a <code>&lt;meta&gt;</code> tag). The browser compares every script, stylesheet, font, image, and connection against directives such as <code>script-src</code>, <code>style-src</code>, and <code>default-src</code>. Anything not allowed is blocked, which is why you see “refused to load” in DevTools when a CDN or inline snippet is missing from the policy.</p>
@@ -75,11 +75,11 @@
 <div class="code-block">Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.example.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'</div>
 <h2>Spec</h2>
 <p><a href="https://www.w3.org/TR/CSP3/">W3C Content Security Policy Level 3</a></p>
-    <div class="related-links"><span>Related:</span> <a href="/fix/csp/nginx/">Fix CSP (Nginx)</a> · <a href="/error/csp-refused-to-load/">CSP refused error</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/fix/csp/nginx/">Fix CSP (Nginx)</a> · <a href="/error/csp-refused-to-load/">CSP refused error</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div>
     <a href="/csp/" class="tool-cta">Generate a CSP with CSPFixer →</a>
   </main>
   <footer>
-    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>HttpFixer by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
     <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>

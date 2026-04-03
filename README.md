@@ -1,17 +1,17 @@
-# WebFix
+# HttpFixer
 
 Paste your URL. Get the exact config to fix it.
 
 Free, browser-based web app security and performance fixers. No login.
 No backend. No tracking. Everything runs in your browser.
 
-**[webfix.dev →](https://webfix.dev)**
+**[httpfixer.dev →](https://httpfixer.dev)**
 
 ---
 
 ## What it does
 
-Paste your URL. WebFix:
+Paste your URL. HttpFixer:
 - Fetches your live HTTP headers and detects your stack automatically
 - Audits security headers, CORS config, CSP, caching, and PageSpeed
 - Generates the exact Nginx / Cloudflare / Vercel / Express config to paste
@@ -35,7 +35,7 @@ Paste your URL. WebFix:
 ## How it works
 
 1. Enter your URL
-2. WebFix fetches your live headers and detects your stack from the Server: header
+2. HttpFixer fetches your live headers and detects your stack from the Server: header
 3. Get the exact config block for your stack with a one-click copy button
 
 ChatGPT cannot fetch your live headers. That's the moat.
@@ -82,14 +82,14 @@ No dependencies. Open the HTML files directly.
 | ConfigClarity | configclarity.dev | Server & DevOps |
 | DomainPreflight | domainpreflight.dev | DNS & Email |
 | PackageFix | packagefix.dev | Dependencies |
-| WebFix | webfix.dev | Web App Security & Performance |
+| HttpFixer | httpfixer.dev | Web App Security & Performance |
 
 ---
 
 ## Alternatives
 
 Looking for a securityheaders.com, Mozilla Observatory, GTmetrix,
-Lighthouse, or CORS Anywhere replacement? See [webfix.dev/vs/](https://webfix.dev/vs/)
+Lighthouse, or CORS Anywhere replacement? See [httpfixer.dev/vs/](https://httpfixer.dev/vs/)
 
 ---
 

@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Content Security Policy — From Zero to Working CSP — WebFix Learn</title>
+  <title>Content Security Policy — From Zero to Working CSP — HttpFixer Learn</title>
   <meta name="description" content="Why CSP exists, a directive tour, how to derive a policy from real page resources, and nonce patterns that replace unsafe-inline.">
-  <link rel="canonical" href="https://webfix.dev/learn/content-security-policy/">
+  <link rel="canonical" href="https://httpfixer.dev/learn/content-security-policy/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Content Security Policy — From Zero to Working CSP — WebFix Learn">
+  <meta property="og:title" content="Content Security Policy — From Zero to Working CSP — HttpFixer Learn">
   <meta property="og:description" content="Build CSP from your actual scripts and styles: directives, reporting, and production rollout.">
-  <meta property="og:url" content="https://webfix.dev/learn/content-security-policy/">
+  <meta property="og:url" content="https://httpfixer.dev/learn/content-security-policy/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script type="application/ld+json">
-{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"WebFix","item":"https://webfix.dev/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://webfix.dev/learn/"},{"@type":"ListItem","position":3,"name":"Content Security Policy — From Zero to Working CSP","item":"https://webfix.dev/learn/content-security-policy/"}]},{"@type":"TechArticle","headline":"Content Security Policy — From Zero to Working CSP","description":"Practical CSP guide covering directives, resource discovery, and nonce-based policies without unsafe-inline.","url":"https://webfix.dev/learn/content-security-policy/","datePublished":"2026-03-31","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Should I start with Content-Security-Policy or Content-Security-Policy-Report-Only?","acceptedAnswer":{"@type":"Answer","text":"Use Report-Only first. Collect violation reports without blocking traffic, tighten sources until noise drops, then flip the enforced header."}},{"@type":"Question","name":"What replaces unsafe-inline for scripts in React or Next.js?","acceptedAnswer":{"@type":"Answer","text":"Nonces generated per request and passed to script tags, or hashes for static inline bootstraps. Frameworks like Next.js can wire nonce support through middleware and render APIs."}},{"@type":"Question","name":"Why does my CDN break after enabling CSP?","acceptedAnswer":{"@type":"Answer","text":"Third-party script and style origins must appear explicitly in script-src and style-src. font-src and connect-src often need extra hosts for analytics and WebSockets."}}]}]}
+{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://httpfixer.dev/learn/"},{"@type":"ListItem","position":3,"name":"Content Security Policy — From Zero to Working CSP","item":"https://httpfixer.dev/learn/content-security-policy/"}]},{"@type":"TechArticle","headline":"Content Security Policy — From Zero to Working CSP","description":"Practical CSP guide covering directives, resource discovery, and nonce-based policies without unsafe-inline.","url":"https://httpfixer.dev/learn/content-security-policy/","datePublished":"2026-03-31","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Should I start with Content-Security-Policy or Content-Security-Policy-Report-Only?","acceptedAnswer":{"@type":"Answer","text":"Use Report-Only first. Collect violation reports without blocking traffic, tighten sources until noise drops, then flip the enforced header."}},{"@type":"Question","name":"What replaces unsafe-inline for scripts in React or Next.js?","acceptedAnswer":{"@type":"Answer","text":"Nonces generated per request and passed to script tags, or hashes for static inline bootstraps. Frameworks like Next.js can wire nonce support through middleware and render APIs."}},{"@type":"Question","name":"Why does my CDN break after enabling CSP?","acceptedAnswer":{"@type":"Answer","text":"Third-party script and style origins must appear explicitly in script-src and style-src. font-src and connect-src often need extra hosts for analytics and WebSockets."}}]}]}
   </script>
   <style>
     :root {
@@ -52,7 +52,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">WebFix <span>/</span> Learn</a>
+    <a href="/" class="brand">HttpFixer <span>/</span> Learn</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,7 +63,7 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">WebFix</a> → Learn → Content Security Policy — From Zero to Working CSP</div>
+    <div class="breadcrumb"><a href="/">HttpFixer</a> → Learn → Content Security Policy — From Zero to Working CSP</div>
     <article>
       <h1>Content Security Policy — From Zero to Working CSP</h1>
       <p class="lead">CSP is how you tell the browser which origins are allowed to execute or render subresources for a document. Done well, it shrinks your XSS blast radius. Done lazily—think <code>unsafe-inline</code> everywhere—it’s theater. Below: why CSP exists, then how to build a policy from what your page actually loads.</p>
@@ -117,7 +117,7 @@
     <a href="/csp/" class="tool-cta">Open CSPFixer →</a>
   </main>
   <footer>
-    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>HttpFixer by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
     <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>

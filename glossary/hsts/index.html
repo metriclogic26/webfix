@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>What is HSTS? — WebFix Glossary</title>
+  <title>What is HSTS? — HttpFixer Glossary</title>
   <meta name="description" content="HSTS tells browsers to use HTTPS only for your host, closing the first-visit downgrade gap.">
-  <link rel="canonical" href="https://webfix.dev/glossary/hsts/">
+  <link rel="canonical" href="https://httpfixer.dev/glossary/hsts/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="What is HSTS? — WebFix Glossary">
+  <meta property="og:title" content="What is HSTS? — HttpFixer Glossary">
   <meta property="og:description" content="HSTS tells browsers to use HTTPS only for your host, closing the first-visit downgrade gap.">
-  <meta property="og:url" content="https://webfix.dev/glossary/hsts/">
+  <meta property="og:url" content="https://httpfixer.dev/glossary/hsts/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "HTTP Strict Transport Security (HSTS)", "description": "Tells browsers to only connect to your site over HTTPS for a set period.", "url": "https://webfix.dev/glossary/hsts/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "WebFix Security Glossary", "url": "https://webfix.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://webfix.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "HTTP Strict Transport Security (HSTS)"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can HSTS break local development?", "acceptedAnswer": {"@type": "Answer", "text": "Usually not if you use different hostnames. If you set includeSubDomains on a parent domain used for dev, you can pin yourself to HTTPS in ways you did not intend—use separate zones or shorter max-age in tests."}}, {"@type": "Question", "name": "Do I need preload?", "acceptedAnswer": {"@type": "Answer", "text": "Preload is optional. Start with a conservative max-age, prove HTTPS everywhere, then add preload only if all subdomains are ready for long-lived HTTPS-only behavior."}}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "HTTP Strict Transport Security (HSTS)", "description": "Tells browsers to only connect to your site over HTTPS for a set period.", "url": "https://httpfixer.dev/glossary/hsts/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "HttpFixer Security Glossary", "url": "https://httpfixer.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://httpfixer.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "HTTP Strict Transport Security (HSTS)"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can HSTS break local development?", "acceptedAnswer": {"@type": "Answer", "text": "Usually not if you use different hostnames. If you set includeSubDomains on a parent domain used for dev, you can pin yourself to HTTPS in ways you did not intend—use separate zones or shorter max-age in tests."}}, {"@type": "Question", "name": "Do I need preload?", "acceptedAnswer": {"@type": "Answer", "text": "Preload is optional. Start with a conservative max-age, prove HTTPS everywhere, then add preload only if all subdomains are ready for long-lived HTTPS-only behavior."}}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -54,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">WebFix <span>/</span> Glossary</a>
+    <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -65,7 +65,7 @@
     </div>
   </nav>
   <main class="">
-    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/glossary/">Glossary</a> → HTTP Strict Transport Security (HSTS)</div>
+    <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → HTTP Strict Transport Security (HSTS)</div>
     <h1>HTTP Strict Transport Security (HSTS)</h1>
     <p class="lead">Tells browsers to only connect to your site over HTTPS for a set period.</p>
 <p>HSTS is a simple response header. Once the browser has seen it over a trusted HTTPS connection, it will upgrade or reject plain HTTP for that host (and optionally subdomains) until <code>max-age</code> expires. Preload lists let new users get protection even on the first visit, but only after you meet the preload requirements.</p>
@@ -75,11 +75,11 @@
 <div class="code-block">Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</div>
 <h2>Spec</h2>
 <p><a href="https://www.rfc-editor.org/rfc/rfc6797">RFC 6797</a> · <a href="https://hstspreload.org/">HSTS Preload</a></p>
-    <div class="related-links"><span>Related:</span> <a href="/fix/headers/nginx/">Fix headers (Nginx)</a> · <a href="/error/hsts-missing/">HSTS missing error</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/fix/headers/nginx/">Fix headers (Nginx)</a> · <a href="/error/hsts-missing/">HSTS missing error</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div>
     <a href="/headers/" class="tool-cta">Audit headers with HeadersFixer →</a>
   </main>
   <footer>
-    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>HttpFixer by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
     <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>

@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>What is a CORS preflight (OPTIONS)? — WebFix Glossary</title>
+  <title>What is a CORS preflight (OPTIONS)? — HttpFixer Glossary</title>
   <meta name="description" content="Browsers send an OPTIONS request before non-simple cross-origin requests; your API must answer it correctly.">
-  <link rel="canonical" href="https://webfix.dev/glossary/preflight-request/">
+  <link rel="canonical" href="https://httpfixer.dev/glossary/preflight-request/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="What is a CORS preflight (OPTIONS)? — WebFix Glossary">
+  <meta property="og:title" content="What is a CORS preflight (OPTIONS)? — HttpFixer Glossary">
   <meta property="og:description" content="Browsers send an OPTIONS request before non-simple cross-origin requests; your API must answer it correctly.">
-  <meta property="og:url" content="https://webfix.dev/glossary/preflight-request/">
+  <meta property="og:url" content="https://httpfixer.dev/glossary/preflight-request/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "CORS Preflight Request", "description": "An OPTIONS request the browser sends before a cross-origin request to check permissions.", "url": "https://webfix.dev/glossary/preflight-request/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "WebFix Security Glossary", "url": "https://webfix.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "WebFix", "item": "https://webfix.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://webfix.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "CORS Preflight Request"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why do I see two requests in DevTools?", "acceptedAnswer": {"@type": "Answer", "text": "The first is the OPTIONS preflight; the second is your real request. Both must succeed for the browser to expose the response to your JavaScript."}}, {"@type": "Question", "name": "Can I disable preflight?", "acceptedAnswer": {"@type": "Answer", "text": "You cannot disable it from the client for non-simple requests. You can sometimes redesign APIs to use simple requests—often not worth it versus fixing OPTIONS on the server."}}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "CORS Preflight Request", "description": "An OPTIONS request the browser sends before a cross-origin request to check permissions.", "url": "https://httpfixer.dev/glossary/preflight-request/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "HttpFixer Security Glossary", "url": "https://httpfixer.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://httpfixer.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "CORS Preflight Request"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why do I see two requests in DevTools?", "acceptedAnswer": {"@type": "Answer", "text": "The first is the OPTIONS preflight; the second is your real request. Both must succeed for the browser to expose the response to your JavaScript."}}, {"@type": "Question", "name": "Can I disable preflight?", "acceptedAnswer": {"@type": "Answer", "text": "You cannot disable it from the client for non-simple requests. You can sometimes redesign APIs to use simple requests—often not worth it versus fixing OPTIONS on the server."}}]}]}</script>
   <style>
     :root {
       --bg: #0B0D14; --surface: #12151F; --border: #252836;
@@ -54,7 +54,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">WebFix <span>/</span> Glossary</a>
+    <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -65,7 +65,7 @@
     </div>
   </nav>
   <main class="">
-    <div class="breadcrumb"><a href="/">WebFix</a> → <a href="/glossary/">Glossary</a> → CORS Preflight Request</div>
+    <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → CORS Preflight Request</div>
     <h1>CORS Preflight Request</h1>
     <p class="lead">An OPTIONS request the browser sends before a cross-origin request to check permissions.</p>
 <p>“Simple” GET/HEAD/POST with safelisted headers skips preflight. Anything with custom headers, JSON content types, PUT/PATCH/DELETE, or credentials in certain combinations triggers a preflight: the browser sends <code>OPTIONS</code> with <code>Access-Control-Request-Method</code> and sometimes <code>Access-Control-Request-Headers</code>. The server answers with allowed methods and headers plus max-age for caching the result.</p>
@@ -85,11 +85,11 @@ Access-Control-Allow-Headers: authorization, content-type
 Access-Control-Max-Age: 86400</div>
 <h2>Spec</h2>
 <p><a href="https://fetch.spec.whatwg.org/#cors-preflight-fetch">Fetch — CORS-preflight fetch</a></p>
-    <div class="related-links"><span>Related:</span> <a href="/fix/cors/express/">Fix CORS (Express)</a> · <a href="/error/cors-blocked/">CORS blocked error</a> · <a href="/vs/webfix-vs-securityheaders/">WebFix vs security header checkers</a></div>
+    <div class="related-links"><span>Related:</span> <a href="/fix/cors/express/">Fix CORS (Express)</a> · <a href="/error/cors-blocked/">CORS blocked error</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div>
     <a href="/cors/" class="tool-cta">Test preflight with CORSFixer →</a>
   </main>
   <footer>
-    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>HttpFixer by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
     <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>

@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HTTP Security Headers — Complete Guide — WebFix Learn</title>
+  <title>HTTP Security Headers — Complete Guide — HttpFixer Learn</title>
   <meta name="description" content="HSTS, CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy, COOP, and COEP—what they do, how people break them, and copy-paste Nginx, Apache, and Vercel snippets.">
-  <link rel="canonical" href="https://webfix.dev/learn/security-headers/">
+  <link rel="canonical" href="https://httpfixer.dev/learn/security-headers/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="HTTP Security Headers — Complete Guide — WebFix Learn">
+  <meta property="og:title" content="HTTP Security Headers — Complete Guide — HttpFixer Learn">
   <meta property="og:description" content="What each security header does, common misconfigurations, and exact server config examples.">
-  <meta property="og:url" content="https://webfix.dev/learn/security-headers/">
+  <meta property="og:url" content="https://httpfixer.dev/learn/security-headers/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script type="application/ld+json">
-{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"WebFix","item":"https://webfix.dev/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://webfix.dev/learn/"},{"@type":"ListItem","position":3,"name":"HTTP Security Headers — Complete Guide","item":"https://webfix.dev/learn/security-headers/"}]},{"@type":"TechArticle","headline":"HTTP Security Headers — Complete Guide","description":"Guide to HSTS, CSP, framing, MIME sniffing, referrer, permissions, and cross-origin isolation headers with server config examples.","url":"https://webfix.dev/learn/security-headers/","datePublished":"2026-03-31","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do I need every security header on day one?","acceptedAnswer":{"@type":"Answer","text":"No. Ship HSTS only after HTTPS works end-to-end, then CSP in report-only before enforcement. Framing and MIME-sniffing headers are usually low risk to add early."}},{"@type":"Question","name":"Why does my CSP work in curl but fail in the browser?","acceptedAnswer":{"@type":"Answer","text":"Browsers enforce CSP on documents they render. Extensions, service workers, and inline scripts all interact with the policy. Test in a clean profile and check the console for blocked-uri reports."}},{"@type":"Question","name":"What is the difference between COOP and COEP?","acceptedAnswer":{"@type":"Answer","text":"COOP isolates your window from other browsing contexts; COEP requires explicit opt-in for cross-origin resources so sensitive APIs like SharedArrayBuffer can be enabled safely."}}]}]}
+{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://httpfixer.dev/learn/"},{"@type":"ListItem","position":3,"name":"HTTP Security Headers — Complete Guide","item":"https://httpfixer.dev/learn/security-headers/"}]},{"@type":"TechArticle","headline":"HTTP Security Headers — Complete Guide","description":"Guide to HSTS, CSP, framing, MIME sniffing, referrer, permissions, and cross-origin isolation headers with server config examples.","url":"https://httpfixer.dev/learn/security-headers/","datePublished":"2026-03-31","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do I need every security header on day one?","acceptedAnswer":{"@type":"Answer","text":"No. Ship HSTS only after HTTPS works end-to-end, then CSP in report-only before enforcement. Framing and MIME-sniffing headers are usually low risk to add early."}},{"@type":"Question","name":"Why does my CSP work in curl but fail in the browser?","acceptedAnswer":{"@type":"Answer","text":"Browsers enforce CSP on documents they render. Extensions, service workers, and inline scripts all interact with the policy. Test in a clean profile and check the console for blocked-uri reports."}},{"@type":"Question","name":"What is the difference between COOP and COEP?","acceptedAnswer":{"@type":"Answer","text":"COOP isolates your window from other browsing contexts; COEP requires explicit opt-in for cross-origin resources so sensitive APIs like SharedArrayBuffer can be enabled safely."}}]}]}
   </script>
   <style>
     :root {
@@ -52,7 +52,7 @@
 </head>
 <body>
   <nav>
-    <a href="/" class="brand">WebFix <span>/</span> Learn</a>
+    <a href="/" class="brand">HttpFixer <span>/</span> Learn</a>
     <div class="right">
       <a href="/headers/">Headers</a>
       <a href="/cors/">CORS</a>
@@ -63,7 +63,7 @@
     </div>
   </nav>
   <main>
-    <div class="breadcrumb"><a href="/">WebFix</a> → Learn → HTTP Security Headers — Complete Guide</div>
+    <div class="breadcrumb"><a href="/">HttpFixer</a> → Learn → HTTP Security Headers — Complete Guide</div>
     <article>
       <h1>HTTP Security Headers — Complete Guide</h1>
       <p class="lead">Response headers are the cheapest defense-in-depth layer you own: the browser reads them on every navigation and applies policy before your JavaScript runs. Here’s what teams actually ship, how those headers get misconfigured, and copy-paste snippets that fix them on common stacks.</p>
@@ -128,7 +128,7 @@ Header always set Referrer-Policy "strict-origin-when-cross-origin"</div>
     <a href="/headers/" class="tool-cta">Open HeadersFixer →</a>
   </main>
   <footer>
-    <span>WebFix by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
+    <span>HttpFixer by MetricLogic · <a href="https://configclarity.dev">configclarity.dev</a> · <a href="https://domainpreflight.dev">domainpreflight.dev</a> · <a href="https://packagefix.dev">packagefix.dev</a></span>
     <span>MIT · <a href="https://github.com/metriclogic26/webfix">GitHub →</a></span>
   </footer>
 </body>
