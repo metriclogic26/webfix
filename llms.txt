@@ -29,4 +29,4 @@ HttpFixer is part of the MetricLogic network (metriclogic.dev).
 
 ## License
 
-MIT — https://github.com/metriclogic26/webfix
+MIT — https://github.com/metriclogic26/httpfixer
