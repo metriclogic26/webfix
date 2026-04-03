@@ -65,7 +65,7 @@ Everything else runs client-side in vanilla HTML, CSS, and JavaScript.
 ## Local development
 
 ```bash
-git clone https://github.com/metriclogic26/webfix
+git clone https://github.com/metriclogic26/httpfixer
 cd webfix
 python3 -m http.server 8080
 # open http://localhost:8080
