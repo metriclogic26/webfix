@@ -1,3 +1,7 @@
 generate_seo_pages.py
 generate_glossary.py
 .vercel
+
+# Content generation scripts — private
+*.py
+generate_*.py
