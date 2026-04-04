@@ -1664,7 +1664,8 @@
           '<p style="opacity:0.75;font-size:13px;">No failing performance audits matched. Great job — or try another URL.</p>';
       }
 
-      if (stack !== 'Cloudflare') {
+      var detectedForCta = getEl('stack-label').textContent || '';
+      if (stack !== 'Cloudflare' && detectedForCta !== 'Cloudflare') {
         html +=
           '<p class="speed-cf-cta"><a href="https://cloudflare.com" target="_blank" rel="noopener noreferrer">Fix all of this automatically with Cloudflare\'s free CDN →</a></p>';
       }
