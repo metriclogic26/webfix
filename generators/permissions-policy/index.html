@@ -204,13 +204,18 @@
   </table>
 
   <button class="gen-btn" onclick="buildPermsPolicy()">Generate Header</button>
-  <button class="copy-btn" onclick="copyOutput('perms-output')">Copy</button>
 
   <label style="margin-top:1rem">Generated Header</label>
-  <div class="gen-output" id="perms-output">Click "Generate Header" to build your policy.</div>
+  <div style="position:relative">
+    <div class="gen-output" id="perms-output">Click "Generate Header" to build your policy.</div>
+    <button onclick="copyOutput('perms-output')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button>
+  </div>
 
   <label style="margin-top:1rem">Nginx</label>
-  <div class="gen-output" id="perms-nginx"></div>
+  <div style="position:relative">
+    <div class="gen-output" id="perms-nginx"></div>
+    <button onclick="copyOutput('perms-nginx')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button>
+  </div>
 </div>
 
 <script>

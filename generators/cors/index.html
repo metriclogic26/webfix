@@ -201,16 +201,24 @@
   </div>
 
   <button class="gen-btn" onclick="buildCORS()">Generate Headers</button>
-  <button class="copy-btn" onclick="copyOutput('cors-nginx')">Copy Nginx</button>
 
   <label style="margin-top:1rem">Nginx Config</label>
-  <div class="gen-output" id="cors-nginx">Click "Generate Headers" to build your config.</div>
+  <div style="position:relative">
+    <div class="gen-output" id="cors-nginx">Click "Generate Headers" to build your config.</div>
+    <button onclick="copyOutput('cors-nginx')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button>
+  </div>
 
   <label style="margin-top:1rem">Express (Node.js)</label>
-  <div class="gen-output" id="cors-express"></div>
+  <div style="position:relative">
+    <div class="gen-output" id="cors-express"></div>
+    <button onclick="copyOutput('cors-express')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button>
+  </div>
 
   <label style="margin-top:1rem">FastAPI (Python)</label>
-  <div class="gen-output" id="cors-fastapi"></div>
+  <div style="position:relative">
+    <div class="gen-output" id="cors-fastapi"></div>
+    <button onclick="copyOutput('cors-fastapi')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button>
+  </div>
 </div>
 
 <script>
