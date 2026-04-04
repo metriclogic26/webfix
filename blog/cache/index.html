@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caching &middot; HttpFixer Blog</title>
+  <meta name="description" content="Cache-Control, CDN caching, stale-while-revalidate, and HTTP caching guides for developers.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/cache/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Caching &mdash; HttpFixer Blog">
+  <meta property="og:description" content="Cache-Control, CDN caching, and HTTP caching guides.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/cache/">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .bc{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .bc a{color:var(--purple);text-decoration:none}
+    h1{font-size:1.6rem;font-weight:600;margin-bottom:0.75rem}
+    .lead{font-size:14px;opacity:0.7;margin-bottom:2rem;line-height:1.8}
+    .count{display:inline-block;background:rgba(108,99,255,0.15);color:var(--purple);padding:0.2rem 0.6rem;border-radius:4px;font-size:12px;margin-bottom:1.5rem}
+    ul{list-style:none;padding:0}
+    li{border-bottom:1px solid var(--border)}
+    li a{display:flex;align-items:center;gap:0.5rem;padding:0.85rem 0;color:var(--text);text-decoration:none;font-size:13px;opacity:0.8;transition:all 0.15s}
+    li a:hover{color:var(--purple);opacity:1;padding-left:0.5rem}
+    .arr{color:var(--purple);opacity:0.5;flex-shrink:0}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="bc"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; Caching</div>
+  <h1>Caching</h1>
+  <p class="lead">Cache-Control, CDN caching, stale-while-revalidate, and HTTP caching guides. Understand every directive and fix misconfigured cache headers.</p>
+  <span class="count">4 articles</span>
+  <ul>
+    <li><a href="/blog/cache/cache-control-cheatsheet/"><span class="arr">&rarr;</span> Cache-Control Cheatsheet 2026 — Every Directive Explained</a></li>
+    <li><a href="/blog/cache/no-cache-vs-no-store/"><span class="arr">&rarr;</span> no-cache vs no-store — The Difference That Trips Everyone Up</a></li>
+    <li><a href="/blog/cache/stalele-revalidate-explained/"><span class="arr">&rarr;</span> stale-while-revalidate Explained — Background Cache Refresh Without Latency</a></li>
+    <li><a href="/blog/cache/cache-control-directives-reference/"><span class="arr">&rarr;</span> Cache-Control Directives Reference — Complete 2026 Guide</a></li>
+  </ul>
+  <a href="/tools/cache-simulator/" class="tool-cta">Visualise Cache-Control headers &rarr; Cache-Control Simulator</a>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">&copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>
