@@ -1065,7 +1065,7 @@ strict-transport-security: max-age=3600
           issues.push('max-age is less than 6 months (15552000)');
           status = 'fail';
         } else if (maxAge < 31536000) {
-          issues.push('Recommend max-age of at least 1 year (31536000)');
+          issues.push('Consider setting max-age to at least 1 year (31536000)');
           if (status !== 'fail') status = 'warn';
         }
         if (!hasIncludeSubDomains) {
@@ -1223,13 +1223,13 @@ strict-transport-security: max-age=3600
         var issues = [];
         var status = 'pass';
         if (!raw) {
-          issues.push('COOP is not set — your page can be opened in a cross-origin browsing context, enabling cross-origin attacks like Spectre. Recommend: same-origin');
+          issues.push('COOP is not set — your page can be opened in a cross-origin browsing context, enabling cross-origin attacks like Spectre. Consider: same-origin');
           status = 'warn';
         } else if (raw === 'unsafe-none') {
           issues.push('unsafe-none disables COOP protection entirely');
           status = 'warn';
         } else if (raw !== 'same-origin' && raw !== 'same-origin-allow-popups') {
-          issues.push('Recommend same-origin or same-origin-allow-popups');
+          issues.push('Consider same-origin or same-origin-allow-popups');
           status = 'warn';
         }
         one('Cross-Origin-Opener-Policy', status, raw || null, issues, status);
@@ -1241,13 +1241,13 @@ strict-transport-security: max-age=3600
         var issues = [];
         var status = 'pass';
         if (!raw) {
-          issues.push('COEP is not set — required if you want to enable SharedArrayBuffer or high-resolution timers. Recommend: require-corp');
+          issues.push('COEP is not set — required if you want to enable SharedArrayBuffer or high-resolution timers. Consider: require-corp');
           status = 'warn';
         } else if (raw === 'unsafe-none') {
           issues.push('unsafe-none disables COEP protection');
           status = 'warn';
         } else if (raw !== 'require-corp' && raw !== 'credentialless') {
-          issues.push('Recommend require-corp or credentialless');
+          issues.push('Consider require-corp or credentialless');
           status = 'warn';
         }
         one('Cross-Origin-Embedder-Policy', status, raw || null, issues, status);
@@ -1592,7 +1592,7 @@ strict-transport-security: max-age=3600
 
       var cspResult = results.filter(function (r) { return r.name === 'Content-Security-Policy'; })[0];
       var showSharePointBanner = cspResult && cspResult.status === 'fail' && (
-        scannedUrl.indexOf('sharepoint') !== -1 || scannedUrl.indexOf('microsoft') !== -1 || stack === 'Generic / Unknown'
+        scannedUrl.indexOf('sharepoint') !== -1 || scannedUrl.indexOf('microsoft') !== -1
       );
       if (showSharePointBanner) {
         var banner = document.createElement('div');
@@ -1850,6 +1850,9 @@ strict-transport-security: max-age=3600
     getEl('scan').addEventListener('click', function () {
       var url = getEl('url').value.trim();
       if (!url) return;
+
+      if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+      getEl('url').value = url;
 
       showError(false);
       setLoading(true);
