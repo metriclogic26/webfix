@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Headers on Cloudflare — Transform Rules Configuration &middot; HttpFixer</title>
+  <meta name="description" content="Add security headers to every site behind Cloudflare using Transform Rules. HSTS, CSP, X-Frame-Options — set once at the edge, applies everywhere.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/platform/security-headers-cloudflare/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="Security Headers on Cloudflare — Transform Rules Configuration">
+  <meta property="og:description" content="Add security headers to every site behind Cloudflare using Transform Rules. HSTS, CSP, X-Frame-Options — set once at the edge, applies everywhere.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/platform/security-headers-cloudflare/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Security Headers on Cloudflare","description":"Configure security headers via Cloudflare Transform Rules.","url":"https://httpfixer.dev/blog/platform/security-headers-cloudflare/","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://httpfixer.dev/blog/"},{"@type":"ListItem","position":3,"name":"Security Headers on Cloudflare","item":"https://httpfixer.dev/blog/platform/security-headers-cloudflare/"}]}]}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/platform/">Platform</a> &rarr; Security Headers on Cloudflare</div>
+<h1>Security Headers on Cloudflare — Transform Rules Configuration</h1>
+<p class="lead">Cloudflare lets you set security headers at the edge via Transform Rules — no origin server changes needed. Every request gets the headers before it reaches your users.</p>
+
+<a href="/" class="tool-cta">Scan your Cloudflare site &rarr; HeadersFixer</a>
+
+<h2>The two approaches</h2>
+<p>You can set security headers either from your origin server (Nginx, your app) or at the Cloudflare edge via Transform Rules. Edge rules win because they apply even if your origin forgets to send them — and they survive origin changes.</p>
+
+<h2>Setting headers via Transform Rules (recommended)</h2>
+<ol>
+  <li>Cloudflare Dashboard &rarr; your domain</li>
+  <li>Rules &rarr; Transform Rules &rarr; Modify Response Header</li>
+  <li>Create Rule &rarr; name it "Security Headers"</li>
+  <li>When: All incoming requests (or use a custom filter)</li>
+  <li>Then: Set static — add each header below</li>
+</ol>
+
+<table>
+  <thead><tr><th>Header name</th><th>Value</th></tr></thead>
+  <tbody>
+    <tr><td>Strict-Transport-Security</td><td>max-age=31536000; includeSubDomains</td></tr>
+    <tr><td>X-Frame-Options</td><td>SAMEORIGIN</td></tr>
+    <tr><td>X-Content-Type-Options</td><td>nosniff</td></tr>
+    <tr><td>Referrer-Policy</td><td>strict-origin-when-cross-origin</td></tr>
+    <tr><td>Permissions-Policy</td><td>camera=(), microphone=(), geolocation=(), interest-cohort=()</td></tr>
+    <tr><td>Cross-Origin-Opener-Policy</td><td>same-origin</td></tr>
+  </tbody>
+</table>
+
+<h2>Adding CSP via Transform Rules</h2>
+<p>CSP values can be long — Cloudflare Transform Rules support up to 4096 characters per header value:</p>
+<pre>Header name: Content-Security-Policy
+Value: default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; object-src 'none'; base-uri 'self';</pre>
+
+<h2>Wrangler (Workers config)</h2>
+<p>If you use Cloudflare Workers, set headers in your Worker script:</p>
+<pre>export default {
+  async fetch(request, env) {
+    const response = await fetch(request)
+    const newResponse = new Response(response.body, response)
+
+    newResponse.headers.set('X-Frame-Options', 'SAMEORIGIN')
+    newResponse.headers.set('X-Content-Type-Options', 'nosniff')
+    newResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+    newResponse.headers.set(
+      'Strict-Transport-Security',
+      'max-age=31536000; includeSubDomains'
+    )
+    newResponse.headers.set(
+      'Permissions-Policy',
+      'camera=(), microphone=(), geolocation=()'
+    )
+
+    return newResponse
+  }
+}</pre>
+
+<h2>HSTS on Cloudflare</h2>
+<p>Cloudflare has a dedicated HSTS toggle: Dashboard &rarr; SSL/TLS &rarr; Edge Certificates &rarr; HSTS. Use this instead of a Transform Rule for HSTS — it is easier to manage and handles the preload submission correctly.</p>
+
+<div class="warn">Do not enable HSTS includeSubDomains until all subdomains support HTTPS. If any subdomain is HTTP-only, users will be locked out after HSTS is cached.</div>
+
+<h2>Why headers sometimes disappear behind Cloudflare</h2>
+<p>If your origin sets headers but they vanish in production, Cloudflare may be stripping them. Check:</p>
+<ul>
+  <li>Cloudflare does not strip security headers by default — but some apps or WAF rules can override them</li>
+  <li>If origin and Cloudflare both set the same header, Cloudflare's Transform Rule wins</li>
+  <li>Use Header Diff to compare headers fetched directly from origin vs through Cloudflare</li>
+</ul>
+
+<a href="/diff/" class="tool-cta">Compare origin vs Cloudflare headers &rarr; Header Diff</a>
+<div class="related">Related: <a href="/blog/platform/security-headers-vercel/">Vercel security headers</a> &nbsp;<a href="/blog/platform/security-headers-netlify/">Netlify security headers</a> &nbsp;<a href="/generators/security-headers/">Security Headers Generator</a></div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

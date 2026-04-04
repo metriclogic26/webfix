@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>502 Bad Gateway — What It Means and How to Fix It &middot; HttpFixer</title>
+  <meta name="description" content="502 Bad Gateway means your reverse proxy or CDN got an invalid response from the upstream server. Here is every cause and the exact fix for Nginx, Cloudflare, and more.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/errors/502-bad-gateway/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="502 Bad Gateway — What It Means and How to Fix It">
+  <meta property="og:description" content="502 Bad Gateway means your reverse proxy or CDN got an invalid response from the upstream server. Here is every cause and the exact fix for Nginx, Cloudflare, and more.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/errors/502-bad-gateway/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"502 Bad Gateway — Causes and Fixes","description":"502 explained with fixes for Nginx, Cloudflare, and more.","url":"https://httpfixer.dev/blog/errors/502-bad-gateway/","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://httpfixer.dev/blog/"},{"@type":"ListItem","position":3,"name":"502 Bad Gateway — Causes and Fixes","item":"https://httpfixer.dev/blog/errors/502-bad-gateway/"}]}]}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/errors/">Errors</a> &rarr; 502 Bad Gateway</div>
+<h1>502 Bad Gateway — What It Means and How to Fix It</h1>
+<p class="lead">A 502 Bad Gateway means the server acting as a gateway (Nginx, Cloudflare, a load balancer) received an invalid or no response from the upstream server it was trying to reach. The proxy is up — the backend behind it is not.</p>
+
+<h2>What the error actually means</h2>
+<pre>Client → [Nginx / Cloudflare / Load Balancer] → [Your App Server]
+                         ↑
+              This layer returned 502
+              because THIS layer failed ↓</pre>
+
+<p>502 is always the middle layer reporting a problem with the layer behind it. The gateway is working — what it's proxying to is not.</p>
+
+<h2>Most common causes</h2>
+<table>
+  <thead><tr><th>Cause</th><th>Symptom</th></tr></thead>
+  <tbody>
+    <tr><td>App server crashed or not running</td><td>502 immediately on all requests</td></tr>
+    <tr><td>App server overloaded, queue full</td><td>502 under load, works on low traffic</td></tr>
+    <tr><td>Wrong upstream address in Nginx config</td><td>502 immediately, connection refused in logs</td></tr>
+    <tr><td>App server taking too long (timeout)</td><td>504 Gateway Timeout, sometimes reported as 502</td></tr>
+    <tr><td>App crashed mid-response</td><td>502 on specific endpoints only</td></tr>
+    <tr><td>Cloudflare can't reach your origin</td><td>Cloudflare's own 502 error page</td></tr>
+  </tbody>
+</table>
+
+<h2>Diagnosing — first steps</h2>
+<pre># Check if your app server is running
+systemctl status your-app   # or pm2 status, docker ps, etc.
+
+# Check Nginx error logs
+tail -50 /var/log/nginx/error.log
+
+# Test the upstream directly (bypass Nginx)
+curl -v http://localhost:3000/your-endpoint
+
+# Check if the port is listening
+ss -tlnp | grep 3000</pre>
+
+<h2>Nginx — fixing common 502 causes</h2>
+
+<h3>Wrong upstream address</h3>
+<pre># Wrong — app is on port 3000, not 8080
+proxy_pass http://localhost:8080;
+
+# Correct
+proxy_pass http://localhost:3000;</pre>
+
+<h3>Upstream timeout too short</h3>
+<pre># Nginx defaults (60s) may be too short for slow backends
+proxy_connect_timeout 60s;
+proxy_send_timeout 60s;
+proxy_read_timeout 60s;
+
+# Increase for slow APIs or heavy processing
+proxy_read_timeout 120s;</pre>
+
+<h3>App crashes under load — upstream keepalive</h3>
+<pre>upstream backend {
+  server localhost:3000;
+  keepalive 32;  # Reuse connections instead of creating new ones
+}
+
+server {
+  location / {
+    proxy_pass http://backend;
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";  # Required for keepalive
+  }
+}</pre>
+
+<h2>Cloudflare — 502 causes</h2>
+<p>Cloudflare shows its own branded 502 when it cannot reach your origin. Check:</p>
+<ul>
+  <li>Your origin server is running and accepting connections on port 80 or 443</li>
+  <li>Your origin's firewall allows Cloudflare IP ranges</li>
+  <li>The origin IP in Cloudflare DNS is correct</li>
+  <li>SSL/TLS mode matches your origin setup (Full vs Full Strict)</li>
+</ul>
+
+<pre># Test origin directly (get your origin IP from Cloudflare DNS settings)
+curl -v --resolve yoursite.com:443:ORIGIN_IP https://yoursite.com/
+
+# Check Cloudflare can reach origin
+# Cloudflare Dashboard → Support → Diagnostics</pre>
+
+<h2>Docker / containerised apps</h2>
+<pre># Check container is running
+docker ps | grep your-app
+
+# Check container logs for crashes
+docker logs your-app --tail 50
+
+# Check if port is mapped correctly
+docker inspect your-app | grep HostPort
+
+# Nginx inside Docker — use service name not localhost
+proxy_pass http://app:3000;  # app = docker-compose service name</pre>
+
+<h2>502 vs 503 vs 504</h2>
+<table>
+  <thead><tr><th>Code</th><th>Meaning</th><th>Fix direction</th></tr></thead>
+  <tbody>
+    <tr><td>502 Bad Gateway</td><td>Invalid response from upstream</td><td>Check upstream server is running and responding correctly</td></tr>
+    <tr><td>503 Service Unavailable</td><td>Server intentionally refusing (maintenance, overload)</td><td>Check upstream capacity, add retry-after header</td></tr>
+    <tr><td>504 Gateway Timeout</td><td>Upstream took too long</td><td>Increase proxy timeout, optimise slow endpoint</td></tr>
+  </tbody>
+</table>
+
+<a href="/" class="tool-cta">Scan your response headers &rarr; HeadersFixer</a>
+<div class="related">Related: <a href="/blog/reference/http-status-codes-cheatsheet/">HTTP status codes cheatsheet</a> &nbsp;<a href="/blog/compare/staging-vs-production-headers/">Staging vs production headers</a></div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTTP ETag Explained — Cache Validation Without Full Downloads &middot; HttpFixer</title>
+  <meta name="description" content="ETags let browsers validate cached content without re-downloading it. If the ETag matches, the server returns 304 Not Modified. Here is how it works and how to configure it.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/cache/etag-explained/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="HTTP ETag Explained — Cache Validation Without Full Downloads">
+  <meta property="og:description" content="ETags let browsers validate cached content without re-downloading it. If the ETag matches, the server returns 304 Not Modified. Here is how it works and how to configure it.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/cache/etag-explained/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"HTTP ETag Explained","description":"ETags and cache validation explained with Nginx and CDN examples.","url":"https://httpfixer.dev/blog/cache/etag-explained/","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://httpfixer.dev/blog/"},{"@type":"ListItem","position":3,"name":"HTTP ETag Explained","item":"https://httpfixer.dev/blog/cache/etag-explained/"}]}]}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/cache/">Cache</a> &rarr; ETag Explained</div>
+<h1>HTTP ETag Explained — Cache Validation Without Full Downloads</h1>
+<p class="lead">An ETag is a fingerprint for a response. When cached content might be stale, the browser sends the ETag back to the server. If the content hasn't changed, the server returns <code>304 Not Modified</code> with no body — saving the full download.</p>
+
+<h2>How it works</h2>
+<pre># First request — server sends content + ETag
+GET /style.css HTTP/1.1
+
+HTTP/1.1 200 OK
+ETag: "abc123def456"
+Cache-Control: no-cache
+Content-Length: 12400
+[full CSS body]
+
+# Second request — browser sends ETag back
+GET /style.css HTTP/1.1
+If-None-Match: "abc123def456"
+
+# Response if unchanged — no body sent
+HTTP/1.1 304 Not Modified
+ETag: "abc123def456"
+Cache-Control: no-cache</pre>
+
+<p>The 304 response has no body — just headers. For large files this saves significant bandwidth and load time.</p>
+
+<h2>Strong vs weak ETags</h2>
+<table>
+  <thead><tr><th>Type</th><th>Format</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td>Strong</td><td><code>"abc123"</code></td><td>Byte-for-byte identical. Safe for range requests.</td></tr>
+    <tr><td>Weak</td><td><code>W/"abc123"</code></td><td>Semantically equivalent but may differ in minor ways (e.g. whitespace). Nginx generates weak ETags by default.</td></tr>
+  </tbody>
+</table>
+
+<h2>ETag vs Last-Modified</h2>
+<p>Both do cache validation. ETags are more precise — Last-Modified only has 1-second granularity, so files changed within the same second look identical. ETags are preferred.</p>
+<table>
+  <thead><tr><th>Header pair</th><th>Request header</th><th>Response if unchanged</th></tr></thead>
+  <tbody>
+    <tr><td>ETag / If-None-Match</td><td>If-None-Match: "abc123"</td><td>304 Not Modified</td></tr>
+    <tr><td>Last-Modified / If-Modified-Since</td><td>If-Modified-Since: Sat, 04 Apr 2026 00:00:00 GMT</td><td>304 Not Modified</td></tr>
+  </tbody>
+</table>
+
+<h2>Nginx — ETag configuration</h2>
+<p>Nginx enables ETags by default for static files. For proxied content, configure manually:</p>
+<pre># ETags are on by default for static files
+# Verify with:
+curl -sI https://yoursite.com/style.css | grep -i etag
+
+# Disable ETags (not recommended)
+etag off;
+
+# For proxy — pass upstream ETag through
+proxy_pass http://backend;
+proxy_pass_header ETag;</pre>
+
+<h2>Cloudflare and ETags</h2>
+<p>Cloudflare converts strong ETags to weak ETags when compression is applied (because the compressed body differs from the original). This is correct behaviour — the ETag still works for validation, it's just marked as weak.</p>
+<pre># Origin sends:
+ETag: "abc123"
+
+# Cloudflare may transform to:
+ETag: W/"abc123"  # After applying Brotli compression</pre>
+
+<h2>ETags with CDNs and multiple servers</h2>
+<p>If you have multiple origin servers, they may generate different ETags for the same file — breaking validation. Fix by generating ETags from file content (hash) rather than inode/mtime:</p>
+<pre># Nginx — use file size and last modified time (default)
+# These can differ across servers
+
+# Better: generate ETag from content hash in your app
+# Express example:
+const crypto = require('crypto')
+const hash = crypto.createHash('md5').update(fileContent).digest('hex')
+res.setHeader('ETag', `"${hash}"`)
+res.setHeader('Cache-Control', 'no-cache')</pre>
+
+<h2>The best Cache-Control + ETag combination</h2>
+<pre># HTML pages — always revalidate, use ETag for efficiency
+Cache-Control: no-cache
+ETag: "abc123"
+
+# Static assets — long cache, no revalidation needed
+Cache-Control: public, max-age=31536000, immutable
+# (No ETag needed — immutable means never revalidate)
+
+# API responses — revalidate, save bandwidth on unchanged data
+Cache-Control: no-cache
+ETag: "data-hash-abc123"</pre>
+
+<a href="/edge/" class="tool-cta">Audit your cache headers &rarr; EdgeFix</a>
+<a href="/tools/cache-simulator/" class="tool-cta" style="margin-left:0.5rem">Visualise Cache-Control &rarr; Cache Simulator</a>
+<div class="related">Related: <a href="/blog/cache/cache-control-cheatsheet/">Cache-Control cheatsheet</a> &nbsp;<a href="/blog/cache/no-cache-vs-no-store/">no-cache vs no-store</a> &nbsp;<a href="/edge/">EdgeFix — audit live cache headers</a></div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>
