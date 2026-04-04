@@ -1,0 +1,39 @@
+# httpfixer.dev — robots.txt
+# https://httpfixer.dev
+
+# All crawlers welcome — this is a public developer tool
+User-agent: *
+Allow: /
+Disallow: /.vercel/
+Disallow: /node_modules/
+
+# Sitemap
+Sitemap: https://httpfixer.dev/sitemap.xml
+
+# AI crawlers — explicitly allowed for GEO/AEO
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: Applebot
+Allow: /
