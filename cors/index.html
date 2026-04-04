@@ -777,6 +777,11 @@ access-control-allow-credentials: true
     function showStack(stack) {
       var el = getEl('stack-badge');
       var label = getEl('stack-label');
+      var hideFrameworkLabel = ['Vercel', 'Netlify', 'AWS CloudFront', 'Unknown'];
+      if (stack && hideFrameworkLabel.indexOf(stack) !== -1) {
+        if (el) el.classList.remove('visible');
+        return;
+      }
       if (stack && el && label) {
         label.textContent = stack;
         el.classList.add('visible');
@@ -793,7 +798,7 @@ access-control-allow-credentials: true
       if (headers['x-vercel-id'] || headers['x-vercel-cache']) return 'Vercel';
       if (headers['x-nf-request-id']) return 'Netlify';
       if (headers['cf-ray']) return 'Cloudflare';
-      if (headers['x-github-request-id']) return 'GitHub Pages';
+      if (headers['x-github-request-id']) return 'Unknown';
       if (headers['x-amz-cf-id']) return 'AWS CloudFront';
 
       if (/nginx/.test(server)) return 'Nginx';
@@ -990,6 +995,7 @@ access-control-allow-credentials: true
     function stackToTab(stack) {
       if (!stack) return 'express';
       var s = (stack + '').toLowerCase();
+      if (!s || s === 'unknown' || s === 'github pages') return 'express';
       if (s.indexOf('nginx') !== -1) return 'nginx';
       if (s.indexOf('fastapi') !== -1) return 'fastapi';
       if (s.indexOf('django') !== -1) return 'django';
@@ -1205,7 +1211,7 @@ access-control-allow-credentials: true
                 '<pre><code class="fix-code"></code></pre>' +
               '</div>' +
               '<p class="fix-note">' + escapeHtml(fixNoteText) + '</p>' +
-              '<p class="fix-asgi-note">Works for FastAPI, Starlette, vLLM, and any ASGI framework</p>' +
+              '<p class="fix-asgi-note" style="display:none">Works for FastAPI, Starlette, vLLM, and any ASGI framework</p>' +
             '</div>' +
           '</div>';
         cardsWrap.appendChild(card);
@@ -1220,6 +1226,8 @@ access-control-allow-credentials: true
               btn.classList.toggle('active', btn.getAttribute('data-tab') === tabKey);
             });
             codeEl.textContent = cardFixes[tabKey] || '';
+            var asgiNote = fixBlock.querySelector('.fix-asgi-note');
+            if (asgiNote) asgiNote.style.display = (tabKey === 'fastapi') ? 'block' : 'none';
           }
           showTab(defaultTab);
           tabBtns.forEach(function (btn) {
