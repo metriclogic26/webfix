@@ -1073,7 +1073,7 @@ strict-transport-security: max-age=3600
           if (status !== 'fail') status = 'warn';
         }
         if (!hasPreload) {
-          issues.push('preload is absent (optional but recommended)');
+          issues.push('preload is absent (optional but suggested)');
         }
         if (maxAge >= 31536000 && hasIncludeSubDomains) status = 'pass';
         else if (status !== 'fail') status = 'warn';
@@ -1597,7 +1597,7 @@ strict-transport-security: max-age=3600
       if (showSharePointBanner) {
         var banner = document.createElement('div');
         banner.className = 'sharepoint-banner';
-        banner.textContent = '⚠ SharePoint CSP Enforcement — Microsoft enforced Content Security Policy for SharePoint Online on March 1, 2026. A missing CSP is likely causing \'Refused to load script\' errors in your tenant. The recommended fix is in the CSP card below.';
+        banner.textContent = '⚠ SharePoint CSP Enforcement — Microsoft enforced Content Security Policy for SharePoint Online on March 1, 2026. A missing CSP is likely causing \'Refused to load script\' errors in your tenant. The suggested fix is in the CSP card below.';
         container.appendChild(banner);
       }
 
