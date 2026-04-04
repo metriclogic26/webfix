@@ -37,7 +37,7 @@
           "name": "What is the HSTS preload list?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A list built into Chrome, Firefox, Safari, and Edge of domains that must always be accessed over HTTPS. When your domain is on the list, HTTPS is enforced even on the very first visit \u2014 before the browser has ever seen your HSTS header. This prevents first-visit downgrade attacks."
+            "text": "A list built into Chrome, Firefox, Safari, and Edge of domains that must always be accessed over HTTPS. When your domain is on the list, HTTPS is enforced even on the very first visit — before the browser has ever seen your HSTS header. This prevents first-visit downgrade attacks."
           }
         },
         {
@@ -49,6 +49,19 @@
           }
         }
       ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "HSTS Preload Checker",
+      "description": "Check if your domain is on the HSTS preload list. Queries the live preload API and scans your HSTS header simultaneously.",
+      "url": "https://httpfixer.dev/tools/hsts-preload/",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
     }
   ]
 }</script>

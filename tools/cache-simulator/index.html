@@ -37,7 +37,7 @@
           "name": "What does Cache-Control stale-while-revalidate mean?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "stale-while-revalidate=N means that after max-age expires, the browser will serve the stale cached response immediately for up to N seconds while it fetches a fresh copy in the background. Users see no delay \u2014 they get the old version while the new one downloads."
+            "text": "stale-while-revalidate=N means that after max-age expires, the browser will serve the stale cached response immediately for up to N seconds while it fetches a fresh copy in the background. Users see no delay — they get the old version while the new one downloads."
           }
         },
         {
@@ -45,10 +45,23 @@
           "name": "What is the difference between no-cache and no-store?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "no-cache means the browser must revalidate with the server before using a cached response (it can still cache). no-store means the browser must not cache the response at all \u2014 it fetches fresh on every request."
+            "text": "no-cache means the browser must revalidate with the server before using a cached response (it can still cache). no-store means the browser must not cache the response at all — it fetches fresh on every request."
           }
         }
       ]
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Cache-Control Simulator",
+      "description": "Paste any Cache-Control header value and see a visual timeline. Understand stale-while-revalidate, s-maxage, and stale-if-error instantly.",
+      "url": "https://httpfixer.dev/tools/cache-simulator/",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
     }
   ]
 }</script>
