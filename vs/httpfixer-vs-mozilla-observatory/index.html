@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HttpFixer vs Mozilla Observatory - What's the Difference? - HttpFixer</title>
+  <meta name="description" content="Mozilla Observatory grades your site. HttpFixer generates the exact config to fix it for Nginx, Vercel, Cloudflare, Express. Here is how they compare.">
+  <link rel="canonical" href="https://httpfixer.dev/vs/httpfixer-vs-mozilla-observatory/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="HttpFixer vs Mozilla Observatory">
+  <meta property="og:description" content="Observatory checks. HttpFixer fixes. Here is what each tool does and when to use which.">
+  <meta property="og:url" content="https://httpfixer.dev/vs/httpfixer-vs-mozilla-observatory/">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "HttpFixer vs Mozilla Observatory",
+      "description": "Comparison of HttpFixer and Mozilla Observatory for HTTP security header analysis.",
+      "url": "https://httpfixer.dev/vs/httpfixer-vs-mozilla-observatory/"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does Mozilla Observatory do?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Mozilla Observatory scans your site's HTTP headers, gives a letter grade (A+ to F), and provides recommendations. It is a checker \u2014 it identifies problems but does not generate the configuration to fix them."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does HttpFixer do that Observatory does not?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "HttpFixer generates the exact copy-paste configuration for your specific server stack \u2014 Nginx, Apache, Vercel, Cloudflare, Express, Caddy, or FastAPI. Observatory tells you HSTS is missing. HttpFixer gives you the add_header directive to add it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I use both tools?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes \u2014 use Observatory for a quick grade and to understand your overall posture. Use HttpFixer when you need the actual configuration to fix what Observatory found."
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--text:#E2E4F0;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .bc{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .bc a{color:var(--purple);text-decoration:none}
+    h1{font-size:1.7rem;font-weight:600;line-height:1.2;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);font-weight:600;color:var(--purple)}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    .win{color:var(--green)}
+    .neutral{opacity:0.5}
+    ul{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .cta-bar{display:flex;gap:1rem;margin:2rem 0;flex-wrap:wrap}
+    .cta{display:inline-block;padding:0.7rem 1.4rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-size:13px;font-weight:600}
+    .cta-out{display:inline-block;padding:0.7rem 1.4rem;border:1px solid var(--border);color:var(--text);text-decoration:none;border-radius:6px;font-size:13px;opacity:0.7}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column}h1{font-size:1.3rem}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> vs</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a><a href="/csp/">CSP</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="bc"><a href="/">HttpFixer</a> &rarr; <a href="/vs/">vs</a> &rarr; Mozilla Observatory</div>
+  <h1>HttpFixer vs Mozilla Observatory</h1>
+  <p class="lead">Mozilla Observatory gives your site a letter grade. HttpFixer gives you the exact configuration to improve it &mdash; for your specific stack. Both are free. Here is how they compare.</p>
+
+  <h2>Side-by-side comparison</h2>
+  <table>
+    <thead><tr><th>Feature</th><th>Mozilla Observatory</th><th>HttpFixer</th></tr></thead>
+    <tbody>
+      <tr><td>Scans security headers</td><td class="win">Yes</td><td class="win">Yes</td></tr>
+      <tr><td>Letter grade (A&ndash;F)</td><td class="win">Yes</td><td class="neutral">&mdash; (pass/fail per header)</td></tr>
+      <tr><td>Stack-specific fix config</td><td class="neutral">No &mdash; recommendations only</td><td class="win">Yes &mdash; Nginx, Vercel, Cloudflare, Express, Apache, Caddy, FastAPI</td></tr>
+      <tr><td>Stack detection from live headers</td><td class="neutral">No</td><td class="win">Yes &mdash; reads Server header to detect your stack</td></tr>
+      <tr><td>CORS preflight testing</td><td class="neutral">No</td><td class="win">Yes &mdash; CORSFixer sends real OPTIONS requests</td></tr>
+      <tr><td>OAuth error diagnosis</td><td class="neutral">No</td><td class="win">Yes &mdash; OAuthFixer with provider-specific fixes</td></tr>
+      <tr><td>CSP scanning from live URL</td><td class="neutral">No</td><td class="win">Yes &mdash; CSPFixer scans all resources your page loads</td></tr>
+      <tr><td>PageSpeed config generation</td><td class="neutral">No</td><td class="win">Yes &mdash; SpeedFixer via live PSI API</td></tr>
+      <tr><td>Mozilla brand and authority</td><td class="win">High</td><td class="neutral">&mdash; (independent tool)</td></tr>
+      <tr><td>Open source</td><td class="win">Yes</td><td class="win">Yes (MIT)</td></tr>
+      <tr><td>No signup required</td><td class="win">Yes</td><td class="win">Yes</td></tr>
+      <tr><td>Client-side processing</td><td class="neutral">No &mdash; server-side</td><td class="win">Yes &mdash; nothing sent to servers</td></tr>
+    </tbody>
+  </table>
+
+  <h2>The core difference</h2>
+  <p>Mozilla Observatory is a <strong>checker</strong>. It tells you your grade and which headers are missing or misconfigured. It does not tell you what to paste into your nginx.conf to fix them.</p>
+  <p>HttpFixer is a <strong>fixer</strong>. After detecting which headers are missing, it reads the Server header from your response, identifies your stack, and generates the exact add_header directives, vercel.json headers block, or Cloudflare Transform Rule &mdash; ready to copy and paste.</p>
+
+  <h2>Example: missing X-Frame-Options</h2>
+  <table>
+    <thead><tr><th></th><th>Observatory output</th><th>HttpFixer output</th></tr></thead>
+    <tbody>
+      <tr><td>What you see</td><td>X-Frame-Options header not implemented &mdash; minus 20 points</td><td>Detected Nginx &mdash; here is your fix:</td></tr>
+      <tr><td>Config provided</td><td>Link to MDN documentation</td><td><code>add_header X-Frame-Options "SAMEORIGIN" always;</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2>When to use Observatory</h2>
+  <ul>
+    <li>You want a standardized letter grade for stakeholders or compliance</li>
+    <li>You want Mozilla's official perspective on your security posture</li>
+    <li>You are researching your overall security level before starting fixes</li>
+  </ul>
+
+  <h2>When to use HttpFixer</h2>
+  <ul>
+    <li>You know you have a problem and need the exact config to fix it</li>
+    <li>You need stack-specific output for Nginx, Vercel, Cloudflare, or Express</li>
+    <li>You need to fix CORS errors, CSP violations, or OAuth failures &mdash; not just header presence</li>
+    <li>You want to go from failing Observatory to passing &mdash; with copy-paste configs</li>
+  </ul>
+
+  <h2>The workflow most developers use</h2>
+  <p>Run Observatory to get a grade and understand the full picture. Then use HttpFixer to get the exact configs for each failing item. Observatory for diagnosis &mdash; HttpFixer for the fix.</p>
+
+  <div class="cta-bar">
+    <a href="/" class="cta">Scan your headers &rarr; HeadersFixer</a>
+    <a href="https://observatory.mozilla.org" class="cta-out" rel="noopener">Open Mozilla Observatory &rarr;</a>
+  </div>
+
+  <p style="margin-top:1.5rem;font-size:13px">Also: <a href="/vs/httpfixer-vs-securityheaders/" style="color:var(--purple)">HttpFixer vs securityheaders.com &rarr;</a></p>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/generators/">Generators</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a></span>
+  <p class="disclaimer">HttpFixer provides these tools for informational purposes only. Always test in staging before production. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>
