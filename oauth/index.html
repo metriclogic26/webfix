@@ -533,7 +533,7 @@ The redirect_uri does not match any registered URIs"></textarea>
       } else if (t.indexOf('unauthorized_client') !== -1) {
         errorCode = 'unauthorized_client';
         hints = ['Grant type not enabled for this application', 'PKCE not enabled', 'Client not authorized for requested flow'];
-      } else if (t.indexOf('pkce') !== -1 || t.indexOf('code_challenge') !== -1 || t.indexOf('code_verifier') !== -1) {
+      } else if (t.indexOf('pkce') !== -1 || t.indexOf('code_challenge') !== -1 || t.indexOf('code_verifier') !== -1 || (t.indexOf('invalid_request') !== -1 && (t.indexOf('pkce') !== -1 || t.indexOf('code_challenge') !== -1 || t.indexOf('verifier') !== -1))) {
         errorCode = 'pkce_error';
         hints = ['code_challenge missing from authorization request', 'code_verifier missing from token request', 'S256 method required — plain not accepted', 'PKCE not enabled on the application in provider dashboard'];
       } else if (t.indexOf('token_expired') !== -1 || t.indexOf('jwt expired') !== -1 || t.indexOf('tokenexpirederror') !== -1) {
@@ -760,6 +760,13 @@ The redirect_uri does not match any registered URIs"></textarea>
       summary.appendChild(badges);
       container.appendChild(summary);
 
+      if (!provider) {
+        var noProviderNote = document.createElement('p');
+        noProviderNote.style.cssText = 'font-size:12px;color:var(--orange);margin-bottom:1rem';
+        noProviderNote.textContent = '⚠ No provider selected — showing all providers. Select your provider above for a targeted fix.';
+        container.appendChild(noProviderNote);
+      }
+
       var hintsSection = document.createElement('div');
       hintsSection.className = 'hints-section';
       var hintsTitle = document.createElement('h3');
@@ -933,6 +940,11 @@ The redirect_uri does not match any registered URIs"></textarea>
 
     getEl('diagnose-btn').addEventListener('click', function () {
       var text = getEl('error-input').value || '';
+      if (!text.trim()) {
+        getEl('error-input').style.borderColor = 'var(--red)';
+        setTimeout(function() { getEl('error-input').style.borderColor = ''; }, 2000);
+        return;
+      }
       var providerBtn = document.querySelector('#provider-row button.active');
       selectedProvider = providerBtn ? providerBtn.getAttribute('data-provider') : null;
       var flowBtn = document.querySelector('#flow-row button.active');
@@ -967,7 +979,7 @@ The redirect_uri does not match any registered URIs"></textarea>
       if (firstFlow) firstFlow.classList.add('active');
       selectedProvider = null;
       selectedFlow = 'auth-code-pkce';
-      getEl('provider-prompt-msg').style.display = '';
+      getEl('provider-prompt-msg').style.display = 'inline';
       var res = getEl('results');
       res.innerHTML = '';
       res.classList.remove('visible');
