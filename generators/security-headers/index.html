@@ -180,13 +180,14 @@
 
   <label>X-Frame-Options</label>
   <div class="checkbox-group" id="xfo-opts">
-    <label><input type="checkbox" value="SAMEORIGIN" checked> SAMEORIGIN (allow same-domain iframes)</label>
-    <label><input type="checkbox" value="DENY"> DENY (no iframes anywhere)</label>
+    <label><input type="radio" name="xfo" value="SAMEORIGIN" checked> SAMEORIGIN (allow same-domain iframes)</label>
+    <label><input type="radio" name="xfo" value="DENY"> DENY (no iframes anywhere)</label>
+    <label><input type="radio" name="xfo" value="none"> Skip X-Frame-Options</label>
   </div>
 
   <label>Referrer-Policy</label>
   <div class="checkbox-group" id="ref-opts">
-    <label><input type="checkbox" value="strict-origin-when-cross-origin" checked> strict-origin-when-cross-origin (recommended)</label>
+    <label><input type="checkbox" value="strict-origin-when-cross-origin" checked> strict-origin-when-cross-origin (suggested)</label>
     <label><input type="checkbox" value="no-referrer"> no-referrer (maximum privacy)</label>
     <label><input type="checkbox" value="same-origin"> same-origin only</label>
   </div>
@@ -226,7 +227,6 @@
 <script>
 function buildSecHeaders() {
   const hsts = getChecked('hsts-opts');
-  const xfo = getChecked('xfo-opts');
   const ref = getChecked('ref-opts');
   const perms = getChecked('perm-opts');
   const extras = getChecked('extra-headers');
@@ -242,8 +242,8 @@ function buildSecHeaders() {
     vercelHeaders.push({ key: 'Strict-Transport-Security', value: hval });
   }
 
-  const xfoVal = xfo.includes('DENY') ? 'DENY' : xfo.includes('SAMEORIGIN') ? 'SAMEORIGIN' : null;
-  if (xfoVal) {
+  const xfoVal = document.querySelector('input[name="xfo"]:checked')?.value;
+  if (xfoVal && xfoVal !== 'none') {
     headers.push('add_header X-Frame-Options "' + xfoVal + '" always;');
     vercelHeaders.push({ key: 'X-Frame-Options', value: xfoVal });
   }

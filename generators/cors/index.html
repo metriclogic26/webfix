@@ -223,7 +223,14 @@
 
 <script>
 function buildCORS() {
-  const origin = document.getElementById('cors-origin').value.trim() || 'https://app.example.com';
+  const originVal = document.getElementById('cors-origin').value.trim();
+  if (!originVal) {
+    document.getElementById('cors-nginx').textContent = '⚠ Enter your allowed origin above before generating.';
+    document.getElementById('cors-express').textContent = '⚠ Enter your allowed origin above before generating.';
+    document.getElementById('cors-fastapi').textContent = '⚠ Enter your allowed origin above before generating.';
+    return;
+  }
+  const origin = originVal;
   const methods = getChecked('cors-methods').join(', ');
   const headers = getChecked('cors-headers').join(', ');
   const opts = getChecked('cors-options');

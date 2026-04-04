@@ -216,6 +216,18 @@
     <div class="gen-output" id="perms-nginx"></div>
     <button onclick="copyOutput('perms-nginx')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button>
   </div>
+
+  <label style="margin-top:1rem">Apache</label>
+  <div style="position:relative">
+    <div class="gen-output" id="perms-apache"></div>
+    <button onclick="copyOutput('perms-apache')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button>
+  </div>
+
+  <label style="margin-top:1rem">Vercel (vercel.json)</label>
+  <div style="position:relative">
+    <div class="gen-output" id="perms-vercel"></div>
+    <button onclick="copyOutput('perms-vercel')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button>
+  </div>
 </div>
 
 <script>
@@ -229,6 +241,8 @@ function buildPermsPolicy() {
   const val = parts.join(', ');
   document.getElementById('perms-output').textContent = 'Permissions-Policy: ' + val;
   document.getElementById('perms-nginx').textContent = 'add_header Permissions-Policy "' + val + '" always;';
+  document.getElementById('perms-apache').textContent = 'Header always set Permissions-Policy "' + val + '"';
+  document.getElementById('perms-vercel').textContent = JSON.stringify({headers:[{source:"/(.*)",headers:[{key:"Permissions-Policy",value:val}]}]},null,2);
 }
 
 function copyOutput(id) {

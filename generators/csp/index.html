@@ -219,8 +219,9 @@
 
   <label>Frame ancestors (who can embed your page)</label>
   <div class="checkbox-group" id="frame-ancestors">
-    <label><input type="checkbox" value="'none'" checked> none (no iframes allowed)</label>
-    <label><input type="checkbox" value="'self'"> self only</label>
+    <label><input type="radio" name="frame-anc" value="'none'" checked> none (no iframes allowed)</label>
+    <label><input type="radio" name="frame-anc" value="'self'"> self only</label>
+    <label><input type="radio" name="frame-anc" value="*"> allow all</label>
   </div>
 
   <label>Additional options</label>
@@ -284,7 +285,7 @@ function buildCSP() {
   const imgs = getChecked('img-sources');
   const connects = getChecked('connect-sources');
   const fonts = getChecked('font-sources');
-  const frameAnc = getChecked('frame-ancestors');
+  const frameAnc = [document.querySelector('input[name="frame-anc"]:checked')?.value || "'none'"];
   const extras = getChecked('extras');
   const custom = document.getElementById('custom-domain').value.trim();
 
@@ -301,7 +302,11 @@ function buildCSP() {
   if (extras.includes('object-src-none')) parts.push("object-src 'none'");
   if (extras.includes('base-uri-self')) parts.push("base-uri 'self'");
   if (extras.includes('upgrade')) parts.push("upgrade-insecure-requests");
-  if (custom) parts.push("connect-src 'self' " + custom);
+  if (custom) {
+    const csIdx = parts.findIndex(p => p.startsWith('connect-src'));
+    if (csIdx !== -1) parts[csIdx] += ' ' + custom;
+    else parts.push("connect-src 'self' " + custom);
+  }
 
   const policy = parts.join('; ') + ';';
   const headerVal = headerName + ': ' + policy;
