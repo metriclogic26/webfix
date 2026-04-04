@@ -1297,7 +1297,7 @@ strict-transport-security: max-age=3600
           out.nginx = '# Customize to your app\'s actual sources\nadd_header Content-Security-Policy "default-src \'self\'; script-src \'self\'; style-src \'self\'; img-src \'self\' data:;" always;';
           out.apache = '# Customize to your app\'s actual sources\nHeader always set Content-Security-Policy "default-src \'self\'; script-src \'self\'; style-src \'self\'; img-src \'self\' data:;"';
           out.vercel = vercelHeader('Content-Security-Policy', 'default-src \'self\'; script-src \'self\'; style-src \'self\'; img-src \'self\' data:;');
-          out.cloudflare = 'Add in Cloudflare Dashboard → Rules → Transform Rules → Modify Response Header';
+          out.cloudflare = 'Cloudflare Dashboard → Rules → Transform Rules → + Create Rule\nAction: Modify Response Header → Set\nHeader name: X-Frame-Options\nValue: SAMEORIGIN\nDeploy the rule.';
           out.express = 'app.use(helmet.contentSecurityPolicy({ directives: { defaultSrc: ["\'self\'"], scriptSrc: ["\'self\'"], styleSrc: ["\'self\'"], imgSrc: ["\'self\'", "data:"] } }));';
           out.caddy = 'header Content-Security-Policy "default-src \'self\'; script-src \'self\'; style-src \'self\'; img-src \'self\' data:;"';
           out.nextjs = nextJsHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;");
@@ -1307,7 +1307,7 @@ strict-transport-security: max-age=3600
           out.nginx = 'add_header X-Frame-Options "SAMEORIGIN" always;';
           out.apache = 'Header always set X-Frame-Options "SAMEORIGIN"';
           out.vercel = vercelHeader('X-Frame-Options', 'SAMEORIGIN');
-          out.cloudflare = 'Add in Cloudflare Dashboard → Rules → Transform Rules → Modify Response Header';
+          out.cloudflare = 'Cloudflare Dashboard → Rules → Transform Rules → + Create Rule\nAction: Modify Response Header → Set\nHeader name: X-Frame-Options\nValue: SAMEORIGIN\nDeploy the rule.';
           out.express = 'app.use(helmet.frameguard({ action: \'sameorigin\' }));';
           out.caddy = 'header X-Frame-Options "SAMEORIGIN"';
           out.nextjs = nextJsHeader('X-Frame-Options', 'SAMEORIGIN');
@@ -1317,7 +1317,7 @@ strict-transport-security: max-age=3600
           out.nginx = 'add_header X-Content-Type-Options "nosniff" always;';
           out.apache = 'Header always set X-Content-Type-Options "nosniff"';
           out.vercel = vercelHeader('X-Content-Type-Options', 'nosniff');
-          out.cloudflare = 'Transform Rule → Modify Response Header';
+          out.cloudflare = 'Cloudflare Dashboard → Rules → Transform Rules → + Create Rule\nAction: Modify Response Header → Set\nHeader name: X-Content-Type-Options\nValue: nosniff\nDeploy the rule.';
           out.express = 'app.use(helmet.noSniff());';
           out.caddy = 'header X-Content-Type-Options "nosniff"';
           out.nextjs = nextJsHeader('X-Content-Type-Options', 'nosniff');
@@ -1327,7 +1327,7 @@ strict-transport-security: max-age=3600
           out.nginx = 'add_header Referrer-Policy "strict-origin-when-cross-origin" always;';
           out.apache = 'Header always set Referrer-Policy "strict-origin-when-cross-origin"';
           out.vercel = vercelHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-          out.cloudflare = 'Transform Rule → Modify Response Header';
+          out.cloudflare = 'Cloudflare Dashboard → Rules → Transform Rules → + Create Rule\nAction: Modify Response Header → Set\nHeader name: Referrer-Policy\nValue: strict-origin-when-cross-origin\nDeploy the rule.';
           out.express = 'app.use(helmet.referrerPolicy({ policy: \'strict-origin-when-cross-origin\' }));';
           out.caddy = 'header Referrer-Policy "strict-origin-when-cross-origin"';
           out.nextjs = nextJsHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
@@ -1337,7 +1337,7 @@ strict-transport-security: max-age=3600
           out.nginx = 'add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;';
           out.apache = 'Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"';
           out.vercel = vercelHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-          out.cloudflare = 'Transform Rule → Modify Response Header';
+          out.cloudflare = 'Cloudflare Dashboard → Rules → Transform Rules → + Create Rule\nAction: Modify Response Header → Set\nHeader name: Permissions-Policy\nValue: camera=(), microphone=(), geolocation=()\nDeploy the rule.';
           out.express = 'app.use(helmet.permittedCrossDomainPolicies()); // then set manually: res.setHeader(\'Permissions-Policy\', \'camera=(), microphone=(), geolocation=()\')';
           out.caddy = 'header Permissions-Policy "camera=(), microphone=(), geolocation=()"';
           out.nextjs = nextJsHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
@@ -1357,7 +1357,7 @@ strict-transport-security: max-age=3600
           out.nginx = 'add_header Cross-Origin-Opener-Policy "same-origin" always;';
           out.apache = 'Header always set Cross-Origin-Opener-Policy "same-origin"';
           out.vercel = vercelHeader('Cross-Origin-Opener-Policy', 'same-origin');
-          out.cloudflare = 'Transform Rule → Modify Response Header';
+          out.cloudflare = 'Cloudflare Dashboard → Rules → Transform Rules → + Create Rule\nAction: Modify Response Header → Set\nHeader name: Cross-Origin-Opener-Policy\nValue: same-origin\nDeploy the rule.';
           out.express = "res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');";
           out.caddy = 'header Cross-Origin-Opener-Policy "same-origin"';
           out.nextjs = nextJsHeader('Cross-Origin-Opener-Policy', 'same-origin');
@@ -1367,7 +1367,7 @@ strict-transport-security: max-age=3600
           out.nginx = 'add_header Cross-Origin-Embedder-Policy "require-corp" always;';
           out.apache = 'Header always set Cross-Origin-Embedder-Policy "require-corp"';
           out.vercel = vercelHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-          out.cloudflare = 'Transform Rule → Modify Response Header';
+          out.cloudflare = 'Cloudflare Dashboard → Rules → Transform Rules → + Create Rule\nAction: Modify Response Header → Set\nHeader name: Cross-Origin-Embedder-Policy\nValue: require-corp\nDeploy the rule.';
           out.express = "res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');";
           out.caddy = 'header Cross-Origin-Embedder-Policy "require-corp"';
           out.nextjs = nextJsHeader('Cross-Origin-Embedder-Policy', 'require-corp');
