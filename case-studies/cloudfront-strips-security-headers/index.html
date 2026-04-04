@@ -154,7 +154,7 @@
 
 <div class="warn-box"><div class="warn-label">Common symptom</div>Headers appear in curl requests directly to your EC2 IP but are missing when you curl through the CloudFront distribution URL. The headers exist on your origin — CloudFront is dropping them.</div>
 
-<h2>Fix 1 — Response Headers Policy (recommended)</h2>
+<h2>Fix 1 — Response Headers Policy (suggested)</h2>
 <p>CloudFront has a built-in Response Headers Policy feature. Create a managed or custom policy and attach it to your distribution behaviours:</p>
 <pre># Using AWS CLI
 aws cloudfront create-response-headers-policy --response-headers-policy-config '{

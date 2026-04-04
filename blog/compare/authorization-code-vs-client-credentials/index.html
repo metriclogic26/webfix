@@ -244,6 +244,10 @@ const { access_token } = await response.json();</pre>
 <p>Implicit Flow (response_type=token) was deprecated in OAuth 2.1. It returns tokens in the URL fragment — which gets logged in browser history, server logs, and can be stolen by referrer headers. Always use Authorization Code + PKCE for SPAs instead.</p>
   <a href="/oauth/" class="tool-cta">Debug your OAuth errors → OAuthFixer</a>
   <div class="related">Related: <a href="/glossary/pkce/">What is PKCE?</a> <a href="/glossary/oauth-grant-types/">All grant types</a></div>
+
+<div style="margin-top:2rem;padding:1rem;background:#12151F;border:1px solid #252836;border-radius:8px;font-size:13px">
+  <a href="/diff/" style="color:#6C63FF;text-decoration:none;font-weight:500">Compare headers between staging and production → Header Diff</a>
+</div>
 </main>
 <footer>
   <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span>
