@@ -17,7 +17,104 @@
   <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Security Headers on Cloudflare","description":"Configure security headers via Cloudflare Transform Rules.","url":"https://httpfixer.dev/blog/platform/security-headers-cloudflare/","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://httpfixer.dev/blog/"},{"@type":"ListItem","position":3,"name":"Security Headers on Cloudflare","item":"https://httpfixer.dev/blog/platform/security-headers-cloudflare/"}]}]}</script>
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "Security Headers on Cloudflare",
+      "description": "Configure security headers via Cloudflare Transform Rules.",
+      "url": "https://httpfixer.dev/blog/platform/security-headers-cloudflare/",
+      "datePublished": "2026-04-04",
+      "dateModified": "2026-04-04",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "HttpFixer",
+          "item": "https://httpfixer.dev"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://httpfixer.dev/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Security Headers on Cloudflare",
+          "item": "https://httpfixer.dev/blog/platform/security-headers-cloudflare/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Should I set security headers on origin or at Cloudflare?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Set them at Cloudflare via Transform Rules. Edge rules apply even if your origin fails to send them and survive origin changes. Setting at both is redundant but harmless."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Cloudflare strip security headers from origin?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cloudflare does not strip security headers by default. But if a Transform Rule and origin both set the same header, the Transform Rule value wins."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Cloudflare set HSTS?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Use SSL/TLS → Edge Certificates → HSTS in the dashboard rather than a Transform Rule. It is easier to manage and handles preload submission correctly."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Security Headers on Cloudflare",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Create a Transform Rule",
+          "text": "Go to Rules → Transform Rules → Modify Response Header → Create Rule."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Add each security header",
+          "text": "Set static values for HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, and Permissions-Policy."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Verify with Header Diff",
+          "text": "Use Header Diff to compare headers fetched directly from origin vs through Cloudflare to confirm they are applied correctly."
+        }
+      ]
+    }
+  ]
+}</script>
   <style>
     :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
     *{box-sizing:border-box;margin:0;padding:0}

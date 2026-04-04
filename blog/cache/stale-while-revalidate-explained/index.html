@@ -19,14 +19,79 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script type="application/ld+json">{
   "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": "stale-while-revalidate Explained",
-  "description": "stale-while-revalidate lets caches serve stale content while revalidating in background.",
-  "url": "https://httpfixer.dev/blog/cache/stale-while-revalidate-explained/",
-  "datePublished": "2026-04-04",
-  "dateModified": "2026-04-04",
-  "author": {"@type": "Organization", "name": "MetricLogic"},
-  "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}
+  "@graph": [
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "stale-while-revalidate Explained",
+      "description": "stale-while-revalidate lets caches serve stale content while revalidating in background.",
+      "url": "https://httpfixer.dev/blog/cache/stale-while-revalidate-explained/",
+      "datePublished": "2026-04-04",
+      "dateModified": "2026-04-04",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What browsers support stale-while-revalidate?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "All modern browsers since Chrome 75 (2019), Firefox 68 (2019), and Safari 2022. Browsers that don't recognise it silently ignore it and use max-age alone."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does stale-while-revalidate work on CDNs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Cloudflare, Fastly, and most major CDNs support it. Cloudflare's implementation is fully asynchronous — the first stale request triggers background revalidation immediately."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I not use stale-while-revalidate?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Avoid it for real-time data (stock prices, live scores), authenticated responses, and resources where any staleness is unacceptable."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "stale-while-revalidate Explained",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Add stale-while-revalidate to your Cache-Control",
+          "text": "Set max-age for freshness and stale-while-revalidate for the background refresh window: Cache-Control: public, max-age=60, stale-while-revalidate=300"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Optionally add stale-if-error",
+          "text": "For resilience during origin outages: Cache-Control: public, max-age=60, stale-while-revalidate=300, stale-if-error=86400"
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Verify with the Cache Simulator",
+          "text": "Paste your Cache-Control value into the Cache-Control Simulator to visualise the freshness and stale windows."
+        }
+      ]
+    }
+  ]
 }</script>
   <style>
     :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}

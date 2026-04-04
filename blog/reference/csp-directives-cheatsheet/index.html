@@ -17,7 +17,82 @@
   <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"CSP Directives Cheatsheet 2026","description":"Every CSP directive with examples.","url":"https://httpfixer.dev/blog/reference/csp-directives-cheatsheet/","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}}</script>
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "CSP Directives Cheatsheet 2026",
+      "description": "Every CSP directive with examples.",
+      "url": "https://httpfixer.dev/blog/reference/csp-directives-cheatsheet/",
+      "datePublished": "2026-04-04",
+      "dateModified": "2026-04-04",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is default-src?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "default-src is the fallback directive for all fetch directives not explicitly listed. If you set default-src self and do not set font-src, fonts fall back to self. It does not cover frame-ancestors, form-action, or sandbox."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between frame-src and frame-ancestors?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "frame-src controls which URLs your page can embed in iframes. frame-ancestors controls who can embed your page. frame-ancestors replaces X-Frame-Options."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is unsafe-inline always dangerous?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "In script-src yes — it allows any inline script including injected ones, defeating XSS protection. In style-src it is less dangerous and often required for CSS-in-JS frameworks."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "CSP Directives Cheatsheet 2026",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Start with default-src",
+          "text": "Set default-src self as the baseline. This blocks all external resources by default."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Add directives for each resource type",
+          "text": "Add script-src, style-src, img-src, font-src, and connect-src only for sources you actually use."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Add frame-ancestors and object-src",
+          "text": "Set frame-ancestors none to block clickjacking and object-src none to block Flash and plugins."
+        }
+      ]
+    }
+  ]
+}</script>
   <style>
     :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
     *{box-sizing:border-box;margin:0;padding:0}

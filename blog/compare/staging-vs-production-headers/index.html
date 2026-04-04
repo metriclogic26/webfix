@@ -19,14 +19,79 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script type="application/ld+json">{
   "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": "Staging vs Production Header Differences",
-  "description": "Find missing headers between staging and production in 30 seconds.",
-  "url": "https://httpfixer.dev/blog/compare/staging-vs-production-headers/",
-  "datePublished": "2026-04-04",
-  "dateModified": "2026-04-04",
-  "author": {"@type": "Organization", "name": "MetricLogic"},
-  "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}
+  "@graph": [
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "Staging vs Production Header Differences",
+      "description": "Find missing headers between staging and production in 30 seconds.",
+      "url": "https://httpfixer.dev/blog/compare/staging-vs-production-headers/",
+      "datePublished": "2026-04-04",
+      "dateModified": "2026-04-04",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why do headers differ between staging and production?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "CDNs, load balancers, and reverse proxies can strip or modify headers set by your origin server. Headers that work in staging may disappear in production behind Cloudflare or a load balancer."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I compare headers between two URLs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Paste both URLs into Header Diff — it fetches live headers from both and highlights every difference, missing header, and value change side by side."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does Nginx drop security headers in some locations?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nginx add_header in a location block does not inherit from the parent server block. If any location has its own add_header, you must repeat all headers in that location or use include files."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "Staging vs Production Header Differences",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Scan both URLs",
+          "text": "Paste your staging and production URLs into Header Diff to see a side-by-side comparison."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Identify missing headers",
+          "text": "Look for headers present on staging but absent on production — these are being stripped by CDN, load balancer, or proxy."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Fix at the right layer",
+          "text": "Set headers at the CDN/edge layer for headers that must survive the entire stack. For Cloudflare, use Transform Rules rather than relying on origin pass-through."
+        }
+      ]
+    }
+  ]
 }</script>
   <style>
     :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}

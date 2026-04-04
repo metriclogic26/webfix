@@ -17,7 +17,82 @@
   <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"HTTP Status Codes Cheatsheet 2026","description":"Every HTTP status code explained.","url":"https://httpfixer.dev/blog/reference/http-status-codes-cheatsheet/","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}}</script>
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "HTTP Status Codes Cheatsheet 2026",
+      "description": "Every HTTP status code explained.",
+      "url": "https://httpfixer.dev/blog/reference/http-status-codes-cheatsheet/",
+      "datePublished": "2026-04-04",
+      "dateModified": "2026-04-04",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between 401 and 403?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "401 means unauthenticated — the user needs to log in. 403 means authenticated but not authorized — the server knows who they are but the answer is still no. They are not interchangeable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I return 404 instead of 403?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "When you want to hide the existence of a resource. Returning 403 reveals the resource exists. Returning 404 prevents enumeration of private resources."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between 301 and 308?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "301 Moved Permanently allows browsers to change POST to GET on redirect. 308 Permanent Redirect preserves the HTTP method. Use 308 for API redirects where method must be preserved."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "HTTP Status Codes Cheatsheet 2026",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Identify the correct class",
+          "text": "Determine if the response is 2xx (success), 3xx (redirect), 4xx (client error), or 5xx (server error)."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Pick the specific code",
+          "text": "Use the most specific code that accurately describes the situation — 422 for validation errors, 429 for rate limiting, 503 for planned maintenance."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Add the required headers",
+          "text": "Include Location for redirects, WWW-Authenticate for 401, Allow for 405, and Retry-After for 429 and 503."
+        }
+      ]
+    }
+  ]
+}</script>
   <style>
     :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
     *{box-sizing:border-box;margin:0;padding:0}

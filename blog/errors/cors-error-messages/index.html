@@ -17,7 +17,82 @@
   <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"CORS Error Messages Explained","description":"Every CORS browser error decoded with fixes.","url":"https://httpfixer.dev/blog/errors/cors-error-messages/","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}}</script>
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "CORS Error Messages Explained",
+      "description": "Every CORS browser error decoded with fixes.",
+      "url": "https://httpfixer.dev/blog/errors/cors-error-messages/",
+      "datePublished": "2026-04-04",
+      "dateModified": "2026-04-04",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why does CORS work in Postman but fail in the browser?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Postman does not enforce CORS — it sends requests without an Origin header. Browsers send Origin on cross-origin requests and block responses without matching Access-Control-Allow-Origin. The server config is the same; the enforcement is browser-only."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does CORS work on GET but fail on POST?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "GET is a simple request — no preflight. POST with custom headers triggers an OPTIONS preflight. If your server does not handle OPTIONS, the preflight fails and the POST never runs."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I fix CORS errors from the frontend?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. CORS headers must be set on the server. You cannot override them from JavaScript. The only frontend option is using a proxy server that adds the headers."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "CORS Error Messages Explained",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Open DevTools Network tab",
+          "text": "Find the OPTIONS preflight request before the failing request and check its response headers."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Identify the missing header",
+          "text": "Look for which Access-Control header is absent or has the wrong value in the preflight response."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Fix on the server",
+          "text": "Add the correct CORS headers to your server config and ensure OPTIONS returns 204. Test with CORSFixer."
+        }
+      ]
+    }
+  ]
+}</script>
   <style>
     :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
     *{box-sizing:border-box;margin:0;padding:0}

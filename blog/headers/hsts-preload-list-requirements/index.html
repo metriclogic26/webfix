@@ -19,14 +19,79 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script type="application/ld+json">{
   "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": "HSTS Preload List Requirements",
-  "description": "Exact requirements to get your domain on the HSTS preload list.",
-  "url": "https://httpfixer.dev/blog/headers/hsts-preload-list-requirements/",
-  "datePublished": "2026-04-04",
-  "dateModified": "2026-04-04",
-  "author": {"@type": "Organization", "name": "MetricLogic"},
-  "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}
+  "@graph": [
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "HSTS Preload List Requirements",
+      "description": "Exact requirements to get your domain on the HSTS preload list.",
+      "url": "https://httpfixer.dev/blog/headers/hsts-preload-list-requirements/",
+      "datePublished": "2026-04-04",
+      "dateModified": "2026-04-04",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What happens if I add includeSubDomains but a subdomain is HTTP-only?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "After HSTS is cached, browsers will refuse to connect to that subdomain over HTTP and show a hard error with no bypass option. Test all subdomains over HTTPS before adding includeSubDomains."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the preload directive part of the HSTS standard?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The preload directive is not part of RFC 6797. It is specifically for preload list submission and has no effect without submitting at hstspreload.org."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What max-age value should I use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "At least 31536000 (1 year) is required for preload submission. Most sites use exactly 31536000."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "HSTS Preload List Requirements",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Set a short max-age first",
+          "text": "Start with max-age=300 to verify HTTPS works correctly before committing to a long duration."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Ensure all subdomains support HTTPS",
+          "text": "Test every subdomain over HTTPS. Run a DNS audit to find all subdomains."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Ramp up to full preload config",
+          "text": "Increase to max-age=31536000, add includeSubDomains, add preload, then submit at hstspreload.org."
+        }
+      ]
+    }
+  ]
 }</script>
   <style>
     :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}

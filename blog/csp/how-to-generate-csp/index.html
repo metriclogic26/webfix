@@ -19,14 +19,79 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script type="application/ld+json">{
   "@context": "https://schema.org",
-  "@type": "TechArticle",
-  "headline": "How to Generate a Content Security Policy",
-  "description": "Safe approach to generating a CSP without breaking your site.",
-  "url": "https://httpfixer.dev/blog/csp/how-to-generate-csp/",
-  "datePublished": "2026-04-04",
-  "dateModified": "2026-04-04",
-  "author": {"@type": "Organization", "name": "MetricLogic"},
-  "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}
+  "@graph": [
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "How to Generate a Content Security Policy",
+      "description": "Safe approach to generating a CSP without breaking your site.",
+      "url": "https://httpfixer.dev/blog/csp/how-to-generate-csp/",
+      "datePublished": "2026-04-04",
+      "dateModified": "2026-04-04",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Should I use report-only mode first?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, always. Deploy Content-Security-Policy-Report-Only first. Violations appear in the browser console without blocking anything. Switch to enforcing once violations stop."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the safest minimum CSP?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "default-src none; script-src self; style-src self; img-src self data:; font-src self; frame-ancestors none; object-src none; base-uri self — this blocks all external resources."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I generate a CSP automatically from my live page?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. CSPFixer fetches your page, finds all script, style, font, and image sources, and generates a working policy automatically. No manual source hunting required."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to Generate a Content Security Policy",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Scan your live page",
+          "text": "Use CSPFixer to automatically detect all resource sources on your page and generate a draft CSP."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Deploy in report-only mode",
+          "text": "Add the generated policy as Content-Security-Policy-Report-Only and monitor the browser console for violations."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Enforce once clean",
+          "text": "When violations stop appearing, switch from Content-Security-Policy-Report-Only to Content-Security-Policy."
+        }
+      ]
+    }
+  ]
 }</script>
   <style>
     :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
