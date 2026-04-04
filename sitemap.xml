@@ -851,6 +851,11 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://httpfixer.dev/fix/cors/cloudflare/</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.4</priority>
+  </url>
+  <url>
     <loc>https://httpfixer.dev/fix/cors/django/</loc>
     <lastmod>2026-04-04</lastmod>
     <priority>0.4</priority>
@@ -881,12 +886,22 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://httpfixer.dev/fix/cors/vercel/</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.4</priority>
+  </url>
+  <url>
     <loc>https://httpfixer.dev/fix/csp/</loc>
     <lastmod>2026-04-04</lastmod>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://httpfixer.dev/fix/csp/cloudflare/</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/fix/csp/nextjs/</loc>
     <lastmod>2026-04-04</lastmod>
     <priority>0.4</priority>
   </url>
@@ -942,6 +957,16 @@
   </url>
   <url>
     <loc>https://httpfixer.dev/fix/headers/vercel/</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/fix/hsts/</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/fix/hsts/cloudflare/</loc>
     <lastmod>2026-04-04</lastmod>
     <priority>0.4</priority>
   </url>

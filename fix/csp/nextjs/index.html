@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fix CSP Errors on Next.js &mdash; HttpFixer</title>
+  <meta name="description" content="Content Security Policy errors on Next.js are fixed in next.config.js headers or Middleware for nonce-based CSP. Here is the exact config for App Router and Pages Router.">
+  <link rel="canonical" href="https://httpfixer.dev/fix/csp/nextjs/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="Fix CSP Errors on Next.js">
+  <meta property="og:description" content="Content Security Policy errors on Next.js are fixed in next.config.js headers or Middleware for nonce-based CSP. Here is the exact config for App Router and Pages Router.">
+  <meta property="og:url" content="https://httpfixer.dev/fix/csp/nextjs/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="HttpFixer">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@metriclogic">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Fix CSP Errors on Next.js","description":"Content Security Policy errors on Next.js are fixed in next.config.js headers or Middleware for nonce-based CSP. Here is the exact config for App Router and Pages Router.","url":"https://httpfixer.dev/fix/csp/nextjs/","datePublished":"2026-04-04","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},"@type":"HowTo","name":"Fix CSP Errors on Next.js","step":[{"@type":"HowToStep","position":1,"name":"Add CSP via next.config.js","text":"Add Content-Security-Policy to the headers array in next.config.js for a static policy."},{"@type":"HowToStep","position":2,"name":"Use Middleware for nonce-based CSP","text":"Generate a per-request nonce in middleware.ts and inject it into the CSP header and script tags."},{"@type":"HowToStep","position":3,"name":"Test with CSPFixer","text":"Scan your Next.js URL in CSPFixer to confirm the policy is working and no resources are blocked."}],{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev/"},{"@type":"ListItem","position":2,"name":"Fix","item":"https://httpfixer.dev/fix/"}]}]}</script>
+  <style>
+    :root {
+      --bg: #0B0D14; --surface: #12151F; --border: #252836;
+      --purple: #6C63FF; --green: #22C55E; --orange: #F97316;
+      --red: #EF4444; --text: #E2E4F0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); }
+    nav .brand { font-weight: 600; color: var(--text); text-decoration: none; }
+    nav .brand span { color: var(--purple); }
+    nav .right { display: flex; gap: 1rem; align-items: center; }
+    nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; }
+    nav a:hover { color: var(--purple); opacity: 1; }
+    main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; }
+    .breadcrumb a { color: var(--purple); text-decoration: none; }
+    h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; }
+    h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); }
+    p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; }
+    .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; }
+    .tool-cta:hover { filter: brightness(1.1); }
+    .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre; }
+    .tag { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 0.5rem; }
+    .tag-fix { background: rgba(34,197,94,0.15); color: var(--green); }
+    .tag-error { background: rgba(239,68,68,0.15); color: var(--red); }
+    .tag-provider { background: rgba(108,99,255,0.15); color: var(--purple); }
+    .index-list { list-style: none; margin: 1rem 0; }
+    .index-list li { margin-bottom: 0.65rem; }
+    .index-list a { color: var(--purple); text-decoration: none; }
+    .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
+    footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
+    footer a { color: var(--text); text-decoration: none; }
+    @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="brand">HttpFixer <span>/</span> Fix</a>
+    <div class="right">
+      <a href="/">Headers</a>
+      <a href="/cors/">CORS</a>
+      <a href="/oauth/">OAuth</a>
+      <a href="/csp/">CSP</a>
+      <a href="/edge/">Edge</a>
+      <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a>
+    </div>
+  </nav>
+  <main>
+    <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/fix/">Fix</a> &rarr; <a href="/fix/csp/">CSP</a> &rarr; Next.js</div>
+    <h1>Fix CSP Errors on Next.js</h1>
+    <p>CSP errors on Next.js usually show as <code>Refused to load the script</code> or <code>Refused to execute inline script</code> in the console. The fix depends on whether you need a static policy or nonce-based CSP for inline scripts.</p>
+
+<h2>Option 1 — Static CSP via next.config.js</h2>
+<p>Best for sites with no inline scripts. Add to <code>next.config.js</code>:</p>
+<div class="code-block">/** @type {import('next').NextConfig} */
+const nextConfig = {
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' https://www.googletagmanager.com",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: https:",
+              "font-src 'self' https://fonts.gstatic.com",
+              "connect-src 'self' https://www.google-analytics.com",
+              "frame-ancestors 'none'",
+              "object-src 'none'",
+              "base-uri 'self'",
+            ].join('; '),
+          },
+        ],
+      },
+    ];
+  },
+};
+
+module.exports = nextConfig;</div>
+
+<h2>Option 2 — Nonce-based CSP via Middleware (App Router)</h2>
+<p>Required when you have inline scripts that you can't remove. Generates a unique nonce per request:</p>
+<div class="code-block">// middleware.ts
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { v4 as uuidv4 } from 'uuid';
+
+export function middleware(request: NextRequest) {
+  const nonce = Buffer.from(uuidv4()).toString('base64');
+
+  const csp = [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data: https:",
+    "font-src 'self'",
+    "frame-ancestors 'none'",
+    "object-src 'none'",
+    "base-uri 'self'",
+  ].join('; ');
+
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-nonce', nonce);
+  requestHeaders.set('Content-Security-Policy', csp);
+
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  response.headers.set('Content-Security-Policy', csp);
+
+  return response;
+}
+
+export const config = { matcher: '/((?!_next/static|_next/image|favicon.ico).*)' };</div>
+
+<div class="code-block">// app/layout.tsx — read nonce and pass to Script tags
+import { headers } from 'next/headers';
+
+export default function RootLayout({ children }) {
+  const nonce = headers().get('x-nonce') ?? '';
+  return (
+    &lt;html&gt;
+      &lt;body&gt;
+        {children}
+        &lt;script nonce={nonce} src="/my-script.js" /&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  );
+}</div>
+
+<h2>Report-only mode first</h2>
+<p>Always deploy as <code>Content-Security-Policy-Report-Only</code> first. Check the browser console for violations before switching to enforcing mode.</p>
+    <div class="related-links"><span>Related:</span> <a href="/blog/reference/csp-directives-cheatsheet/">CSP directives cheatsheet</a> &middot; <a href="/fix/csp/vercel/">Fix CSP on Vercel</a> &middot; <a href="/blog/csp/how-to-generate-csp/">How to generate a CSP</a></div>
+    <a href="/csp/" class="tool-cta">Scan your Next.js site for CSP issues → CSPFixer &rarr;</a>
+  </main>
+  <footer>
+    <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+    <span>MIT &middot; <a href="https://github.com/metriclogic26/httpfixer">GitHub &rarr;</a></span>
+  </footer>
+</body>
+</html>

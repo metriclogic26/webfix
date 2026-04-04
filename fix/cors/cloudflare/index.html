@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fix CORS Errors on Cloudflare &mdash; HttpFixer</title>
+  <meta name="description" content="CORS errors behind Cloudflare are fixed with Transform Rules or Workers. The origin server config alone is often not enough when Cloudflare is in the path.">
+  <link rel="canonical" href="https://httpfixer.dev/fix/cors/cloudflare/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="Fix CORS Errors on Cloudflare">
+  <meta property="og:description" content="CORS errors behind Cloudflare are fixed with Transform Rules or Workers. The origin server config alone is often not enough when Cloudflare is in the path.">
+  <meta property="og:url" content="https://httpfixer.dev/fix/cors/cloudflare/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="HttpFixer">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@metriclogic">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Fix CORS Errors on Cloudflare","description":"CORS errors behind Cloudflare are fixed with Transform Rules or Workers. The origin server config alone is often not enough when Cloudflare is in the path.","url":"https://httpfixer.dev/fix/cors/cloudflare/","datePublished":"2026-04-04","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},"@type":"HowTo","name":"Fix CORS Errors on Cloudflare","step":[{"@type":"HowToStep","position":1,"name":"Set CORS headers via Transform Rules","text":"Go to Rules → Transform Rules → Modify Response Header and add Access-Control-Allow-Origin."},{"@type":"HowToStep","position":2,"name":"Handle OPTIONS at the edge","text":"Create a separate Transform Rule or Worker to return 204 for OPTIONS requests before they reach origin."},{"@type":"HowToStep","position":3,"name":"Test with CORSFixer","text":"Paste your Cloudflare URL into CORSFixer to confirm the preflight passes."}],{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev/"},{"@type":"ListItem","position":2,"name":"Fix","item":"https://httpfixer.dev/fix/"}]}]}</script>
+  <style>
+    :root {
+      --bg: #0B0D14; --surface: #12151F; --border: #252836;
+      --purple: #6C63FF; --green: #22C55E; --orange: #F97316;
+      --red: #EF4444; --text: #E2E4F0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; }
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); }
+    nav .brand { font-weight: 600; color: var(--text); text-decoration: none; }
+    nav .brand span { color: var(--purple); }
+    nav .right { display: flex; gap: 1rem; align-items: center; }
+    nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; }
+    nav a:hover { color: var(--purple); opacity: 1; }
+    main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; }
+    .breadcrumb a { color: var(--purple); text-decoration: none; }
+    h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; }
+    h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); }
+    p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; }
+    .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; }
+    .tool-cta:hover { filter: brightness(1.1); }
+    .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre; }
+    .tag { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 0.5rem; }
+    .tag-fix { background: rgba(34,197,94,0.15); color: var(--green); }
+    .tag-error { background: rgba(239,68,68,0.15); color: var(--red); }
+    .tag-provider { background: rgba(108,99,255,0.15); color: var(--purple); }
+    .index-list { list-style: none; margin: 1rem 0; }
+    .index-list li { margin-bottom: 0.65rem; }
+    .index-list a { color: var(--purple); text-decoration: none; }
+    .index-list a:hover { text-decoration: underline; }
+    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
+    .related-links a { color: var(--purple); text-decoration: none; }
+    footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
+    footer a { color: var(--text); text-decoration: none; }
+    @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="brand">HttpFixer <span>/</span> Fix</a>
+    <div class="right">
+      <a href="/">Headers</a>
+      <a href="/cors/">CORS</a>
+      <a href="/oauth/">OAuth</a>
+      <a href="/csp/">CSP</a>
+      <a href="/edge/">Edge</a>
+      <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a>
+    </div>
+  </nav>
+  <main>
+    <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/fix/">Fix</a> &rarr; <a href="/fix/cors/">CORS</a> &rarr; Cloudflare</div>
+    <h1>Fix CORS Errors on Cloudflare</h1>
+    <p>When Cloudflare sits in front of your origin, CORS headers set at the origin may not match what the browser sees — Cloudflare can cache responses, modify headers, or block OPTIONS preflights. Fix CORS at the edge for reliable results.</p>
+
+<h2>Option 1 — Transform Rules (no Workers required)</h2>
+<p>Dashboard &rarr; Rules &rarr; Transform Rules &rarr; Modify Response Header &rarr; Create Rule:</p>
+<div class="code-block">When: Custom filter expression
+  (http.request.uri.path wildcard "/api/*")
+
+Then — Set static:
+  Access-Control-Allow-Origin   → https://your-frontend.com
+  Access-Control-Allow-Methods  → GET, POST, PUT, DELETE, OPTIONS
+  Access-Control-Allow-Headers  → Content-Type, Authorization
+  Access-Control-Max-Age        → 86400
+  Vary                          → Origin</div>
+
+<p>For OPTIONS preflight, create a second rule that returns 204:</p>
+<div class="code-block">When: (http.request.method eq "OPTIONS") and
+      (http.request.uri.path wildcard "/api/*")
+
+Then — Block (returns 204 with CORS headers above)</div>
+
+<h2>Option 2 — Cloudflare Worker</h2>
+<div class="code-block">const ALLOWED_ORIGINS = ['https://your-frontend.com'];
+
+export default {
+  async fetch(request, env) {
+    const origin = request.headers.get('Origin') || '';
+    const isAllowed = ALLOWED_ORIGINS.includes(origin);
+
+    const corsHeaders = isAllowed ? {
+      'Access-Control-Allow-Origin': origin,
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Max-Age': '86400',
+      'Vary': 'Origin',
+    } : {};
+
+    // Handle preflight
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: corsHeaders });
+    }
+
+    // Proxy to origin and add CORS headers
+    const response = await fetch(request);
+    const newResponse = new Response(response.body, response);
+    Object.entries(corsHeaders).forEach(([k, v]) => newResponse.headers.set(k, v));
+    return newResponse;
+  }
+}</div>
+
+<h2>Why Cloudflare caching breaks CORS</h2>
+<p>If Cloudflare caches a response without <code>Vary: Origin</code>, it may serve the cached response with the wrong <code>Access-Control-Allow-Origin</code> to a different origin. Always set <code>Vary: Origin</code> when using dynamic CORS.</p>
+    <div class="related-links"><span>Related:</span> <a href="/glossary/cors/">CORS glossary</a> &middot; <a href="/blog/platform/security-headers-cloudflare/">Cloudflare security headers</a> &middot; <a href="/fix/cors/nginx/">Fix CORS on Nginx</a></div>
+    <a href="/cors/" class="tool-cta">Test your Cloudflare CORS config live → CORSFixer &rarr;</a>
+  </main>
+  <footer>
+    <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+    <span>MIT &middot; <a href="https://github.com/metriclogic26/httpfixer">GitHub &rarr;</a></span>
+  </footer>
+</body>
+</html>
