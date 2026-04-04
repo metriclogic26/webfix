@@ -212,8 +212,7 @@ async function checkPreload() {
 }
 
 async function fetchPreloadStatus(domain) {
-  const url = `https://hstspreload.org/api/v2/status?domain=${encodeURIComponent(domain)}`;
-  const res = await fetch(url);
+  const res = await fetch(`https://headers-proxy.metriclogicllc.workers.dev/?url=${encodeURIComponent(`https://hstspreload.org/api/v2/status?domain=${domain}`)}`);
   if (!res.ok) throw new Error("Could not reach hstspreload.org API");
   const data = await res.json();
   console.log(`HSTS preload API response:`, JSON.stringify(data));
