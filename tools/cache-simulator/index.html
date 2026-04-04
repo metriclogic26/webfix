@@ -259,13 +259,16 @@ function renderTimeline(p) {
   const maxAge = p.maxAge || 0;
   const swr = p.swr || 0;
   const sie = p.sie || 0;
-  const total = Math.max(maxAge + swr + Math.max(sie - maxAge - swr, 0), maxAge + 60, 120);
+
+  // KEY FIX: SIE does not stretch the timeline.
+  // The timeline shows max-age + SWR + a small expired tail.
+  // SIE is shown as a badge/annotation, not as a zone that scales the axis.
+  const visibleTotal = Math.max(maxAge + swr + Math.max(swr * 0.5, 30), maxAge + 60, 120);
   const barW = W - pad * 2;
-  const toX = t => pad + (t / total) * barW;
+  const toX = t => pad + (Math.min(t, visibleTotal) / visibleTotal) * barW;
 
   const freshEnd = toX(maxAge);
   const swrEnd = toX(maxAge + swr);
-  const sieEnd = toX(Math.min(maxAge + sie, total));
 
   let svgStr = "";
 
@@ -276,24 +279,33 @@ function renderTimeline(p) {
   if (maxAge > 0) {
     const fw = freshEnd - pad;
     svgStr += `<rect x="${pad}" y="${barY}" width="${fw}" height="${barH}" rx="4" fill="#22C55E22"/>`;
-    if (fw > 60) svgStr += `<text x="${pad + fw/2}" y="${barY + barH/2 + 5}" fill="#22C55E" text-anchor="middle" font-size="11" font-family="JetBrains Mono">FRESH (${fmtDur(maxAge)})</text>`;
+    if (fw > 40) {
+      svgStr += `<text x="${pad + fw/2}" y="${barY + barH/2 + 5}" fill="#22C55E" text-anchor="middle" font-size="11" font-family="JetBrains Mono">FRESH (${fmtDur(maxAge)})</text>`;
+    }
   }
 
   // SWR zone
   if (swr > 0) {
     const sw = swrEnd - freshEnd;
     svgStr += `<rect x="${freshEnd}" y="${barY}" width="${sw}" height="${barH}" fill="#6C63FF22"/>`;
-    if (sw > 50) svgStr += `<text x="${freshEnd + sw/2}" y="${barY + barH/2 + 5}" fill="#6C63FF" text-anchor="middle" font-size="11" font-family="JetBrains Mono">SWR (${fmtDur(swr)})</text>`;
+    if (sw > 40) {
+      svgStr += `<text x="${freshEnd + sw/2}" y="${barY + barH/2 + 5}" fill="#6C63FF" text-anchor="middle" font-size="11" font-family="JetBrains Mono">SWR (${fmtDur(swr)})</text>`;
+    }
   }
 
-  // Stale/expired zone
+  // Stale/expired zone — always shows after fresh+SWR
   const expiredStart = swr > 0 ? swrEnd : freshEnd;
   const expiredW = W - pad - expiredStart;
-  if (expiredW > 0 && (maxAge > 0 || !p.noCache)) {
+  if (expiredW > 0 && !p.noCache) {
     svgStr += `<rect x="${expiredStart}" y="${barY}" width="${expiredW}" height="${barH}" fill="#EF444411"/>`;
-    if (expiredW > 60) {
+    if (expiredW > 40) {
       const label = p.mustRevalidate ? "MUST REVALIDATE" : "STALE / EXPIRED";
       svgStr += `<text x="${expiredStart + expiredW/2}" y="${barY + barH/2 + 5}" fill="#EF4444" text-anchor="middle" font-size="11" font-family="JetBrains Mono">${label}</text>`;
+    }
+    // SIE badge overlaid on stale zone — does not stretch timeline
+    if (sie > 0 && expiredW > 80) {
+      svgStr += `<rect x="${expiredStart + 8}" y="${barY + 6}" width="auto" height="20" rx="3" fill="#EF444422"/>`;
+      svgStr += `<text x="${expiredStart + 14}" y="${barY + 20}" fill="#EF4444" opacity="0.8" font-size="10" font-family="JetBrains Mono">stale-if-error: ${fmtDur(sie)} on 5xx</text>`;
     }
   }
 
@@ -303,19 +315,29 @@ function renderTimeline(p) {
     svgStr += `<text x="${W/2}" y="${barY + barH/2 + 5}" fill="#F97316" text-anchor="middle" font-size="11" font-family="JetBrains Mono">no-cache — always revalidates before serving (ETag/304)</text>`;
   }
 
-  // Dividers and labels
+  // Axis line
   const axisY = barY + barH + 12;
   svgStr += `<line x1="${pad}" y1="${axisY}" x2="${W - pad}" y2="${axisY}" stroke="#252836" stroke-width="1"/>`;
-  svgStr += `<text x="${pad}" y="${axisY + 14}" fill="#E2E4F0" opacity="0.35" font-size="10" font-family="JetBrains Mono">t=0 (request)</text>`;
 
-  if (maxAge > 0) {
+  // t=0 label — always at left edge
+  svgStr += `<text x="${pad}" y="${axisY + 14}" fill="#E2E4F0" opacity="0.35" font-size="10" font-family="JetBrains Mono">t=0</text>`;
+
+  // max-age label — only if far enough from t=0 to avoid overlap (min 60px gap)
+  if (maxAge > 0 && (freshEnd - pad) > 55) {
     svgStr += `<line x1="${freshEnd}" y1="${barY - 6}" x2="${freshEnd}" y2="${axisY}" stroke="#22C55E" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>`;
     svgStr += `<text x="${freshEnd}" y="${axisY + 14}" fill="#22C55E" opacity="0.7" text-anchor="middle" font-size="10" font-family="JetBrains Mono">${fmtDur(maxAge)}</text>`;
+  } else if (maxAge > 0) {
+    // Too close to t=0 — show label above the bar instead
+    svgStr += `<line x1="${freshEnd}" y1="${barY - 6}" x2="${freshEnd}" y2="${barY + barH}" stroke="#22C55E" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>`;
+    svgStr += `<text x="${freshEnd + 4}" y="${barY + 14}" fill="#22C55E" opacity="0.7" font-size="10" font-family="JetBrains Mono">${fmtDur(maxAge)}</text>`;
   }
-  if (swr > 0) {
+
+  // SWR end label
+  if (swr > 0 && (swrEnd - freshEnd) > 40) {
     svgStr += `<line x1="${swrEnd}" y1="${barY - 6}" x2="${swrEnd}" y2="${axisY}" stroke="#6C63FF" stroke-width="1" stroke-dasharray="3,2" opacity="0.5"/>`;
     svgStr += `<text x="${swrEnd}" y="${axisY + 14}" fill="#6C63FF" opacity="0.7" text-anchor="middle" font-size="10" font-family="JetBrains Mono">${fmtDur(maxAge + swr)}</text>`;
   }
+
   svgStr += `<text x="${W - pad}" y="${axisY + 14}" fill="#E2E4F0" opacity="0.35" text-anchor="end" font-size="10" font-family="JetBrains Mono">time &rarr;</text>`;
 
   svg.innerHTML = svgStr;
