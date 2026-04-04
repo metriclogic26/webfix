@@ -129,7 +129,7 @@
 
   <div class="input-row" style="margin-top:-0.25rem">
     <button class="btn-outline" onclick="loadExample('httpfixer.dev')">Try httpfixer.dev</button>
-    <button class="btn-outline" onclick="loadExample('google.com')">Try google.com</button>
+    <button class="btn-outline" onclick="loadExample('github.com')">Try github.com</button>
   </div>
 
   <div class="status" id="status"></div>
@@ -227,9 +227,7 @@ async function fetchPreloadStatus(domain) {
 
 async function fetchSiteHeaders(domain) {
   try {
-    const res = await fetch(`${PROXY}/?url=${encodeURIComponent("https://" + domain)}`, {
-      headers: { "Accept": "application/json" }
-    });
+    const res = await fetch(`${PROXY}/?url=${encodeURIComponent("https://" + domain)}`);
     if (!res.ok) return {};
     const data = await res.json();
     const h = data.headers || data;
