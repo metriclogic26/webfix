@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTTP Link Header Preload — Reduce LCP Without Changing Your HTML &middot; HttpFixer</title>
+  <meta name="description" content="The HTTP Link header tells the browser to preload critical resources before the HTML is even parsed. Here is how to use it to shave 200-500ms off your LCP.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/performance/link-header-preload/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="HTTP Link Header Preload — Reduce LCP Without Changing Your HTML">
+  <meta property="og:description" content="The HTTP Link header tells the browser to preload critical resources before the HTML is even parsed. Here is how to use it to shave 200-500ms off your LCP.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/performance/link-header-preload/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "HTTP Link Header Preload \u2014 Reduce LCP Without Changing Your HTML",
+      "description": "The HTTP Link header tells the browser to preload critical resources before the HTML is even parsed. Here is how to use it to shave 200-500ms off your LCP.",
+      "url": "https://httpfixer.dev/blog/performance/link-header-preload/",
+      "datePublished": "2026-04-03",
+      "dateModified": "2026-04-03",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "HowTo",
+      "name": "HTTP Link Header Preload \u2014 Reduce LCP Without Changing Your HTML",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Identify your critical resources",
+          "text": "Find the fonts, CSS, and hero images that block first render. These are your preload candidates."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Add Link headers to your server response",
+          "text": "Add Link headers pointing to each critical resource with the correct rel=preload and as= attribute."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Verify in DevTools Network tab",
+          "text": "Resources with Link preload headers appear at the top of the waterfall, before the HTML has finished parsing."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between Link header preload and <link rel=preload> in HTML?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Both do the same thing \u2014 the browser starts fetching the resource early. The HTTP Link header has one advantage: the browser sees it before parsing any HTML at all, so preloading starts even earlier, especially useful for resources needed for the first render."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What resources should I preload?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Fonts that cause FOUT (flash of unstyled text), the hero image for LCP, critical CSS that blocks rendering, and any JavaScript needed before first interaction. Do not preload everything \u2014 unused preloads waste bandwidth."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can preloaded resources be cached?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes \u2014 preloaded resources follow normal HTTP caching rules. If the resource is already in the browser cache from a previous visit, the preload is a no-op."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "HttpFixer",
+          "item": "https://httpfixer.dev"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://httpfixer.dev/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "HTTP Link Header Preload \u2014 Reduce LCP Without Changing Your HTML",
+          "item": "https://httpfixer.dev/blog/performance/link-header-preload/"
+        }
+      ]
+    }
+  ]
+}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .bc{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .bc a{color:var(--purple);text-decoration:none}
+    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(249,115,22,0.2);color:var(--orange)}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    .inline-cta{background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    .inline-cta span{font-size:12px;opacity:0.7}
+    .inline-cta a{padding:0.4rem 0.9rem;background:var(--purple);color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .related{font-size:12px;opacity:0.7;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    .related a:hover{text-decoration:underline}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .xlink{display:inline-block;margin:0.25rem 0.25rem 0.25rem 0;padding:0.25rem 0.6rem;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);border-radius:4px;font-size:12px;color:var(--purple);text-decoration:none}
+    .xlink:hover{background:rgba(108,99,255,0.2)}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}h1{font-size:1.3rem}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
+  <div class="right">
+    <a href="/">Headers</a>
+    <a href="/cors/">CORS</a>
+    <a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a>
+    <a href="/edge/">Edge</a>
+    <a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="bc"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/performance/">Performance</a> &rarr; HTTP Link Header Preload — Reduce LCP Without Changing Your HTML</div>
+  <span class="tag">Performance</span>
+  <h1>HTTP Link Header Preload — Reduce LCP Without Changing Your HTML</h1>
+  <div class="inline-cta">
+  <span>Reading this? Verify your fix in real-time.</span>
+  <a href="/speedfixer/">Run a live PageSpeed audit &rarr; SpeedFixer</a>
+</div>
+  
+<p class="lead">Your HTML tells the browser what to load. The HTTP Link header tells it what to preload before it even reads the HTML. For fonts, hero images, and critical CSS, this difference translates directly into a faster Largest Contentful Paint.</p>
+
+<h2>How it works</h2>
+<p>When a browser receives an HTTP response, it reads the headers before parsing the body. If a <code>Link</code> header specifies a preload, the browser starts fetching that resource immediately — while still downloading and parsing the HTML. For a font that would normally be discovered only after the CSS is parsed, this saves hundreds of milliseconds.</p>
+
+<h2>The Link header syntax</h2>
+<pre># Preload a font
+Link: &lt;/fonts/inter.woff2&gt;; rel=preload; as=font; crossorigin
+
+# Preload a hero image
+Link: &lt;/images/hero.webp&gt;; rel=preload; as=image
+
+# Preload critical CSS
+Link: &lt;/css/critical.css&gt;; rel=preload; as=style
+
+# Preload a script
+Link: &lt;/js/app.js&gt;; rel=preload; as=script
+
+# Multiple resources — separate with comma
+Link: &lt;/fonts/inter.woff2&gt;; rel=preload; as=font; crossorigin, &lt;/images/hero.webp&gt;; rel=preload; as=image</pre>
+
+<h2>Config by stack</h2>
+
+<h3>Nginx</h3>
+<pre>server {
+    listen 443 ssl http2;
+    server_name yourapp.com;
+
+    location = / {
+        # Add Link headers for your homepage's critical resources
+        add_header Link "&lt;/fonts/inter.woff2&gt;; rel=preload; as=font; crossorigin" always;
+        add_header Link "&lt;/images/hero.webp&gt;; rel=preload; as=image" always;
+        add_header Link "&lt;/css/critical.css&gt;; rel=preload; as=style" always;
+    }
+}</pre>
+
+<h3>Vercel (vercel.json)</h3>
+<pre>{
+  "headers": [
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Link",
+          "value": "&lt;/fonts/inter.woff2&gt;; rel=preload; as=font; crossorigin, &lt;/images/hero.webp&gt;; rel=preload; as=image"
+        }
+      ]
+    }
+  ]
+}</pre>
+
+<h3>Express / Node.js</h3>
+<pre>app.get("/", (req, res) => {
+  res.setHeader("Link", [
+    "&lt;/fonts/inter.woff2&gt;; rel=preload; as=font; crossorigin",
+    "&lt;/images/hero.webp&gt;; rel=preload; as=image",
+    "&lt;/css/critical.css&gt;; rel=preload; as=style"
+  ].join(", "));
+  res.sendFile("index.html");
+});</pre>
+
+<h3>Cloudflare (Transform Rules)</h3>
+<p>Rules &rarr; Transform Rules &rarr; Modify Response Headers &rarr; Set header: Link = your preload value. Apply to source matching your homepage path.</p>
+
+<h2>The as= attribute — get it right</h2>
+<table>
+  <thead><tr><th>Resource type</th><th>as= value</th><th>Extra attributes</th></tr></thead>
+  <tbody>
+    <tr><td>Font file (.woff2)</td><td>font</td><td>crossorigin (required even for same-origin fonts)</td></tr>
+    <tr><td>Image (.webp, .jpg, .png)</td><td>image</td><td>imagesrcset and imagesizes for responsive images</td></tr>
+    <tr><td>CSS file</td><td>style</td><td>None needed</td></tr>
+    <tr><td>JavaScript file</td><td>script</td><td>None needed</td></tr>
+    <tr><td>Video file</td><td>video</td><td>None needed</td></tr>
+  </tbody>
+</table>
+
+<div class="warn">Do not preload resources you are not using on that page. An unused preload wastes bandwidth and can hurt performance. Preload only the 2-3 most critical above-the-fold resources.</div>
+
+<h2>HTTP/2 Server Push vs Link preload</h2>
+<p>HTTP/2 Server Push actively sent resources to the browser before it asked. It was deprecated and removed from Chrome in 2022 because it often pushed resources the browser already had cached. Link preload is better — the browser decides whether to fetch based on its cache state. Always prefer Link preload over Server Push.</p>
+
+<h2>Verify it is working</h2>
+<pre># Check headers are being sent
+curl -I https://yoursite.com/ | grep -i link
+
+# In DevTools Network tab:
+# Preloaded resources show "Initiator: Link" and appear before other resources
+# LCP resources should show fetchpriority="high"</pre>
+  <a href="/speedfixer/" class="tool-cta">Run a live PageSpeed audit &rarr; SpeedFixer</a>
+  <div class="related">
+    <strong>Related:</strong>
+    <a class="xlink" href="/blog/performance/fix-ttfb-vercel/">Fix slow TTFB on Vercel</a><a class="xlink" href="/blog/performance/fix-cache-control-cdn/">Cache-Control CDN fix</a><a class="xlink" href="/speedfixer/">SpeedFixer &mdash; live PSI audit with stack-specific configs</a><a class="xlink" href="/edge/">EdgeFix &mdash; check your edge headers</a>
+  </div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/generators/">Generators</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue &rarr;</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. HttpFixer provides these tools for informational purposes only. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zstandard (zstd) Compression — Enable It in Nginx, Vercel and Cloudflare &middot; HttpFixer</title>
+  <meta name="description" content="Zstd compresses 20-30% better than Brotli for most web assets. Here is how to enable it in Nginx, check if Vercel and Cloudflare support it, and what the Content-Encoding header looks like.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/performance/zstd-compression-nginx-vercel/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="Zstandard (zstd) Compression — Enable It in Nginx, Vercel and Cloudflare">
+  <meta property="og:description" content="Zstd compresses 20-30% better than Brotli for most web assets. Here is how to enable it in Nginx, check if Vercel and Cloudflare support it, and what the Content-Encoding header looks like.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/performance/zstd-compression-nginx-vercel/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "Zstandard (zstd) Compression \u2014 Enable It in Nginx, Vercel and Cloudflare",
+      "description": "Zstd compresses 20-30% better than Brotli for most web assets. Here is how to enable it in Nginx, check if Vercel and Cloudflare support it, and what the Content-Encoding header looks like.",
+      "url": "https://httpfixer.dev/blog/performance/zstd-compression-nginx-vercel/",
+      "datePublished": "2026-04-03",
+      "dateModified": "2026-04-03",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "HowTo",
+      "name": "Zstandard (zstd) Compression \u2014 Enable It in Nginx, Vercel and Cloudflare",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Check if your server supports zstd",
+          "text": "Nginx requires the ngx_brotli module for Brotli and a separate zstd module for Zstandard \u2014 it is not built in by default."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Enable zstd compression",
+          "text": "Install the Nginx zstd module and configure the zstd_comp_level and zstd_types directives."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Verify the Content-Encoding header",
+          "text": "The browser sends Accept-Encoding: zstd in requests. If the server supports it, the response should include Content-Encoding: zstd."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is zstd supported in all browsers?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Chrome 118+, Edge 118+, and Firefox 126+ support zstd. Safari does not as of 2026. Always serve a Brotli or gzip fallback \u2014 content negotiation handles this via Accept-Encoding."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much better is zstd than Brotli?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For typical web assets (HTML, CSS, JS), zstd at level 3 compresses similarly to Brotli level 4 but 3-5x faster. At higher levels zstd can beat Brotli by 10-20% on compression ratio while still being faster to compress."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Cloudflare support zstd?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cloudflare began rolling out zstd support in 2025. It is enabled automatically if the client sends Accept-Encoding: zstd. No configuration needed on your end \u2014 Cloudflare handles it at the edge."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "HttpFixer",
+          "item": "https://httpfixer.dev"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://httpfixer.dev/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Zstandard (zstd) Compression \u2014 Enable It in Nginx, Vercel and Cloudflare",
+          "item": "https://httpfixer.dev/blog/performance/zstd-compression-nginx-vercel/"
+        }
+      ]
+    }
+  ]
+}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .bc{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .bc a{color:var(--purple);text-decoration:none}
+    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(249,115,22,0.2);color:var(--orange)}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    .inline-cta{background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    .inline-cta span{font-size:12px;opacity:0.7}
+    .inline-cta a{padding:0.4rem 0.9rem;background:var(--purple);color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .related{font-size:12px;opacity:0.7;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    .related a:hover{text-decoration:underline}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .xlink{display:inline-block;margin:0.25rem 0.25rem 0.25rem 0;padding:0.25rem 0.6rem;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);border-radius:4px;font-size:12px;color:var(--purple);text-decoration:none}
+    .xlink:hover{background:rgba(108,99,255,0.2)}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}h1{font-size:1.3rem}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
+  <div class="right">
+    <a href="/">Headers</a>
+    <a href="/cors/">CORS</a>
+    <a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a>
+    <a href="/edge/">Edge</a>
+    <a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="bc"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/performance/">Performance</a> &rarr; Zstandard (zstd) Compression — Enable It in Nginx, Vercel and Cloudflare</div>
+  <span class="tag">Performance</span>
+  <h1>Zstandard (zstd) Compression — Enable It in Nginx, Vercel and Cloudflare</h1>
+  <div class="inline-cta">
+  <span>Reading this? Verify your fix in real-time.</span>
+  <a href="/edge/">Audit your compression headers &rarr; EdgeFix</a>
+</div>
+  
+<p class="lead">Brotli replaced gzip as the go-to web compression in 2020. Zstandard (zstd) is the next step — faster to compress and decompress, with better ratios on most web assets. Chrome and Firefox both support it now. Here is how to enable it.</p>
+
+<h2>Check what compression you are serving today</h2>
+<pre>curl -H "Accept-Encoding: zstd, br, gzip" -I https://yoursite.com/ | grep -i content-encoding
+# If you see: content-encoding: zstd — you already serve zstd
+# If you see: content-encoding: br   — you serve Brotli (good, step up to zstd)
+# If you see: content-encoding: gzip — time to upgrade</pre>
+
+<h2>Nginx — enable zstd</h2>
+<p>Nginx does not include zstd support by default. You need the <code>ngx_http_zstd_module</code>:</p>
+<pre># Ubuntu/Debian — install the module
+sudo apt install nginx-module-zstd  # if available in your repo
+# or compile from source with --add-module=/path/to/ngx_http_zstd_filter_module
+
+# nginx.conf — load the module
+load_module modules/ngx_http_zstd_filter_module.so;
+
+http {
+    zstd on;
+    zstd_comp_level 3;   # 1-22, 3 is the sweet spot for speed/ratio
+    zstd_types text/html text/css text/javascript application/javascript
+               application/json application/xml text/plain;
+}
+
+# Your server still serves Brotli and gzip as fallbacks via content negotiation
+brotli on;
+brotli_comp_level 4;
+gzip on;
+gzip_comp_level 6;</pre>
+
+<h2>Vercel — zstd status</h2>
+<p>Vercel's edge network handles compression automatically. If the client browser sends <code>Accept-Encoding: zstd</code>, Vercel serves zstd if available. You do not configure this — it happens at the edge layer. Check the actual response:</p>
+<pre>curl -H "Accept-Encoding: zstd" -I https://yourapp.vercel.app/ | grep content-encoding</pre>
+
+<h2>Cloudflare — automatic zstd</h2>
+<p>Cloudflare enables zstd automatically for browsers that support it. No configuration needed. If you are behind Cloudflare, your users with Chrome 118+ and Firefox 126+ are already receiving zstd.</p>
+
+<h2>Apache — zstd compression</h2>
+<pre># Install mod_brotli and the zstd extension
+# Ubuntu:
+sudo apt install libapache2-mod-zstd  # if available
+
+# .htaccess or httpd.conf
+AddOutputFilterByType ZSTD_COMPRESS text/html text/css application/javascript application/json</pre>
+
+<h2>How the browser negotiates</h2>
+<pre># Browser sends in request:
+Accept-Encoding: zstd, br, gzip, deflate
+
+# Server responds with the best it supports:
+Content-Encoding: zstd    # if server supports zstd
+Content-Encoding: br      # fallback to Brotli
+Content-Encoding: gzip    # fallback to gzip
+
+# If no Accept-Encoding match, server sends uncompressed</pre>
+
+<h2>Real-world compression comparison</h2>
+<table>
+  <thead><tr><th>Algorithm</th><th>Compression speed</th><th>Decompression speed</th><th>Ratio vs gzip</th><th>Browser support 2026</th></tr></thead>
+  <tbody>
+    <tr><td>gzip</td><td>Fast</td><td>Fast</td><td>Baseline</td><td>Universal</td></tr>
+    <tr><td>Brotli</td><td>Slow (precompressed)</td><td>Fast</td><td>~15-20% better</td><td>All modern browsers</td></tr>
+    <tr><td>Zstd level 3</td><td>Very fast</td><td>Very fast</td><td>~15-20% better</td><td>Chrome 118+, Firefox 126+, not Safari</td></tr>
+    <tr><td>Zstd level 10+</td><td>Slow</td><td>Very fast</td><td>~20-25% better</td><td>Same as above</td></tr>
+  </tbody>
+</table>
+
+<p>Use EdgeFix to check what <code>Content-Encoding</code> your server is actually returning and whether your Vary header is set correctly to allow CDN caching of compressed variants.</p>
+  <a href="/edge/" class="tool-cta">Audit your compression headers &rarr; EdgeFix</a>
+  <div class="related">
+    <strong>Related:</strong>
+    <a class="xlink" href="/blog/performance/fix-cache-control-cdn/">Cache-Control on CDN</a><a class="xlink" href="/blog/performance/fix-ttfb-vercel/">Fix slow TTFB on Vercel</a><a class="xlink" href="/blog/compare/brotli-vs-zstd/">Brotli vs Zstd comparison</a><a class="xlink" href="/edge/">EdgeFix &mdash; audit your edge headers</a>
+  </div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/generators/">Generators</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue &rarr;</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. HttpFixer provides these tools for informational purposes only. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

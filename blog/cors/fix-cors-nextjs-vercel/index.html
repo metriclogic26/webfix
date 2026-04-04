@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fix CORS on Next.js Deployed to Vercel — The Complete 2026 Guide &middot; HttpFixer</title>
+  <meta name="description" content="CORS on Next.js + Vercel has three separate layers: App Router middleware, API route handlers, and vercel.json headers. Here is exactly which layer to use for which situation.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/cors/fix-cors-nextjs-vercel/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="Fix CORS on Next.js Deployed to Vercel — The Complete 2026 Guide">
+  <meta property="og:description" content="CORS on Next.js + Vercel has three separate layers: App Router middleware, API route handlers, and vercel.json headers. Here is exactly which layer to use for which situation.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/cors/fix-cors-nextjs-vercel/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "Fix CORS on Next.js Deployed to Vercel \u2014 The Complete 2026 Guide",
+      "description": "CORS on Next.js + Vercel has three separate layers: App Router middleware, API route handlers, and vercel.json headers. Here is exactly which layer to use for which situation.",
+      "url": "https://httpfixer.dev/blog/cors/fix-cors-nextjs-vercel/",
+      "datePublished": "2026-04-03",
+      "dateModified": "2026-04-03",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "HowTo",
+      "name": "Fix CORS on Next.js Deployed to Vercel \u2014 The Complete 2026 Guide",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Identify which layer your CORS issue is in",
+          "text": "vercel.json for static headers on all routes, middleware.ts for dynamic logic, per-route for specific API endpoints."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Add CORS in the right place",
+          "text": "One layer only \u2014 adding CORS in multiple places creates duplicate headers that break the browser."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Test with CORSFixer",
+          "text": "Send a real OPTIONS preflight to your deployed Vercel URL to confirm headers are correct."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Should I use vercel.json or middleware.ts for CORS?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use middleware.ts if you need dynamic origin matching (different origins per route) or conditional logic. Use vercel.json for simple global headers. Never use both \u2014 they stack and create duplicates."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does CORS work in development but fail on Vercel?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Local development runs Next.js on localhost \u2014 your frontend and API are same-origin. On Vercel, if your frontend is on yourapp.com and calls an API on api.yourapp.com (or a different Vercel project), they are cross-origin."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do Vercel preview deployments have CORS issues?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes \u2014 preview URLs like your-project-git-branch.vercel.app are different origins from your production domain. Add a wildcard pattern for Vercel preview URLs in your allowlist during development."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "HttpFixer",
+          "item": "https://httpfixer.dev"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://httpfixer.dev/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Fix CORS on Next.js Deployed to Vercel \u2014 The Complete 2026 Guide",
+          "item": "https://httpfixer.dev/blog/cors/fix-cors-nextjs-vercel/"
+        }
+      ]
+    }
+  ]
+}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .bc{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .bc a{color:var(--purple);text-decoration:none}
+    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.2);color:var(--purple)}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    .inline-cta{background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    .inline-cta span{font-size:12px;opacity:0.7}
+    .inline-cta a{padding:0.4rem 0.9rem;background:var(--purple);color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .related{font-size:12px;opacity:0.7;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    .related a:hover{text-decoration:underline}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .xlink{display:inline-block;margin:0.25rem 0.25rem 0.25rem 0;padding:0.25rem 0.6rem;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);border-radius:4px;font-size:12px;color:var(--purple);text-decoration:none}
+    .xlink:hover{background:rgba(108,99,255,0.2)}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}h1{font-size:1.3rem}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
+  <div class="right">
+    <a href="/">Headers</a>
+    <a href="/cors/">CORS</a>
+    <a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a>
+    <a href="/edge/">Edge</a>
+    <a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="bc"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/cors/">Cors</a> &rarr; Fix CORS on Next.js Deployed to Vercel — The Complete 2026 Guide</div>
+  <span class="tag">CORS</span>
+  <h1>Fix CORS on Next.js Deployed to Vercel — The Complete 2026 Guide</h1>
+  <div class="inline-cta">
+  <span>Reading this? Verify your fix in real-time.</span>
+  <a href="/cors/">Test your Next.js CORS config &rarr; CORSFixer</a>
+</div>
+  
+<p class="lead">Next.js on Vercel gives you three places to configure CORS. Using the wrong one, or using more than one, creates bugs that are hard to trace. Here is the definitive guide to which layer does what and when to use each.</p>
+
+<h2>The three CORS layers in Next.js on Vercel</h2>
+<table>
+  <thead><tr><th>Layer</th><th>File</th><th>Use for</th><th>Handles OPTIONS?</th></tr></thead>
+  <tbody>
+    <tr><td>Static headers</td><td>vercel.json</td><td>Simple global CORS — same origin for all routes</td><td>No — need route handler too</td></tr>
+    <tr><td>Middleware</td><td>middleware.ts</td><td>Dynamic origin logic, complex conditions</td><td>Yes — return early for OPTIONS</td></tr>
+    <tr><td>Per-route handler</td><td>app/api/*/route.ts</td><td>Route-specific CORS, different headers per endpoint</td><td>Yes — export OPTIONS function</td></tr>
+  </tbody>
+</table>
+
+<h2>Option 1 — vercel.json (simplest, global)</h2>
+<pre>// vercel.json
+{
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "https://yourapp.com" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,PUT,DELETE,OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type,Authorization" }
+      ]
+    }
+  ]
+}</pre>
+
+<p>Add a route handler for OPTIONS in your API routes — vercel.json adds headers but does not intercept the request method:</p>
+<pre>// app/api/data/route.ts
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": "https://yourapp.com",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    }
+  });
+}
+
+export async function GET() {
+  return Response.json({ data: "ok" });
+}</pre>
+
+<h2>Option 2 — middleware.ts (recommended for complex cases)</h2>
+<pre>// middleware.ts — handles CORS for all API routes
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+const ALLOWED_ORIGINS = [
+  "https://yourapp.com",
+  "https://staging.yourapp.com",
+  // Allow Vercel preview deployments during development:
+  /https:\/\/your-project-.*\.vercel\.app/,
+];
+
+function getAllowedOrigin(origin: string | null): string {
+  if (!origin) return "";
+  return ALLOWED_ORIGINS.some(allowed =>
+    typeof allowed === "string" ? allowed === origin : allowed.test(origin)
+  ) ? origin : "";
+}
+
+export function middleware(request: NextRequest) {
+  const origin = request.headers.get("origin");
+  const allowedOrigin = getAllowedOrigin(origin);
+
+  // Handle OPTIONS preflight
+  if (request.method === "OPTIONS") {
+    return new NextResponse(null, {
+      status: 204,
+      headers: {
+        "Access-Control-Allow-Origin": allowedOrigin,
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Max-Age": "86400",
+        "Vary": "Origin",
+      },
+    });
+  }
+
+  // Add CORS to actual request response
+  const response = NextResponse.next();
+  if (allowedOrigin) {
+    response.headers.set("Access-Control-Allow-Origin", allowedOrigin);
+    response.headers.set("Vary", "Origin");
+  }
+  return response;
+}
+
+export const config = {
+  matcher: "/api/:path*",
+};</pre>
+
+<h2>Option 3 — per-route (App Router)</h2>
+<pre>// app/api/users/route.ts
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "https://yourapp.com",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: CORS_HEADERS });
+}
+
+export async function GET() {
+  return Response.json(
+    { users: [] },
+    { headers: CORS_HEADERS }
+  );
+}</pre>
+
+<h2>Common mistake — duplicate headers from multiple layers</h2>
+<pre># If vercel.json AND middleware.ts both add CORS headers:
+# Browser sees: Access-Control-Allow-Origin: https://yourapp.com, https://yourapp.com
+# → Browser rejects the duplicate
+# → CORS error
+
+# Solution: use ONE layer only
+# Either vercel.json OR middleware.ts OR per-route — not all three</pre>
+
+<h2>Vercel preview deployment origins</h2>
+<pre>// Allow production + preview deployments
+const ALLOWED_ORIGINS = [
+  "https://yourapp.com",
+  // Regex for Vercel preview URLs
+];
+
+function isAllowed(origin: string | null): boolean {
+  if (!origin) return false;
+  if (origin === "https://yourapp.com") return true;
+  // Allow Vercel preview: https://your-project-*.vercel.app
+  if (/^https:\/\/your-project-[a-z0-9-]+\.vercel\.app$/.test(origin)) return true;
+  return false;
+}</pre>
+  <a href="/cors/" class="tool-cta">Test your Next.js CORS config &rarr; CORSFixer</a>
+  <div class="related">
+    <strong>Related:</strong>
+    <a class="xlink" href="/blog/cors/fix-cors-nextjs/">Next.js CORS guide</a><a class="xlink" href="/blog/cors/fix-cors-vercel/">Vercel CORS guide</a><a class="xlink" href="/blog/cors/fix-cors-authjs/">Auth.js CORS errors</a><a class="xlink" href="/cors/">CORSFixer &mdash; test your live API</a>
+  </div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/generators/">Generators</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue &rarr;</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. HttpFixer provides these tools for informational purposes only. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>
