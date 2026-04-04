@@ -541,7 +541,7 @@
   "step": [
     { "@type": "HowToStep", "position": 1, "name": "Enter your URL", "text": "Paste the URL of the page or API response you want to audit." },
     { "@type": "HowToStep", "position": 2, "name": "Review caching headers", "text": "EdgeFix reads Cache-Control, Vary, Age, and CDN-related headers from the live response." },
-    { "@type": "HowToStep", "position": 3, "name": "Copy the fix", "text": "Select your platform tab and copy the recommended header configuration for Nginx, Apache, Cloudflare, or your stack." }
+    { "@type": "HowToStep", "position": 3, "name": "Copy the fix", "text": "Select your platform tab and copy the suggested header configuration for Nginx, Apache, Cloudflare, or your stack." }
   ]
 }
   </script>
@@ -932,7 +932,7 @@ vary: Accept-Encoding"></textarea>
           var s = (results[i].status + '').toLowerCase();
           if (s === 'fail') fails++;
           else if (s === 'warn') warns++;
-          else pass++;
+          else if (s === 'pass') pass++;
         }
         var grade, gradeClass;
         if (fails === 0 && warns === 0) { grade = 'A'; gradeClass = 'grade-a'; }
@@ -1171,8 +1171,9 @@ vary: Accept-Encoding"></textarea>
         });
 
         container.classList.add('visible');
-        getEl('clear-btn-live').style.display = '';
-        getEl('clear-btn-paste').style.display = '';
+        var isLive = getEl('live-panel').classList.contains('visible');
+        if (isLive) getEl('clear-btn-live').style.display = '';
+        else getEl('clear-btn-paste').style.display = '';
       }
 
       function hideClearButtons() {
@@ -1257,7 +1258,8 @@ vary: Accept-Encoding"></textarea>
         }
         showStack(stack);
         showError(false);
-        var audit = auditCache(headers, '', 'page');
+        var urlType = detectUrlType('https://example.com' + (Object.keys(headers).some(function(k){ return k === 'content-type' && (headers[k]||'').indexOf('json') !== -1; }) ? '/api/data' : '/page'));
+        var audit = auditCache(headers, '', urlType);
         renderEdgeResults(audit, '', stack);
       });
 
@@ -1271,6 +1273,8 @@ vary: Accept-Encoding"></textarea>
       getEl('audit-btn').addEventListener('click', function () {
         var url = (getEl('target-url').value || '').trim();
         if (!url) return;
+        if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+        getEl('target-url').value = url;
 
         showError(false);
         setLoading(true);
