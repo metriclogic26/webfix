@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fix CORS Error on Render.com — Services and Web Services · HttpFixer</title>
+  <meta name="description" content="Render does not add CORS headers automatically. Configure them in your application code or use Render's native redirect rules. Here is both approaches.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/cors/fix-cors-render/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="Fix CORS Error on Render.com — Services and Web Services">
+  <meta property="og:description" content="Render does not add CORS headers automatically. Configure them in your application code or use Render's native redirect rules. Here is both approaches.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/cors/fix-cors-render/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "Fix CORS Error on Render.com \u2014 Services and Web Services",
+      "description": "Render does not add CORS headers automatically. Configure them in your application code or use Render's native redirect rules. Here is both approaches.",
+      "url": "https://httpfixer.dev/blog/cors/fix-cors-render/",
+      "datePublished": "2026-04-03",
+      "dateModified": "2026-04-03",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "HowTo",
+      "name": "Fix CORS Error on Render.com \u2014 Services and Web Services",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Fix CORS in your application code",
+          "text": "Render does not add headers \u2014 apply the framework-specific CORS fix in your server code."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Set CORS_ORIGIN as a Render environment variable",
+          "text": "Use Render's Environment tab to set the allowed origin and read it in your app."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Verify your app listens on PORT env variable",
+          "text": "Render injects the PORT variable. If your app ignores it, requests never reach your code."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does Render have built-in CORS config?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Render is an infrastructure platform \u2014 CORS headers are set by your application, not by Render."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does my Render deployment get a CORS error when local works fine?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Local development often runs on the same origin (localhost:3000 calling localhost:3000/api). In production on Render, your frontend and backend are on different domains \u2014 a real cross-origin situation that requires CORS headers."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use Render's redirect rules for CORS?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Render's redirect rules handle URL redirects, not HTTP headers. They cannot add CORS headers."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "HttpFixer",
+          "item": "https://httpfixer.dev"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://httpfixer.dev/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Fix CORS Error on Render.com \u2014 Services and Web Services",
+          "item": "https://httpfixer.dev/blog/cors/fix-cors-render/"
+        }
+      ]
+    }
+  ]
+}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem;align-items:center}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;font-family:"JetBrains Mono",monospace;line-height:1.6}
+    .error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em}
+    .warn-box{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.2);color:var(--purple)}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/cors/">Cors</a> → Fix CORS Error on Render.com — Services and Web Services</div>
+  <span class="tag">CORS</span>
+  <h1>Fix CORS Error on Render.com</h1>
+  
+<div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace">
+  <span style="font-size:12px;opacity:0.7">Reading this article? Verify your fix in real-time.</span>
+  <a href="/cors/" style="display:inline-block;padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Test your Render.com CORS config → CORSFixer</a>
+</div>
+  
+<p class="lead">Render.com is a hosting platform — CORS headers are your application's responsibility, not Render's. The fix is in your server code, not Render's dashboard.</p>
+
+<h2>The approach</h2>
+<p>Render runs your Docker container or build output. CORS headers must be set by your application. Apply the standard fix for your framework:</p>
+
+<table>
+  <thead><tr><th>Framework</th><th>Fix</th></tr></thead>
+  <tbody>
+    <tr><td>Express / Node.js</td><td><a href="/blog/cors/fix-cors-express/" style="color:var(--purple)">Express CORS guide →</a></td></tr>
+    <tr><td>FastAPI / Python</td><td><a href="/blog/cors/fix-cors-fastapi/" style="color:var(--purple)">FastAPI CORS guide →</a></td></tr>
+    <tr><td>Django</td><td><a href="/blog/cors/fix-cors-django/" style="color:var(--purple)">Django CORS guide →</a></td></tr>
+    <tr><td>Flask</td><td><a href="/blog/cors/fix-cors-flask/" style="color:var(--purple)">Flask CORS guide →</a></td></tr>
+    <tr><td>Go</td><td><a href="/blog/cors/fix-cors-go/" style="color:var(--purple)">Go CORS guide →</a></td></tr>
+    <tr><td>Ruby on Rails</td><td><a href="/blog/cors/fix-cors-rails/" style="color:var(--purple)">Rails CORS guide →</a></td></tr>
+    <tr><td>Static site with Nginx</td><td>See Nginx config below</td></tr>
+  </tbody>
+</table>
+
+<h2>Render with Nginx (static sites or Docker)</h2>
+<pre># nginx.conf
+server {
+    listen 10000;  # Render uses port 10000 by default
+
+    location / {
+        root /usr/share/nginx/html;
+        index index.html;
+
+        # CORS for API calls
+        if ($request_method = OPTIONS) {
+            add_header Access-Control-Allow-Origin "https://yourapp.com";
+            add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS";
+            add_header Access-Control-Allow-Headers "Authorization, Content-Type";
+            add_header Content-Length 0;
+            return 204;
+        }
+
+        add_header Access-Control-Allow-Origin "https://yourapp.com" always;
+    }
+}</pre>
+
+<h2>Render environment variables for origin config</h2>
+<pre># In Render dashboard — Environment tab
+CORS_ORIGIN=https://yourapp.com
+
+# In your Express app
+const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
+app.use(cors({ origin: corsOrigin }));</pre>
+
+<h2>Common Render-specific issue — wrong port</h2>
+<pre># Render requires your app to listen on the PORT env variable
+const PORT = process.env.PORT || 3000;
+app.listen(PORT);</pre>
+
+<p>If your app is not listening on the correct port, Render cannot route requests to it — which appears as a network error, not a CORS error. Check Render logs first.</p>
+
+<h2>Render Web Service + separate frontend</h2>
+<p>If your frontend is on Vercel or Netlify and your backend is on Render, it is a cross-origin setup. Set the backend <code>CORS_ORIGIN</code> env variable to your Vercel/Netlify frontend URL in the Render dashboard.</p>
+  <a href="/cors/" class="tool-cta">Test your Render.com CORS config → CORSFixer</a>
+  <div class="related">Related: <a href="/blog/cors/fix-cors-express/">Express CORS fix</a> <a href="/blog/cors/fix-cors-fastapi/">FastAPI CORS fix</a> <a href="/blog/platform/cors-aws-lambda/">AWS Lambda CORS</a></div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/privacy/">Terms</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. © 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

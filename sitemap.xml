@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8">
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://httpfixer.dev/</loc>
@@ -193,7 +193,43 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://httpfixer.dev/blog/cors/cors-incognito-vs-normal/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/cors/cors-misconfiguration-vulnerabilities/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/cors/cors-no-cors-mode/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/cors/cors-wildcard-credentials-security/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/cors/fix-cors-aspnet/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://httpfixer.dev/blog/cors/fix-cors-credentials/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/cors/fix-cors-django/</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -206,6 +242,36 @@
   </url>
   <url>
     <loc>https://httpfixer.dev/blog/cors/fix-cors-fastapi/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/cors/fix-cors-firebase/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/cors/fix-cors-flask/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/cors/fix-cors-flyio/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/cors/fix-cors-go/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/cors/fix-cors-laravel/</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -229,13 +295,49 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://httpfixer.dev/blog/cors/fix-cors-rails/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/cors/fix-cors-railway/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/cors/fix-cors-render/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/cors/fix-cors-reverse-proxy/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://httpfixer.dev/blog/cors/fix-cors-spring-boot/</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://httpfixer.dev/blog/cors/fix-cors-supabase/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://httpfixer.dev/blog/cors/fix-cors-vercel/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/cors/how-to-debug-cors-devtools/</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -361,6 +463,18 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://httpfixer.dev/blog/headers/82-percent-expose-server-header/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/headers/csp-adoption-only-27-percent/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://httpfixer.dev/blog/headers/fix-hsts/</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
@@ -373,7 +487,31 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://httpfixer.dev/blog/headers/most-commonly-missing-security-header/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://httpfixer.dev/blog/headers/security-headers-checklist/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/headers/security-headers-github-pages/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/oauth/fix-firebase-auth-oauth/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/oauth/fix-github-oauth/</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -386,6 +524,12 @@
   </url>
   <url>
     <loc>https://httpfixer.dev/blog/oauth/fix-invalid-grant/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/oauth/fix-oauth-keycloak/</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -404,6 +548,12 @@
   </url>
   <url>
     <loc>https://httpfixer.dev/blog/oauth/fix-refresh-token-expired/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/oauth/fix-supabase-auth/</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -919,36 +1069,6 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://httpfixer.dev/learn/</loc>
-    <lastmod>2026-04-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://httpfixer.dev/learn/content-security-policy/</loc>
-    <lastmod>2026-04-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://httpfixer.dev/learn/cors/</loc>
-    <lastmod>2026-04-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://httpfixer.dev/learn/security-headers/</loc>
-    <lastmod>2026-04-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://httpfixer.dev/learn/web-performance/</loc>
-    <lastmod>2026-04-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://httpfixer.dev/providers/</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
@@ -1039,24 +1159,37 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://httpfixer.dev/vs/</loc>
-    <lastmod>2026-04-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://httpfixer.dev/vs/httpfixer-vs-securityheaders/</loc>
-    <lastmod>2026-04-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <lastmod>2026-04-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-  <url>
     <loc>https://httpfixer.dev/headers/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/learn/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/learn/content-security-policy/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/learn/cors/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/learn/security-headers/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/learn/web-performance/</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
@@ -1064,7 +1197,19 @@
   <url>
     <loc>https://httpfixer.dev/privacy/</loc>
     <lastmod>2026-04-03</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/vs/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/vs/httpfixer-vs-securityheaders/</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
   </url>
 </urlset>
