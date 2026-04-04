@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>301 vs 308 Redirect — Which Should You Use for SEO and APIs · HttpFixer</title>
+  <meta name="description" content="301 changes POST to GET on redirect. 308 preserves the method. Here is when each matters and the exact config for Nginx, Vercel, and Cloudflare.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/headers/301-vs-308-redirect/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="301 vs 308 Redirect — Which Should You Use for SEO and APIs">
+  <meta property="og:description" content="301 changes POST to GET on redirect. 308 preserves the method. Here is when each matters and the exact config for Nginx, Vercel, and Cloudflare.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/headers/301-vs-308-redirect/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "301 vs 308 Redirect \u2014 Which Should You Use for SEO and APIs",
+      "description": "301 changes POST to GET on redirect. 308 preserves the method. Here is when each matters and the exact config for Nginx, Vercel, and Cloudflare.",
+      "url": "https://httpfixer.dev/blog/headers/301-vs-308-redirect/",
+      "datePublished": "2026-04-03",
+      "dateModified": "2026-04-03",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "HowTo",
+      "name": "301 vs 308 Redirect \u2014 Which Should You Use for SEO and APIs",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Understand the method difference",
+          "text": "301 turns POST into GET. 308 keeps the original method. For HTML page redirects, both work the same."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Use 301 for permanent URL changes",
+          "text": "Standard permanent redirect for moved pages, www to non-www, HTTP to HTTPS."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Use 308 for API endpoint changes",
+          "text": "When moving an API endpoint and callers use POST, PUT, or DELETE \u2014 308 preserves the method."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "When should I use 308 instead of 301?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use 308 when you are permanently moving an API endpoint that receives POST, PUT, or PATCH requests. 301 would convert those to GET, breaking the API call."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does 301 vs 308 affect SEO?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Both are permanent redirects and transfer PageRank equivalently. Google treats them the same for SEO purposes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What about 302 vs 307?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "302 is temporary and may convert POST to GET (same as 301). 307 is temporary and preserves method (same as 308, but temporary). Use 301/308 for permanent moves, 302/307 for temporary."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "HttpFixer",
+          "item": "https://httpfixer.dev"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://httpfixer.dev/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "301 vs 308 Redirect \u2014 Which Should You Use for SEO and APIs",
+          "item": "https://httpfixer.dev/blog/headers/301-vs-308-redirect/"
+        }
+      ]
+    }
+  ]
+}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.2);color:var(--red)}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/headers/">Headers</a> → 301 vs 308 Redirect — Which Should You Use for SEO and APIs</div>
+  <span class="tag">Headers</span>
+  <h1>301 vs 308 Redirect — Which Should You Use for SEO and APIs</h1>
+  <div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace">
+  <span style="font-size:12px;opacity:0.7">Reading this? Verify your fix live.</span>
+  <a href="/edge/" style="padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Audit your redirect headers → EdgeFix</a>
+</div>
+  
+<p class="lead">Both 301 and 308 are permanent redirects. The difference is one detail: 301 changes POST to GET on redirect. 308 preserves the original HTTP method. For browser page redirects this does not matter — for APIs it does.</p>
+
+<h2>The difference visualised</h2>
+<pre># 301 Moved Permanently
+POST /old-endpoint → 301 → GET /new-endpoint  ← method changed!
+
+# 308 Permanent Redirect
+POST /old-endpoint → 308 → POST /new-endpoint  ← method preserved ✅</pre>
+
+<h2>When to use each</h2>
+<table>
+  <thead><tr><th>Situation</th><th>Use</th><th>Why</th></tr></thead>
+  <tbody>
+    <tr><td>www to non-www</td><td>301</td><td>Browser navigation — method change irrelevant</td></tr>
+    <tr><td>HTTP to HTTPS</td><td>301</td><td>Browser navigation — use HSTS instead for repeat visits</td></tr>
+    <tr><td>Old page URL to new URL</td><td>301</td><td>Standard permanent page move</td></tr>
+    <tr><td>Old API endpoint to new</td><td>308</td><td>API clients use POST/PUT — preserve the method</td></tr>
+    <tr><td>Domain migration</td><td>301</td><td>Standard — browsers follow automatically</td></tr>
+  </tbody>
+</table>
+
+<h2>Config by stack</h2>
+
+<h3>Nginx — 301 (page redirect)</h3>
+<pre>server {
+    listen 80;
+    server_name yourapp.com;
+    return 301 https://yourapp.com$request_uri;  # HTTP → HTTPS
+}
+
+server {
+    server_name www.yourapp.com;
+    return 301 https://yourapp.com$request_uri;  # www → non-www
+}</pre>
+
+<h3>Nginx — 308 (API endpoint move)</h3>
+<pre>location /api/v1/submit {
+    return 308 /api/v2/submit;  # preserves POST method
+}</pre>
+
+<h3>Vercel (vercel.json)</h3>
+<pre>{
+  "redirects": [
+    {
+      "source": "/old-page",
+      "destination": "/new-page",
+      "permanent": true  // uses 308 in Vercel
+    },
+    {
+      "source": "/api/v1/:path*",
+      "destination": "/api/v2/:path*",
+      "permanent": true
+    }
+  ]
+}</pre>
+
+<h3>Cloudflare Redirect Rules</h3>
+<pre># Rules → Redirect Rules → Create Rule
+# Choose: 301 Moved Permanently or 308 Permanent Redirect
+# Source: /old-path
+# Target: /new-path</pre>
+
+<h2>The full redirect status code map</h2>
+<table>
+  <thead><tr><th>Code</th><th>Permanent?</th><th>Preserves method?</th><th>Use for</th></tr></thead>
+  <tbody>
+    <tr><td>301</td><td>✅ Yes</td><td>❌ No (POST → GET)</td><td>Page moves, domain changes</td></tr>
+    <tr><td>302</td><td>❌ No</td><td>❌ No (POST → GET)</td><td>Temporary redirects (login, auth)</td></tr>
+    <tr><td>307</td><td>❌ No</td><td>✅ Yes</td><td>Temporary API endpoint changes</td></tr>
+    <tr><td>308</td><td>✅ Yes</td><td>✅ Yes</td><td>Permanent API endpoint moves</td></tr>
+  </tbody>
+</table>
+  <a href="/edge/" class="tool-cta">Audit your redirect headers → EdgeFix</a>
+  <div class="related">Related: <a href="/blog/performance/fix-mixed-content/">Fix mixed content</a> <a href="/blog/headers/fix-hsts/">HSTS setup</a> <a href="/edge/">EdgeFix — cache and redirect auditor</a></div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in staging before production. © 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

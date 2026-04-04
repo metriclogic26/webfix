@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure and HttpOnly Cookie Attributes — What They Do and How to Set Them · HttpFixer</title>
+  <meta name="description" content="Secure and HttpOnly cookie attributes protect session tokens from XSS and network interception. Here is the exact Set-Cookie syntax for every stack.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/headers/secure-httponly-cookies/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Secure and HttpOnly Cookie Attributes — What They Do and How to Set Them">
+  <meta property="og:description" content="Secure and HttpOnly cookie attributes protect session tokens from XSS and network interception. Here is the exact Set-Cookie syntax for every stack.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/headers/secure-httponly-cookies/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "Secure and HttpOnly Cookie Attributes \u2014 What They Do and How to Set Them",
+      "description": "Secure and HttpOnly cookie attributes protect session tokens from XSS and network interception. Here is the exact Set-Cookie syntax for every stack.",
+      "url": "https://httpfixer.dev/blog/headers/secure-httponly-cookies/",
+      "datePublished": "2026-04-03",
+      "dateModified": "2026-04-03",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "HowTo",
+      "name": "Secure and HttpOnly Cookie Attributes \u2014 What They Do and How to Set Them",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Add HttpOnly to session cookies",
+          "text": "Prevents JavaScript from reading the cookie \u2014 XSS attacks cannot steal it."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Add Secure to all cookies",
+          "text": "Prevents the cookie from being sent over HTTP \u2014 only HTTPS."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Set SameSite=Lax or Strict",
+          "text": "Prevents the cookie from being sent on cross-site requests \u2014 CSRF protection."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does HttpOnly do?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "HttpOnly prevents JavaScript (document.cookie) from reading the cookie. Even if an XSS attacker injects JavaScript into your page, they cannot steal HttpOnly cookies."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does Secure do?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Secure prevents the cookie from being transmitted over HTTP. It is only sent over HTTPS connections. Prevents network interception on non-HTTPS connections."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is SameSite and which value should I use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "SameSite controls whether the cookie is sent on cross-site requests. Lax allows GET requests from external sites (safe for most apps). Strict never sends on cross-site requests (maximum security). None allows all cross-site (requires Secure)."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "HttpFixer",
+          "item": "https://httpfixer.dev"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://httpfixer.dev/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Secure and HttpOnly Cookie Attributes \u2014 What They Do and How to Set Them",
+          "item": "https://httpfixer.dev/blog/headers/secure-httponly-cookies/"
+        }
+      ]
+    }
+  ]
+}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.2);color:var(--red)}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/headers/">Headers</a> → Secure and HttpOnly Cookie Attributes — What They Do and How to Set Them</div>
+  <span class="tag">Headers</span>
+  <h1>Secure and HttpOnly Cookie Attributes — What They Do and How to Set Them</h1>
+  <div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace">
+  <span style="font-size:12px;opacity:0.7">Reading this? Verify your fix live.</span>
+  <a href="/" style="padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Scan your security headers → HeadersFixer</a>
+</div>
+  
+<p class="lead">Your session cookie is the most sensitive piece of data in your browser. Two attributes — <code>HttpOnly</code> and <code>Secure</code> — protect it from the two most common attacks. Neither requires any dependencies.</p>
+
+<h2>The full secure cookie header</h2>
+<pre>Set-Cookie: session=abc123;
+  HttpOnly;
+  Secure;
+  SameSite=Lax;
+  Path=/;
+  Max-Age=86400</pre>
+
+<h2>What each attribute does</h2>
+<table>
+  <thead><tr><th>Attribute</th><th>Protects against</th><th>What it does</th></tr></thead>
+  <tbody>
+    <tr><td>HttpOnly</td><td>XSS cookie theft</td><td>JavaScript cannot read the cookie via document.cookie</td></tr>
+    <tr><td>Secure</td><td>Network interception</td><td>Cookie only sent over HTTPS, never HTTP</td></tr>
+    <tr><td>SameSite=Lax</td><td>CSRF attacks</td><td>Cookie not sent on cross-site POST requests</td></tr>
+    <tr><td>SameSite=Strict</td><td>CSRF (stricter)</td><td>Cookie never sent on any cross-site request</td></tr>
+    <tr><td>SameSite=None;Secure</td><td>Nothing — use only for cross-site auth</td><td>Required for OAuth cookies in iframes</td></tr>
+  </tbody>
+</table>
+
+<h2>Setting secure cookies by framework</h2>
+
+<h3>Express / Node.js</h3>
+<pre>app.use(session({
+  secret: process.env.SESSION_SECRET,
+  cookie: {
+    httpOnly: true,    // no JS access
+    secure: true,      // HTTPS only — set false for localhost dev
+    sameSite: "lax",   // CSRF protection
+    maxAge: 86400000,  // 24 hours in milliseconds
+    path: "/",
+  },
+  resave: false,
+  saveUninitialized: false,
+}));
+
+// Or set manually:
+res.setHeader("Set-Cookie",
+  "session=abc123; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=86400");</pre>
+
+<h3>FastAPI / Python</h3>
+<pre>from fastapi import Response
+
+response.set_cookie(
+    key="session",
+    value="abc123",
+    httponly=True,
+    secure=True,
+    samesite="lax",
+    max_age=86400,
+    path="/",
+)</pre>
+
+<h3>Django</h3>
+<pre># settings.py
+SESSION_COOKIE_HTTPONLY = True   # default is True — verify it
+SESSION_COOKIE_SECURE = True     # requires HTTPS
+SESSION_COOKIE_SAMESITE = "Lax"  # or "Strict"
+SESSION_COOKIE_AGE = 86400</pre>
+
+<h3>Next.js (cookies() API)</h3>
+<pre>import { cookies } from "next/headers";
+
+cookies().set("session", "abc123", {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax",
+  maxAge: 86400,
+  path: "/",
+});</pre>
+
+<h2>Development vs production</h2>
+<pre># Secure attribute blocks cookies on HTTP (localhost)
+# Use a flag:
+
+const isProd = process.env.NODE_ENV === "production";
+
+cookie: {
+  secure: isProd,  // false on localhost, true in production
+  httpOnly: true,  // always on
+  sameSite: "lax", // always on
+}</pre>
+
+<h2>Check your cookies in DevTools</h2>
+<p>DevTools → Application → Cookies → your domain. You should see checkmarks for HttpOnly and Secure columns on session cookies. If the HttpOnly column is empty — that cookie is readable by JavaScript.</p>
+  <a href="/" class="tool-cta">Scan your security headers → HeadersFixer</a>
+  <div class="related">Related: <a href="/blog/headers/clear-site-data/">Clear-Site-Data on logout</a> <a href="/blog/explainers/what-is-https/">What is HTTPS?</a> <a href="/blog/compare/cors-vs-csrf/">CORS vs CSRF</a></div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in staging before production. © 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

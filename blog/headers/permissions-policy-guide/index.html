@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Permissions-Policy Header — Control Camera, Mic, Geolocation and More · HttpFixer</title>
+  <meta name="description" content="Permissions-Policy restricts which browser APIs your page and embedded iframes can access. Here is the full directive list and exact config for every stack.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/headers/permissions-policy-guide/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Permissions-Policy Header — Control Camera, Mic, Geolocation and More">
+  <meta property="og:description" content="Permissions-Policy restricts which browser APIs your page and embedded iframes can access. Here is the full directive list and exact config for every stack.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/headers/permissions-policy-guide/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "Permissions-Policy Header \u2014 Control Camera, Mic, Geolocation and More",
+      "description": "Permissions-Policy restricts which browser APIs your page and embedded iframes can access. Here is the full directive list and exact config for every stack.",
+      "url": "https://httpfixer.dev/blog/headers/permissions-policy-guide/",
+      "datePublished": "2026-04-03",
+      "dateModified": "2026-04-03",
+      "author": {
+        "@type": "Organization",
+        "name": "MetricLogic"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "MetricLogic",
+        "url": "https://metriclogic.dev"
+      }
+    },
+    {
+      "@type": "HowTo",
+      "name": "Permissions-Policy Header \u2014 Control Camera, Mic, Geolocation and More",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "List the features you never use",
+          "text": "Camera, microphone, geolocation \u2014 if your app does not use them, block them."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Build the header value",
+          "text": "Each feature gets a directive: feature=(). Use the generator for a checkbox UI."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Add to your server config",
+          "text": "One add_header line in Nginx, one key in vercel.json headers."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is the difference between Permissions-Policy and Feature-Policy?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Feature-Policy was the old name. It was deprecated in 2020. Permissions-Policy is the current standard with a different syntax \u2014 feature=() instead of feature 'none'."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why should I disable features I am not using?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Third-party scripts (analytics, ads, chat widgets) embedded on your page could access these APIs without your knowledge. Permissions-Policy blocks them even if they try."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Permissions-Policy affect iframes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes \u2014 it restricts what embedded iframes (including third-party widgets) can access. An iframe cannot use camera if the parent page's Permissions-Policy blocks it."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "HttpFixer",
+          "item": "https://httpfixer.dev"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://httpfixer.dev/blog/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Permissions-Policy Header \u2014 Control Camera, Mic, Geolocation and More",
+          "item": "https://httpfixer.dev/blog/headers/permissions-policy-guide/"
+        }
+      ]
+    }
+  ]
+}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.2);color:var(--red)}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/headers/">Headers</a> → Permissions-Policy Header — Control Camera, Mic, Geolocation and More</div>
+  <span class="tag">Headers</span>
+  <h1>Permissions-Policy Header — Control Camera, Mic, Geolocation and More</h1>
+  <div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace">
+  <span style="font-size:12px;opacity:0.7">Reading this? Verify your fix live.</span>
+  <a href="/generators/permissions-policy/" style="padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Generate your Permissions-Policy → Generator</a>
+</div>
+  
+<p class="lead">Every browser API your page is allowed to use is also available to every third-party script you embed. Permissions-Policy lets you explicitly disable the ones you do not use — preventing analytics scripts from accessing your users' location without your knowledge.</p>
+
+<h2>The header</h2>
+<pre>Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()</pre>
+
+<p><code>()</code> means no origin is allowed to use this feature — it is completely blocked. <code>(self)</code> allows only your origin. <code>*</code> allows any origin (the default).</p>
+
+<h2>Common directives and their defaults</h2>
+<table>
+  <thead><tr><th>Feature</th><th>Directive</th><th>Default</th><th>Set to</th></tr></thead>
+  <tbody>
+    <tr><td>Camera</td><td>camera</td><td>* (any origin)</td><td>() if not using</td></tr>
+    <tr><td>Microphone</td><td>microphone</td><td>* (any origin)</td><td>() if not using</td></tr>
+    <tr><td>Geolocation</td><td>geolocation</td><td>* (any origin)</td><td>() if not using</td></tr>
+    <tr><td>Payment Request API</td><td>payment</td><td>* (any origin)</td><td>(self) if using Stripe etc.</td></tr>
+    <tr><td>USB access</td><td>usb</td><td>* (any origin)</td><td>() unless hardware app</td></tr>
+    <tr><td>Fullscreen</td><td>fullscreen</td><td>* (any origin)</td><td>(self) to restrict to your origin</td></tr>
+    <tr><td>Screen capture</td><td>display-capture</td><td>* (any origin)</td><td>() or (self)</td></tr>
+    <tr><td>Autoplay</td><td>autoplay</td><td>* (any origin)</td><td>(self) to prevent iframe autoplay</td></tr>
+  </tbody>
+</table>
+
+<h2>Config by stack</h2>
+
+<h3>Nginx</h3>
+<pre>add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()" always;</pre>
+
+<h3>Apache</h3>
+<pre>Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"</pre>
+
+<h3>Vercel (vercel.json)</h3>
+<pre>{
+  "headers": [{
+    "source": "/(.*)",
+    "headers": [{
+      "key": "Permissions-Policy",
+      "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    }]
+  }]
+}</pre>
+
+<h3>Express</h3>
+<pre>app.use((req, res, next) => {
+  res.setHeader("Permissions-Policy",
+    "camera=(), microphone=(), geolocation=(), payment=(), usb=()");
+  next();
+});</pre>
+
+<h2>Allow specific features for your origin only</h2>
+<pre># Your page can use geolocation, embedded iframes cannot
+Permissions-Policy: geolocation=(self), camera=(), microphone=()
+
+# Allow on specific trusted origins
+Permissions-Policy: geolocation=(self "https://maps.yourapp.com")</pre>
+
+<h2>2026 additions to watch</h2>
+<pre># New features added to the spec in 2025-2026:
+speaker-selection     # audio output device enumeration
+window-management     # multi-screen window placement
+local-fonts           # locally installed font access
+idle-detection        # Idle Detection API
+browsing-topics       # Privacy Sandbox (replaced interest-cohort)</pre>
+
+<p>Use the Permissions-Policy Generator to build your policy with a checkbox UI and get the exact header value plus Nginx/Vercel config in one click.</p>
+  <a href="/generators/permissions-policy/" class="tool-cta">Generate your Permissions-Policy → Generator</a>
+  <div class="related">Related: <a href="/generators/permissions-policy/">Permissions-Policy Generator</a> <a href="/blog/headers/security-headers-checklist/">Headers checklist</a> <a href="/blog/compare/x-frame-options-vs-csp-frame-ancestors/">X-Frame-Options vs CSP</a></div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in staging before production. © 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>
