@@ -416,7 +416,7 @@
     {
       "@type": "Question",
       "name": "Will CSPFixer break my site?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Always test in a staging environment first. The generated CSP is a recommended starting point — you may need to add additional origins specific to your app." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Always test in a staging environment first. The generated CSP is a starting point — you may need to add additional origins specific to your app." }
     }
   ]
 }
@@ -712,13 +712,13 @@
         }
 
         if (!frameAncestors || !frameAncestors.trim()) {
-          addResult('frame-ancestors', 'warn', "Recommend adding frame-ancestors 'none' or 'self' to prevent clickjacking");
+          addResult('frame-ancestors', 'warn', "Consider adding frame-ancestors 'none' or 'self' to prevent clickjacking");
         } else {
           addResult('frame-ancestors', 'pass', null);
         }
 
         if (!upgradeInsecure || !upgradeInsecure.trim()) {
-          addResult('upgrade-insecure-requests', 'warn', 'Recommend adding upgrade-insecure-requests');
+          addResult('upgrade-insecure-requests', 'warn', 'Consider adding upgrade-insecure-requests');
         } else {
           addResult('upgrade-insecure-requests', 'pass', null);
         }
@@ -749,7 +749,7 @@
         rec.push(("script-src 'self' " + scriptOrigins.join(' ')).trim());
 
         var styleOrigins = (extractedSources && extractedSources.styleSrc) ? extractedSources.styleSrc : [];
-        rec.push(("style-src 'self' 'unsafe-inline' " + styleOrigins.join(' ')).trim());
+        rec.push(("style-src 'self' " + styleOrigins.join(' ')).trim());
 
         var imgOrigins = (extractedSources && extractedSources.imgSrc) ? extractedSources.imgSrc : [];
         rec.push(("img-src 'self' data: " + imgOrigins.join(' ')).trim());
@@ -808,7 +808,7 @@
         var nginx = 'add_header Content-Security-Policy "' + escaped + '" always;';
         var apache = 'Header always set Content-Security-Policy "' + escaped + '"';
         var vercel = '{\n  "headers": [\n    {\n      "source": "/(.*)",\n      "headers": [\n        { "key": "Content-Security-Policy", "value": "' + escaped + '" }\n      ]\n    }\n  ]\n}';
-        var cloudflare = 'Add in Cloudflare Dashboard → Rules → Transform Rules → Modify Response Header. Set header name: Content-Security-Policy, value: (paste the recommended CSP above).';
+        var cloudflare = 'Cloudflare Dashboard → Rules → Transform Rules → + Create Rule\nAction: Modify Response Header → Set\nHeader name: Content-Security-Policy\nValue: (paste the generated CSP above)\nDeploy the rule.';
         var expressEsc = (cspValue || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
         var express = "// In your middleware or route:\nres.setHeader('Content-Security-Policy', '" + expressEsc + "');";
         var map = { nginx: nginx, apache: apache, vercel: vercel, cloudflare: cloudflare, express: express };
@@ -865,12 +865,12 @@
         if (!hasCSP) {
           var banner = document.createElement('div');
           banner.className = 'csp-no-banner';
-          banner.innerHTML = '⛔ No CSP detected — your site has no Content Security Policy. The recommended policy below is generated from your page\'s actual resources.';
+          banner.innerHTML = '⛔ No CSP detected — your site has no Content Security Policy. The generated policy below is generated from your page\'s actual resources.';
           container.appendChild(banner);
           if (urlLower.indexOf('sharepoint') !== -1 || urlLower.indexOf('microsoft') !== -1) {
             var spBanner = document.createElement('div');
             spBanner.className = 'csp-sharepoint-banner';
-            spBanner.textContent = '⚠ SharePoint CSP Enforcement — Microsoft enforced CSP for SharePoint Online on March 1, 2026. Use the recommended policy below as your starting point.';
+            spBanner.textContent = '⚠ SharePoint CSP Enforcement — Microsoft enforced CSP for SharePoint Online on March 1, 2026. Use the generated policy below as your starting point.';
             container.appendChild(spBanner);
           }
         } else {
@@ -975,7 +975,7 @@
         recSection.className = 'csp-recommended-section';
         var recTitle = document.createElement('h3');
         recTitle.className = 'csp-section-title';
-        recTitle.textContent = 'Recommended CSP — generated from your page\'s resources';
+        recTitle.textContent = pasteMode ? 'Generated CSP — based on your input' : 'Generated CSP — generated from your page\'s resources';
         recSection.appendChild(recTitle);
         var codeWrap = document.createElement('div');
         codeWrap.className = 'csp-recommended-code-wrap';
@@ -1093,6 +1093,8 @@
       getEl('scan-btn').addEventListener('click', function () {
         var url = (getEl('target-url').value || '').trim();
         if (!url) return;
+        if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+        getEl('target-url').value = url;
         var btn = getEl('scan-btn');
         btn.disabled = true;
         setScanState(btn, 'Fetching page...');
