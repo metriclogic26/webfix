@@ -26,6 +26,11 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://httpfixer.dev/blog/cache/etag-explained/</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://httpfixer.dev/blog/cache/no-cache-vs-no-store/</loc>
     <lastmod>2026-04-04</lastmod>
     <priority>0.6</priority>
@@ -274,6 +279,16 @@
     <loc>https://httpfixer.dev/blog/errors/</loc>
     <lastmod>2026-04-04</lastmod>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/errors/401-vs-403/</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/errors/502-bad-gateway/</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://httpfixer.dev/blog/errors/cors-error-messages/</loc>
@@ -611,7 +626,17 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://httpfixer.dev/blog/platform/security-headers-cloudflare/</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://httpfixer.dev/blog/platform/security-headers-netlify/</loc>
+    <lastmod>2026-04-04</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://httpfixer.dev/blog/platform/security-headers-vercel/</loc>
     <lastmod>2026-04-04</lastmod>
     <priority>0.6</priority>
   </url>
