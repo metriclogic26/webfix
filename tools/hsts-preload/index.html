@@ -189,11 +189,20 @@ async function checkPreload() {
     ]);
 
     const preload = preloadResult.status === "fulfilled" ? preloadResult.value : null;
-    const headers = headersResult.status === "fulfilled" ? headersResult.value : {};
-    const hstsHeader = findHSTS(headers);
+    let headers = headersResult.status === "fulfilled" ? headersResult.value : {};
+    let hstsHeader = findHSTS(headers);
+    let headerHost = domain;
+    if (!hstsHeader && !domain.startsWith("www.")) {
+      const wwwHeaders = await fetchSiteHeaders("www." + domain);
+      if (findHSTS(wwwHeaders)) {
+        headers = wwwHeaders;
+        hstsHeader = findHSTS(wwwHeaders);
+        headerHost = "www." + domain;
+      }
+    }
 
     status.textContent = "";
-    renderResults(domain, preload, hstsHeader, headers);
+    renderResults(domain, preload, hstsHeader, headers, headerHost);
   } catch(e) {
     err.textContent = `Error: ${e.message}`;
     status.textContent = "";
@@ -203,9 +212,12 @@ async function checkPreload() {
 }
 
 async function fetchPreloadStatus(domain) {
-  const res = await fetch(`https://hstspreload.org/api/v2/status?domain=${encodeURIComponent(domain)}`);
+  const url = `https://hstspreload.org/api/v2/status?domain=${encodeURIComponent(domain)}`;
+  const res = await fetch(url);
   if (!res.ok) throw new Error("Could not reach hstspreload.org API");
-  return await res.json();
+  const data = await res.json();
+  console.log(`HSTS preload API response:`, JSON.stringify(data));
+  return data;
 }
 
 async function fetchSiteHeaders(domain) {
@@ -247,7 +259,8 @@ function fmtDur(s) {
   return Math.round(s/86400) + " days";
 }
 
-function renderResults(domain, preload, hstsHeader, allHeaders) {
+function renderResults(domain, preload, hstsHeader, allHeaders, headerHost) {
+  if (headerHost == null) headerHost = domain;
   const status = preload ? preload.status : "unknown";
   const parsed = parseHSTS(hstsHeader);
 
@@ -265,8 +278,9 @@ function renderResults(domain, preload, hstsHeader, allHeaders) {
       pass: !!hstsHeader,
       label: "HSTS header present",
       desc: hstsHeader
-        ? `Strict-Transport-Security: ${hstsHeader}`
-        : "No Strict-Transport-Security header found on https://" + domain
+        ? `Strict-Transport-Security: ${hstsHeader}` + (headerHost !== domain ? ` (from https://${headerHost})` : "")
+        : "No Strict-Transport-Security header found on https://" + domain +
+          (domain.startsWith("www.") ? "" : " or https://www." + domain)
     },
     {
       pass: parsed.maxAge >= MIN_MAX_AGE,
