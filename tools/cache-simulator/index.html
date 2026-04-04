@@ -269,6 +269,18 @@ function renderTimeline(p) {
     return;
   }
 
+  // max-age=0 without stale-while-revalidate — full-width revalidate bar (no fresh/stale split)
+  if (p.maxAge === 0 && (p.swr == null || p.swr === 0) && !p.noStore && !p.noCache) {
+    svg.innerHTML =
+      '<rect x="' + pad + '" y="' + barY + '" width="' + barW + '" height="' + barH + '" rx="4" fill="#F9731622"/>' +
+      '<text x="' + (W / 2) + '" y="' + (barY + barH / 2 - 2) + '" fill="#F97316" text-anchor="middle" font-size="11" font-weight="600" font-family="JetBrains Mono">REVALIDATES ON EVERY REQUEST</text>' +
+      '<text x="' + (W / 2) + '" y="' + (barY + barH / 2 + 12) + '" fill="#F97316" text-anchor="middle" font-size="9" opacity="0.85" font-family="JetBrains Mono">Browser checks server before every serve</text>' +
+      '<line x1="' + pad + '" y1="' + axisY + '" x2="' + (W - pad) + '" y2="' + axisY + '" stroke="#252836" stroke-width="1"/>' +
+      '<text x="' + pad + '" y="' + (axisY + 14) + '" fill="#E2E4F0" opacity="0.35" font-size="10" font-family="JetBrains Mono">t=0</text>' +
+      '<text x="' + (W - pad) + '" y="' + (axisY + 14) + '" fill="#E2E4F0" opacity="0.35" font-size="10" text-anchor="end" font-family="JetBrains Mono">time →</text>';
+    return;
+  }
+
   const maxAge = p.maxAge || 0;
   const swr = p.swr || 0;
   // KEY: visibleTotal is based ONLY on maxAge + SWR + a tail
