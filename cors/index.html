@@ -1031,7 +1031,7 @@ access-control-allow-credentials: true
       if (checkName === 'Access-Control-Allow-Methods') {
         out.express = "app.use(cors({ origin: '" + o + "', methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'] }));";
         out.nginx = "add_header Access-Control-Allow-Methods 'GET, POST, PUT, DELETE, PATCH, OPTIONS' always;";
-        out.fastapi = "app.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"" + o + "\"],\n    allow_methods=[\"GET\", \"POST\", \"PUT\", \"DELETE\", \"PATCH\", \"OPTIONS\"],\n    allow_headers=[\"*\"],\n)";
+        out.fastapi = "# Add allow_methods to your existing CORSMiddleware call:\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"" + o + "\"],\n    allow_methods=[\"GET\", \"POST\", \"PUT\", \"DELETE\", \"PATCH\", \"OPTIONS\"],  # ← add this\n    allow_headers=[\"*\"],\n)";
         out.django = "CORS_ALLOW_METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']  # in settings.py if needed";
         out.laravel = "'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] in config/cors.php";
         out.cloudflare = "response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');";
@@ -1041,7 +1041,7 @@ access-control-allow-credentials: true
       if (checkName === 'Access-Control-Allow-Headers') {
         out.express = "app.use(cors({ origin: '" + o + "', allowedHeaders: ['Content-Type', 'Authorization'] }));";
         out.nginx = "add_header Access-Control-Allow-Headers 'Authorization, Content-Type' always;";
-        out.fastapi = "app.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"" + o + "\"],\n    allow_methods=[\"*\"],\n    allow_headers=[\"Content-Type\", \"Authorization\"],  # or [\"*\"]\n)";
+        out.fastapi = "# Add allow_headers to your existing CORSMiddleware call:\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"" + o + "\"],\n    allow_methods=[\"*\"],\n    allow_headers=[\"Content-Type\", \"Authorization\"],  # ← add this\n)";
         out.django = "CORS_ALLOW_HEADERS = ['content-type', 'authorization', ...] in settings.py if needed";
         out.laravel = "'allowed_headers' => ['*'] or ['Content-Type', 'Authorization'] in config/cors.php";
         out.cloudflare = "response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');";
@@ -1051,7 +1051,7 @@ access-control-allow-credentials: true
       if (checkName === 'Access-Control-Allow-Credentials') {
         out.express = "app.use(cors({ origin: '" + o + "', credentials: true }));";
         out.nginx = "add_header Access-Control-Allow-Credentials 'true' always;";
-        out.fastapi = "app.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"" + o + "\"],\n    allow_credentials=True,  # required for cookies / auth headers\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)";
+        out.fastapi = "# Add allow_credentials to your existing CORSMiddleware call:\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"" + o + "\"],\n    allow_credentials=True,  # ← add this\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)";
         out.django = "CORS_ALLOW_CREDENTIALS = True in settings.py";
         out.laravel = "'supports_credentials' => true in config/cors.php";
         out.cloudflare = "response.headers.set('Access-Control-Allow-Credentials', 'true');";
@@ -1061,7 +1061,7 @@ access-control-allow-credentials: true
       if (checkName === 'Access-Control-Max-Age') {
         out.express = "app.use(cors({ origin: '" + o + "', maxAge: 86400 }));";
         out.nginx = "add_header Access-Control-Max-Age 86400 always;";
-        out.fastapi = "app.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"" + o + "\"],\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n    max_age=86400,  # 24 hours — reduces preflight requests\n)";
+        out.fastapi = "# Add max_age to your existing CORSMiddleware call:\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"" + o + "\"],\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n    max_age=86400,  # ← add this (24 hours)\n)";
         out.django = "CORS_PREFLIGHT_MAX_AGE = 86400 in settings.py";
         out.laravel = "'max_age' => 86400 in config/cors.php";
         out.cloudflare = "response.headers.set('Access-Control-Max-Age', '86400');";
