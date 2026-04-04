@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORS Headers Generator — Build Exact Access-Control Headers for Your API &middot; HttpFixer</title>
+  <meta name="description" content="Generate the exact CORS headers for your API in seconds. Select origin, methods, and headers — get copy-paste config for Nginx, Express, FastAPI, and Vercel.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/reference/cors-headers-generator-guide/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="CORS Headers Generator — Build Exact Access-Control Headers for Your API">
+  <meta property="og:description" content="Generate the exact CORS headers for your API in seconds. Select origin, methods, and headers — get copy-paste config for Nginx, Express, FastAPI, and Vercel.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/reference/cors-headers-generator-guide/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"CORS Headers Generator Guide","description":"Generate exact CORS headers for any stack.","url":"https://httpfixer.dev/blog/reference/cors-headers-generator-guide/","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/reference/">Reference</a> &rarr; CORS Headers Generator Guide</div>
+<h1>CORS Headers Generator — Build Exact Access-Control Headers for Your API</h1>
+<p class="lead">CORS headers have to be exactly right — the wrong wildcard, a missing preflight handler, or a credentials mismatch will block requests silently. The generator builds the exact config for your stack in seconds.</p>
+
+<a href="/generators/cors/" class="tool-cta">Open CORS Header Generator &rarr;</a>
+
+<h2>What CORS headers your API needs</h2>
+<p>At minimum, every cross-origin API response needs:</p>
+<pre>Access-Control-Allow-Origin: https://your-frontend.com
+Access-Control-Allow-Methods: GET, POST, OPTIONS
+Access-Control-Allow-Headers: Content-Type, Authorization</pre>
+
+<p>For authenticated requests (cookies, Authorization header), add:</p>
+<pre>Access-Control-Allow-Credentials: true</pre>
+
+<div class="warn">Never use <code>Access-Control-Allow-Origin: *</code> with <code>Access-Control-Allow-Credentials: true</code> — browsers reject this combination. You must specify an explicit origin when using credentials.</div>
+
+<h2>Preflight requests — the most common mistake</h2>
+<p>Browsers send an OPTIONS preflight before any POST, PUT, DELETE, or request with custom headers. Your server must respond to OPTIONS with 204 and the CORS headers — otherwise the actual request never fires.</p>
+
+<h3>Nginx</h3>
+<pre>if ($request_method = OPTIONS) {
+    add_header Access-Control-Allow-Origin "https://app.example.com";
+    add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS";
+    add_header Access-Control-Allow-Headers "Content-Type, Authorization";
+    add_header Access-Control-Max-Age 86400;
+    return 204;
+}
+add_header Access-Control-Allow-Origin "https://app.example.com" always;</pre>
+
+<h3>Express (Node.js)</h3>
+<pre>const cors = require('cors');
+app.use(cors({
+  origin: 'https://app.example.com',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  maxAge: 86400
+}));
+app.options('*', cors()); // Handle preflight</pre>
+
+<h3>FastAPI (Python)</h3>
+<pre>from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://app.example.com"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
+    allow_credentials=True,
+    max_age=86400,
+)</pre>
+
+<h3>Vercel (vercel.json)</h3>
+<pre>{
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {"key": "Access-Control-Allow-Origin", "value": "https://app.example.com"},
+        {"key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS"},
+        {"key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization"}
+      ]
+    }
+  ]
+}</pre>
+
+<h2>The Vary: Origin header</h2>
+<p>When your API returns different <code>Access-Control-Allow-Origin</code> values for different origins (dynamic CORS), add <code>Vary: Origin</code>. Without it, CDNs may cache a response for one origin and serve it to another.</p>
+<pre>add_header Vary Origin always;</pre>
+
+<h2>Cache the preflight</h2>
+<p><code>Access-Control-Max-Age</code> tells browsers how long to cache the preflight response. Without it, the browser sends OPTIONS before every request. Set it to 86400 (24 hours) for most APIs.</p>
+
+<a href="/cors/" class="tool-cta">Test your CORS config with a live preflight &rarr; CORSFixer</a>
+<div class="related">Related: <a href="/generators/cors/">CORS Generator</a> &nbsp;<a href="/cors/">CORSFixer — live preflight test</a> &nbsp;<a href="/blog/reference/cors-headers-cheat-sheet/">CORS headers cheat sheet</a></div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

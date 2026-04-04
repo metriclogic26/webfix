@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTTP Headers Cheatsheet 2026 — Security, Cache, and CORS Headers &middot; HttpFixer</title>
+  <meta name="description" content="The most important HTTP response headers in one place. Security headers, cache headers, CORS headers — with exact values and Nginx, Vercel, Cloudflare examples.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/reference/http-headers-cheatsheet/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="HTTP Headers Cheatsheet 2026 — Security, Cache, and CORS Headers">
+  <meta property="og:description" content="The most important HTTP response headers in one place. Security headers, cache headers, CORS headers — with exact values and Nginx, Vercel, Cloudflare examples.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/reference/http-headers-cheatsheet/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"HTTP Headers Cheatsheet 2026","description":"Security, cache, and CORS headers in one place.","url":"https://httpfixer.dev/blog/reference/http-headers-cheatsheet/","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/reference/">Reference</a> &rarr; HTTP Headers Cheatsheet</div>
+<h1>HTTP Headers Cheatsheet 2026</h1>
+<p class="lead">The most important HTTP response headers in one place — security headers, cache headers, and CORS headers with exact values and stack-specific config.</p>
+
+<h2>Security headers — add to every site</h2>
+<table>
+  <thead><tr><th>Header</th><th>Value</th><th>What it does</th></tr></thead>
+  <tbody>
+    <tr><td>Strict-Transport-Security</td><td>max-age=31536000; includeSubDomains</td><td>Forces HTTPS for 1 year. Prevents downgrade attacks.</td></tr>
+    <tr><td>Content-Security-Policy</td><td>default-src 'self';</td><td>Controls which resources can load. Prevents XSS.</td></tr>
+    <tr><td>X-Frame-Options</td><td>SAMEORIGIN</td><td>Prevents clickjacking via iframes.</td></tr>
+    <tr><td>X-Content-Type-Options</td><td>nosniff</td><td>Prevents MIME type sniffing.</td></tr>
+    <tr><td>Referrer-Policy</td><td>strict-origin-when-cross-origin</td><td>Controls what URL is sent as referrer.</td></tr>
+    <tr><td>Permissions-Policy</td><td>camera=(), microphone=(), geolocation=()</td><td>Disables unused browser APIs.</td></tr>
+    <tr><td>Cross-Origin-Opener-Policy</td><td>same-origin</td><td>Isolates browsing context. Enables SharedArrayBuffer.</td></tr>
+  </tbody>
+</table>
+
+<h2>Cache headers</h2>
+<table>
+  <thead><tr><th>Use case</th><th>Header value</th></tr></thead>
+  <tbody>
+    <tr><td>Static assets (hashed filenames)</td><td>Cache-Control: public, max-age=31536000, immutable</td></tr>
+    <tr><td>HTML pages</td><td>Cache-Control: no-cache</td></tr>
+    <tr><td>Authenticated API</td><td>Cache-Control: no-store</td></tr>
+    <tr><td>Public API with SWR</td><td>Cache-Control: public, max-age=60, stale-while-revalidate=300</td></tr>
+    <tr><td>User-specific (browser cache ok, CDN not)</td><td>Cache-Control: private, max-age=300</td></tr>
+  </tbody>
+</table>
+
+<h2>CORS headers</h2>
+<table>
+  <thead><tr><th>Header</th><th>Example value</th><th>Required for</th></tr></thead>
+  <tbody>
+    <tr><td>Access-Control-Allow-Origin</td><td>https://app.example.com</td><td>All cross-origin responses</td></tr>
+    <tr><td>Access-Control-Allow-Methods</td><td>GET, POST, PUT, DELETE, OPTIONS</td><td>Preflight responses</td></tr>
+    <tr><td>Access-Control-Allow-Headers</td><td>Content-Type, Authorization</td><td>Preflight responses</td></tr>
+    <tr><td>Access-Control-Allow-Credentials</td><td>true</td><td>Cookie/auth cross-origin requests</td></tr>
+    <tr><td>Access-Control-Max-Age</td><td>86400</td><td>Cache preflight for 24h</td></tr>
+    <tr><td>Vary</td><td>Origin</td><td>Dynamic CORS — prevents CDN serving wrong cached response</td></tr>
+  </tbody>
+</table>
+
+<h2>Other useful headers</h2>
+<table>
+  <thead><tr><th>Header</th><th>Example</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td>ETag</td><td>W/"abc123"</td><td>Cache validation — allows 304 Not Modified responses</td></tr>
+    <tr><td>Last-Modified</td><td>Sat, 04 Apr 2026 00:00:00 GMT</td><td>Cache validation fallback</td></tr>
+    <tr><td>Content-Encoding</td><td>br</td><td>Indicates Brotli/gzip compression</td></tr>
+    <tr><td>Vary</td><td>Accept-Encoding</td><td>CDN caches separate copies per encoding</td></tr>
+    <tr><td>X-Content-Type-Options</td><td>nosniff</td><td>MIME sniffing protection</td></tr>
+    <tr><td>Server</td><td>(remove or minimize)</td><td>Hides server software version</td></tr>
+  </tbody>
+</table>
+
+<h2>Nginx — all security headers in one block</h2>
+<pre>add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+add_header X-Frame-Options "SAMEORIGIN" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
+add_header Cross-Origin-Opener-Policy "same-origin" always;
+server_tokens off;</pre>
+
+<a href="/" class="tool-cta">Scan your live headers &rarr; HeadersFixer</a>
+<a href="/generators/security-headers/" class="tool-cta" style="margin-left:0.5rem">Generate all headers &rarr; Security Headers Generator</a>
+<div class="related">Related: <a href="/blog/reference/http-security-headers-reference/">Security headers reference</a> &nbsp;<a href="/blog/cache/cache-control-cheatsheet/">Cache-Control cheatsheet</a> &nbsp;<a href="/blog/reference/cors-headers-cheat-sheet/">CORS headers cheat sheet</a></div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

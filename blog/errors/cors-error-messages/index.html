@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORS Error Messages Explained — Fix Every Browser Console Error &middot; HttpFixer</title>
+  <meta name="description" content="Every CORS error message from Chrome, Firefox, and Safari decoded. No Access-Control-Allow-Origin, preflight failed, credentials mode — with exact fixes.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/errors/cors-error-messages/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="CORS Error Messages Explained — Fix Every Browser Console Error">
+  <meta property="og:description" content="Every CORS error message from Chrome, Firefox, and Safari decoded. No Access-Control-Allow-Origin, preflight failed, credentials mode — with exact fixes.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/errors/cors-error-messages/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"CORS Error Messages Explained","description":"Every CORS browser error decoded with fixes.","url":"https://httpfixer.dev/blog/errors/cors-error-messages/","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/errors/">Errors</a> &rarr; CORS Error Messages</div>
+<h1>CORS Error Messages Explained — Fix Every Browser Console Error</h1>
+<p class="lead">CORS error messages are cryptic. This is every error you will see in Chrome, Firefox, and Safari — decoded and with the exact fix.</p>
+
+<a href="/cors/" class="tool-cta">Test your CORS config with a live preflight &rarr; CORSFixer</a>
+
+<h2>The errors</h2>
+
+<h3>"No 'Access-Control-Allow-Origin' header is present"</h3>
+<pre>Access to fetch at 'https://api.example.com' from origin 'https://app.example.com'
+has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present
+on the requested resource.</pre>
+<p><strong>Cause:</strong> Your server is not returning the <code>Access-Control-Allow-Origin</code> header.</p>
+<p><strong>Fix:</strong> Add the header to your server response:</p>
+<pre>add_header Access-Control-Allow-Origin "https://app.example.com" always;</pre>
+
+<h3>"The value of the 'Access-Control-Allow-Origin' header does not match"</h3>
+<pre>The value of the 'Access-Control-Allow-Origin' header in the response must not be
+the wildcard '*' when the request's credentials mode is 'include'.</pre>
+<p><strong>Cause:</strong> You are using <code>credentials: 'include'</code> (cookies/auth) with a wildcard origin.</p>
+<p><strong>Fix:</strong> Replace <code>*</code> with the specific origin:</p>
+<pre>Access-Control-Allow-Origin: https://app.example.com
+Access-Control-Allow-Credentials: true</pre>
+
+<h3>"Response to preflight request doesn't pass access control check"</h3>
+<pre>Response to preflight request doesn't pass access control check: No
+'Access-Control-Allow-Origin' header is present on the requested resource.</pre>
+<p><strong>Cause:</strong> Your server returns CORS headers on GET/POST responses but not on OPTIONS (preflight) responses.</p>
+<p><strong>Fix:</strong> Handle OPTIONS explicitly:</p>
+<pre>if ($request_method = OPTIONS) {
+    add_header Access-Control-Allow-Origin "https://app.example.com";
+    add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS";
+    add_header Access-Control-Allow-Headers "Content-Type, Authorization";
+    return 204;
+}</pre>
+
+<h3>"Method PUT is not allowed by Access-Control-Allow-Methods"</h3>
+<p><strong>Cause:</strong> Your <code>Access-Control-Allow-Methods</code> header does not include the method being used.</p>
+<p><strong>Fix:</strong> Add the missing method:</p>
+<pre>Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS</pre>
+
+<h3>"Request header field Authorization is not allowed"</h3>
+<pre>Request header field Authorization is not allowed by Access-Control-Allow-Headers
+in preflight response.</pre>
+<p><strong>Cause:</strong> Your server doesn't include <code>Authorization</code> in <code>Access-Control-Allow-Headers</code>.</p>
+<p><strong>Fix:</strong></p>
+<pre>Access-Control-Allow-Headers: Content-Type, Authorization</pre>
+
+<h3>"CORS request did not succeed" (Firefox)</h3>
+<p><strong>Cause:</strong> The OPTIONS preflight returned a non-2xx status code, or the server is completely unreachable for OPTIONS requests.</p>
+<p><strong>Fix:</strong> Ensure OPTIONS returns 204 (not 404 or 405). Check that your server handles OPTIONS for the specific path — some frameworks block OPTIONS by default.</p>
+
+<h3>"CORS Missing Allow Header" (Safari)</h3>
+<p>Safari's message for missing <code>Access-Control-Allow-Headers</code> on preflight response. Fix is the same — add the header to your OPTIONS response.</p>
+
+<h2>Debugging CORS step by step</h2>
+<ol>
+  <li>Open DevTools → Network tab</li>
+  <li>Find the OPTIONS preflight request (it will be before the actual request)</li>
+  <li>Check the response headers — what CORS headers are present?</li>
+  <li>Check the response status — it should be 200 or 204, not 404 or 405</li>
+  <li>Paste both URLs into CORSFixer to see the full diagnosis</li>
+</ol>
+
+<div class="related">Related: <a href="/cors/">CORSFixer — live preflight test</a> &nbsp;<a href="/blog/errors/no-access-control-allow-origin/">Fix no-access-control-allow-origin</a> &nbsp;<a href="/blog/errors/preflight-failed/">Fix preflight failed</a> &nbsp;<a href="/generators/cors/">CORS Generator</a></div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>
