@@ -1729,6 +1729,10 @@
     }
 
     async function runSpeedScan(url) {
+      if (url && !/^https?:\/\//i.test(url)) {
+        url = 'https://' + url;
+        getEl('target-url').value = url;
+      }
       if (!url.startsWith('https://')) {
         showFetchError(false);
         showValidationError(true);
@@ -1759,9 +1763,9 @@
         var headersObj = {};
         try {
           headersObj = await withMinDelay(800, function () {
-            return fetch(url, { method: 'HEAD', mode: 'cors', redirect: 'follow' }).then(function (res) {
+            return fetch('https://headers-proxy.metriclogicllc.workers.dev/?url=' + encodeURIComponent(url)).then(function (res) {
               if (!res.ok) throw new Error('head');
-              return headersToObject(res.headers);
+              return res.json().then(function(data) { return data.headers || {}; });
             });
           });
         } catch (e) {
@@ -1820,8 +1824,8 @@
     });
 
     getEl('example-fast').addEventListener('click', function () {
-      getEl('target-url').value = 'https://www.wikipedia.org';
-      runSpeedScan('https://www.wikipedia.org');
+      getEl('target-url').value = 'https://cloudflare.com';
+      runSpeedScan('https://cloudflare.com');
     });
 
     getEl('stack-override').addEventListener('change', function () {
@@ -1833,6 +1837,7 @@
     });
 
     getEl('clear-speedfixer').addEventListener('click', function () {
+      lastScan = { audits: null, url: '', perfScore: null, scanDateLabel: '', wpPivot: false };
       getEl('target-url').value = '';
       getEl('results').classList.remove('visible');
       getEl('results').innerHTML = '';
