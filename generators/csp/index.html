@@ -240,10 +240,16 @@
   <label style="margin-top:1rem">Generated Header Value</label>
   <div class="gen-output" id="csp-output">Click "Generate CSP" to build your policy.</div>
 
-  <label style="margin-top:1rem">Nginx Config</label>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem">
+    <label style="margin:0">Nginx Config</label>
+    <button class="copy-btn" onclick="copyOutput('nginx-output')">Copy</button>
+  </div>
   <div class="gen-output" id="nginx-output"></div>
 
-  <label style="margin-top:1rem">Vercel (vercel.json)</label>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem">
+    <label style="margin:0">Vercel (vercel.json)</label>
+    <button class="copy-btn" onclick="copyOutput('vercel-output')">Copy</button>
+  </div>
   <div class="gen-output" id="vercel-output"></div>
 </div>
 
