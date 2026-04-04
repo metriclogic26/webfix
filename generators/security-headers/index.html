@@ -209,13 +209,18 @@
   </div>
 
   <button class="gen-btn" onclick="buildSecHeaders()">Generate Headers</button>
-  <button class="copy-btn" onclick="copyOutput('sec-nginx')">Copy Nginx</button>
 
   <label style="margin-top:1rem">Nginx Config</label>
-  <div class="gen-output" id="sec-nginx">Click "Generate Headers" to build your config.</div>
+  <div style="position:relative">
+    <div class="gen-output" id="sec-nginx">Click "Generate Headers" to build your config.</div>
+    <button onclick="copyOutput('sec-nginx')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button>
+  </div>
 
   <label style="margin-top:1rem">Vercel (vercel.json)</label>
-  <div class="gen-output" id="sec-vercel"></div>
+  <div style="position:relative">
+    <div class="gen-output" id="sec-vercel"></div>
+    <button onclick="copyOutput('sec-vercel')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button>
+  </div>
 </div>
 
 <script>
