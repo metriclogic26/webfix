@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HttpFixer vs GTmetrix — Why Fixers Beat Checkers</title>
+  <meta name="description" content="GTmetrix scores your PageSpeed. HttpFixer generates the exact Nginx, Vercel, and Cloudflare config to improve it. Both tools — different jobs.">
+  <link rel="canonical" href="https://httpfixer.dev/vs/httpfixer-vs-gtmetrix/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="HttpFixer vs GTmetrix">
+  <meta property="og:description" content="GTmetrix diagnoses. HttpFixer fixes. Use both.">
+  <meta property="og:url" content="https://httpfixer.dev/vs/httpfixer-vs-gtmetrix/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    .tool-cta{display:inline-block;margin:1.5rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+    .vs-table th{{text-align:center}}
+    .vs-table td{{text-align:center}}
+    .vs-table td:first-child{{text-align:left;font-weight:500}}
+    .check{{color:var(--green)}}
+    .cross{{color:var(--red);opacity:0.7}}
+    .partial{{color:var(--orange)}}
+    .hero{{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0;text-align:center}}
+    .hero p{{margin:0;opacity:0.85}}</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a>
+    <a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div style="font-size:12px;opacity:0.5;margin-bottom:1.5rem"><a href="/" style="color:var(--purple);text-decoration:none">HttpFixer</a> &rarr; <a href="/vs/" style="color:var(--purple);text-decoration:none">Comparisons</a> &rarr; HttpFixer vs GTmetrix</div>
+  <h1>HttpFixer vs GTmetrix</h1>
+  <p class="lead">GTmetrix is an excellent diagnostic tool — it tells you what's slow and why. HttpFixer generates the exact server config to fix it. These tools do different jobs and work well together.</p>
+
+  <div class="hero">
+    <p><strong>GTmetrix:</strong> "Eliminate render-blocking resources" (score: 64/100)<br>
+    <strong>HttpFixer SpeedFixer:</strong> <code>location ~* \.(js|css)$ { add_header Cache-Control "public, max-age=31536000, immutable"; }</code></p>
+  </div>
+
+  <h2>Side-by-side comparison</h2>
+  <table class="vs-table">
+    <thead><tr><th>Feature</th><th>GTmetrix</th><th>HttpFixer</th></tr></thead>
+    <tbody>
+      <tr><td>Live performance audit</td><td class="check">✓ Excellent</td><td class="check">✓ Via SpeedFixer + PSI API</td></tr>
+      <tr><td>Waterfall chart</td><td class="check">✓ Industry-leading</td><td class="cross">✗ Not available</td></tr>
+      <tr><td>Historical tracking</td><td class="check">✓ With account</td><td class="cross">✗ Not tracked</td></tr>
+      <tr><td>Stack-specific fix config</td><td class="cross">✗ Not available</td><td class="check">✓ Nginx, Cloudflare, Vercel, Apache</td></tr>
+      <tr><td>Security headers audit</td><td class="cross">✗ Not available</td><td class="check">✓ Full security headers scan</td></tr>
+      <tr><td>CORS preflight test</td><td class="cross">✗ Not available</td><td class="check">✓ Live OPTIONS request</td></tr>
+      <tr><td>Copy-paste server config</td><td class="cross">✗ Not generated</td><td class="check">✓ Every fix ships config</td></tr>
+      <tr><td>No account required</td><td class="partial">Partial (5 tests/mo free)</td><td class="check">✓ Unlimited, no account</td></tr>
+    </tbody>
+  </table>
+
+  <h2>The right workflow</h2>
+  <ol>
+    <li>Run GTmetrix to see your full performance picture — waterfall, scores, history</li>
+    <li>Take the failing audits (render-blocking, cache policy, compression) to SpeedFixer</li>
+    <li>SpeedFixer fetches the live PSI results, detects your stack, and outputs the exact config</li>
+    <li>Deploy, re-run GTmetrix to confirm improvement</li>
+  </ol>
+
+  <h2>When to use each</h2>
+  <p>Use GTmetrix when you need the complete performance picture — waterfall analysis, filmstrip, historical tracking, and comparison across test locations. GTmetrix excels at diagnosis and monitoring.</p>
+  <p>Use HttpFixer SpeedFixer when you have the diagnosis and need the fix. SpeedFixer takes the PSI audit IDs and generates the exact Nginx location block, Cloudflare Cache Rule, or Vercel headers JSON to resolve each failing audit.</p>
+
+  <a href="/speedfixer/" class="tool-cta">Try SpeedFixer — live PSI audit + stack-specific config →</a>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

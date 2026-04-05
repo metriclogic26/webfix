@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>redirect_uri_mismatch — HttpFixer</title>
+  <meta name="description" content="Fix redirect_uri_mismatch OAuth errors. The redirect URI in the request doesn't match any registered URI. Exact fixes for Auth0, Okta, Google, and Cognito.">
+  <link rel="canonical" href="https://httpfixer.dev/errors/redirect-uri-mismatch/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="redirect_uri_mismatch">
+  <meta property="og:description" content="Fix redirect_uri_mismatch OAuth errors. The redirect URI in the request doesn't match any registered URI. Exact fixes for Auth0, Okta, Google, and Cognito.">
+  <meta property="og:url" content="https://httpfixer.dev/errors/redirect-uri-mismatch/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"redirect_uri_mismatch","description":"Fix redirect_uri_mismatch OAuth errors. The redirect URI in the request doesn't match any registered URI. Exact fixes for Auth0, Okta, Google, and Cognito.","url":"https://httpfixer.dev/errors/redirect-uri-mismatch/","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Errors","item":"https://httpfixer.dev/errors/"},{"@type":"ListItem","position":3,"name":"redirect_uri_mismatch","item":"https://httpfixer.dev/errors/redirect-uri-mismatch/"}]}]}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .error-msg{background:#100a0a;border:1px solid var(--red);border-left:3px solid var(--red);border-radius:6px;padding:1rem 1.25rem;margin-bottom:2rem;font-size:13px;color:#f87171;line-height:1.6}
+    .quick-fix{background:var(--surface);border:1px solid var(--green);border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+    .quick-fix p{margin:0;opacity:1;font-size:13px;line-height:1.7}
+    h1{font-size:1.5rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a>
+    <a href="/errors/" style="color:var(--purple);opacity:1">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/errors/">Errors</a> &rarr; redirect_uri_mismatch</div>
+  <div class="date">Updated April 2026</div>
+  <h1>redirect_uri_mismatch</h1>
+  <div class="error-msg">Error 400: redirect_uri_mismatch — The redirect URI in the request did not match a registered redirect URI.</div>
+  <h2>What this error means</h2>
+<p>The OAuth server received an authorization request with a <code>redirect_uri</code> that doesn't exactly match any URI registered for that application. The match must be exact — including protocol, domain, path, trailing slash, and port.</p>
+
+<h2>Common causes and fixes</h2>
+
+<h3>Trailing slash difference</h3>
+<pre># Registered:    https://app.example.com/callback
+# Request sends: https://app.example.com/callback/   ← trailing slash</pre>
+<p>Fix: Remove the trailing slash from your redirect_uri, or register both versions.</p>
+
+<h3>HTTP vs HTTPS</h3>
+<pre># Registered:    https://app.example.com/callback
+# Request sends: http://app.example.com/callback</pre>
+<p>Fix: Ensure your app always uses HTTPS in the redirect_uri.</p>
+
+<h3>localhost port mismatch</h3>
+<pre># Registered:    http://localhost:3000/callback
+# Request sends: http://localhost:3001/callback</pre>
+<p>Fix: Register the exact port your dev server uses, or register multiple URIs.</p>
+
+<h2>Provider-specific fixes</h2>
+
+<h3>Auth0</h3>
+<p>Dashboard &rarr; Applications &rarr; your app &rarr; Allowed Callback URLs. Add the exact URI including protocol and path. Auth0 does not support wildcards in callback URLs.</p>
+
+<h3>Google OAuth</h3>
+<p>console.cloud.google.com &rarr; APIs & Services &rarr; Credentials &rarr; your OAuth client &rarr; Authorized redirect URIs. Exact match required.</p>
+
+<h3>Okta</h3>
+<p>Admin Console &rarr; Applications &rarr; your app &rarr; General &rarr; Sign-in redirect URIs.</p>
+
+<h3>Cognito</h3>
+<p>AWS Console &rarr; Cognito &rarr; App client settings &rarr; Callback URL(s). Comma-separated list.</p>
+
+<h2>Debugging</h2>
+<pre># Check what redirect_uri your app is actually sending
+# Open browser DevTools → Network → find the authorization request
+# Look at the redirect_uri query parameter value</pre>
+  <a href="/oauth/" class="tool-cta">Diagnose OAuth errors — OAuthFixer &rarr;</a>
+  <div class="related">Related: <a href="/errors/invalid-grant-error/">invalid_grant</a> &nbsp;<a href="/glossary/pkce/">PKCE</a> &nbsp;<a href="/oauth/">OAuthFixer tool</a></div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

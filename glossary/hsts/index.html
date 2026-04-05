@@ -3,92 +3,103 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>What is HSTS? — HttpFixer Glossary</title>
-  <meta name="description" content="HSTS tells browsers to use HTTPS only for your host, closing the first-visit downgrade gap.">
+  <title>HSTS (HTTP Strict Transport Security) — HttpFixer Glossary</title>
+  <meta name="description" content="HSTS is an HTTP response header that forces browsers to only connect via HTTPS. Prevents downgrade attacks and cookie hijacking. Explained with exact Nginx, Cloudflare, and Vercel config.">
   <link rel="canonical" href="https://httpfixer.dev/glossary/hsts/">
   <meta name="robots" content="index, follow">
   <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="What is HSTS? — HttpFixer Glossary">
-  <meta property="og:description" content="HSTS tells browsers to use HTTPS only for your host, closing the first-visit downgrade gap.">
+  <meta property="og:title" content="HSTS (HTTP Strict Transport Security) — HttpFixer Glossary">
+  <meta property="og:description" content="HSTS is an HTTP response header that forces browsers to only connect via HTTPS. Prevents downgrade attacks and cookie hijacking. Explained with exact Nginx, Cloudflare, and Vercel config.">
   <meta property="og:url" content="https://httpfixer.dev/glossary/hsts/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "HTTP Strict Transport Security (HSTS)", "description": "Tells browsers to only connect to your site over HTTPS for a set period.", "url": "https://httpfixer.dev/glossary/hsts/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "HttpFixer Security Glossary", "url": "https://httpfixer.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://httpfixer.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "HTTP Strict Transport Security (HSTS)"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can HSTS break local development?", "acceptedAnswer": {"@type": "Answer", "text": "Usually not if you use different hostnames. If you set includeSubDomains on a parent domain used for dev, you can pin yourself to HTTPS in ways you did not intend—use separate zones or shorter max-age in tests."}}, {"@type": "Question", "name": "Do I need preload?", "acceptedAnswer": {"@type": "Answer", "text": "Preload is optional. Start with a conservative max-age, prove HTTPS everywhere, then add preload only if all subdomains are ready for long-lived HTTPS-only behavior."}}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"HSTS (HTTP Strict Transport Security)","description":"HSTS is an HTTP response header that forces browsers to only connect via HTTPS. Prevents downgrade attacks and cookie hijacking. Explained with exact Nginx, Cloudflare, and Vercel config.","url":"https://httpfixer.dev/glossary/hsts/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Glossary","item":"https://httpfixer.dev/glossary/"},{"@type":"ListItem","position":3,"name":"HSTS (HTTP Strict Transport Security)","item":"https://httpfixer.dev/glossary/hsts/"}]}]}</script>
   <style>
-    :root {
-      --bg: #0B0D14; --surface: #12151F; --border: #252836;
-      --purple: #6C63FF; --green: #22C55E; --orange: #F97316;
-      --red: #EF4444; --text: #E2E4F0;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; }
-    nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); }
-    nav .brand { font-weight: 600; color: var(--text); text-decoration: none; }
-    nav .brand span { color: var(--purple); }
-    nav .right { display: flex; gap: 1rem; align-items: center; }
-    nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; }
-    nav a:hover { color: var(--purple); opacity: 1; }
-    main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
-    main.wide { max-width: 1000px; }
-    .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; }
-    .breadcrumb a { color: var(--purple); text-decoration: none; }
-    h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; }
-    h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); }
-    p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; }
-    .lead { font-size: 1.05rem; opacity: 0.95; margin-bottom: 1.25rem; }
-    .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; }
-    .tool-cta:hover { filter: brightness(1.1); }
-    .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
-    footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
-    footer a { color: var(--text); text-decoration: none; }
-    .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
-    .glossary-grid a { display: block; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); text-decoration: none; }
-    .glossary-grid a:hover { border-color: var(--purple); }
-    .glossary-grid .term-title { color: var(--purple); font-weight: 600; font-size: 13px; margin-bottom: 0.4rem; }
-    .glossary-grid .term-d { font-size: 12px; opacity: 0.8; line-height: 1.5; }
-    article a { color: var(--purple); }
-    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
-    .related-links a { color: var(--purple); text-decoration: none; }
-    @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .quick-answer p{margin:0;opacity:1;font-size:14px;line-height:1.7}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
   </style>
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="HttpFixer">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@metriclogic">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
 </head>
 <body>
-  <nav>
-    <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
-    <div class="right">
-      <a href="/headers/">Headers</a>
-      <a href="/cors/">CORS</a>
-      <a href="/oauth/">OAuth</a>
-      <a href="/csp/">CSP</a>
-      <a href="/edge/">Edge</a>
-      <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a>
-    </div>
-  </nav>
-  <main class="">
-    <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → HTTP Strict Transport Security (HSTS)</div>
-    <h1>HTTP Strict Transport Security (HSTS)</h1>
-    <p class="lead">Tells browsers to only connect to your site over HTTPS for a set period.</p>
-<p>HSTS is a simple response header. Once the browser has seen it over a trusted HTTPS connection, it will upgrade or reject plain HTTP for that host (and optionally subdomains) until <code>max-age</code> expires. Preload lists let new users get protection even on the first visit, but only after you meet the preload requirements.</p>
-<h2>Why developers care</h2>
-<p>Without HSTS, a user’s first request might go over HTTP (bookmark, typo, captive portal, or active attacker). TLS alone does not stop that downgrade. HSTS closes the gap for return visits immediately and, with preload, shrinks the first-visit window. Security scanners flag missing HSTS as a standard finding; fixing it is usually one header line at the edge or in your app server.</p>
-<h2>Example</h2>
-<div class="code-block">Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</div>
-<h2>Spec</h2>
-<p><a href="https://www.rfc-editor.org/rfc/rfc6797">RFC 6797</a> · <a href="https://hstspreload.org/">HSTS Preload</a></p>
-    <div class="related-links"><span>Related:</span> <a href="/fix/headers/nginx/">Fix headers (Nginx)</a> · <a href="/error/hsts-missing/">HSTS missing error</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div>
-    <a href="/headers/" class="tool-cta">Audit headers with HeadersFixer →</a>
-  </main>
-  <footer>
-    <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/httpfixer">GitHub →</a></span>
-  </footer>
+<nav>
+  <a href="/" class="brand">HttpFixer</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a>
+    <a href="/errors/">Errors</a><a href="/glossary/" style="color:var(--purple);opacity:1">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/glossary/">Glossary</a> &rarr; HSTS (HTTP Strict Transport Security)</div>
+  <div class="date">Updated April 2026</div>
+  <h1>HSTS (HTTP Strict Transport Security)</h1>
+  <div class="quick-answer"><p>HSTS (HTTP Strict Transport Security) is a response header that tells browsers to only connect to this domain via HTTPS — never HTTP. Once cached, the browser refuses HTTP connections for the duration of max-age, preventing downgrade attacks and accidental insecure connections.</p></div>
+  <h2>The problem HSTS solves</h2>
+<p>HTTPS protects connections, but not the first connection. If a user types <code>example.com</code>, their browser first makes an HTTP request that a network attacker can intercept — before any HTTPS redirect happens. HSTS eliminates this gap after the first visit.</p>
+
+<h2>The header</h2>
+<pre>Strict-Transport-Security: max-age=31536000; includeSubDomains</pre>
+<p>Once the browser receives this, it will refuse HTTP for <code>example.com</code> and all subdomains for 1 year — even if you type http://.</p>
+
+<h2>Nginx config</h2>
+<pre>server {
+  listen 443 ssl;
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+}
+server {
+  listen 80;
+  return 301 https://$host$request_uri;
+}</pre>
+
+<h2>The preload list — closing the first-visit gap</h2>
+<p>HSTS only kicks in after the first visit. The preload list bakes your domain into Chrome, Firefox, and Safari so HTTPS is enforced even on the absolute first visit. Submit at <a href="https://hstspreload.org" target="_blank" rel="noopener" style="color:var(--purple)">hstspreload.org</a>.</p>
+<p>Requirements: max-age ≥ 31536000, includeSubDomains, preload directive, all subdomains on HTTPS.</p>
+
+<h2>Warning — do not rush</h2>
+<p>HSTS is a commitment. Once cached, users cannot connect over HTTP for the duration of max-age. If your HTTPS breaks, they will see a hard error with no way around it. Start with max-age=300 (5 minutes) and ramp up slowly.</p>
+  <a href="/tools/hsts-preload/" class="tool-cta">Check your HSTS preload status &rarr;</a>
+  <div class="related">Related: <a href="/blog/headers/hsts-preload-list-requirements/">HSTS preload requirements</a> &nbsp;<a href="/fix/hsts/cloudflare/">Fix HSTS on Cloudflare</a> &nbsp;<a href="/blog/headers/how-to-check-hsts-preload-status/">Check preload status</a></div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
 </body>
 </html>

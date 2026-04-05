@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSP (Content Security Policy) — HttpFixer Glossary</title>
+  <meta name="description" content="CSP is an HTTP header that controls which resources a web page is allowed to load. It prevents XSS and data injection by blocking unauthorized scripts, styles, and other resources.">
+  <link rel="canonical" href="https://httpfixer.dev/glossary/csp/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="CSP (Content Security Policy) — HttpFixer Glossary">
+  <meta property="og:description" content="CSP is an HTTP header that controls which resources a web page is allowed to load. It prevents XSS and data injection by blocking unauthorized scripts, styles, and other resources.">
+  <meta property="og:url" content="https://httpfixer.dev/glossary/csp/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"CSP (Content Security Policy)","description":"CSP is an HTTP header that controls which resources a web page is allowed to load. It prevents XSS and data injection by blocking unauthorized scripts, styles, and other resources.","url":"https://httpfixer.dev/glossary/csp/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Glossary","item":"https://httpfixer.dev/glossary/"},{"@type":"ListItem","position":3,"name":"CSP (Content Security Policy)","item":"https://httpfixer.dev/glossary/csp/"}]}]}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .quick-answer p{margin:0;opacity:1;font-size:14px;line-height:1.7}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a>
+    <a href="/errors/">Errors</a><a href="/glossary/" style="color:var(--purple);opacity:1">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/glossary/">Glossary</a> &rarr; CSP (Content Security Policy)</div>
+  <div class="date">Updated April 2026</div>
+  <h1>CSP (Content Security Policy)</h1>
+  <div class="quick-answer"><p>Content Security Policy (CSP) is an HTTP response header that tells browsers which resources — scripts, styles, fonts, images — are allowed to load on a page. It is the primary browser-enforced defense against XSS attacks. Resources from unlisted sources are blocked and logged.</p></div>
+  <h2>What CSP controls</h2>
+<p>CSP uses directives to specify allowed sources for each resource type:</p>
+<pre>Content-Security-Policy:
+  default-src 'self';
+  script-src 'self' https://www.googletagmanager.com;
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https:;
+  font-src 'self' https://fonts.gstatic.com;
+  connect-src 'self' https://www.google-analytics.com;
+  frame-ancestors 'none';
+  object-src 'none';</pre>
+
+<h2>Key directives</h2>
+<table>
+  <thead><tr><th>Directive</th><th>Controls</th></tr></thead>
+  <tbody>
+    <tr><td><code>default-src</code></td><td>Fallback for all fetch directives not specified</td></tr>
+    <tr><td><code>script-src</code></td><td>JavaScript files and inline scripts</td></tr>
+    <tr><td><code>style-src</code></td><td>CSS files and inline styles</td></tr>
+    <tr><td><code>connect-src</code></td><td>fetch, XHR, WebSocket, EventSource</td></tr>
+    <tr><td><code>frame-ancestors</code></td><td>Which sites can embed this page in an iframe</td></tr>
+    <tr><td><code>object-src</code></td><td>Flash and plugin content — set to none</td></tr>
+  </tbody>
+</table>
+
+<h2>Report-Only mode — deploy safely</h2>
+<p>Always deploy CSP as <code>Content-Security-Policy-Report-Only</code> first. Violations appear in the browser console without blocking anything. Switch to enforcing once violations stop:</p>
+<pre># Step 1 — report only, nothing blocked
+add_header Content-Security-Policy-Report-Only "default-src 'self'" always;
+
+# Step 2 — enforce once clean
+add_header Content-Security-Policy "default-src 'self'" always;</pre>
+
+<h2>unsafe-inline — when you're stuck</h2>
+<p><code>'unsafe-inline'</code> in <code>script-src</code> defeats XSS protection entirely. For styles it's less dangerous. If you have inline scripts you can't remove, use nonces instead:</p>
+<pre>script-src 'self' 'nonce-RANDOM_PER_REQUEST'</pre>
+  <a href="/csp/" class="tool-cta">Generate a CSP from your live page — CSPFixer &rarr;</a>
+  <div class="related">Related: <a href="/glossary/xss/">XSS</a> &nbsp;<a href="/glossary/clickjacking/">Clickjacking</a> &nbsp;<a href="/blog/reference/csp-directives-cheatsheet/">CSP Directives Reference</a> &nbsp;<a href="/blog/csp/how-to-generate-csp/">How to generate CSP</a></div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

@@ -137,12 +137,17 @@
   <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
   <div class="right">
     <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
   </div>
 </nav>
 <main>
   <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/csp/">CSP</a> &rarr; How to Generate a CSP</div>
 <h1>How to Generate a Content Security Policy Without Breaking Your Site</h1>
+<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
+<div style="background:var(--surface,#12151F);border:1px solid var(--purple,#6C63FF);border-radius:8px;padding:1.25rem 1.5rem;margin:0 0 2rem 0;font-size:13px;line-height:1.75;color:var(--text,#E2E4F0)">
+<strong style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;opacity:0.5;display:block;margin-bottom:0.5rem">Quick Answer</strong>
+Generate a Content Security Policy by scanning your live page: CSPFixer fetches all your resource URLs and outputs a policy with the right directives. Always deploy as <code>Content-Security-Policy-Report-Only</code> first — this shows violations in the browser console without blocking anything. Switch to enforcing once violations stop.
+</div>
 <p class="lead">A Content Security Policy blocks everything not explicitly allowed. Add one without scanning your page first and you will break your site. Here is the safe approach.</p>
 
 <h2>Two ways to generate a CSP</h2>

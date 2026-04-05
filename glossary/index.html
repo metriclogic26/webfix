@@ -3,85 +3,147 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Glossary — HttpFixer</title>
-  <meta name="description" content="Security and performance glossary: CSP, CORS, HSTS, PKCE, Cache-Control, Core Web Vitals, and more.">
+  <title>HTTP & Web Security Glossary — HttpFixer</title>
+  <meta name="description" content="Plain-English definitions for HTTP headers, web security concepts, and developer terms. CORS, CSP, HSTS, XSS, PKCE, preflight — every term explained with examples.">
   <link rel="canonical" href="https://httpfixer.dev/glossary/">
   <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Glossary — HttpFixer">
-  <meta property="og:description" content="Security and performance glossary: CSP, CORS, HSTS, PKCE, Cache-Control, Core Web Vitals, and more.">
+  <meta property="og:title" content="HTTP & Web Security Glossary — HttpFixer">
+  <meta property="og:description" content="Plain-English definitions for HTTP, security, and web developer terms.">
   <meta property="og:url" content="https://httpfixer.dev/glossary/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTermSet", "name": "HttpFixer Security Glossary", "description": "Developer-focused definitions for web security and performance terms.", "url": "https://httpfixer.dev/glossary/"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the HttpFixer glossary?", "acceptedAnswer": {"@type": "Answer", "text": "A set of concise definitions for CSP, CORS, HSTS, OAuth, caching, and Core Web Vitals, each linked to interactive HttpFixer tools."}}, {"@type": "Question", "name": "How do I suggest a new term?", "acceptedAnswer": {"@type": "Answer", "text": "Open an issue on the HttpFixer GitHub repository with the term and primary sources (RFC, WHATWG, web.dev)."}}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"DefinedTermSet","name":"HTTP & Web Security Glossary","description":"Plain-English definitions for HTTP headers, web security concepts, and developer terms.","url":"https://httpfixer.dev/glossary/"}</script>
   <style>
-    :root {
-      --bg: #0B0D14; --surface: #12151F; --border: #252836;
-      --purple: #6C63FF; --green: #22C55E; --orange: #F97316;
-      --red: #EF4444; --text: #E2E4F0;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; }
-    nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); }
-    nav .brand { font-weight: 600; color: var(--text); text-decoration: none; }
-    nav .brand span { color: var(--purple); }
-    nav .right { display: flex; gap: 1rem; align-items: center; }
-    nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; }
-    nav a:hover { color: var(--purple); opacity: 1; }
-    main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
-    main.wide { max-width: 1000px; }
-    .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; }
-    .breadcrumb a { color: var(--purple); text-decoration: none; }
-    h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; }
-    h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); }
-    p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; }
-    .lead { font-size: 1.05rem; opacity: 0.95; margin-bottom: 1.25rem; }
-    .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; }
-    .tool-cta:hover { filter: brightness(1.1); }
-    .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
-    footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
-    footer a { color: var(--text); text-decoration: none; }
-    .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
-    .glossary-grid a { display: block; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); text-decoration: none; }
-    .glossary-grid a:hover { border-color: var(--purple); }
-    .glossary-grid .term-title { color: var(--purple); font-weight: 600; font-size: 13px; margin-bottom: 0.4rem; }
-    .glossary-grid .term-d { font-size: 12px; opacity: 0.8; line-height: 1.5; }
-    article a { color: var(--purple); }
-    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
-    .related-links a { color: var(--purple); text-decoration: none; }
-    @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    nav a.active{color:var(--purple);opacity:1}
+    main{max-width:900px;margin:0 auto;padding:3rem 1.5rem 5rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2.5rem 0 1rem;color:var(--purple)}
+    p{margin-bottom:1rem;opacity:0.85;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:2rem;line-height:1.85}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-bottom:2rem}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;text-decoration:none;display:block;transition:border-color 0.15s}
+    .card:hover{border-color:var(--purple)}
+    .card-title{color:var(--purple);font-weight:600;font-size:14px;margin-bottom:0.35rem}
+    .card-desc{color:var(--text);font-size:12px;opacity:0.65;line-height:1.6}
+    .card-vol{font-size:11px;opacity:0.4;margin-top:0.4rem}
+    .tag{display:inline-block;padding:0.15rem 0.5rem;border-radius:3px;font-size:11px;font-weight:600;margin-right:0.4rem}
+    .tag-error{background:rgba(239,68,68,0.15);color:var(--red)}
+    .tag-cors{background:rgba(108,99,255,0.15);color:var(--purple)}
+    .tag-csp{background:rgba(34,197,94,0.15);color:var(--green)}
+    .tag-http{background:rgba(249,115,22,0.15);color:var(--orange)}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
   </style>
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="HttpFixer">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@metriclogic">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
 </head>
 <body>
-  <nav>
-    <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
-    <div class="right">
-      <a href="/headers/">Headers</a>
-      <a href="/cors/">CORS</a>
-      <a href="/oauth/">OAuth</a>
-      <a href="/csp/">CSP</a>
-      <a href="/edge/">Edge</a>
-      <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a>
-    </div>
-  </nav>
-  <main class="wide">
-    <div class="breadcrumb"><a href="/">HttpFixer</a> → Glossary</div>
-    <h1>HttpFixer glossary</h1>
-    <p>Plain-language definitions for the headers, browser policies, auth flows, cache directives, and performance metrics you touch in production—each with examples and a link to the HttpFixer tool that automates fixes.</p><div class="glossary-grid"><a href="/glossary/content-security-policy/"><div class="term-title">Content Security Policy (CSP)</div><div class="term-d">A browser security mechanism that restricts which resources a page can load.</div></a><a href="/glossary/hsts/"><div class="term-title">HTTP Strict Transport Security (HSTS)</div><div class="term-d">Tells browsers to only connect to your site over HTTPS for a set period.</div></a><a href="/glossary/cors/"><div class="term-title">Cross-Origin Resource Sharing (CORS)</div><div class="term-d">The browser mechanism that controls which origins can call your API.</div></a><a href="/glossary/preflight-request/"><div class="term-title">CORS Preflight Request</div><div class="term-d">An OPTIONS request the browser sends before a cross-origin request to check permissions.</div></a><a href="/glossary/csp-nonce/"><div class="term-title">CSP Nonce</div><div class="term-d">A random value that allows a specific inline script to run despite a strict CSP.</div></a><a href="/glossary/unsafe-inline/"><div class="term-title">unsafe-inline (CSP)</div><div class="term-d">A CSP keyword that allows all inline scripts or styles — effectively disabling XSS protection.</div></a><a href="/glossary/x-frame-options/"><div class="term-title">X-Frame-Options</div><div class="term-d">A header that controls whether your page can be embedded in an iframe.</div></a><a href="/glossary/referrer-policy/"><div class="term-title">Referrer-Policy</div><div class="term-d">Controls how much URL information is sent in the Referer header to other sites.</div></a><a href="/glossary/permissions-policy/"><div class="term-title">Permissions-Policy</div><div class="term-d">Restricts which browser features (camera, microphone, geolocation) a page can use.</div></a><a href="/glossary/pkce/"><div class="term-title">Proof Key for Code Exchange (PKCE)</div><div class="term-d">An OAuth extension that prevents authorization code interception attacks.</div></a><a href="/glossary/oauth-grant-types/"><div class="term-title">OAuth 2.0 Grant Types</div><div class="term-d">The different flows OAuth supports for obtaining access tokens.</div></a><a href="/glossary/cache-control/"><div class="term-title">Cache-Control</div><div class="term-d">An HTTP header that tells browsers and CDNs how long to cache a response.</div></a><a href="/glossary/vary-header/"><div class="term-title">Vary Header</div><div class="term-d">Tells CDNs which request headers affect the response, so they cache separate versions.</div></a><a href="/glossary/etag/"><div class="term-title">ETag</div><div class="term-d">A fingerprint of a response that lets browsers check if their cached copy is still valid.</div></a><a href="/glossary/core-web-vitals/"><div class="term-title">Core Web Vitals</div><div class="term-d">Google's three user-experience metrics: LCP, INP, and CLS.</div></a><a href="/glossary/largest-contentful-paint/"><div class="term-title">Largest Contentful Paint (LCP)</div><div class="term-d">How long it takes for the largest visible element to load.</div></a><a href="/glossary/cumulative-layout-shift/"><div class="term-title">Cumulative Layout Shift (CLS)</div><div class="term-d">Measures how much page elements move around while loading.</div></a><a href="/glossary/interaction-to-next-paint/"><div class="term-title">Interaction to Next Paint (INP)</div><div class="term-d">Measures how long the browser takes to visually respond to user interactions.</div></a><a href="/glossary/time-to-first-byte/"><div class="term-title">Time to First Byte (TTFB)</div><div class="term-d">How long it takes for the browser to receive the first byte from the server.</div></a><a href="/glossary/coop-coep/"><div class="term-title">COOP and COEP</div><div class="term-d">Two headers that enable cross-origin isolation, required for SharedArrayBuffer and high-resolution timers.</div></a></div>
-    <div class="related-links"><span>Related:</span> <a href="/fix/">Fix guides</a> · <a href="/error/">Errors</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div>
-    <a href="/headers/" class="tool-cta">Audit headers with HeadersFixer →</a>
-  </main>
-  <footer>
-    <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/httpfixer">GitHub →</a></span>
-  </footer>
+<nav>
+  <a href="/" class="brand">HttpFixer</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a>
+    <a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div style="font-size:12px;opacity:0.5;margin-bottom:1.5rem"><a href="/" style="color:var(--purple);text-decoration:none">HttpFixer</a> &rarr; Glossary</div>
+  <h1>HTTP & Web Security Glossary</h1>
+  <p class="lead">Plain-English definitions for the terms that show up in browser consoles, security audits, and developer docs. Each definition links directly to the relevant tool.</p>
+
+  <h2>Cross-Origin & Headers</h2>
+  <div class="grid">
+    <a href="/glossary/cors/" class="card">
+      <div class="card-title">CORS</div>
+      <div class="card-desc">Cross-Origin Resource Sharing. Browser security mechanism that controls which origins can fetch resources from another origin.</div>
+      <div class="card-vol">~50K/mo</div>
+    </a>
+    <a href="/glossary/same-origin-policy/" class="card">
+      <div class="card-title">Same-Origin Policy</div>
+      <div class="card-desc">Browser rule that blocks scripts on one origin from accessing resources on a different origin. CORS is the controlled exception.</div>
+      <div class="card-vol">~10K/mo</div>
+    </a>
+    <a href="/glossary/preflight-request/" class="card">
+      <div class="card-title">Preflight Request</div>
+      <div class="card-desc">OPTIONS request the browser sends before non-simple cross-origin requests to check if the server allows them.</div>
+      <div class="card-vol">~8K/mo</div>
+    </a>
+    <a href="/glossary/content-type/" class="card">
+      <div class="card-title">Content-Type</div>
+      <div class="card-desc">HTTP header declaring the media type of the request or response body. Wrong Content-Type causes parse errors and CORS preflight.</div>
+      <div class="card-vol">~10K/mo</div>
+    </a>
+  </div>
+
+  <h2>Security Headers & Attacks</h2>
+  <div class="grid">
+    <a href="/glossary/csp/" class="card">
+      <div class="card-title">CSP</div>
+      <div class="card-desc">Content Security Policy. HTTP header that controls which resources a page can load — the primary defense against XSS.</div>
+      <div class="card-vol">~30K/mo</div>
+    </a>
+    <a href="/glossary/hsts/" class="card">
+      <div class="card-title">HSTS</div>
+      <div class="card-desc">HTTP Strict Transport Security. Forces browsers to only connect via HTTPS — prevents downgrade attacks and cookie hijacking.</div>
+      <div class="card-vol">~15K/mo</div>
+    </a>
+    <a href="/glossary/xss/" class="card">
+      <div class="card-title">XSS</div>
+      <div class="card-desc">Cross-Site Scripting. Attack where malicious scripts are injected into trusted pages. CSP is the primary header defense.</div>
+      <div class="card-vol">~40K/mo</div>
+    </a>
+    <a href="/glossary/clickjacking/" class="card">
+      <div class="card-title">Clickjacking</div>
+      <div class="card-desc">Attack embedding a page in a hidden iframe to trick users into clicking on invisible elements. Prevented by X-Frame-Options and CSP frame-ancestors.</div>
+      <div class="card-vol">~10K/mo</div>
+    </a>
+  </div>
+
+  <h2>Authentication & Caching</h2>
+  <div class="grid">
+    <a href="/glossary/pkce/" class="card">
+      <div class="card-title">PKCE</div>
+      <div class="card-desc">Proof Key for Code Exchange. OAuth 2.0 extension that prevents authorization code interception attacks in public clients.</div>
+      <div class="card-vol">~8K/mo</div>
+    </a>
+    <a href="/glossary/samesite-cookie/" class="card">
+      <div class="card-title">SameSite Cookie</div>
+      <div class="card-desc">Cookie attribute controlling when cookies are sent with cross-site requests. Strict, Lax, or None — affects CSRF protection.</div>
+      <div class="card-vol">~5K/mo</div>
+    </a>
+    <a href="/glossary/rate-limiting/" class="card">
+      <div class="card-title">Rate Limiting</div>
+      <div class="card-desc">Server-side control limiting how many requests a client can make in a time window. Implemented via 429 Too Many Requests responses.</div>
+      <div class="card-vol">~15K/mo</div>
+    </a>
+    <a href="/glossary/cache-busting/" class="card">
+      <div class="card-title">Cache Busting</div>
+      <div class="card-desc">Technique to force browsers and CDNs to fetch new file versions by adding a hash or version string to filenames or query params.</div>
+      <div class="card-vol">~5K/mo</div>
+    </a>
+  </div>
+
+  <div style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)">
+    <p style="font-size:13px;opacity:0.6">Find a term not listed? <a href="/blog/" style="color:var(--purple)">Browse the blog</a> &middot; <a href="/" style="color:var(--purple)">Scan your headers</a></p>
+  </div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
 </body>
 </html>

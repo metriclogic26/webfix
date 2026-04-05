@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Headers Badge Generator — HttpFixer</title>
+  <meta name="description" content="Generate an SVG badge showing your security headers score. Copy the Markdown to add to your GitHub README or documentation.">
+  <link rel="canonical" href="https://httpfixer.dev/tools/badge/">
+  <meta name="robots" content="index, follow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    .tool-cta{display:inline-block;margin:1.5rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+    .badge-form{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+    .field{margin-bottom:1rem}
+    .field label{display:block;font-size:12px;opacity:0.6;margin-bottom:0.4rem}
+    .field input,.field select{width:100%;background:#080a0f;border:1px solid var(--border);border-radius:4px;padding:0.6rem 0.75rem;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:13px;outline:none}
+    .field input:focus,.field select:focus{border-color:var(--purple)}
+    .badge-preview{margin:1.5rem 0;padding:1.5rem;background:#080a0f;border-radius:8px;text-align:center;min-height:60px;display:flex;align-items:center;justify-content:center}
+    .copy-btn{background:var(--purple);color:white;border:none;padding:0.6rem 1.25rem;border-radius:4px;font-family:"JetBrains Mono",monospace;font-size:13px;cursor:pointer;margin-top:0.5rem}
+    .copy-btn:hover{filter:brightness(1.1)}
+    .code-out{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:0.5rem 0;overflow-x:auto;white-space:pre;line-height:1.6;color:var(--text)}
+    .tab-btns{display:flex;gap:0.5rem;margin-bottom:0.75rem}
+    .tab-btn{background:transparent;border:1px solid var(--border);color:var(--text);padding:0.4rem 0.75rem;font-family:"JetBrains Mono",monospace;font-size:12px;border-radius:4px;cursor:pointer;opacity:0.6}
+    .tab-btn.active{border-color:var(--purple);color:var(--purple);opacity:1}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a>
+    <a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div style="font-size:12px;opacity:0.5;margin-bottom:1.5rem"><a href="/" style="color:var(--purple);text-decoration:none">HttpFixer</a> &rarr; <a href="/tools/" style="color:var(--purple);text-decoration:none">Tools</a> &rarr; Badge Generator</div>
+  <h1>Security Headers Badge Generator</h1>
+  <p class="lead">Generate an SVG badge for your project's README. Shows your security headers score at a glance — links back to a live HttpFixer scan.</p>
+
+  <div class="badge-form">
+    <div class="field">
+      <label>Your site URL</label>
+      <input type="url" id="url-input" placeholder="https://yoursite.com" oninput="updateBadge()">
+    </div>
+    <div class="field">
+      <label>Score</label>
+      <select id="score-select" onchange="updateBadge()">
+        <option value="A+">A+ (Excellent)</option>
+        <option value="A">A (Good)</option>
+        <option value="B" selected>B (Needs improvement)</option>
+        <option value="C">C (Weak)</option>
+        <option value="D">D (Poor)</option>
+        <option value="F">F (Failing)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="badge-preview" id="badge-preview">
+    <svg id="badge-svg" xmlns="http://www.w3.org/2000/svg" width="200" height="20">
+      <linearGradient id="s" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient>
+      <clipPath id="r"><rect width="200" height="20" rx="3" fill="#fff"/></clipPath>
+      <g clip-path="url(#r)">
+        <rect width="130" height="20" fill="#555"/>
+        <rect x="130" width="70" height="20" fill="#6C63FF"/>
+        <rect width="200" height="20" fill="url(#s)"/>
+      </g>
+      <g fill="#fff" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" text-rendering="geometricPrecision">
+        <text x="65" y="15" fill="#010101" fill-opacity=".3">security headers</text>
+        <text x="65" y="14">security headers</text>
+        <text x="165" y="15" fill="#010101" fill-opacity=".3">B</text>
+        <text x="165" y="14">B</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="tab-btns">
+    <button class="tab-btn active" onclick="showTab('markdown')">Markdown</button>
+    <button class="tab-btn" onclick="showTab('html')">HTML</button>
+    <button class="tab-btn" onclick="showTab('url')">Badge URL</button>
+  </div>
+  <div class="code-out" id="code-markdown">[![Security Headers](https://img.shields.io/badge/security%20headers-B-6C63FF)](https://httpfixer.dev/?url=https://yoursite.com)</div>
+  <div class="code-out" id="code-html" style="display:none">&lt;a href="https://httpfixer.dev/?url=https://yoursite.com"&gt;&lt;img src="https://img.shields.io/badge/security%20headers-B-6C63FF" alt="Security Headers"&gt;&lt;/a&gt;</div>
+  <div class="code-out" id="code-url" style="display:none">https://img.shields.io/badge/security%20headers-B-6C63FF</div>
+  <button class="copy-btn" onclick="copyCode()">Copy</button>
+
+  <p style="margin-top:2rem;font-size:12px;opacity:0.5">The badge links to a live HeadersFixer scan of your URL. Run HeadersFixer first to get your actual score.</p>
+  <a href="/" class="tool-cta">Scan your live site — HeadersFixer →</a>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
+<script>
+const COLORS = {
+  'A+': '22C55E', 'A': '22C55E', 'B': '6C63FF',
+  'C': 'F97316', 'D': 'EF4444', 'F': 'EF4444'
+};
+
+function updateBadge() {
+  const score = document.getElementById('score-select').value;
+  const url = document.getElementById('url-input').value || 'https://yoursite.com';
+  const color = COLORS[score] || '6C63FF';
+  const scanUrl = `https://httpfixer.dev/?url=${encodeURIComponent(url)}`;
+  const badgeUrl = `https://img.shields.io/badge/security%20headers-${encodeURIComponent(score)}-${color}`;
+
+  document.getElementById('badge-preview').innerHTML = `<a href="${scanUrl}" target="_blank" rel="noopener"><img src="${badgeUrl}" alt="Security Headers ${score}" style="height:20px"></a>`;
+
+  document.getElementById('code-markdown').textContent = `[![Security Headers](https://img.shields.io/badge/security%20headers-${score}-${color})](${scanUrl})`;
+  document.getElementById('code-html').textContent = `<a href="${scanUrl}"><img src="${badgeUrl}" alt="Security Headers ${score}"></a>`;
+  document.getElementById('code-url').textContent = badgeUrl;
+}
+
+function showTab(tab) {
+  ['markdown','html','url'].forEach(t => {
+    document.getElementById('code-' + t).style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', ['markdown','html','url'][i] === tab);
+  });
+}
+
+function copyCode() {
+  const active = document.querySelector('.code-out:not([style*="display:none"])');
+  if (!active) return;
+  navigator.clipboard.writeText(active.textContent).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+updateBadge();
+</script>
+</body>
+</html>

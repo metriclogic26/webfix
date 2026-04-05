@@ -159,12 +159,17 @@
   <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
   <div class="right">
     <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
   </div>
 </nav>
 <main>
   <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/platform/">Platform</a> &rarr; Security Headers on Cloudflare</div>
 <h1>Security Headers on Cloudflare — Transform Rules Configuration</h1>
+<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
+<div style="background:var(--surface,#12151F);border:1px solid var(--purple,#6C63FF);border-radius:8px;padding:1.25rem 1.5rem;margin:0 0 2rem 0;font-size:13px;line-height:1.75;color:var(--text,#E2E4F0)">
+<strong style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;opacity:0.5;display:block;margin-bottom:0.5rem">Quick Answer</strong>
+Set security headers on Cloudflare via Transform Rules: Dashboard → Rules → Transform Rules → Modify Response Header → Create Rule. Add Strict-Transport-Security, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, and Permissions-Policy as static headers. They apply at the edge to every request, regardless of origin server configuration.
+</div>
 <p class="lead">Cloudflare lets you set security headers at the edge via Transform Rules — no origin server changes needed. Every request gets the headers before it reaches your users.</p>
 
 <a href="/" class="tool-cta">Scan your Cloudflare site &rarr; HeadersFixer</a>
