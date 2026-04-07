@@ -126,7 +126,6 @@
   <url><loc>https://httpfixer.dev/blog/performance/link-header-preload/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/performance/zstd-compression-nginx-vercel/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/platform/cors-aws-lambda/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://httpfixer.dev/blog/platform/cors-cloudflare-workers/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/platform/cors-docker/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/platform/csp-single-page-apps/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/platform/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -277,6 +276,7 @@
   <url><loc>https://httpfixer.dev/providers/vercel/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/providers/wordpress/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/speedfixer/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/ssl-chain/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/tools/badge/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/tools/cache-simulator/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/tools/csp-validator/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>

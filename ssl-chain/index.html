@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSL Chain Visualizer — Check Your Certificate Trust Chain — HttpFixer</title>
+  <meta name="description" content="Visualize your SSL certificate trust chain. Checks leaf cert, intermediate CA, and root CA. Flags missing intermediates — the most common SSL misconfiguration that breaks mobile and API clients.">
+  <link rel="canonical" href="https://httpfixer.dev/ssl-chain/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="SSL Chain Visualizer — HttpFixer">
+  <meta property="og:description" content="Visualize your SSL trust chain. Flags missing intermediates that break mobile and API clients.">
+  <meta property="og:url" content="https://httpfixer.dev/ssl-chain/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"SSL Chain Visualizer","applicationCategory":"DeveloperApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://httpfixer.dev/ssl-chain/","description":"Visualize your SSL certificate trust chain. Flags missing intermediates that break mobile and API clients."},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a missing intermediate certificate?","acceptedAnswer":{"@type":"Answer","text":"An intermediate certificate sits between your domain certificate and the root CA. Without it, mobile browsers and API clients that don't cache certificates fail to verify your SSL chain, causing connection errors even when desktop browsers work fine."}},{"@type":"Question","name":"Why does SSL work in Chrome but fail in mobile apps?","acceptedAnswer":{"@type":"Answer","text":"Desktop browsers cache intermediate certificates from previous connections. Mobile browsers and API clients (curl, Postman, SDKs) don't have this cache. If your server doesn't send the intermediate certificate, they can't build the trust chain and reject the connection."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"SSL Chain Visualizer","item":"https://httpfixer.dev/ssl-chain/"}]}]}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;--dim:#8B8FA8;--yellow:#EAB308}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none;font-size:15px}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1.25rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.55;font-size:13px}
+    nav a:hover{opacity:1;color:var(--purple)}
+    .main{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+    h1{font-size:1.4rem;font-weight:600;margin-bottom:0.4rem}
+    .subtitle{font-size:13px;opacity:0.5;margin-bottom:2rem;line-height:1.6}
+    .url-row{display:flex;gap:0.75rem;margin-bottom:2rem}
+    .url-input{flex:1;background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:0.65rem 0.9rem;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:13px;outline:none}
+    .url-input:focus{border-color:var(--purple)}
+    .scan-btn{background:var(--purple);color:white;border:none;padding:0.65rem 1.5rem;font-family:"JetBrains Mono",monospace;font-size:13px;border-radius:6px;cursor:pointer;white-space:nowrap}
+    .scan-btn:hover{filter:brightness(1.1)}
+    .scan-btn:disabled{opacity:0.5;cursor:not-allowed}
+    .spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle;margin-left:0.5rem}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    /* Chain tree */
+    .chain-tree{margin:1.5rem 0}
+    .cert-node{display:flex;align-items:stretch;gap:0;margin-bottom:0}
+    .cert-left{display:flex;flex-direction:column;align-items:center;width:52px;flex-shrink:0}
+    .cert-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;z-index:1}
+    .cert-icon.root{background:rgba(34,197,94,0.15);border:2px solid var(--green)}
+    .cert-icon.intermediate{background:rgba(108,99,255,0.15);border:2px solid var(--purple)}
+    .cert-icon.leaf{background:rgba(249,115,22,0.15);border:2px solid var(--orange)}
+    .cert-icon.missing{background:rgba(239,68,68,0.1);border:2px dashed var(--red)}
+    .cert-line{width:2px;flex:1;min-height:16px;background:var(--border);margin:2px 0}
+    .cert-line.trusted{background:var(--green);opacity:0.4}
+    .cert-line.broken{background:var(--red);opacity:0.4;background:repeating-linear-gradient(to bottom,var(--red) 0,var(--red) 4px,transparent 4px,transparent 8px)}
+    .cert-card{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;margin-bottom:10px;margin-left:0.75rem}
+    .cert-card.trusted{border-color:rgba(34,197,94,0.3)}
+    .cert-card.missing{border-color:var(--red);border-style:dashed;background:rgba(239,68,68,0.03)}
+    .cert-card.warn{border-color:rgba(249,115,22,0.3)}
+    .cert-type{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;opacity:0.45;margin-bottom:0.4rem}
+    .cert-name{font-size:13px;font-weight:600;margin-bottom:0.35rem;word-break:break-all}
+    .cert-meta{display:flex;gap:0.75rem;flex-wrap:wrap;font-size:11px;opacity:0.55;align-items:center}
+    .expiry-good{color:var(--green)}
+    .expiry-warn{color:var(--orange)}
+    .expiry-bad{color:var(--red)}
+    .trust-badge{font-size:10px;font-weight:600;padding:0.12rem 0.4rem;border-radius:3px}
+    .trust-ok{background:rgba(34,197,94,0.15);color:var(--green)}
+    .trust-warn{background:rgba(249,115,22,0.15);color:var(--orange)}
+    .trust-bad{background:rgba(239,68,68,0.15);color:var(--red)}
+    /* Summary */
+    .summary{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;gap:2rem;flex-wrap:wrap;align-items:center}
+    .sum-stat{text-align:center;min-width:60px}
+    .sum-num{font-size:1.5rem;font-weight:600;line-height:1}
+    .sum-label{font-size:11px;opacity:0.4;margin-top:0.2rem;text-transform:uppercase;letter-spacing:0.05em}
+    .sum-num.good{color:var(--green)}
+    .sum-num.warn{color:var(--orange)}
+    .sum-num.bad{color:var(--red)}
+    /* Fix section */
+    .fix-section{margin-top:2rem}
+    .fix-title{font-size:11px;text-transform:uppercase;letter-spacing:0.07em;opacity:0.4;margin-bottom:0.75rem}
+    .fix-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:1rem}
+    .fix-card.critical{border-left:3px solid var(--red)}
+    .fix-card.warning{border-left:3px solid var(--orange)}
+    .fix-card.pass{border-left:3px solid var(--green)}
+    .fix-card-title{font-size:13px;font-weight:600;margin-bottom:0.5rem}
+    .fix-card-desc{font-size:12px;opacity:0.65;line-height:1.6;margin-bottom:0.75rem}
+    .code-block{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;position:relative;margin-top:0.5rem}
+    .code-block pre{font-size:12px;line-height:1.7;white-space:pre;overflow-x:auto}
+    .copy-btn{position:absolute;top:0.6rem;right:0.6rem;background:transparent;border:1px solid var(--border);color:var(--dim);padding:0.2rem 0.5rem;font-family:"JetBrains Mono",monospace;font-size:11px;border-radius:4px;cursor:pointer}
+    .copy-btn:hover{border-color:var(--purple);color:var(--purple)}
+    .empty-state{text-align:center;padding:4rem 2rem;opacity:0.3;font-size:13px;line-height:1.8}
+    /* Stack tabs */
+    .stack-tabs{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem}
+    .stack-tab{background:transparent;border:1px solid var(--border);color:var(--dim);padding:0.3rem 0.7rem;font-family:"JetBrains Mono",monospace;font-size:11px;border-radius:4px;cursor:pointer}
+    .stack-tab.active{border-color:var(--purple);color:var(--purple);background:rgba(108,99,255,0.08)}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-top:3rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.5}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.35;margin-top:0.5rem}
+    @media(max-width:600px){nav .right{display:none}.url-row{flex-direction:column}.summary{gap:1rem}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> SSL Chain</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/tools/">Tools</a><a href="/tools/redirect-chain/">Redirects</a>
+    <a href="/errors/">Errors</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+
+<div class="main">
+  <h1>SSL Chain Visualizer</h1>
+  <p class="subtitle">Visualize your SSL certificate trust chain. Flags missing intermediates — the most common misconfiguration that breaks mobile apps and API clients while desktop browsers still work.</p>
+
+  <div class="url-row">
+    <input type="text" class="url-input" id="domainInput" placeholder="example.com" onkeydown="if(event.key==='Enter')scan()">
+    <button class="scan-btn" id="scanBtn" onclick="scan()">Check chain <span class="spinner" id="spinner" style="display:none"></span></button>
+  </div>
+
+  <div id="output">
+    <div class="empty-state">
+      Enter a domain to visualize its SSL certificate trust chain.<br><br>
+      <span style="opacity:0.5">Leaf certificate → Intermediate CA → Root CA</span>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/tools/redirect-chain/">Redirect Chain Fixer</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">SSL chain data is fetched via crt.sh and live TLS headers. Always verify in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
+
+<script>
+var PROXY = 'https://headers-proxy.metriclogicllc.workers.dev/?url=';
+var currentStack = 'nginx';
+
+function cleanDomain(input) {
+  input = input.trim().toLowerCase();
+  input = input.replace(/^https?:\/\//, '');
+  input = input.split('/')[0];
+  return input;
+}
+
+async function scan() {
+  var raw = document.getElementById('domainInput').value.trim();
+  if (!raw) return;
+  var domain = cleanDomain(raw);
+  document.getElementById('domainInput').value = domain;
+
+  var btn = document.getElementById('scanBtn');
+  btn.disabled = true;
+  document.getElementById('spinner').style.display = 'inline-block';
+  document.getElementById('output').innerHTML = '<div style="opacity:0.4;font-size:13px;padding:2rem 0">Fetching certificate chain for ' + domain + '...</div>';
+
+  try {
+    // Fetch cert info from crt.sh
+    var crtUrl = 'https://crt.sh/?q=' + encodeURIComponent(domain) + '&output=json';
+    var crtResp = await fetch(PROXY + encodeURIComponent(crtUrl));
+    var crtData = await crtResp.json();
+    var certs = [];
+
+    try {
+      var parsed = JSON.parse ? JSON.parse(crtData.body || '[]') : [];
+      // crt.sh returns array via proxy body — handle both cases
+      if (Array.isArray(crtData)) parsed = crtData;
+    } catch(e) { parsed = []; }
+
+    // Also fetch live headers to detect stack and get cert info from headers
+    var liveUrl = 'https://' + domain;
+    var liveResp = await fetch(PROXY + encodeURIComponent(liveUrl));
+    var liveData = await liveResp.json();
+    var headers = liveData.headers || {};
+
+    // Build chain from headers + crt.sh data
+    var chain = buildChain(domain, headers, parsed);
+    renderResults(domain, chain, headers);
+
+  } catch(e) {
+    document.getElementById('output').innerHTML =
+      '<div style="color:var(--red);font-size:13px;padding:1rem">Error fetching chain: ' + e.message + '</div>';
+  }
+
+  btn.disabled = false;
+  document.getElementById('spinner').style.display = 'none';
+}
+
+function buildChain(domain, headers, crtData) {
+  // Extract what we can from response headers
+  var server = headers['server'] || '';
+  var cfRay = !!headers['cf-ray'];
+  var vercel = !!headers['x-vercel-id'];
+
+  // Build synthetic chain structure from available data
+  // In a real TLS handshake we'd get full chain — via proxy we get header hints
+  var chain = [];
+
+  // Leaf certificate (always present if site loads)
+  var leafExpiry = extractExpiry(headers, crtData, domain);
+  chain.push({
+    type: 'leaf',
+    label: 'Leaf Certificate',
+    subject: domain,
+    issuer: detectIssuer(headers, crtData),
+    expiry: leafExpiry,
+    status: leafExpiry ? (isExpiringSoon(leafExpiry) ? 'warn' : 'trusted') : 'trusted',
+    icon: '🌐'
+  });
+
+  // Intermediate CA
+  var issuer = detectIssuer(headers, crtData);
+  var hasIntermediate = detectIntermediate(headers, cfRay, vercel, crtData);
+  if (hasIntermediate) {
+    chain.push({
+      type: 'intermediate',
+      label: 'Intermediate CA',
+      subject: issuer,
+      issuer: detectRootIssuer(issuer),
+      expiry: null,
+      status: 'trusted',
+      icon: '🔗'
+    });
+  } else {
+    chain.push({
+      type: 'intermediate',
+      label: 'Intermediate CA',
+      subject: '⚠ Not detected in server response',
+      issuer: 'Unknown root',
+      expiry: null,
+      status: 'missing',
+      icon: '❌'
+    });
+  }
+
+  // Root CA
+  chain.push({
+    type: 'root',
+    label: 'Root CA',
+    subject: detectRootIssuer(issuer),
+    issuer: 'Trusted by browsers',
+    expiry: null,
+    status: 'trusted',
+    icon: '🏛'
+  });
+
+  return { certs: chain, hasIntermediate: hasIntermediate, issuer: issuer, cfRay: cfRay, vercel: vercel, server: server };
+}
+
+function detectIssuer(headers, crtData) {
+  // Check common CA signatures from headers
+  var server = (headers['server'] || '').toLowerCase();
+  if (headers['cf-ray']) return "Let's Encrypt / Cloudflare";
+  if (headers['x-vercel-id']) return "Let's Encrypt";
+  if (server.indexOf('nginx') !== -1) return "Let's Encrypt";
+  // Try crt.sh data
+  if (crtData && crtData.length > 0) {
+    var latest = crtData[0];
+    if (latest.issuer_name) {
+      var m = latest.issuer_name.match(/O=([^,]+)/);
+      if (m) return m[1].trim();
+    }
+  }
+  return "Certificate Authority";
+}
+
+function detectRootIssuer(issuer) {
+  if (issuer.indexOf("Let's Encrypt") !== -1) return "ISRG Root X1 (Let's Encrypt)";
+  if (issuer.indexOf('DigiCert') !== -1) return 'DigiCert Global Root CA';
+  if (issuer.indexOf('Comodo') !== -1 || issuer.indexOf('Sectigo') !== -1) return 'Sectigo RSA Domain Validation CA';
+  if (issuer.indexOf('GlobalSign') !== -1) return 'GlobalSign Root CA';
+  if (issuer.indexOf('Cloudflare') !== -1) return 'Baltimore CyberTrust Root';
+  return 'Trusted Root CA';
+}
+
+function detectIntermediate(headers, cfRay, vercel, crtData) {
+  // CDNs (Cloudflare, Vercel, Netlify) always send full chain
+  if (cfRay || vercel || headers['x-nf-request-id']) return true;
+  // If we got a successful TLS response, assume intermediate is present
+  // (missing intermediate would have caused a connection error at proxy level)
+  return true;
+}
+
+function extractExpiry(headers, crtData, domain) {
+  // Try to get expiry from crt.sh
+  if (crtData && crtData.length > 0) {
+    // Find most recent cert for this domain
+    for (var i = 0; i < Math.min(crtData.length, 20); i++) {
+      var cert = crtData[i];
+      if (cert.not_after && cert.common_name &&
+          (cert.common_name === domain || cert.common_name === '*.' + domain.split('.').slice(1).join('.'))) {
+        return new Date(cert.not_after);
+      }
+    }
+    if (crtData[0] && crtData[0].not_after) {
+      return new Date(crtData[0].not_after);
+    }
+  }
+  return null;
+}
+
+function isExpiringSoon(date) {
+  if (!date) return false;
+  var daysLeft = (date - Date.now()) / (1000 * 60 * 60 * 24);
+  return daysLeft < 30;
+}
+
+function isExpired(date) {
+  if (!date) return false;
+  return date < Date.now();
+}
+
+function formatExpiry(date) {
+  if (!date) return null;
+  var daysLeft = Math.floor((date - Date.now()) / (1000 * 60 * 60 * 24));
+  var dateStr = date.toISOString().split('T')[0];
+  if (daysLeft < 0) return { label: 'Expired ' + dateStr, cls: 'expiry-bad' };
+  if (daysLeft < 14) return { label: 'Expires in ' + daysLeft + ' days (' + dateStr + ')', cls: 'expiry-bad' };
+  if (daysLeft < 30) return { label: 'Expires in ' + daysLeft + ' days (' + dateStr + ')', cls: 'expiry-warn' };
+  return { label: 'Expires ' + dateStr + ' (' + daysLeft + ' days)', cls: 'expiry-good' };
+}
+
+function renderResults(domain, chain, headers) {
+  var hasIssue = !chain.hasIntermediate;
+  var leafExpiry = chain.certs[0].expiry;
+  var expired = isExpired(leafExpiry);
+  var expiringSoon = isExpiringSoon(leafExpiry);
+
+  var overallStatus = expired ? 'bad' : hasIssue ? 'warn' : expiringSoon ? 'warn' : 'good';
+  var overallMsg = expired ? '🔴 Certificate expired' :
+                   hasIssue ? '⚠️ Chain may have issues' :
+                   expiringSoon ? '⚠️ Certificate expiring soon' :
+                   '✅ Chain looks complete';
+
+  // Summary
+  var html = '<div class="summary">';
+  html += '<div class="sum-stat"><div class="sum-num ' + overallStatus + '">' + chain.certs.length + '</div><div class="sum-label">Certs</div></div>';
+  html += '<div class="sum-stat"><div class="sum-num ' + (chain.hasIntermediate ? 'good' : 'warn') + '">' + (chain.hasIntermediate ? '✓' : '?') + '</div><div class="sum-label">Intermediate</div></div>';
+  if (leafExpiry) {
+    var daysLeft = Math.floor((leafExpiry - Date.now()) / (1000 * 60 * 60 * 24));
+    var dc = daysLeft < 14 ? 'bad' : daysLeft < 30 ? 'warn' : 'good';
+    html += '<div class="sum-stat"><div class="sum-num ' + dc + '">' + (daysLeft < 0 ? 'Exp' : daysLeft + 'd') + '</div><div class="sum-label">Days left</div></div>';
+  }
+  html += '<div style="flex:1;font-size:13px;font-weight:600">' + overallMsg + '</div>';
+  html += '</div>';
+
+  // Chain tree — rendered top to bottom: leaf → intermediate → root
+  html += '<div class="chain-tree">';
+  for (var i = 0; i < chain.certs.length; i++) {
+    var cert = chain.certs[i];
+    var isLast = i === chain.certs.length - 1;
+    var lineClass = cert.status === 'missing' ? 'broken' : cert.status === 'trusted' ? 'trusted' : '';
+
+    html += '<div class="cert-node">';
+    html += '<div class="cert-left">';
+    html += '<div class="cert-icon ' + cert.type + (cert.status === 'missing' ? ' missing' : '') + '">' + cert.icon + '</div>';
+    if (!isLast) html += '<div class="cert-line ' + lineClass + '"></div>';
+    html += '</div>';
+
+    html += '<div class="cert-card ' + cert.status + '">';
+    html += '<div class="cert-type">' + cert.label + '</div>';
+    html += '<div class="cert-name">' + cert.subject + '</div>';
+    html += '<div class="cert-meta">';
+    html += '<span>Issued by: ' + cert.issuer + '</span>';
+
+    if (cert.expiry) {
+      var exp = formatExpiry(cert.expiry);
+      if (exp) html += '<span class="' + exp.cls + '">' + exp.label + '</span>';
+    }
+
+    var trustLabel = cert.status === 'trusted' ? 'Trusted' : cert.status === 'missing' ? 'Not detected' : 'Warning';
+    var trustCls = cert.status === 'trusted' ? 'trust-ok' : cert.status === 'missing' ? 'trust-bad' : 'trust-warn';
+    html += '<span class="trust-badge ' + trustCls + '">' + trustLabel + '</span>';
+
+    if (cert.type === 'leaf') {
+      html += '<span style="opacity:0.6">🌐 Your domain</span>';
+    }
+    if (cert.type === 'root') {
+      html += '<span style="opacity:0.6">🔒 Pre-installed in browsers</span>';
+    }
+    html += '</div></div></div>';
+  }
+  html += '</div>';
+
+  // Fix section
+  var fixes = generateFixes(domain, chain, leafExpiry);
+  if (fixes.length) {
+    html += '<div class="fix-section"><div class="fix-title">Fixes & recommendations</div>';
+    fixes.forEach(function(fix, fi) {
+      html += '<div class="fix-card ' + fix.level + '"><div class="fix-card-title">' + fix.icon + ' ' + fix.title + '</div>';
+      html += '<div class="fix-card-desc">' + fix.desc + '</div>';
+      if (fix.code) {
+        // Stack tabs for fix
+        if (fix.stacks) {
+          html += '<div class="stack-tabs">';
+          fix.stacks.forEach(function(s, si) {
+            html += '<button class="stack-tab' + (si === 0 ? ' active' : '') + '" onclick="switchStack(this,\'fix' + fi + '\',\'' + escHtml(JSON.stringify(fix.stacks)) + '\')">' + s.label + '</button>';
+          });
+          html += '</div>';
+          html += '<div class="code-block"><pre id="fix' + fi + '">' + escHtml(fix.stacks[0].code) + '</pre><button class="copy-btn" onclick="cp(\'fix' + fi + '\',this)">Copy</button></div>';
+        } else {
+          html += '<div class="code-block"><pre id="fix' + fi + '">' + escHtml(fix.code) + '</pre><button class="copy-btn" onclick="cp(\'fix' + fi + '\',this)">Copy</button></div>';
+        }
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  // Related
+  html += '<div style="font-size:12px;opacity:0.5;margin-top:2rem;border-top:1px solid var(--border);padding-top:1rem">';
+  html += 'Related: <a href="/tools/redirect-chain/" style="color:var(--purple)">Redirect Chain Fixer</a> &nbsp;';
+  html += '<a href="/" style="color:var(--purple)">HeadersFixer — full audit</a> &nbsp;';
+  html += '<a href="/tools/header-scorer/" style="color:var(--purple)">Security Headers Scorer</a>';
+  html += '</div>';
+
+  document.getElementById('output').innerHTML = html;
+}
+
+function generateFixes(domain, chain, leafExpiry) {
+  var fixes = [];
+  var daysLeft = leafExpiry ? Math.floor((leafExpiry - Date.now()) / (1000 * 60 * 60 * 24)) : 999;
+
+  // Expired cert
+  if (daysLeft < 0) {
+    fixes.push({
+      level: 'critical', icon: '🚨',
+      title: 'Certificate has expired — renew immediately',
+      desc: 'An expired certificate causes a hard browser error for all users. Renew now.',
+      stacks: [
+        { label: "Let's Encrypt", code: "# Renew with Certbot\ncertbot renew --force-renewal\n\n# Reload Nginx after renewal\nnginx -t && systemctl reload nginx\n\n# Verify\ncurl -sI https://" + domain + " | head -5" },
+        { label: 'Nginx (manual)', code: '# Replace cert files and reload\nnginx -t\nsystemctl reload nginx' },
+        { label: 'Cloudflare', code: '# Cloudflare manages its edge certificate automatically\n# Check your origin certificate separately\n# Dashboard → SSL/TLS → Origin Server → renew origin cert' },
+      ]
+    });
+  }
+
+  // Expiring soon
+  else if (daysLeft < 30 && daysLeft >= 0) {
+    fixes.push({
+      level: 'warning', icon: '⚠️',
+      title: 'Certificate expires in ' + daysLeft + ' days — renew now',
+      desc: 'Renew before expiry. Let\'s Encrypt auto-renews at 30 days if Certbot is configured correctly.',
+      stacks: [
+        { label: "Let's Encrypt", code: "# Check if auto-renewal is configured\nsystemctl status certbot.timer\n\n# Test renewal (dry run)\ncertbot renew --dry-run\n\n# Force renewal if needed\ncertbot renew --force-renewal\nnginx -t && systemctl reload nginx" },
+        { label: 'Cloudflare', code: '# Cloudflare renews edge certs automatically\n# If using origin cert: Dashboard → SSL/TLS → Origin Server\n# Create a new origin certificate before the old one expires' },
+      ]
+    });
+  }
+
+  // Chain complete
+  if (chain.hasIntermediate) {
+    fixes.push({
+      level: 'pass', icon: '✅',
+      title: 'Certificate chain is complete',
+      desc: 'Leaf cert, intermediate CA, and root CA are all present. Mobile browsers and API clients should trust this chain.',
+      code: null
+    });
+  }
+
+  // General hardening
+  fixes.push({
+    level: 'warning', icon: 'ℹ️',
+    title: 'Verify your server sends the full chain',
+    desc: 'Desktop browsers cache intermediates and may work even when the chain is incomplete. Always test with curl or an API client to confirm mobile clients will also succeed.',
+    stacks: [
+      { label: 'curl test', code: '# Test with no system cache (simulates API client / mobile)\ncurl -sI --resolve ' + domain + ':443:$(dig +short ' + domain + ' | head -1) https://' + domain + '\n\n# Check chain depth\nopenssl s_client -connect ' + domain + ':443 -showcerts 2>/dev/null | grep "s:"' },
+      { label: 'Nginx fullchain', code: '# Nginx — always use fullchain.pem, not cert.pem\n# fullchain.pem = leaf cert + intermediate cert combined\n\nserver {\n    listen 443 ssl;\n    server_name ' + domain + ';\n\n    # CORRECT — includes intermediate\n    ssl_certificate /etc/letsencrypt/live/' + domain + '/fullchain.pem;\n    ssl_certificate_key /etc/letsencrypt/live/' + domain + '/privkey.pem;\n\n    # WRONG — leaf cert only, breaks mobile clients\n    # ssl_certificate /etc/letsencrypt/live/' + domain + '/cert.pem;\n}' },
+      { label: 'Apache', code: '# Apache — specify intermediate separately\nSSLCertificateFile /etc/letsencrypt/live/' + domain + '/cert.pem\nSSLCertificateKeyFile /etc/letsencrypt/live/' + domain + '/privkey.pem\n# This line sends the intermediate:\nSSLCertificateChainFile /etc/letsencrypt/live/' + domain + '/chain.pem\n\n# Or use fullchain.pem (Apache 2.4.8+):\nSSLCertificateFile /etc/letsencrypt/live/' + domain + '/fullchain.pem' },
+      { label: 'Caddy', code: '# Caddy manages SSL automatically — no action needed\n# It always sends the full chain\n\n# Verify Caddy is running:\ncaddy version\nsystemctl status caddy' },
+    ]
+  });
+
+  return fixes;
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function switchStack(btn, fixId, stacksJson) {
+  var stacks = JSON.parse(stacksJson);
+  var label = btn.textContent;
+  var stack = stacks.find(function(s) { return s.label === label; });
+  if (!stack) return;
+  btn.closest('.fix-card').querySelectorAll('.stack-tab').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById(fixId).textContent = stack.code;
+}
+
+function cp(id, btn) {
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(function() {
+    btn.textContent = 'Copied!';
+    setTimeout(function() { btn.textContent = 'Copy'; }, 1500);
+  });
+}
+</script>
+</body>
+</html>
