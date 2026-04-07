@@ -104,7 +104,7 @@ add_header Access-Control-Allow-Origin "https://app.example.com" always;</pre>
 <h2>The wildcard trap</h2>
 <p>Using <code>Access-Control-Allow-Origin: *</code> is fine for public APIs with no authentication. Never combine it with <code>Access-Control-Allow-Credentials: true</code> — browsers reject this combination because it would let any origin access authenticated responses.</p>
   <a href="/cors/" class="tool-cta">Test your live CORS config — CORSFixer &rarr;</a>
-  <div class="related">Related: <a href="/glossary/preflight-request/">Preflight request</a> &nbsp;<a href="/glossary/same-origin-policy/">Same-Origin Policy</a> &nbsp;<a href="/errors/cors-error-messages/">Fix CORS errors</a> &nbsp;<a href="/generators/cors/">CORS Generator</a> &nbsp;<a href="/errors/blocked-by-cors-policy/">Blocked by CORS policy</a></div>
+  <div class="related">Related: <a href="/glossary/preflight-request/">Preflight request</a> &nbsp;<a href="/glossary/same-origin-policy/">Same-Origin Policy</a> &nbsp;<a href="/errors/cors-error-messages/">Fix CORS errors</a> &nbsp;<a href="/generators/cors/">CORS Generator</a> &nbsp;<a href="/errors/blocked-by-cors-policy/">Blocked by CORS policy</a> &nbsp;<a href="/errors/starlette-cors-wildcard-credentials/">Starlette CORS error</a></div>
 </main>
 <footer>
   <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>

@@ -212,6 +212,25 @@ Add security headers to Vercel via vercel.json: create a <code>headers</code> ar
 <p>Place this in <code>vercel.json</code> at the root of your project. Redeploy and headers will appear on every response.</p>
 
 <h2>Adding CSP</h2>
+
+<h2>vercel.json Strict-Transport-Security example</h2>
+<p>The most searched vercel.json security header — exact copy-paste:</p>
+<pre>{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains"
+        }
+      ]
+    }
+  ]
+}</pre>
+<p>Add <code>; preload</code> to the value only after verifying all subdomains support HTTPS and you've submitted at <a href="https://hstspreload.org" target="_blank" rel="noopener" style="color:var(--purple)">hstspreload.org</a>.</p>
+
+
 <p>CSP requires knowing your sources first. Add it as another entry in the headers array:</p>
 <pre>{
   "key": "Content-Security-Policy",

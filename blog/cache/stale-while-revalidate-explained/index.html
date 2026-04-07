@@ -192,6 +192,21 @@ proxy_cache_background_update on;</pre>
 <p>All modern browsers support <code>stale-while-revalidate</code> since Chrome 75 (2019) and Firefox 68 (2019). Safari added support in 2022. Browsers that do not recognise the directive silently ignore it and use <code>max-age</code> alone.</p>
 
 <h2>When not to use it</h2>
+
+<h2>Does Safari support stale-while-revalidate?</h2>
+<p>Yes. Safari added support in version 15.4 (March 2022). All modern browsers now support <code>stale-while-revalidate</code>:</p>
+<table>
+  <thead><tr><th>Browser</th><th>Support since</th></tr></thead>
+  <tbody>
+    <tr><td>Chrome</td><td>75 (June 2019)</td></tr>
+    <tr><td>Firefox</td><td>68 (July 2019)</td></tr>
+    <tr><td>Safari</td><td>15.4 (March 2022)</td></tr>
+    <tr><td>Edge</td><td>79 (January 2020)</td></tr>
+  </tbody>
+</table>
+<p>Browsers that don't recognise the directive silently ignore it and fall back to <code>max-age</code> alone — so it's safe to deploy without a fallback.</p>
+
+
 <ul>
   <li>Real-time data (stock prices, live scores) — staleness is unacceptable</li>
   <li>Authenticated responses — use <code>private</code> or <code>no-store</code> instead</li>
