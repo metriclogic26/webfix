@@ -58,7 +58,7 @@ const data = await res.json(); // ✅ works when server has correct CORS headers
 app.get("/api/proxy/weather", async (req, res) => { const data = await fetch("https://api.third-party.com/weather", { headers: { "API-Key": process.env.THIRD_PARTY_KEY } }).then(r => r.json()); res.json(data); // Your frontend can read this
 });</pre> <a href="/cors/" class="tool-cta">Test your actual CORS config → CORSFixer</a> <div class="related">Related: <a href="/blog/cors/fix-cors-express/">Fix CORS in Express</a> <a href="/blog/explainers/what-is-cors/">What is CORS?</a> <a href="/blog/cors/how-to-debug-cors-devtools/">Debug CORS in DevTools</a></div>
 </main>
-<footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/privacy/">Terms</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/privacy/">Terms</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

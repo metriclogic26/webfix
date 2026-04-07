@@ -38,7 +38,7 @@ await exchangeCode(code, verifier);</pre>
 async function sha256Base64url(str) { const data = new TextEncoder().encode(str); const digest = await crypto.subtle.digest('SHA-256', data); return btoa(String.fromCharCode(...new Uint8Array(digest))) .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 }</pre> <a href="/oauth/" class="tool-cta">Debug your OAuth PKCE error → OAuthFixer</a> <div class="related">Related: <a href="/glossary/pkce/">What is PKCE?</a> <a href="/blog/oauth/fix-pkce-errors/">PKCE errors guide</a></div>
 </main>
-<footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a> · <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a> · <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

@@ -66,7 +66,7 @@ app = CORSMiddleware( app, allow_origins=["https://yourapp.com"], allow_methods=
 <pre># Check that CORS headers appear
 curl -H "Origin: https://yourapp.com" \ -H "Access-Control-Request-Method: GET" \ -X OPTIONS \ http://localhost:8000/api/data/ -v 2>&1 | grep -i "access-control"</pre> <a href="/cors/" class="tool-cta">Test your Django CORS config live → CORSFixer</a> <div class="related">Related: <a href="/blog/cors/fix-cors-fastapi/">FastAPI CORS fix</a> <a href="/blog/cors/fix-cors-nginx/">Nginx CORS fix</a> <a href="/glossary/preflight-request/">Preflight requests</a></div>
 </main>
-<footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/privacy/">Terms</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/privacy/">Terms</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

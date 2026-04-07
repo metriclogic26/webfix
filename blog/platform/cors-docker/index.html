@@ -48,7 +48,7 @@ server { listen 80; location / { proxy_pass http://frontend:3000; } location /ap
 app.use(cors({ origin: [ 'http://localhost:3000', // browser access via host port mapping 'http://frontend:3000', // container-to-container (if needed) ], credentials: true,
 }));</pre> <a href="/cors/" class="tool-cta">Test your Docker CORS config →</a> <div class="related">Related: <a href="/fix/cors/nginx/">Nginx CORS</a> <a href="/fix/cors/express/">Express CORS</a></div>
 </main>
-<footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a> · <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a> · <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>
