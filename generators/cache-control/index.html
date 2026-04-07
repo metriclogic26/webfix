@@ -170,75 +170,56 @@ let currentStack = 'nginx';
 
 const PRESETS = {
   static: {
-    label: 'Static assets (hashed filenames)',
-    directives: { public: true, immutable: true, swr: false, noCache: false, noStore: false, private: false, mustRevalidate: false },
+    directives: { public: true, private: false, noCache: false, noStore: false, immutable: true, mustRevalidate: false, swr: false },
     maxAge: 31536000,
     vary: null,
-    note: 'Use only with fingerprinted/hashed filenames. The filename must change when content changes — otherwise users get stale files permanently.'
   },
   html: {
-    label: 'HTML pages',
-    directives: { public: false, immutable: false, swr: false, noCache: true, noStore: false, private: false, mustRevalidate: false },
+    directives: { public: false, private: false, noCache: true, noStore: false, immutable: false, mustRevalidate: false, swr: false },
     maxAge: 0,
     vary: null,
-    note: 'HTML pages should always be revalidated so users get updated asset URLs. no-cache stores the response but checks for updates on every request.'
   },
   api_public: {
-    label: 'Public API responses',
-    directives: { public: true, immutable: false, swr: true, noCache: false, noStore: false, private: false, mustRevalidate: false },
+    directives: { public: true, private: false, noCache: false, noStore: false, immutable: false, mustRevalidate: false, swr: true },
     maxAge: 60,
     vary: 'Accept, Accept-Encoding',
-    note: 'Public API responses can be cached at CDN layer. stale-while-revalidate allows background refresh without user-visible latency.'
   },
   api_auth: {
-    label: 'Authenticated API responses',
-    directives: { public: false, immutable: false, swr: false, noCache: false, noStore: true, private: false, mustRevalidate: false },
+    directives: { public: false, private: false, noCache: false, noStore: true, immutable: false, mustRevalidate: false, swr: false },
     maxAge: 0,
     vary: null,
-    note: 'Authenticated responses must never be cached by CDNs or shared caches. no-store prevents storage entirely — nothing written anywhere.'
   },
   cdn: {
-    label: 'CDN / edge cached assets',
-    directives: { public: true, immutable: false, swr: true, noCache: false, noStore: false, private: false, mustRevalidate: false },
+    directives: { public: true, private: false, noCache: false, noStore: false, immutable: false, mustRevalidate: false, swr: true },
     maxAge: 3600,
     vary: 'Accept-Encoding',
-    note: 'CDN-cached assets benefit from stale-while-revalidate — serve immediately from edge while refreshing in background.'
   },
   stream: {
-    label: 'Streaming / real-time',
-    directives: { public: false, immutable: false, swr: false, noCache: false, noStore: true, private: false, mustRevalidate: false },
+    directives: { public: false, private: false, noCache: false, noStore: true, immutable: false, mustRevalidate: false, swr: false },
     maxAge: 0,
     vary: null,
-    note: 'Real-time responses (SSE, live data) must not be cached anywhere.'
   }
 };
 
 const TOGGLE_DEFS = [
-  { id: 'public',         label: 'public',                desc: 'Shared caches (CDNs) may cache this response' },
-  { id: 'private',        label: 'private',               desc: 'Only browser cache — CDNs must not store it' },
-  { id: 'noCache',        label: 'no-cache',              desc: 'Store but revalidate with server before every use' },
-  { id: 'noStore',        label: 'no-store',              desc: 'Never store anywhere — not browser, not CDN' },
-  { id: 'immutable',      label: 'immutable',             desc: 'Skip revalidation on page refresh (use with hashed filenames)' },
-  { id: 'mustRevalidate', label: 'must-revalidate',       desc: 'Once stale, must revalidate — no serving stale on error' },
-  { id: 'swr',            label: 'stale-while-revalidate',desc: 'Serve stale while fetching fresh in background' },
+  { id: 'public',         label: 'public',                 desc: 'Shared caches (CDNs) may cache this response' },
+  { id: 'private',        label: 'private',                desc: 'Only browser cache — CDNs must not store it' },
+  { id: 'noCache',        label: 'no-cache',               desc: 'Store but revalidate with server before every use' },
+  { id: 'noStore',        label: 'no-store',               desc: 'Never store anywhere — not browser, not CDN' },
+  { id: 'immutable',      label: 'immutable',              desc: 'Skip revalidation on page refresh (use with hashed filenames)' },
+  { id: 'mustRevalidate', label: 'must-revalidate',        desc: 'Once stale, must revalidate — no serving stale on error' },
+  { id: 'swr',            label: 'stale-while-revalidate', desc: 'Serve stale while fetching fresh in background' },
 ];
 
 const STACK_CONFIGS = {
-  nginx: (val, assetType) => {
-    if (assetType === 'static') {
-      return `# Nginx — static assets (hashed filenames)\nlocation ~* \\.(js|css|woff2|woff|ttf|png|jpg|gif|ico|svg)$ {\n    add_header Cache-Control "${val}" always;\n    etag off;\n    expires 1y;\n}`;
-    }
-    if (assetType === 'html') {
-      return `# Nginx — HTML pages\nlocation ~* \\.html$ {\n    add_header Cache-Control "${val}" always;\n    add_header Vary "Accept-Encoding" always;\n}\n\n# Or for all locations:\nadd_header Cache-Control "${val}" always;`;
-    }
-    if (assetType === 'api_auth') {
-      return `# Nginx — authenticated API responses\nlocation /api/ {\n    add_header Cache-Control "${val}" always;\n    add_header Pragma "no-cache" always;\n    # Ensure auth headers are never cached\n    proxy_hide_header X-Cache;\n    proxy_pass http://backend;\n}`;
-    }
+  nginx: (val, type) => {
+    if (type === 'static') return `# Nginx — static assets (hashed filenames)\nlocation ~* \\.(js|css|woff2|woff|ttf|png|jpg|gif|ico|svg)$ {\n    add_header Cache-Control "${val}" always;\n    etag off;\n    expires 1y;\n}`;
+    if (type === 'api_auth') return `# Nginx — authenticated API responses\nlocation /api/ {\n    add_header Cache-Control "${val}" always;\n    add_header Pragma "no-cache" always;\n    proxy_pass http://backend;\n}`;
     return `# Nginx\nadd_header Cache-Control "${val}" always;\nadd_header Vary "Accept-Encoding" always;`;
   },
   apache: (val) => `# Apache — .htaccess\n<IfModule mod_headers.c>\n    Header always set Cache-Control "${val}"\n</IfModule>\n\n# Or per file type:\n<FilesMatch "\\.(js|css|woff2)$">\n    Header set Cache-Control "${val}"\n</FilesMatch>`,
-  vercel: (val, assetType) => {
-    const src = assetType === 'static' ? '"/static/(.*)"' : '"/(.*)"';
+  vercel: (val, type) => {
+    const src = type === 'static' ? '"/static/(.*)"' : '"/(.*)"';
     return `// vercel.json\n{\n  "headers": [\n    {\n      "source": ${src},\n      "headers": [\n        {\n          "key": "Cache-Control",\n          "value": "${val}"\n        }\n      ]\n    }\n  ]\n}`;
   },
   cloudflare: (val) => `# Cloudflare Transform Rule\n# Rules → Transform Rules → Modify Response Header\n\nHeader name:  Cache-Control\nValue:        ${val}\n\n# Or via Wrangler (Workers):\nresponse.headers.set('Cache-Control', '${val}');`,
@@ -247,123 +228,128 @@ const STACK_CONFIGS = {
 };
 
 const DIRECTIVE_DOCS = {
-  public:         'Marks the response as cacheable by any cache including CDNs and proxies.',
-  private:        'Response may only be stored by browser cache. CDNs must not store it.',
-  'no-cache':     'Stores the response but requires revalidation with the origin before each use. Does NOT mean "don\'t cache."',
-  'no-store':     'Prevents storage anywhere — browser, CDN, proxy. Every request goes to origin.',
-  immutable:      'Tells browsers not to revalidate on page refresh. Use only with hashed filenames that change when content changes.',
-  'must-revalidate': 'Once stale, the cache must revalidate before serving. Returns 504 if origin is unreachable instead of serving stale.',
-  'stale-while-revalidate': 'Allows serving stale content while fetching a fresh copy in the background. No user-visible latency.',
+  'public':                  'Marks the response as cacheable by any cache including CDNs and proxies.',
+  'private':                 'Response may only be stored by the browser cache. CDNs must not store it.',
+  'no-cache':                'Stores the response but requires revalidation with the origin before each use. Does NOT mean "don\'t cache."',
+  'no-store':                'Prevents storage anywhere — browser, CDN, proxy. Every request goes to origin.',
+  'immutable':               'Tells browsers not to revalidate on page refresh. Use only with hashed filenames.',
+  'must-revalidate':         'Once stale, must revalidate. Returns 504 if origin unreachable instead of serving stale.',
+  'stale-while-revalidate':  'Allows serving stale content while fetching a fresh copy in the background.',
+  'max-age':                 'How long (seconds) the response is considered fresh. After this, cache must revalidate.',
 };
 
+// Build toggle HTML once
 function buildToggles() {
   const container = document.getElementById('toggles');
   container.innerHTML = TOGGLE_DEFS.map(t => `
     <div class="toggle-row">
       <span class="toggle-label">${t.label}</span>
       <label class="toggle">
-        <input type="checkbox" id="tog_${t.id}" onchange="generate()">
+        <input type="checkbox" id="tog_${t.id}" onchange="onAssetTypeChange()">
         <div class="toggle-track"></div>
         <div class="toggle-thumb"></div>
       </label>
     </div>`).join('');
 }
 
+// Apply preset to toggles + maxAge — called ONLY when dropdown changes
 function applyPreset(type) {
   const p = PRESETS[type];
+  if (!p) return;
   TOGGLE_DEFS.forEach(t => {
     const el = document.getElementById('tog_' + t.id);
     if (el) el.checked = !!p.directives[t.id];
   });
   const ma = document.getElementById('maxAge');
-  if (ma) ma.value = p.maxAge;
-  const mf = document.getElementById('maxAgeField');
-  if (mf) mf.style.display = (p.directives.noStore || p.directives.noCache) ? 'none' : '';
-}
-
-function buildValue() {
-  const type = document.getElementById('assetType').value;
-  const maxAge = parseInt(document.getElementById('maxAge').value) || 0;
-  const parts = [];
-
-  const pub = document.getElementById('tog_public')?.checked;
-  const priv = document.getElementById('tog_private')?.checked;
-  const noCache = document.getElementById('tog_noCache')?.checked;
-  const noStore = document.getElementById('tog_noStore')?.checked;
-  const immutable = document.getElementById('tog_immutable')?.checked;
-  const mustReval = document.getElementById('tog_mustRevalidate')?.checked;
-  const swr = document.getElementById('tog_swr')?.checked;
-
-  if (noStore) return 'no-store';
-  if (noCache) { parts.push('no-cache'); if (priv) parts.push('private'); return parts.join(', '); }
-
-  if (pub) parts.push('public');
-  else if (priv) parts.push('private');
-
-  if (maxAge > 0) parts.push(`max-age=${maxAge}`);
-  else parts.push('max-age=0');
-
-  if (immutable) parts.push('immutable');
-  if (mustReval) parts.push('must-revalidate');
-  if (swr) {
-    const swrVal = Math.max(maxAge * 5, 300);
-    parts.push(`stale-while-revalidate=${swrVal}`);
+  if (ma) {
+    ma.value = p.maxAge;
+    const mf = document.getElementById('maxAgeField');
+    if (mf) mf.style.display = (p.directives.noStore || p.directives.noCache) ? 'none' : '';
   }
-
-  return parts.join(', ');
 }
 
+// Called when asset type dropdown changes
 function onAssetTypeChange() {
   const type = document.getElementById('assetType').value;
   applyPreset(type);
   generate();
 }
 
+// Build header value from CURRENT toggle + maxAge state
+function buildValue() {
+  const noStore = document.getElementById('tog_noStore')?.checked;
+  const noCache = document.getElementById('tog_noCache')?.checked;
+  const pub     = document.getElementById('tog_public')?.checked;
+  const priv    = document.getElementById('tog_private')?.checked;
+  const imm     = document.getElementById('tog_immutable')?.checked;
+  const mr      = document.getElementById('tog_mustRevalidate')?.checked;
+  const swr     = document.getElementById('tog_swr')?.checked;
+  const maxAge  = parseInt(document.getElementById('maxAge')?.value) || 0;
+
+  if (noStore) return 'no-store';
+  if (noCache) {
+    const parts = ['no-cache'];
+    if (priv) parts.push('private');
+    return parts.join(', ');
+  }
+
+  const parts = [];
+  if (pub) parts.push('public');
+  else if (priv) parts.push('private');
+  parts.push(`max-age=${maxAge}`);
+  if (imm) parts.push('immutable');
+  if (mr) parts.push('must-revalidate');
+  if (swr) parts.push(`stale-while-revalidate=${Math.max(maxAge * 5, 300)}`);
+  return parts.join(', ');
+}
+
+// Generate output — reads current toggle state, never touches toggles
 function generate() {
   const type = document.getElementById('assetType').value;
-  // NOTE: applyPreset is only called from onAssetTypeChange, NOT here
-  // so toggles are not reset on every keystroke/toggle
+  const val  = buildValue();
+  const preset = PRESETS[type];
 
-  const val = buildValue();
+  // Show/hide maxAge field
+  const noStore = document.getElementById('tog_noStore')?.checked;
+  const noCache = document.getElementById('tog_noCache')?.checked;
+  const mf = document.getElementById('maxAgeField');
+  if (mf) mf.style.display = (noStore || noCache) ? 'none' : '';
+
+  // Header value
   document.getElementById('headerValue').textContent = val;
 
-  const currentType = document.getElementById('assetType').value;
-  const preset = PRESETS[currentType];
+  // Stack config
+  const fn = STACK_CONFIGS[currentStack];
+  document.getElementById('stackConfig').textContent = fn ? fn(val, type) : val;
 
-  // Vary
+  // Vary header
   const varyBox = document.getElementById('varyBox');
-  if (preset.vary) {
+  if (preset && preset.vary) {
     varyBox.style.display = '';
     document.getElementById('varyValue').textContent = preset.vary;
   } else {
     varyBox.style.display = 'none';
   }
 
-  // Stack config
-  const fn = STACK_CONFIGS[currentStack];
-  document.getElementById('stackConfig').textContent = fn ? fn(val, type) : val;
-
-  // Directive explanations
+  // Directive explanations — show active directives
   const active = [];
-  const noStore = document.getElementById('tog_noStore')?.checked;
-  const noCache = document.getElementById('tog_noCache')?.checked;
   if (noStore) active.push('no-store');
   else if (noCache) active.push('no-cache');
   else {
-    if (document.getElementById('tog_public')?.checked) active.push('public');
-    if (document.getElementById('tog_private')?.checked) active.push('private');
+    if (document.getElementById('tog_public')?.checked)         active.push('public');
+    if (document.getElementById('tog_private')?.checked)        active.push('private');
     active.push('max-age');
-    if (document.getElementById('tog_immutable')?.checked) active.push('immutable');
+    if (document.getElementById('tog_immutable')?.checked)      active.push('immutable');
     if (document.getElementById('tog_mustRevalidate')?.checked) active.push('must-revalidate');
-    if (document.getElementById('tog_swr')?.checked) active.push('stale-while-revalidate');
+    if (document.getElementById('tog_swr')?.checked)            active.push('stale-while-revalidate');
   }
-
   const expHtml = active.map(d => `
     <div class="directive-row">
       <span class="directive-name">${d}</span>
       <span class="directive-desc">${DIRECTIVE_DOCS[d] || ''}</span>
     </div>`).join('');
-  document.getElementById('directiveExplanations').innerHTML = expHtml || '<div style="opacity:0.4;font-size:12px">Select directives to see explanations.</div>';
+  document.getElementById('directiveExplanations').innerHTML =
+    expHtml || '<div style="opacity:0.4;font-size:12px">Select directives to see explanations.</div>';
 }
 
 function setStack(stack, btn) {
@@ -374,25 +360,24 @@ function setStack(stack, btn) {
 }
 
 function copyValue(id, btn) {
-  const text = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'Copied!';
-    btn.classList.add('copied');
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => {
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
   });
 }
 
 function copyPre(id, btn) {
-  const text = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'Copied!';
-    btn.classList.add('copied');
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(() => {
+    btn.textContent = 'Copied!'; btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
   });
 }
 
+// Init
 buildToggles();
-generate();
+applyPreset('static');   // apply default preset on load
+generate();              // render initial output
+
 </script>
 </body>
 </html>
