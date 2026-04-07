@@ -90,6 +90,9 @@
   <url><loc>https://httpfixer.dev/blog/headers/headless-cms-security-headers/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/headers/how-to-check-hsts-preload-status/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/headers/how-to-check-security-headers-score/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/headers/how-to-check-ssl-certificate-chain/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/headers/how-to-fix-mixed-content/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/headers/how-to-fix-redirect-loop/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/headers/hsts-preload-list-requirements/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/headers/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/headers/most-commonly-missing-security-header/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>

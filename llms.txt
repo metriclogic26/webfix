@@ -2,19 +2,29 @@
 
 > Free, browser-based HTTP developer tools. Fixers, not checkers.
 
-HttpFixer generates exact copy-paste server config to fix HTTP header issues — for your specific stack (Nginx, Cloudflare, Vercel, Apache, Express, FastAPI, Next.js).
+HttpFixer generates exact copy-paste server config to fix HTTP issues — for your specific stack (Nginx, Cloudflare, Vercel, Apache, Express, FastAPI, Next.js).
 
-## Tools
+## Core Tools
 
-- HeadersFixer: Scans live URL for missing/misconfigured security headers. Returns exact config for detected stack.
-- CORSFixer: Sends real OPTIONS preflight. Returns exact CORS fix for detected framework.
-- OAuthFixer: Diagnoses OAuth/OIDC errors (invalid_grant, redirect_uri_mismatch, PKCE failures).
-- CSPFixer: Scans live page for all resource sources. Generates working CSP policy.
-- EdgeFix: Audits Cache-Control, Vary, Age, X-Cache. Returns CDN caching fix.
-- SpeedFixer: Live PageSpeed Insights audit. Returns Nginx/Cloudflare/Vercel config for each failing audit.
-- Header Diff: Compares HTTP headers between two URLs side by side.
-- Cache-Control Simulator: Visualises any Cache-Control value as a timeline.
-- HSTS Preload Checker: Queries preload list and scans live HSTS header.
+- HeadersFixer (/): Scans live URL for missing/misconfigured security headers. Returns exact config for detected stack.
+- CORSFixer (/cors/): Sends real OPTIONS preflight. Returns exact CORS fix for detected framework.
+- OAuthFixer (/oauth/): Diagnoses OAuth/OIDC errors (invalid_grant, redirect_uri_mismatch, PKCE failures).
+- CSPFixer (/csp/): Scans live page for all resource sources. Generates working CSP policy.
+- EdgeFix (/edge/): Audits Cache-Control, Vary, Age, X-Cache. Returns CDN caching fix.
+- SpeedFixer (/speedfixer/): Live PageSpeed Insights audit. Returns Nginx/Cloudflare/Vercel config.
+- Header Diff (/diff/): Compares HTTP headers between two URLs side by side.
+- Cache-Control Simulator (/tools/cache-simulator/): Visualises any Cache-Control value as a timeline.
+- HSTS Preload Checker (/tools/hsts-preload/): Queries preload list and scans live HSTS header.
+
+## New Tools (April 2026)
+
+- Cache-Control Generator (/generators/cache-control/): Generate Cache-Control headers for any asset type. 6 presets, 6 stack configs.
+- CSP Validator (/tools/csp-validator/): Validate CSP strings against W3C spec. Score 0-100, flag unsafe directives.
+- JWT Debugger (/tools/jwt/): Decode and validate JWTs. Flags none algorithm, missing expiry, expired tokens. Client-side only.
+- Security Headers Scorer (/tools/header-scorer/): Score your security headers 0-100 with per-header breakdown and fix links.
+- Mixed Content Fixer (/tools/mixed-content/): Find HTTP resources on HTTPS pages. Fix via CSP upgrade-insecure-requests or stack config.
+- Redirect Chain Fixer (/tools/redirect-chain/): Follow redirect chains hop by hop. Detect loops, identify stack, generate fix for ERR_TOO_MANY_REDIRECTS.
+- SSL Chain Visualizer (/ssl-chain/): Visualize SSL certificate trust chain. Flags missing intermediates that break mobile clients.
 
 ## Generators (no URL required)
 
@@ -22,6 +32,26 @@ HttpFixer generates exact copy-paste server config to fix HTTP header issues —
 - CORS Header Generator: /generators/cors/
 - Permissions-Policy Generator: /generators/permissions-policy/
 - Security Headers Generator: /generators/security-headers/
+- Cache-Control Generator: /generators/cache-control/
+
+## Error Reference
+
+- /errors/ — hub for all HTTP error messages
+- /errors/blocked-by-cors-policy/ — CORS preflight failures
+- /errors/err-too-many-redirects/ — redirect loop errors
+- /errors/mixed-content-blocked/ — HTTP resources on HTTPS pages
+- /errors/starlette-cors-wildcard-credentials/ — FastAPI/Starlette CORS wildcard + credentials error
+- /errors/redirect-uri-mismatch/ — OAuth redirect URI errors
+- /errors/invalid-grant-error/ — OAuth invalid_grant
+
+## Glossary
+
+- /glossary/ — HTTP and web security term definitions
+- /glossary/cors/ — Cross-Origin Resource Sharing
+- /glossary/csp/ — Content Security Policy
+- /glossary/hsts/ — HTTP Strict Transport Security
+- /glossary/xss/ — Cross-Site Scripting
+- /glossary/pkce/ — Proof Key for Code Exchange
 
 ## Key constraints
 
@@ -32,11 +62,11 @@ HttpFixer generates exact copy-paste server config to fix HTTP header issues —
 
 ## Stack detection
 
-HeadersFixer, SpeedFixer, and CORSFixer detect the server stack from the Server: response header and proxy headers (Cf-Ray, X-Vercel-ID, X-NF-Request-ID) and generate stack-specific output.
+HeadersFixer, SpeedFixer, CORSFixer, Redirect Chain Fixer detect the server stack from Server: header and proxy headers (Cf-Ray, X-Vercel-ID, X-NF-Request-ID).
 
 ## Part of MetricLogic
 
 - configclarity.dev — Server & DevOps tools
 - domainpreflight.dev — Domain & email authentication
-- httpfixer.dev — HTTP headers, CORS, CSP, OAuth (this site)
+- httpfixer.dev — HTTP headers, CORS, CSP, OAuth, SSL (this site)
 - metriclogic.dev — Network hub
