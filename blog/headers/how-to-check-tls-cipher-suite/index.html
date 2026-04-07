@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Check Your TLS Cipher Suite &middot; HttpFixer</title>
+  <meta name="description" content="Check your TLS cipher suite with openssl. Identifies weak ciphers, TLS 1.0/1.1, missing Perfect Forward Secrecy. Nginx, Apache, and Cloudflare fix blocks included.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/headers/how-to-check-tls-cipher-suite/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="How to Check Your TLS Cipher Suite">
+  <meta property="og:description" content="Check your TLS cipher suite with openssl. Flags weak ciphers, TLS 1.0/1.1, missing PFS. Fix blocks for Nginx, Apache, Cloudflare.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/headers/how-to-check-tls-cipher-suite/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"How to Check Your TLS Cipher Suite","description":"Check your TLS cipher suite with openssl. Identifies weak ciphers, TLS 1.0/1.1, missing PFS. Nginx, Apache, Cloudflare fix blocks included.","url":"https://httpfixer.dev/blog/headers/how-to-check-tls-cipher-suite/","datePublished":"2026-04-07","dateModified":"2026-04-07","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I check my TLS cipher suite?","acceptedAnswer":{"@type":"Answer","text":"Run: openssl s_client -connect yourdomain.com:443 </dev/null 2>&1 | grep -E \"New|Cipher|public key\". The output shows your TLS version and negotiated cipher."}},{"@type":"Question","name":"What is the strongest TLS cipher suite?","acceptedAnswer":{"@type":"Answer","text":"TLS_AES_256_GCM_SHA384 and TLS_CHACHA20_POLY1305_SHA256 for TLS 1.3. For TLS 1.2: ECDHE-RSA-AES256-GCM-SHA384. All three provide Perfect Forward Secrecy."}},{"@type":"Question","name":"How do I disable weak ciphers in Nginx?","acceptedAnswer":{"@type":"Answer","text":"Set ssl_protocols TLSv1.2 TLSv1.3; and ssl_ciphers to an ECDHE-only cipher list. Set ssl_prefer_server_ciphers off to let clients choose the best cipher from your list."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://httpfixer.dev/blog/"},{"@type":"ListItem","position":3,"name":"How to Check Your TLS Cipher Suite","item":"https://httpfixer.dev/blog/headers/how-to-check-tls-cipher-suite/"}]}]}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .quick-answer strong{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;opacity:0.5;display:block;margin-bottom:0.5rem}
+    .quick-answer p{margin:0;opacity:1;font-size:13px;line-height:1.75}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .good{background:#001a0a;border:1px solid var(--green);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#4ade80;line-height:1.6}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/ssl-chain/">SSL</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/headers/">Headers</a> &rarr; How to Check Your TLS Cipher Suite</div>
+  <div class="date">Updated April 2026</div>
+  <h1>How to Check Your TLS Cipher Suite</h1>
+
+  <div class="quick-answer">
+    <strong>Quick Answer</strong>
+    <p>Run <code>openssl s_client -connect yourdomain.com:443 &lt;/dev/null 2&gt;&amp;1 | grep -E "New|Cipher|public key"</code>. Look for TLSv1.3 or TLSv1.2, an ECDHE cipher, and a 2048+ bit key. If you see TLSv1.0, TLSv1.1, RC4, 3DES, or no ECDHE — your cipher suite needs hardening.</p>
+  </div>
+
+  <p class="lead">Your TLS cipher suite determines how encrypted your HTTPS connections actually are. A server that accepts TLS 1.0 or RC4 ciphers is technically "HTTPS" but trivially breakable. This guide shows you how to check what your server is negotiating and how to fix it.</p>
+
+  <a href="/ssl-chain/" class="tool-cta">Check your cipher suite — SSL Chain Visualizer &rarr;</a>
+
+  <h2>Check your cipher suite with openssl</h2>
+  <p>The fastest way — one command shows your TLS version, negotiated cipher, and key size:</p>
+  <pre>openssl s_client -connect yourdomain.com:443 &lt;/dev/null 2&gt;&amp;1 | grep -E "New|Cipher|public key"
+
+# Example output (good):
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Server public key is 2048 bit
+
+# Example output (bad):
+New, TLSv1.1, Cipher is AES256-SHA
+Server public key is 1024 bit</pre>
+
+  <p>For the full chain including intermediate certificates:</p>
+  <pre>openssl s_client -connect yourdomain.com:443 -showcerts &lt;/dev/null 2&gt;&amp;1 | head -40</pre>
+
+  <h2>What each field means</h2>
+  <table>
+    <thead><tr><th>Field</th><th>Good</th><th>Bad</th></tr></thead>
+    <tbody>
+      <tr><td>TLS version</td><td>TLSv1.3, TLSv1.2</td><td>TLSv1.1, TLSv1.0, SSLv3</td></tr>
+      <tr><td>Cipher prefix</td><td>ECDHE, DHE (PFS)</td><td>AES256-SHA, RC4, DES</td></tr>
+      <tr><td>Key exchange</td><td>ECDHE, DHE</td><td>RSA (no PFS)</td></tr>
+      <tr><td>Encryption</td><td>AES-GCM, CHACHA20</td><td>3DES, RC4, AES-CBC</td></tr>
+      <tr><td>Server key</td><td>2048+ bit RSA, 256-bit EC</td><td>Under 2048 bit</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Cipher suite rating table</h2>
+  <table>
+    <thead><tr><th>Cipher</th><th>TLS</th><th>Rating</th><th>PFS</th></tr></thead>
+    <tbody>
+      <tr><td><code>TLS_AES_256_GCM_SHA384</code></td><td>1.3</td><td style="color:var(--green)">Excellent</td><td>✅</td></tr>
+      <tr><td><code>TLS_CHACHA20_POLY1305_SHA256</code></td><td>1.3</td><td style="color:var(--green)">Excellent</td><td>✅</td></tr>
+      <tr><td><code>TLS_AES_128_GCM_SHA256</code></td><td>1.3</td><td style="color:var(--green)">Strong</td><td>✅</td></tr>
+      <tr><td><code>ECDHE-RSA-AES256-GCM-SHA384</code></td><td>1.2</td><td style="color:var(--green)">Strong</td><td>✅</td></tr>
+      <tr><td><code>ECDHE-RSA-AES128-GCM-SHA256</code></td><td>1.2</td><td style="color:var(--green)">Good</td><td>✅</td></tr>
+      <tr><td><code>AES256-SHA</code></td><td>1.2</td><td style="color:var(--orange)">Weak — no PFS</td><td>❌</td></tr>
+      <tr><td><code>DES-CBC3-SHA</code></td><td>1.2</td><td style="color:var(--red)">Critical — SWEET32</td><td>❌</td></tr>
+      <tr><td><code>RC4-SHA</code></td><td>1.2</td><td style="color:var(--red)">Critical — broken</td><td>❌</td></tr>
+    </tbody>
+  </table>
+
+  <h2>What is Perfect Forward Secrecy?</h2>
+  <p>Perfect Forward Secrecy (PFS) means each session uses a unique ephemeral key. If your private key is ever compromised, an attacker cannot decrypt past recorded traffic. Without PFS (e.g. plain <code>AES256-SHA</code>), all past traffic is retroactively decryptable.</p>
+  <p>PFS ciphers start with <code>ECDHE</code> or <code>DHE</code>. TLS 1.3 always provides PFS — all TLS 1.3 ciphers are PFS by design.</p>
+
+  <h2>Disable TLS 1.0 and 1.1 — per stack</h2>
+
+  <div class="warn">PCI DSS 3.2.1 requires disabling TLS 1.0. TLS 1.1 is deprecated by RFC 8996. Both versions have known vulnerabilities (BEAST, POODLE, ROBOT). Disable them.</div>
+
+  <h3>Nginx</h3>
+  <pre># /etc/nginx/nginx.conf or site config
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+ssl_prefer_server_ciphers off;
+ssl_session_cache shared:SSL:10m;
+ssl_session_timeout 1d;
+ssl_session_tickets off;
+
+# Test and reload
+nginx -t && systemctl reload nginx
+
+# Verify
+openssl s_client -connect yourdomain.com:443 &lt;/dev/null 2&gt;&amp;1 | grep "New,"</pre>
+
+  <h3>Apache</h3>
+  <pre>SSLProtocol -all +TLSv1.2 +TLSv1.3
+SSLCipherSuite ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305
+SSLHonorCipherOrder off
+SSLSessionTickets off
+
+# Restart Apache
+apachectl configtest && systemctl restart apache2</pre>
+
+  <h3>Cloudflare</h3>
+  <pre># Dashboard &rarr; SSL/TLS &rarr; Edge Certificates
+# Minimum TLS Version: TLS 1.2
+# Cipher Suites: Modern
+# TLS 1.3: ON
+
+# Cloudflare manages cipher selection — no origin config needed
+# "Modern" cipher suite = TLS 1.3 preferred, ECDHE-only for TLS 1.2</pre>
+
+  <h3>HAProxy</h3>
+  <pre>frontend https_front
+    bind *:443 ssl crt /etc/ssl/certs/fullchain.pem \
+        no-sslv3 no-tlsv10 no-tlsv11 \
+        ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384 \
+        ciphersuites TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256</pre>
+
+  <h2>Check TLS version compatibility</h2>
+  <p>Test which TLS versions your server accepts:</p>
+  <pre># Test specific TLS versions
+openssl s_client -connect yourdomain.com:443 -tls1   # Should FAIL
+openssl s_client -connect yourdomain.com:443 -tls1_1 # Should FAIL
+openssl s_client -connect yourdomain.com:443 -tls1_2 # Should succeed
+openssl s_client -connect yourdomain.com:443 -tls1_3 # Should succeed
+
+# If TLS 1.0 or 1.1 succeeds — disable them in your server config above</pre>
+
+  <h2>TLS compression — disable it (CRIME vulnerability)</h2>
+  <pre># Check if compression is enabled
+openssl s_client -connect yourdomain.com:443 &lt;/dev/null 2&gt;&amp;1 | grep Compression
+
+# "Compression: NONE" = good
+# "Compression: zlib" = vulnerable to CRIME attack
+
+# Nginx — compression is disabled by default in modern versions
+# If you have this in your config, remove it:
+# ssl_compression on;  &lt;-- remove this line</pre>
+
+  <h2>Automated check — SSL Chain Visualizer</h2>
+  <p>Run the openssl command, paste the output into the SSL Chain Visualizer Cipher Suite tab — it scores your configuration 0-100 and generates the exact fix for your stack.</p>
+
+  <a href="/ssl-chain/" class="tool-cta">Analyse your cipher suite &rarr;</a>
+
+  <div class="related">Related: <a href="/ssl-chain/">SSL Chain Visualizer</a> <a href="/blog/headers/how-to-check-ssl-certificate-chain/">SSL certificate chain guide</a> <a href="/tools/hsts-preload/">HSTS Preload Checker</a> <a href="/blog/headers/hsts-preload-list-requirements/">HSTS preload requirements</a></div>
+</main>
+<footer>
+  <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/ssl-chain/">SSL Chain Visualizer</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>
