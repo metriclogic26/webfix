@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How HTTP Headers Work — A Developer Guide &middot; HttpFixer</title>
+  <meta name="description" content="How HTTP headers work: request vs response headers, how browsers send and read them, how servers set them, and how CDNs modify them. Plain English with examples.">
+  <link rel="canonical" href="https://httpfixer.dev/learn/how-http-headers-work/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="How HTTP Headers Work — A Developer Guide">
+  <meta property="og:description" content="How HTTP headers work: request vs response headers, how browsers send and read them, how servers set them, and how CDNs modify them. Plain English with examples.">
+  <meta property="og:url" content="https://httpfixer.dev/learn/how-http-headers-work/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"How HTTP Headers Work — A Developer Guide","description":"How HTTP headers work: request vs response headers, how browsers send and read them, how servers set them, and how CDNs modify them. Plain English with examples.","url":"https://httpfixer.dev/learn/how-http-headers-work/","datePublished":"2026-04-07","dateModified":"2026-04-07","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic"}}</script>
+  <style>    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .quick-answer strong{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;opacity:0.5;display:block;margin-bottom:0.5rem}
+    .quick-answer p{margin:0;opacity:1;font-size:13px;line-height:1.75}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}</style>
+</head>
+<body>
+<nav><a href="/" class="brand">HttpFixer</a><div class="right"><a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a><a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a></div></nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/learn/">Learn</a> &rarr; How HTTP Headers Work — A Developer Guide</div>
+  <div class="date">Updated April 2026</div>
+  <h1>How HTTP Headers Work — A Developer Guide</h1>
+<div class="quick-answer"><strong>Quick Answer</strong><p>HTTP headers are key-value pairs sent with every HTTP request and response. Request headers tell the server about the client (browser type, accepted formats, authentication). Response headers tell the browser how to handle the response (cache it, block iframes, restrict resource loading). You set them in your server config or application code.</p></div>
+
+<p class="lead">Every HTTP request and response includes a set of headers. They are invisible to users but control almost everything: caching, security, CORS, content type, authentication, and compression. Understanding headers is the foundation of backend web development.</p>
+
+<h2>Request headers — browser to server</h2>
+<p>When a browser makes a request, it sends headers describing what it wants and who it is:</p>
+<pre>GET /api/data HTTP/2
+Host: api.example.com
+Accept: application/json
+Accept-Encoding: gzip, deflate, br
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+Origin: https://app.example.com
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)...</pre>
+
+<h2>Response headers — server to browser</h2>
+<p>The server responds with headers telling the browser what to do with the response:</p>
+<pre>HTTP/2 200
+Content-Type: application/json
+Content-Encoding: gzip
+Cache-Control: public, max-age=60
+Access-Control-Allow-Origin: https://app.example.com
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+X-Content-Type-Options: nosniff</pre>
+
+<h2>The most important headers to know</h2>
+<table>
+  <thead><tr><th>Header</th><th>Direction</th><th>What it does</th></tr></thead>
+  <tbody>
+    <tr><td><code>Cache-Control</code></td><td>Response</td><td>How long to cache the response</td></tr>
+    <tr><td><code>Content-Type</code></td><td>Both</td><td>Format of the body (JSON, HTML, image)</td></tr>
+    <tr><td><code>Authorization</code></td><td>Request</td><td>Authentication credentials</td></tr>
+    <tr><td><code>Origin</code></td><td>Request</td><td>Where the request originated (CORS)</td></tr>
+    <tr><td><code>Access-Control-Allow-Origin</code></td><td>Response</td><td>Which origins can read the response (CORS)</td></tr>
+    <tr><td><code>Strict-Transport-Security</code></td><td>Response</td><td>Force HTTPS for future requests</td></tr>
+    <tr><td><code>Content-Security-Policy</code></td><td>Response</td><td>Which resources the page can load</td></tr>
+    <tr><td><code>Set-Cookie</code></td><td>Response</td><td>Set a cookie in the browser</td></tr>
+  </tbody>
+</table>
+
+<h2>How to set response headers</h2>
+<pre># Nginx
+add_header Cache-Control "public, max-age=3600" always;
+add_header X-Content-Type-Options "nosniff" always;
+
+# Express (Node.js)
+res.set('Cache-Control', 'public, max-age=3600');
+res.set('X-Content-Type-Options', 'nosniff');
+
+# FastAPI (Python)
+from fastapi import Response
+response.headers["Cache-Control"] = "public, max-age=3600"
+
+# Vercel (vercel.json)
+{ "headers": [{ "source": "/(.*)", "headers": [
+  { "key": "Cache-Control", "value": "public, max-age=3600" }
+]}]}</pre>
+
+<h2>How CDNs modify headers</h2>
+<p>CDNs sit between users and your server. They can add, remove, or modify headers:</p>
+<ul>
+  <li>Cloudflare adds <code>cf-ray</code>, <code>cf-cache-status</code></li>
+  <li>Vercel adds <code>x-vercel-id</code>, <code>x-vercel-cache</code></li>
+  <li>CDNs read <code>Cache-Control</code> to decide what to cache</li>
+  <li>Cloudflare strips <code>Set-Cookie</code> from cached responses</li>
+</ul>
+
+<h2>How to inspect headers in your browser</h2>
+<pre>1. Open DevTools (F12)
+2. Click Network tab
+3. Click any request
+4. Click Headers tab
+5. See Request Headers and Response Headers</pre>
+
+<pre># Or with curl:
+curl -sI https://example.com | head -20</pre>
+
+<div class="related">Related: <a href="/">HeadersFixer — scan your live headers</a> <a href="/learn/cors/">CORS explained</a> <a href="/learn/security-headers/">Security headers guide</a> <a href="/blog/cache/cache-control-cheatsheet/">Cache-Control cheatsheet</a></div>
+</main>
+<footer><span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a></span><span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span><p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p></footer>
+</body>
+</html>

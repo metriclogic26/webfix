@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTTP Security Fundamentals — The Essential Headers Every Site Needs &middot; HttpFixer</title>
+  <meta name="description" content="HTTP security fundamentals: the essential security headers every site needs, why they exist, and how to set them. HSTS, CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy explained.">
+  <link rel="canonical" href="https://httpfixer.dev/learn/http-security-fundamentals/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="HTTP Security Fundamentals — The Essential Headers Every Site Needs">
+  <meta property="og:description" content="HTTP security fundamentals: the essential security headers every site needs, why they exist, and how to set them. HSTS, CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy explained.">
+  <meta property="og:url" content="https://httpfixer.dev/learn/http-security-fundamentals/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"HTTP Security Fundamentals — The Essential Headers Every Site Needs","description":"HTTP security fundamentals: the essential security headers every site needs, why they exist, and how to set them. HSTS, CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy explained.","url":"https://httpfixer.dev/learn/http-security-fundamentals/","datePublished":"2026-04-07","dateModified":"2026-04-07","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic"}}</script>
+  <style>    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .quick-answer strong{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;opacity:0.5;display:block;margin-bottom:0.5rem}
+    .quick-answer p{margin:0;opacity:1;font-size:13px;line-height:1.75}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}</style>
+</head>
+<body>
+<nav><a href="/" class="brand">HttpFixer</a><div class="right"><a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a><a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a></div></nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/learn/">Learn</a> &rarr; HTTP Security Fundamentals — The Essential Headers Every Site Needs</div>
+  <div class="date">Updated April 2026</div>
+  <h1>HTTP Security Fundamentals — The Essential Headers Every Site Needs</h1>
+<div class="quick-answer"><strong>Quick Answer</strong><p>Every site needs five security headers: <code>Strict-Transport-Security</code> (force HTTPS), <code>X-Content-Type-Options: nosniff</code> (prevent MIME sniffing), <code>X-Frame-Options: SAMEORIGIN</code> (prevent clickjacking), <code>Referrer-Policy</code> (control URL leakage), and <code>Content-Security-Policy</code> (prevent XSS). Set all five in your server config.</p></div>
+
+<p class="lead">Security headers are HTTP response headers that tell browsers how to behave. They prevent entire classes of attacks — XSS, clickjacking, MIME sniffing, protocol downgrade — with one line of server config each. Most sites are missing at least three.</p>
+
+<a href="/" class="tool-cta">Scan your site for missing headers &rarr; HeadersFixer</a>
+
+<h2>The five headers every site needs</h2>
+
+<h3>1. Strict-Transport-Security (HSTS)</h3>
+<p>Forces browsers to use HTTPS for future requests. Prevents protocol downgrade attacks and cookie hijacking over HTTP.</p>
+<pre>Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+# Nginx:
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;</pre>
+
+<h3>2. X-Content-Type-Options</h3>
+<p>Prevents browsers from guessing the content type. Without this, a browser might execute a text file as JavaScript.</p>
+<pre>X-Content-Type-Options: nosniff
+
+# Nginx:
+add_header X-Content-Type-Options "nosniff" always;</pre>
+
+<h3>3. X-Frame-Options</h3>
+<p>Prevents your page from being embedded in an iframe on another site — blocks clickjacking attacks.</p>
+<pre>X-Frame-Options: SAMEORIGIN
+
+# Nginx:
+add_header X-Frame-Options "SAMEORIGIN" always;</pre>
+
+<h3>4. Referrer-Policy</h3>
+<p>Controls how much URL information is sent when users click links to other sites. Prevents leaking private URL paths to third parties.</p>
+<pre>Referrer-Policy: strict-origin-when-cross-origin
+
+# Nginx:
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;</pre>
+
+<h3>5. Content-Security-Policy</h3>
+<p>The most powerful security header. Controls which resources (scripts, styles, images, fonts) the page can load and from where. Primary XSS defense.</p>
+<pre>Content-Security-Policy: default-src 'self'; frame-ancestors 'none'; object-src 'none';
+
+# Nginx:
+add_header Content-Security-Policy "default-src 'self'; frame-ancestors 'none'; object-src 'none';" always;</pre>
+
+<h2>All five in one Nginx block</h2>
+<pre>server {
+    listen 443 ssl;
+    server_name example.com;
+
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
+    # CSP requires knowing your resources first — generate with CSPFixer
+}</pre>
+
+<h2>Vercel — vercel.json</h2>
+<pre>{
+  "headers": [{
+    "source": "/(.*)",
+    "headers": [
+      { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },
+      { "key": "X-Content-Type-Options", "value": "nosniff" },
+      { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+      { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+      { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+    ]
+  }]
+}</pre>
+
+<h2>Check your current headers</h2>
+<pre>curl -sI https://example.com | grep -iE "strict|content-security|x-frame|x-content|referrer|permissions"</pre>
+
+<a href="/" class="tool-cta">Scan your live headers &rarr; HeadersFixer</a>
+<div class="related">Related: <a href="/">HeadersFixer</a> <a href="/tools/header-scorer/">Security Headers Scorer</a> <a href="/learn/security-headers/">Security headers deep dive</a> <a href="/generators/security-headers/">Security Headers Generator</a></div>
+</main>
+<footer><span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a></span><span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span><p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p></footer>
+</body>
+</html>

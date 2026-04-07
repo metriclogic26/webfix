@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eliminate Render-Blocking Resources — Nginx and Cloudflare Fix &middot; HttpFixer</title>
+  <meta name="description" content="Fix the "Eliminate render-blocking resources" PageSpeed warning. Defer non-critical JS, preload critical CSS, use HTTP/2, and configure Nginx and Cloudflare for faster first paint.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/performance/eliminate-render-blocking-resources/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Eliminate Render-Blocking Resources — Nginx and Cloudflare Fix">
+  <meta property="og:description" content="Fix the "Eliminate render-blocking resources" PageSpeed warning. Defer non-critical JS, preload critical CSS, use HTTP/2, and configure Nginx and Cloudflare for faster first paint.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/performance/eliminate-render-blocking-resources/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Eliminate Render-Blocking Resources — Nginx and Cloudflare Fix","description":"Fix the "Eliminate render-blocking resources" PageSpeed warning. Defer non-critical JS, preload critical CSS, use HTTP/2, and configure Nginx and Cloudflare for faster first paint.","url":"https://httpfixer.dev/blog/performance/eliminate-render-blocking-resources/","datePublished":"2026-04-07","dateModified":"2026-04-07","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic"}}</script>
+  <style>    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .quick-answer strong{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;opacity:0.5;display:block;margin-bottom:0.5rem}
+    .quick-answer p{margin:0;opacity:1;font-size:13px;line-height:1.75}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}</style>
+</head>
+<body>
+<nav><a href="/" class="brand">HttpFixer</a><div class="right"><a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a><a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a></div></nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/performance/">Performance</a> &rarr; Eliminate Render-Blocking Resources — Nginx and Cloudflare Fix</div>
+  <div class="date">Updated April 2026</div>
+  <h1>Eliminate Render-Blocking Resources — Nginx and Cloudflare Fix</h1>
+<div class="quick-answer"><strong>Quick Answer</strong><p>Add <code>defer</code> to non-critical scripts: <code>&lt;script src="app.js" defer&gt;&lt;/script&gt;</code>. Inline critical CSS and lazy-load the rest. These are code changes — Nginx can help with HTTP/2 and preload headers but cannot fix render-blocking on its own.</p></div>
+
+<p class="lead">"Eliminate render-blocking resources" is one of the most common PageSpeed warnings. It means scripts or stylesheets in your HTML are blocking the browser from rendering the page. The fixes split between code changes and server config.</p>
+
+<a href="/speedfixer/" class="tool-cta">Get your full PageSpeed fix &rarr; SpeedFixer</a>
+
+<h2>What causes render-blocking</h2>
+<p>Any <code>&lt;script&gt;</code> or <code>&lt;link rel="stylesheet"&gt;</code> in the <code>&lt;head&gt;</code> without <code>defer</code>, <code>async</code>, or <code>media</code> attributes blocks HTML parsing until fully downloaded and executed.</p>
+
+<h2>Fix 1 — Defer non-critical scripts (code change)</h2>
+<pre>&lt;!-- Render-blocking --&gt;
+&lt;script src="/app.js"&gt;&lt;/script&gt;
+
+&lt;!-- Non-blocking: defer executes after HTML parsed --&gt;
+&lt;script src="/app.js" defer&gt;&lt;/script&gt;
+
+&lt;!-- Non-blocking: async executes as soon as downloaded --&gt;
+&lt;script src="/analytics.js" async&gt;&lt;/script&gt;</pre>
+
+<h2>Fix 2 — Preload critical resources via Nginx</h2>
+<pre>server {
+    location / {
+        # Preload critical CSS and fonts
+        add_header Link "&lt;/critical.css&gt;; rel=preload; as=style" always;
+        add_header Link "&lt;/fonts/inter.woff2&gt;; rel=preload; as=font; crossorigin" always;
+    }
+}</pre>
+
+<h2>Fix 3 — Enable HTTP/2 in Nginx</h2>
+<pre>listen 443 ssl http2;
+# HTTP/2 multiplexes — multiple resources in parallel
+# Reduces impact of multiple render-blocking resources</pre>
+
+<h2>Fix 4 — Cloudflare Rocket Loader</h2>
+<pre># Dashboard &rarr; Speed &rarr; Optimization &rarr; Rocket Loader
+# Toggle: ON
+# Cloudflare automatically defers JavaScript loading
+# Test thoroughly — Rocket Loader can break some scripts</pre>
+
+<h2>Fix 5 — Minify JS and CSS</h2>
+<pre># Cloudflare
+# Dashboard &rarr; Speed &rarr; Optimization &rarr; Auto Minify
+# Enable: JavaScript, CSS, HTML
+
+# Nginx with minification (requires lua or sub_filter):
+# Better handled at build time with webpack/vite</pre>
+
+<h2>What Nginx cannot fix</h2>
+<p>Server config cannot fix render-blocking caused by how your HTML is structured. These require code changes in your templates:</p>
+<ul>
+  <li>Moving scripts to end of body or adding <code>defer</code></li>
+  <li>Inlining critical CSS</li>
+  <li>Splitting CSS bundles</li>
+  <li>Dynamic imports (<code>import()</code>) for non-critical JS</li>
+</ul>
+
+<a href="/speedfixer/" class="tool-cta">Get stack-specific fixes from your live PSI audit &rarr;</a>
+<div class="related">Related: <a href="/speedfixer/">SpeedFixer</a> <a href="/blog/performance/fix-lcp-nginx/">Fix LCP in Nginx</a> <a href="/blog/performance/link-header-preload/">Link header preload</a> <a href="/blog/cache/cache-control-nginx/">Cache-Control in Nginx</a></div>
+</main>
+<footer><span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a></span><span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span><p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p></footer>
+</body>
+</html>

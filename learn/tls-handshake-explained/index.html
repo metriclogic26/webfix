@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TLS Handshake Explained — How HTTPS Connections Are Established &middot; HttpFixer</title>
+  <meta name="description" content="How the TLS handshake works step by step. TLS 1.3 vs TLS 1.2 handshake differences, cipher negotiation, certificate verification, and what happens when it fails.">
+  <link rel="canonical" href="https://httpfixer.dev/learn/tls-handshake-explained/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="TLS Handshake Explained — How HTTPS Connections Are Established">
+  <meta property="og:description" content="How the TLS handshake works step by step. TLS 1.3 vs TLS 1.2 handshake differences, cipher negotiation, certificate verification, and what happens when it fails.">
+  <meta property="og:url" content="https://httpfixer.dev/learn/tls-handshake-explained/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"TLS Handshake Explained — How HTTPS Connections Are Established","description":"How the TLS handshake works step by step. TLS 1.3 vs TLS 1.2 handshake differences, cipher negotiation, certificate verification, and what happens when it fails.","url":"https://httpfixer.dev/learn/tls-handshake-explained/","datePublished":"2026-04-07","dateModified":"2026-04-07","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic"}}</script>
+  <style>    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .quick-answer strong{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;opacity:0.5;display:block;margin-bottom:0.5rem}
+    .quick-answer p{margin:0;opacity:1;font-size:13px;line-height:1.75}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}</style>
+</head>
+<body>
+<nav><a href="/" class="brand">HttpFixer</a><div class="right"><a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a><a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a></div></nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/learn/">Learn</a> &rarr; TLS Handshake Explained — How HTTPS Connections Are Established</div>
+  <div class="date">Updated April 2026</div>
+  <h1>TLS Handshake Explained — How HTTPS Connections Are Established</h1>
+<div class="quick-answer"><strong>Quick Answer</strong><p>The TLS handshake authenticates the server and establishes a shared encryption key. TLS 1.3 does this in 1 round trip (1-RTT) vs TLS 1.2's 2 round trips (2-RTT). The handshake verifies the server certificate, negotiates a cipher suite, and derives session keys — all before any application data is sent.</p></div>
+
+<p class="lead">Every HTTPS connection starts with a TLS handshake. It is invisible but adds latency and can fail in subtle ways — wrong certificate chain, unsupported cipher, expired cert. Understanding it helps you debug SSL errors and configure servers correctly.</p>
+
+<a href="/ssl-chain/" class="tool-cta">Visualize your SSL chain &rarr;</a>
+
+<h2>TLS 1.3 handshake (modern — 1-RTT)</h2>
+<pre>Client                          Server
+  |                                |
+  |--- ClientHello --------------&gt;|  Supported ciphers, TLS version, key share
+  |                                |
+  |&lt;-- ServerHello ______________|  Chosen cipher, key share
+  |&lt;-- Certificate _______________|  Server's cert chain
+  |&lt;-- CertificateVerify ________|  Proof server owns the private key
+  |&lt;-- Finished __________________|  Handshake MAC
+  |                                |
+  |--- Finished -----------------&gt;|  Client confirms handshake
+  |                                |
+  |=== Encrypted application data ===|  HTTP request/response</pre>
+
+<p>TLS 1.3 completes in 1 round trip. Key exchange and cipher negotiation happen simultaneously in the first message.</p>
+
+<h2>TLS 1.2 handshake (legacy — 2-RTT)</h2>
+<pre>Client                          Server
+  |--- ClientHello --------------&gt;|  Supported ciphers, random
+  |&lt;-- ServerHello ---------------|  Chosen cipher, random
+  |&lt;-- Certificate ---------------|  Server cert
+  |&lt;-- ServerHelloDone -----------|
+  |                                |
+  |--- ClientKeyExchange --------&gt;|  Encrypted pre-master secret
+  |--- ChangeCipherSpec ---------&gt;|
+  |--- Finished -----------------&gt;|
+  |                                |
+  |&lt;-- ChangeCipherSpec -----------|
+  |&lt;-- Finished ------------------|
+  |                                |
+  |=== Encrypted application data ===|</pre>
+
+<h2>Certificate verification — what the browser checks</h2>
+<pre>1. Is the certificate for this domain?
+   (Common Name or Subject Alternative Name matches)
+
+2. Is the certificate expired?
+   (Not Before &lt;= today &lt;= Not After)
+
+3. Is the certificate signed by a trusted CA?
+   (Chain: Leaf &rarr; Intermediate &rarr; Root in browser trust store)
+
+4. Has the certificate been revoked?
+   (OCSP check or CRL)
+
+5. Does the server prove it owns the private key?
+   (CertificateVerify signature in TLS 1.3)</pre>
+
+<h2>What causes handshake failures</h2>
+<table>
+  <thead><tr><th>Error</th><th>Cause</th><th>Fix</th></tr></thead>
+  <tbody>
+    <tr><td>SSL_ERROR_BAD_CERT_DOMAIN</td><td>Certificate doesn't match domain</td><td>Reissue cert for correct domain</td></tr>
+    <tr><td>CERT_HAS_EXPIRED</td><td>Certificate past Not After date</td><td>Renew certificate</td></tr>
+    <tr><td>UNABLE_TO_VERIFY_LEAF_SIGNATURE</td><td>Missing intermediate certificate</td><td>Use fullchain.pem in Nginx</td></tr>
+    <tr><td>SSL_ERROR_NO_CYPHER_OVERLAP</td><td>No common cipher suite</td><td>Enable TLS 1.2+ and ECDHE ciphers</td></tr>
+    <tr><td>HANDSHAKE_FAILURE</td><td>TLS version mismatch</td><td>Enable TLS 1.2 minimum</td></tr>
+  </tbody>
+</table>
+
+<h2>Debug a TLS handshake</h2>
+<pre># Full handshake details
+openssl s_client -connect example.com:443 -showcerts &lt;/dev/null 2&gt;&amp;1
+
+# Check TLS version negotiated
+openssl s_client -connect example.com:443 &lt;/dev/null 2&gt;&amp;1 | grep "New,"
+
+# Test specific TLS version
+openssl s_client -connect example.com:443 -tls1_2 &lt;/dev/null
+openssl s_client -connect example.com:443 -tls1_3 &lt;/dev/null</pre>
+
+<a href="/ssl-chain/" class="tool-cta">Check your SSL chain and cipher suite &rarr;</a>
+<div class="related">Related: <a href="/ssl-chain/">SSL Chain & Cipher Visualizer</a> <a href="/blog/headers/how-to-check-ssl-certificate-chain/">SSL chain guide</a> <a href="/blog/headers/how-to-check-tls-cipher-suite/">TLS cipher suite guide</a> <a href="/tools/hsts-preload/">HSTS Preload Checker</a></div>
+</main>
+<footer><span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a></span><span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span><p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p></footer>
+</body>
+</html>

@@ -2,8 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://httpfixer.dev/404.html</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/about/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/cache/cache-busting-strategies/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/cache/cache-control-cheatsheet/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/cache/cache-control-directives-reference/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/cache/cache-control-nginx/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/cache/cache-control-vercel/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/cache/cdn-cache-headers-guide/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/cache/etag-explained/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/cache/how-to-generate-cache-control-headers/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/cache/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -123,9 +127,13 @@
   <url><loc>https://httpfixer.dev/blog/oauth/fix-supabase-auth/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/oauth/how-to-decode-validate-jwt/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/oauth/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/performance/core-web-vitals-sysadmin/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/performance/eliminate-render-blocking-resources/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/performance/fix-cache-control-cdn/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/performance/fix-lcp-nginx/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/performance/fix-mixed-content/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/performance/fix-ttfb-vercel/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/performance/improve-pagespeed-score-cloudflare/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/performance/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/performance/link-header-preload/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/performance/zstd-compression-nginx-vercel/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -259,8 +267,12 @@
   <url><loc>https://httpfixer.dev/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/learn/content-security-policy/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/learn/cors/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/learn/how-http-headers-work/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/learn/http-security-fundamentals/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/learn/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/learn/oauth-flows-explained/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/learn/security-headers/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/learn/tls-handshake-explained/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/learn/web-performance/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/oauth/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/privacy/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>

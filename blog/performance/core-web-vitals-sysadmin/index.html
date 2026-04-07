@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Core Web Vitals for Sysadmins — Server-Side Fixes for LCP, CLS, INP &middot; HttpFixer</title>
+  <meta name="description" content="Fix Core Web Vitals from the server side. Nginx, Cloudflare, and Vercel config that improves LCP, reduces CLS, and helps INP — without touching application code.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/performance/core-web-vitals-sysadmin/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Core Web Vitals for Sysadmins — Server-Side Fixes for LCP, CLS, INP">
+  <meta property="og:description" content="Fix Core Web Vitals from the server side. Nginx, Cloudflare, and Vercel config that improves LCP, reduces CLS, and helps INP — without touching application code.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/performance/core-web-vitals-sysadmin/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Core Web Vitals for Sysadmins — Server-Side Fixes for LCP, CLS, INP","description":"Fix Core Web Vitals from the server side. Nginx, Cloudflare, and Vercel config that improves LCP, reduces CLS, and helps INP — without touching application code.","url":"https://httpfixer.dev/blog/performance/core-web-vitals-sysadmin/","datePublished":"2026-04-07","dateModified":"2026-04-07","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic"}}</script>
+  <style>    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .quick-answer strong{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;opacity:0.5;display:block;margin-bottom:0.5rem}
+    .quick-answer p{margin:0;opacity:1;font-size:13px;line-height:1.75}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}</style>
+</head>
+<body>
+<nav><a href="/" class="brand">HttpFixer</a><div class="right"><a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a><a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a></div></nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/performance/">Performance</a> &rarr; Core Web Vitals for Sysadmins — Server-Side Fixes for LCP, CLS, INP</div>
+  <div class="date">Updated April 2026</div>
+  <h1>Core Web Vitals for Sysadmins — Server-Side Fixes for LCP, CLS, INP</h1>
+<div class="quick-answer"><strong>Quick Answer</strong><p>Server-side fixes for Core Web Vitals: enable HTTP/2 and brotli compression (helps LCP), set proper Cache-Control on all assets (helps LCP and CLS), add preload headers for critical resources (helps LCP), and set <code>font-display: swap</code> in CSS (helps CLS). INP is mostly client-side.</p></div>
+
+<p class="lead">Core Web Vitals measure real user experience. Most guides focus on JavaScript changes. This guide covers what sysadmins and DevOps engineers can fix at the server and CDN layer.</p>
+
+<a href="/speedfixer/" class="tool-cta">Get your full PageSpeed audit fix &rarr; SpeedFixer</a>
+
+<h2>The three metrics — what you can control server-side</h2>
+<table>
+  <thead><tr><th>Metric</th><th>What it measures</th><th>Server-side impact</th></tr></thead>
+  <tbody>
+    <tr><td>LCP</td><td>Largest Contentful Paint — load speed</td><td>High — compression, caching, preload headers</td></tr>
+    <tr><td>CLS</td><td>Cumulative Layout Shift — visual stability</td><td>Medium — cache headers prevent resource flicker</td></tr>
+    <tr><td>INP</td><td>Interaction to Next Paint — responsiveness</td><td>Low — mostly JavaScript execution time</td></tr>
+  </tbody>
+</table>
+
+<h2>LCP fixes — server side</h2>
+<pre># Nginx — enable HTTP/2 + compression + preload
+server {
+    listen 443 ssl http2;
+
+    # Brotli compression
+    brotli on;
+    brotli_comp_level 6;
+    brotli_types text/html text/css application/javascript;
+
+    # Gzip fallback
+    gzip on;
+    gzip_vary on;
+
+    location / {
+        # Preload LCP resource
+        add_header Link "&lt;/images/hero.webp&gt;; rel=preload; as=image" always;
+    }
+
+    # Cache static assets
+    location ~* \.(js|css|woff2|webp|jpg|png)$ {
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+        expires 1y;
+    }
+}</pre>
+
+<h2>LCP fixes — Cloudflare</h2>
+<pre># 1. Enable Brotli: Dashboard &rarr; Speed &rarr; Optimization &rarr; Brotli: ON
+# 2. Enable HTTP/2: Dashboard &rarr; Network &rarr; HTTP/2: ON
+# 3. Enable HTTP/3 (QUIC): Dashboard &rarr; Network &rarr; HTTP/3: ON
+# 4. Polish (image optimization): Dashboard &rarr; Speed &rarr; Optimization &rarr; Polish: Lossless
+# 5. Early Hints: Dashboard &rarr; Speed &rarr; Optimization &rarr; Early Hints: ON</pre>
+
+<h2>CLS fixes — server side</h2>
+<p>CLS is mainly caused by images without dimensions, late-loading fonts, and ads. Server config can help by ensuring resources load fast and consistently.</p>
+<pre># Serve fonts with immutable cache — prevents layout shift on repeat visits
+location ~* \.(woff2|woff|ttf|eot)$ {
+    add_header Cache-Control "public, max-age=31536000, immutable" always;
+    add_header Access-Control-Allow-Origin "*" always;
+}</pre>
+
+<h2>INP fixes — server side (limited)</h2>
+<p>INP is almost entirely JavaScript execution. Server config can only reduce resource load time, not execution time. The one server-side lever: offload third-party scripts.</p>
+<pre># Partytown — offload GA4, Meta Pixel to Web Worker
+# Reduces main thread blocking from analytics scripts
+# Implement in your HTML build, not Nginx config</pre>
+
+<h2>Measure before and after</h2>
+<pre># Field data — real users (takes weeks to update)
+# https://search.google.com/search-console/ &rarr; Core Web Vitals
+
+# Lab data — instant
+# https://pagespeed.web.dev/
+# https://httpfixer.dev/speedfixer/ &rarr; stack-specific fix blocks</pre>
+
+<a href="/speedfixer/" class="tool-cta">Get your PageSpeed fix per stack &rarr; SpeedFixer</a>
+<div class="related">Related: <a href="/speedfixer/">SpeedFixer</a> <a href="/blog/performance/fix-lcp-nginx/">Fix LCP in Nginx</a> <a href="/blog/performance/fix-ttfb-vercel/">Fix TTFB on Vercel</a> <a href="/blog/performance/eliminate-render-blocking-resources/">Eliminate render-blocking resources</a></div>
+</main>
+<footer><span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a></span><span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span><p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p></footer>
+</body>
+</html>

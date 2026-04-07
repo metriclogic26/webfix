@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fix LCP in Nginx — Largest Contentful Paint Optimization &middot; HttpFixer</title>
+  <meta name="description" content="Improve Largest Contentful Paint (LCP) in Nginx. Add fetchpriority, preload headers, Early Hints, HTTP/2 push, and compression to reduce LCP time.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/performance/fix-lcp-nginx/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Fix LCP in Nginx — Largest Contentful Paint Optimization">
+  <meta property="og:description" content="Improve Largest Contentful Paint (LCP) in Nginx. Add fetchpriority, preload headers, Early Hints, HTTP/2 push, and compression to reduce LCP time.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/performance/fix-lcp-nginx/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Fix LCP in Nginx — Largest Contentful Paint Optimization","description":"Improve Largest Contentful Paint (LCP) in Nginx. Add fetchpriority, preload headers, Early Hints, HTTP/2 push, and compression to reduce LCP time.","url":"https://httpfixer.dev/blog/performance/fix-lcp-nginx/","datePublished":"2026-04-07","dateModified":"2026-04-07","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic"}}</script>
+  <style>    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .quick-answer strong{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;opacity:0.5;display:block;margin-bottom:0.5rem}
+    .quick-answer p{margin:0;opacity:1;font-size:13px;line-height:1.75}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}</style>
+</head>
+<body>
+<nav><a href="/" class="brand">HttpFixer</a><div class="right"><a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a><a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a></div></nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/performance/">Performance</a> &rarr; Fix LCP in Nginx — Largest Contentful Paint Optimization</div>
+  <div class="date">Updated April 2026</div>
+  <h1>Fix LCP in Nginx — Largest Contentful Paint Optimization</h1>
+<div class="quick-answer"><strong>Quick Answer</strong><p>Add <code>fetchpriority="high"</code> to your LCP image in HTML and send a <code>Link: &lt;/hero.jpg&gt;; rel=preload; as=image</code> header from Nginx. This tells the browser to fetch the LCP resource immediately without waiting to parse the full HTML.</p></div>
+
+<p class="lead">LCP measures when the largest visible element loads. For most sites it is a hero image or heading. Nginx can dramatically improve LCP with preload headers, HTTP/2, compression, and resource hints — no code changes required.</p>
+
+<a href="/speedfixer/" class="tool-cta">Get your full PageSpeed fix &rarr; SpeedFixer</a>
+
+<h2>1. Preload the LCP resource</h2>
+<pre>server {
+    listen 443 ssl http2;
+    server_name example.com;
+
+    location / {
+        # Preload hint — browser fetches before parsing HTML
+        add_header Link "&lt;/images/hero.webp&gt;; rel=preload; as=image" always;
+        try_files $uri $uri/ /index.html;
+    }
+}</pre>
+
+<p>Also add in HTML for browsers that don't support Link headers:</p>
+<pre>&lt;link rel="preload" href="/images/hero.webp" as="image" fetchpriority="high"&gt;
+&lt;img src="/images/hero.webp" fetchpriority="high" alt="Hero image"&gt;</pre>
+
+<h2>2. Enable HTTP/2</h2>
+<pre>server {
+    # http2 keyword required for multiplexing
+    listen 443 ssl http2;
+    server_name example.com;
+
+    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+}</pre>
+
+<h2>3. Enable brotli compression</h2>
+<pre># Install: apt install nginx-module-brotli
+load_module modules/ngx_http_brotli_filter_module.so;
+load_module modules/ngx_http_brotli_static_module.so;
+
+http {
+    brotli on;
+    brotli_comp_level 6;
+    brotli_types text/html text/css application/javascript application/json image/svg+xml;
+
+    # Gzip fallback
+    gzip on;
+    gzip_vary on;
+    gzip_types text/html text/css application/javascript application/json;
+}</pre>
+
+<h2>4. Serve WebP images</h2>
+<pre>map $http_accept $webp_suffix {
+    default   "";
+    "~*webp"  ".webp";
+}
+
+server {
+    location ~* \.(jpg|jpeg|png)$ {
+        add_header Vary Accept;
+        try_files $uri$webp_suffix $uri =404;
+    }
+}</pre>
+
+<h2>5. Cache static assets aggressively</h2>
+<pre>location ~* \.(jpg|jpeg|png|webp|gif|svg|ico|woff2)$ {
+    add_header Cache-Control "public, max-age=31536000, immutable" always;
+    etag off;
+    expires 1y;
+}</pre>
+
+<h2>6. Early Hints (103)</h2>
+<pre># Nginx 1.25.1+ supports Early Hints
+server {
+    http2_push_preload on;
+
+    location / {
+        add_header Link "&lt;/styles.css&gt;; rel=preload; as=style" always;
+        add_header Link "&lt;/images/hero.webp&gt;; rel=preload; as=image" always;
+    }
+}</pre>
+
+<h2>Verify LCP improvement</h2>
+<pre># Check your LCP score before and after
+# Run PageSpeed Insights: https://pagespeed.web.dev/
+
+# Or use SpeedFixer to get the exact config for your stack
+# https://httpfixer.dev/speedfixer/</pre>
+
+<a href="/speedfixer/" class="tool-cta">Get your full PSI audit fix &rarr; SpeedFixer</a>
+<div class="related">Related: <a href="/speedfixer/">SpeedFixer</a> <a href="/blog/performance/fix-ttfb-vercel/">Fix TTFB on Vercel</a> <a href="/blog/performance/link-header-preload/">Link header preload</a> <a href="/blog/cache/cache-control-nginx/">Cache-Control in Nginx</a></div>
+</main>
+<footer><span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a></span><span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span><p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p></footer>
+</body>
+</html>

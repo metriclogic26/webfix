@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cache-Control Headers in Nginx — Complete Configuration Guide &middot; HttpFixer</title>
+  <meta name="description" content="Set Cache-Control headers in Nginx for static assets, HTML, and API responses. Exact location block config with max-age, immutable, no-store, and stale-while-revalidate.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/cache/cache-control-nginx/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Cache-Control Headers in Nginx — Complete Configuration Guide">
+  <meta property="og:description" content="Set Cache-Control headers in Nginx for static assets, HTML, and API responses. Exact location block config with max-age, immutable, no-store, and stale-while-revalidate.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/cache/cache-control-nginx/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Cache-Control Headers in Nginx — Complete Configuration Guide","description":"Set Cache-Control headers in Nginx for static assets, HTML, and API responses. Exact location block config with max-age, immutable, no-store, and stale-while-revalidate.","url":"https://httpfixer.dev/blog/cache/cache-control-nginx/","datePublished":"2026-04-07","dateModified":"2026-04-07","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic"}}</script>
+  <style>    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .quick-answer strong{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;opacity:0.5;display:block;margin-bottom:0.5rem}
+    .quick-answer p{margin:0;opacity:1;font-size:13px;line-height:1.75}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}</style>
+</head>
+<body>
+<nav><a href="/" class="brand">HttpFixer</a><div class="right"><a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a><a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a></div></nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/cache/">Cache</a> &rarr; Cache-Control Headers in Nginx — Complete Configuration Guide</div>
+  <div class="date">Updated April 2026</div>
+  <h1>Cache-Control Headers in Nginx — Complete Configuration Guide</h1>
+<div class="quick-answer"><strong>Quick Answer</strong><p>Use <code>add_header Cache-Control "public, max-age=31536000, immutable" always;</code> inside a location block for static assets. Use <code>no-cache</code> for HTML. Use <code>no-store</code> for authenticated API responses. The <code>always</code> flag ensures headers appear on error responses too.</p></div>
+
+<p class="lead">Nginx does not set Cache-Control headers by default. Every asset serves without caching instructions — browsers and CDNs make their own decisions. This guide shows the exact location blocks for each asset type.</p>
+
+<a href="/generators/cache-control/" class="tool-cta">Generate Cache-Control headers &rarr;</a>
+
+<h2>Static assets — hashed filenames</h2>
+<p>JavaScript, CSS, fonts, and images with fingerprinted filenames (e.g. <code>app.a3f9d2c.js</code>) — cache forever. The filename changes on deploy, so browsers never get stale files.</p>
+<pre>location ~* \.(js|css|woff2|woff|ttf|png|jpg|jpeg|gif|ico|svg|webp)$ {
+    add_header Cache-Control "public, max-age=31536000, immutable" always;
+    add_header Vary "Accept-Encoding" always;
+    etag off;
+    expires 1y;
+}</pre>
+
+<h2>HTML pages</h2>
+<p>HTML must always revalidate so browsers pick up the latest asset URLs after a deploy.</p>
+<pre>location ~* \.html$ {
+    add_header Cache-Control "no-cache" always;
+    add_header Vary "Accept-Encoding" always;
+}
+
+# Or for all locations serving HTML:
+location / {
+    add_header Cache-Control "no-cache" always;
+    try_files $uri $uri/ /index.html;
+}</pre>
+
+<h2>API responses — public</h2>
+<pre>location /api/public/ {
+    add_header Cache-Control "public, max-age=60, stale-while-revalidate=300" always;
+    add_header Vary "Accept, Accept-Encoding" always;
+    proxy_pass http://backend;
+}</pre>
+
+<h2>API responses — authenticated</h2>
+<pre>location /api/ {
+    add_header Cache-Control "no-store" always;
+    add_header Pragma "no-cache" always;
+    proxy_pass http://backend;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}</pre>
+
+<h2>Complete server block example</h2>
+<pre>server {
+    listen 443 ssl;
+    server_name example.com;
+
+    # Static assets — cache forever (hashed filenames only)
+    location ~* \.(js|css|woff2|png|jpg|svg|ico)$ {
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+        etag off;
+        expires 1y;
+    }
+
+    # HTML — always revalidate
+    location / {
+        add_header Cache-Control "no-cache" always;
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Authenticated API — never cache
+    location /api/ {
+        add_header Cache-Control "no-store" always;
+        proxy_pass http://localhost:3000;
+    }
+}</pre>
+
+<h2>The always flag — why it matters</h2>
+<p>Without <code>always</code>, Nginx only adds the header on 2xx responses. Error responses (4xx, 5xx) won't include Cache-Control — meaning CDNs might cache error pages. Always use <code>always</code>.</p>
+<pre># Wrong — missing on error responses
+add_header Cache-Control "no-store";
+
+# Correct — present on all responses including errors
+add_header Cache-Control "no-store" always;</pre>
+
+<h2>Test your headers</h2>
+<pre># Check what Cache-Control your server is returning
+curl -sI https://example.com/app.js | grep -i cache
+
+# After changes: test config then reload
+nginx -t && nginx -s reload</pre>
+
+<a href="/generators/cache-control/" class="tool-cta">Generate Cache-Control for your stack &rarr;</a>
+<div class="related">Related: <a href="/tools/cache-simulator/">Cache-Control Simulator</a> <a href="/edge/">EdgeFix — audit live cache headers</a> <a href="/blog/cache/cache-control-cheatsheet/">Cache-Control cheatsheet</a> <a href="/blog/cache/no-cache-vs-no-store/">no-cache vs no-store</a></div>
+</main>
+<footer><span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a></span><span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span><p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p></footer>
+</body>
+</html>

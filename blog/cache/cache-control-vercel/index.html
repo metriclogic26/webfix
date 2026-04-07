@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cache-Control Headers on Vercel — vercel.json Configuration &middot; HttpFixer</title>
+  <meta name="description" content="Set Cache-Control headers on Vercel using vercel.json. Static assets, HTML pages, API routes, and Edge Functions — exact configuration with source patterns.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/cache/cache-control-vercel/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Cache-Control Headers on Vercel — vercel.json Configuration">
+  <meta property="og:description" content="Set Cache-Control headers on Vercel using vercel.json. Static assets, HTML pages, API routes, and Edge Functions — exact configuration with source patterns.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/cache/cache-control-vercel/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Cache-Control Headers on Vercel — vercel.json Configuration","description":"Set Cache-Control headers on Vercel using vercel.json. Static assets, HTML pages, API routes, and Edge Functions — exact configuration with source patterns.","url":"https://httpfixer.dev/blog/cache/cache-control-vercel/","datePublished":"2026-04-07","dateModified":"2026-04-07","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic"}}</script>
+  <style>    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .quick-answer strong{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;opacity:0.5;display:block;margin-bottom:0.5rem}
+    .quick-answer p{margin:0;opacity:1;font-size:13px;line-height:1.75}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}</style>
+</head>
+<body>
+<nav><a href="/" class="brand">HttpFixer</a><div class="right"><a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a><a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a></div></nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/cache/">Cache</a> &rarr; Cache-Control Headers on Vercel — vercel.json Configuration</div>
+  <div class="date">Updated April 2026</div>
+  <h1>Cache-Control Headers on Vercel — vercel.json Configuration</h1>
+<div class="quick-answer"><strong>Quick Answer</strong><p>Add a <code>headers</code> array to <code>vercel.json</code>. Use <code>"/static/(.*)"</code> as the source for static assets with <code>max-age=31536000, immutable</code>. Use <code>"/(.*)"</code> with <code>no-cache</code> for HTML. API routes in <code>/api/</code> should use <code>no-store</code>.</p></div>
+
+<p class="lead">Vercel serves static files with its own default caching but does not set Cache-Control headers on your HTML pages or API routes. Configure them explicitly in <code>vercel.json</code>.</p>
+
+<a href="/generators/cache-control/" class="tool-cta">Generate Cache-Control headers &rarr;</a>
+
+<h2>vercel.json — complete configuration</h2>
+<pre>{
+  "headers": [
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
+        { "key": "Vary", "value": "Accept-Encoding" }
+      ]
+    },
+    {
+      "source": "/_next/static/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    },
+    {
+      "source": "/(.*).html",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
+    },
+    {
+      "source": "/((?!_next/static|static).*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
+    }
+  ]
+}</pre>
+
+<h2>Next.js — cache in route handlers</h2>
+<pre>// app/api/data/route.ts
+export async function GET() {
+  const data = await fetchData();
+  return Response.json(data, {
+    headers: {
+      // Public data — cache at CDN
+      'Cache-Control': 'public, max-age=60, stale-while-revalidate=300',
+    },
+  });
+}
+
+// Authenticated route — never cache
+export async function GET(request: Request) {
+  return Response.json(userData, {
+    headers: { 'Cache-Control': 'no-store' },
+  });
+}</pre>
+
+<h2>Next.js App Router — fetch cache</h2>
+<pre>// Force revalidation every 60 seconds
+const data = await fetch('https://api.example.com/data', {
+  next: { revalidate: 60 },
+});
+
+// Never cache
+const data = await fetch('https://api.example.com/user', {
+  cache: 'no-store',
+});
+
+// Cache indefinitely (until manual revalidation)
+const data = await fetch('https://api.example.com/config', {
+  cache: 'force-cache',
+});</pre>
+
+<h2>Edge Functions</h2>
+<pre>// Edge function — set Cache-Control in response
+export const config = { runtime: 'edge' };
+
+export default function handler(req: Request) {
+  return new Response(JSON.stringify({ data: 'hello' }), {
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'public, max-age=60, stale-while-revalidate=300',
+    },
+  });
+}</pre>
+
+<h2>Check your Vercel cache headers</h2>
+<pre>curl -sI https://yoursite.vercel.app/api/data | grep -i "cache\|x-vercel"
+
+# x-vercel-cache: HIT means Vercel's edge cached the response
+# x-vercel-cache: MISS means it hit your function</pre>
+
+<a href="/edge/" class="tool-cta">Audit your live cache headers &rarr; EdgeFix</a>
+<div class="related">Related: <a href="/generators/cache-control/">Cache-Control Generator</a> <a href="/tools/cache-simulator/">Cache Simulator</a> <a href="/blog/cache/cache-control-cheatsheet/">Cache-Control cheatsheet</a> <a href="/blog/platform/security-headers-vercel/">Security headers on Vercel</a></div>
+</main>
+<footer><span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a></span><span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span><p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p></footer>
+</body>
+</html>
