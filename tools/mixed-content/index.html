@@ -14,7 +14,7 @@
   <meta property="og:image" content="https://httpfixer.dev/og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Mixed Content Fixer","applicationCategory":"DeveloperApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://httpfixer.dev/tools/mixed-content/","description":"Find HTTP resources on HTTPS pages and generate exact fixes per stack."},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://httpfixer.dev/tools/"},{"@type":"ListItem","position":3,"name":"Mixed Content Fixer","item":"https://httpfixer.dev/tools/mixed-content/"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Mixed Content Fixer","applicationCategory":"DeveloperApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://httpfixer.dev/tools/mixed-content/"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://httpfixer.dev/tools/"},{"@type":"ListItem","position":3,"name":"Mixed Content Fixer","item":"https://httpfixer.dev/tools/mixed-content/"}]}]}</script>
   <style>
     :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;--dim:#8B8FA8}
     *{box-sizing:border-box;margin:0;padding:0}
@@ -27,21 +27,31 @@
     nav a:hover{opacity:1;color:var(--purple)}
     .main{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
     h1{font-size:1.4rem;font-weight:600;margin-bottom:0.4rem}
-    .subtitle{font-size:13px;opacity:0.5;margin-bottom:2rem}
-    .url-row{display:flex;gap:0.75rem;margin-bottom:2rem}
-    .url-input{flex:1;background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:0.65rem 0.9rem;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:13px;outline:none}
-    .url-input:focus{border-color:var(--purple)}
-    .scan-btn{background:var(--purple);color:white;border:none;padding:0.65rem 1.5rem;font-family:"JetBrains Mono",monospace;font-size:13px;border-radius:6px;cursor:pointer;white-space:nowrap}
-    .scan-btn:hover{filter:brightness(1.1)}
-    .scan-btn:disabled{opacity:0.5;cursor:not-allowed}
-    .pass-banner{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);border-radius:8px;padding:1.25rem 1.5rem;color:var(--green);font-size:13px;margin-bottom:1rem;display:none}
-    .summary-row{display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+    .subtitle{font-size:13px;opacity:0.5;margin-bottom:1.5rem}
+    .mode-tabs{display:flex;gap:0;margin-bottom:1.5rem;border:1px solid var(--border);border-radius:6px;overflow:hidden;width:fit-content}
+    .mode-tab{background:transparent;border:none;color:var(--dim);padding:0.5rem 1.25rem;font-family:"JetBrains Mono",monospace;font-size:12px;cursor:pointer;border-right:1px solid var(--border)}
+    .mode-tab:last-child{border-right:none}
+    .mode-tab.active{background:var(--purple);color:white}
+    .mode-tab:hover:not(.active){color:var(--text)}
+    .input-section{display:none}
+    .input-section.active{display:block}
+    textarea{width:100%;background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:0.85rem;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:12px;line-height:1.7;resize:vertical;outline:none;min-height:160px}
+    textarea:focus{border-color:var(--purple)}
+    .how-to{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;margin-bottom:1rem;font-size:12px;opacity:0.7;line-height:1.7}
+    .how-to strong{color:var(--purple);opacity:1}
+    .btn{background:var(--purple);color:white;border:none;padding:0.65rem 1.5rem;font-family:"JetBrains Mono",monospace;font-size:13px;border-radius:6px;cursor:pointer;margin-top:0.75rem}
+    .btn:hover{filter:brightness(1.1)}
+    .btn-ghost{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.65rem 1.25rem;font-family:"JetBrains Mono",monospace;font-size:13px;border-radius:6px;cursor:pointer;margin-top:0.75rem;margin-left:0.5rem}
+    .btn-ghost:hover{border-color:var(--purple);color:var(--purple)}
+    .pass-banner{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);border-radius:8px;padding:1.25rem 1.5rem;color:var(--green);font-size:13px;margin-top:1.5rem;display:none}
+    .summary-row{display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap}
     .stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;flex:1;min-width:120px}
     .stat-num{font-size:1.75rem;font-weight:600;line-height:1}
     .stat-label{font-size:11px;opacity:0.4;margin-top:0.25rem;text-transform:uppercase;letter-spacing:0.05em}
     .stat-num.bad{color:var(--red)}
     .stat-num.warn{color:var(--orange)}
     .stat-num.good{color:var(--green)}
+    .section-label{font-size:11px;text-transform:uppercase;letter-spacing:0.07em;opacity:0.4;margin:1.25rem 0 0.75rem}
     .resource-item{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0.75rem 1rem;margin-bottom:0.5rem;display:flex;gap:0.75rem;align-items:flex-start}
     .resource-item.active{border-left:3px solid var(--red)}
     .resource-item.passive{border-left:3px solid var(--orange)}
@@ -49,7 +59,6 @@
     .type-script{background:rgba(239,68,68,0.2);color:var(--red)}
     .type-style{background:rgba(249,115,22,0.2);color:var(--orange)}
     .type-img{background:rgba(108,99,255,0.2);color:var(--purple)}
-    .type-font{background:rgba(34,197,94,0.2);color:var(--green)}
     .type-other{background:rgba(139,143,168,0.2);color:var(--dim)}
     .res-url{font-size:11px;opacity:0.7;word-break:break-all;flex:1}
     .fix-section{margin-top:2rem}
@@ -61,14 +70,10 @@
     .copy-btn{position:absolute;top:0.75rem;right:0.75rem;background:transparent;border:1px solid var(--border);color:var(--dim);padding:0.25rem 0.55rem;font-family:"JetBrains Mono",monospace;font-size:11px;border-radius:4px;cursor:pointer}
     .copy-btn:hover{border-color:var(--purple);color:var(--purple)}
     .fix-note{font-size:12px;opacity:0.55;margin-top:0.75rem;line-height:1.6}
-    .section-label{font-size:11px;text-transform:uppercase;letter-spacing:0.07em;opacity:0.4;margin:1.25rem 0 0.75rem}
-    .empty-state{text-align:center;padding:4rem;opacity:0.3;font-size:13px}
-    .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle;margin-left:0.5rem}
-    @keyframes spin{to{transform:rotate(360deg)}}
     footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-top:3rem}
     footer a{color:var(--text);text-decoration:none;opacity:0.5}
     .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.35;margin-top:0.5rem}
-    @media(max-width:600px){nav .right{display:none}.url-row{flex-direction:column}}
+    @media(max-width:600px){nav .right{display:none}}
   </style>
 </head>
 <body>
@@ -82,186 +87,216 @@
 
 <div class="main">
   <h1>Mixed Content Fixer</h1>
-  <p class="subtitle">Enter your HTTPS URL — finds HTTP resources that browsers will block, then generates the exact fix for your stack.</p>
+  <p class="subtitle">Find HTTP resources loaded on your HTTPS page — then get the exact fix for your stack.</p>
 
-  <div class="url-row">
-    <input type="url" class="url-input" id="urlInput" placeholder="https://yoursite.com" onkeydown="if(event.key==='Enter')scan()">
-    <button class="scan-btn" id="scanBtn" onclick="scan()">Scan for mixed content <span class="spinner" id="spinner" style="display:none"></span></button>
+  <div class="mode-tabs">
+    <button class="mode-tab active" onclick="setMode('paste', this)">Paste HTML source</button>
+    <button class="mode-tab" onclick="setMode('console', this)">From browser console</button>
+  </div>
+
+  <!-- Mode 1: Paste HTML -->
+  <div class="input-section active" id="mode-paste">
+    <div class="how-to">
+      <strong>How to get your page source:</strong><br>
+      Open your site → right-click → <strong>View Page Source</strong> → Select All → Copy → Paste below
+    </div>
+    <textarea id="htmlInput" placeholder="Paste your full page HTML source here..."></textarea>
+    <button class="btn" onclick="analyseHTML()">Find mixed content</button>
+    <button class="btn-ghost" onclick="loadExample()">Load example</button>
+  </div>
+
+  <!-- Mode 2: Console instructions -->
+  <div class="input-section" id="mode-console">
+    <div class="how-to">
+      <strong>Find mixed content in browser DevTools:</strong><br><br>
+      1. Open your site in Chrome or Firefox<br>
+      2. Press <strong>F12</strong> to open DevTools<br>
+      3. Go to the <strong>Console</strong> tab<br>
+      4. Look for warnings like:<br>
+      &nbsp;&nbsp;<span style="color:var(--orange)">Mixed Content: The page was loaded over HTTPS, but requested an insecure resource 'http://...'</span><br><br>
+      5. Paste the full console output below:
+    </div>
+    <textarea id="consoleInput" placeholder="Mixed Content: The page at 'https://example.com' was loaded over HTTPS, but requested an insecure resource 'http://cdn.example.com/script.js'..." rows="8"></textarea>
+    <button class="btn" onclick="analyseConsole()">Extract mixed content</button>
   </div>
 
   <div class="pass-banner" id="passBanner">✅ No mixed content found — all resources are loaded over HTTPS.</div>
-  <div id="results"><div class="empty-state">Enter an HTTPS URL to scan for mixed content</div></div>
+  <div id="results"></div>
 </div>
 
 <footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/errors/mixed-content-blocked/">Mixed content error guide</a></span>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/errors/mixed-content-blocked/">Mixed content guide</a></span>
   <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
-  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, W3C). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+  <p class="disclaimer">Configurations based on open standards (OWASP, W3C). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
 </footer>
 
 <script>
-const PROXY = 'https://headers-proxy.metriclogicllc.workers.dev/?url=';
+var currentStack = 'csp';
 
-let currentStack = 'csp';
-let foundResources = [];
-
-const ACTIVE_TYPES = ['script','link[rel=stylesheet]'];
-const RES_TYPE_MAP = { 'script': 'script', 'link': 'style', 'img': 'img', 'source': 'img', 'video': 'img', 'audio': 'img', 'iframe': 'other', 'object': 'other', 'embed': 'other' };
-
-function getFixConfigs(resources) {
-  const scripts = resources.filter(r => r.type === 'script');
-  const hasActive = scripts.length > 0 || resources.filter(r => r.type === 'style').length > 0;
-
-  return {
-    csp: {
-      label: 'CSP (fastest fix)',
-      code: `# Add to your server response headers\n# This upgrades all HTTP requests to HTTPS automatically\n\nContent-Security-Policy: upgrade-insecure-requests;\n\n# Or add it alongside your existing CSP:\nContent-Security-Policy: default-src 'self'; upgrade-insecure-requests; [your other directives]`,
-      note: 'upgrade-insecure-requests tells browsers to rewrite http:// to https:// for all subresource requests. Works on Chrome, Firefox, Safari. Does not fix hardcoded HTTP in JavaScript or redirect URLs.'
-    },
-    nginx: {
-      label: 'Nginx',
-      code: `# Option 1 — CSP header (recommended)\nadd_header Content-Security-Policy "upgrade-insecure-requests" always;\n\n# Option 2 — Rewrite HTTP sources in HTML (more thorough)\n# Requires ngx_http_sub_module\nlocation / {\n    sub_filter 'http://yoursite.com' 'https://yoursite.com';\n    sub_filter_once off;\n    sub_filter_types text/html text/css application/javascript;\n}`,
-      note: 'The sub_filter approach rewrites the actual URLs in responses. More thorough but requires the module and knowing your domain. Use the CSP approach first.'
-    },
-    cloudflare: {
-      label: 'Cloudflare',
-      code: `# Option 1 — Automatic HTTPS Rewrites (recommended)\n# Dashboard → SSL/TLS → Edge Certificates\n# → Automatic HTTPS Rewrites: Enable\n\n# Option 2 — Transform Rule to add CSP header\n# Dashboard → Rules → Transform Rules → Modify Response Header\n# Header name: Content-Security-Policy\n# Value: upgrade-insecure-requests`,
-      note: 'Cloudflare\'s Automatic HTTPS Rewrites rewrites http:// URLs in HTML, CSS, and JS responses at the edge. Fastest fix if you\'re behind Cloudflare.'
-    },
-    vercel: {
-      label: 'Vercel',
-      code: `// vercel.json\n{\n  "headers": [\n    {\n      "source": "/(.*)",\n      "headers": [\n        {\n          "key": "Content-Security-Policy",\n          "value": "upgrade-insecure-requests"\n        }\n      ]\n    }\n  ]\n}`,
-      note: 'Add to your vercel.json at project root. Applies to all deployments automatically.'
-    },
-    wordpress: {
-      label: 'WordPress',
-      code: `// Option 1 — Plugin (recommended)\n// Install "Really Simple SSL" — handles mixed content automatically\n\n// Option 2 — wp-config.php + database update\n// Add to wp-config.php:\ndefine('FORCE_SSL_ADMIN', true);\n\n// Search/replace HTTP URLs in database:\n// WP Admin → Tools → Search Replace (plugin)\n// Search: http://yoursite.com\n// Replace: https://yoursite.com\n// Tables: all`,
-      note: 'WordPress often stores http:// URLs in the database. A simple search-replace in the database + Really Simple SSL plugin covers most cases.'
-    },
-  };
+function setMode(mode, btn) {
+  document.querySelectorAll('.mode-tab').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.input-section').forEach(function(s) { s.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('mode-' + mode).classList.add('active');
+  document.getElementById('passBanner').style.display = 'none';
+  document.getElementById('results').innerHTML = '';
 }
 
-async function scan() {
-  let url = document.getElementById('urlInput').value.trim();
-  if (!url) return;
-  if (!url.startsWith('http')) url = 'https://' + url;
-  if (!url.startsWith('https://')) {
-    document.getElementById('results').innerHTML = `<div style="color:var(--orange);font-size:13px;padding:1rem">Mixed content only occurs on HTTPS pages. Enter an https:// URL.</div>`;
-    return;
+function loadExample() {
+  document.getElementById('htmlInput').value = [
+    '<!DOCTYPE html><html><head>',
+    '<link rel="stylesheet" href="http://cdn.example.com/style.css">',
+    '<script src="http://cdn.example.com/analytics.js"><\/script>',
+    '</head><body>',
+    '<img src="http://images.example.com/logo.png" alt="logo">',
+    '<img src="https://images.example.com/hero.jpg" alt="hero">',
+    '<script src="https://cdn.example.com/app.js"><\/script>',
+    '</body></html>'
+  ].join('\n');
+  analyseHTML();
+}
+
+function analyseHTML() {
+  var html = document.getElementById('htmlInput').value.trim();
+  if (!html) return;
+
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(html, 'text/html');
+  var resources = [];
+
+  var checks = [
+    { sel:'script[src]',           attr:'src',  type:'script', sev:'active'  },
+    { sel:'link[rel=stylesheet]',  attr:'href', type:'style',  sev:'active'  },
+    { sel:'img[src]',              attr:'src',  type:'img',    sev:'passive' },
+    { sel:'source[src]',           attr:'src',  type:'img',    sev:'passive' },
+    { sel:'video[src]',            attr:'src',  type:'img',    sev:'passive' },
+    { sel:'audio[src]',            attr:'src',  type:'img',    sev:'passive' },
+    { sel:'iframe[src]',           attr:'src',  type:'other',  sev:'active'  },
+    { sel:'link[rel=preload]',     attr:'href', type:'other',  sev:'passive' },
+  ];
+
+  for (var i = 0; i < checks.length; i++) {
+    var c = checks[i];
+    var els = doc.querySelectorAll(c.sel);
+    for (var j = 0; j < els.length; j++) {
+      var src = els[j].getAttribute(c.attr);
+      if (src && src.indexOf('http://') === 0) {
+        resources.push({ url: src, type: c.type, sev: c.sev });
+      }
+    }
   }
 
-  const btn = document.getElementById('scanBtn');
-  btn.disabled = true;
-  document.getElementById('spinner').style.display = 'inline-block';
+  renderResults(resources);
+}
+
+function analyseConsole() {
+  var text = document.getElementById('consoleInput').value;
+  var resources = [];
+  // Extract http:// URLs from console output
+  var matches = text.match(/http:\/\/[^\s'")\]>]+/g) || [];
+  for (var i = 0; i < matches.length; i++) {
+    var url = matches[i].replace(/[.,;:!?]+$/, '');
+    var type = 'other', sev = 'passive';
+    if (/\.js(\?|$)/.test(url)) { type = 'script'; sev = 'active'; }
+    else if (/\.css(\?|$)/.test(url)) { type = 'style'; sev = 'active'; }
+    else if (/\.(png|jpg|jpeg|gif|svg|webp|ico)(\?|$)/.test(url)) { type = 'img'; sev = 'passive'; }
+    // Deduplicate
+    var exists = false;
+    for (var j = 0; j < resources.length; j++) { if (resources[j].url === url) { exists = true; break; } }
+    if (!exists) resources.push({ url: url, type: type, sev: sev });
+  }
+  renderResults(resources);
+}
+
+function renderResults(resources) {
   document.getElementById('passBanner').style.display = 'none';
   document.getElementById('results').innerHTML = '';
 
-  try {
-    const resp = await fetch(PROXY + encodeURIComponent(url));
-    const data = await resp.json();
-    const html = data.body || '';
-
-    if (!html) {
-      document.getElementById('results').innerHTML = `<div style="color:var(--red);font-size:13px;padding:1rem">Could not fetch page content. The proxy returned an empty response.</div>`;
-      return;
-    }
-
-    // Parse HTML and find HTTP resources
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    foundResources = [];
-
-    const selectors = [
-      { sel: 'script[src]', attr: 'src', type: 'script', severity: 'active' },
-      { sel: 'link[rel=stylesheet][href]', attr: 'href', type: 'style', severity: 'active' },
-      { sel: 'img[src]', attr: 'src', type: 'img', severity: 'passive' },
-      { sel: 'source[src]', attr: 'src', type: 'img', severity: 'passive' },
-      { sel: 'video[src]', attr: 'src', type: 'img', severity: 'passive' },
-      { sel: 'audio[src]', attr: 'src', type: 'img', severity: 'passive' },
-      { sel: 'iframe[src]', attr: 'src', type: 'other', severity: 'active' },
-      { sel: 'link[rel=preload][href]', attr: 'href', type: 'other', severity: 'passive' },
-    ];
-
-    selectors.forEach(({ sel, attr, type, severity }) => {
-      doc.querySelectorAll(sel).forEach(el => {
-        const src = el.getAttribute(attr);
-        if (src && src.startsWith('http://')) {
-          foundResources.push({ url: src, type, severity });
-        }
-      });
-    });
-
-    if (foundResources.length === 0) {
-      document.getElementById('passBanner').style.display = 'block';
-      document.getElementById('results').innerHTML = '';
-      return;
-    }
-
-    const active = foundResources.filter(r => r.severity === 'active');
-    const passive = foundResources.filter(r => r.severity === 'passive');
-    const types = [...new Set(foundResources.map(r => r.type))];
-
-    const configs = getFixConfigs(foundResources);
-
-    let html2 = `
-      <div class="summary-row">
-        <div class="stat"><div class="stat-num bad">${foundResources.length}</div><div class="stat-label">HTTP resources</div></div>
-        <div class="stat"><div class="stat-num ${active.length > 0 ? 'bad' : 'good'}">${active.length}</div><div class="stat-label">Active (blocked)</div></div>
-        <div class="stat"><div class="stat-num ${passive.length > 0 ? 'warn' : 'good'}">${passive.length}</div><div class="stat-label">Passive (warned)</div></div>
-      </div>`;
-
-    if (active.length > 0) {
-      html2 += `<div class="section-label">Active mixed content — browsers block these</div>`;
-      active.forEach(r => {
-        html2 += `<div class="resource-item active">
-          <span class="res-type type-${r.type}">${r.type}</span>
-          <span class="res-url">${r.url}</span>
-        </div>`;
-      });
-    }
-
-    if (passive.length > 0) {
-      html2 += `<div class="section-label">Passive mixed content — browsers warn about these</div>`;
-      passive.forEach(r => {
-        html2 += `<div class="resource-item passive">
-          <span class="res-type type-${r.type}">${r.type}</span>
-          <span class="res-url">${r.url}</span>
-        </div>`;
-      });
-    }
-
-    html2 += `
-      <div class="fix-section">
-        <div class="section-label">The fix — select your stack</div>
-        <div class="fix-tabs" id="fixTabs">
-          ${Object.entries(configs).map(([k,v]) => `<button class="fix-tab ${k==='csp'?'active':''}" onclick="setStack('${k}', this)">${v.label}</button>`).join('')}
-        </div>
-        <div class="code-block">
-          <pre id="fixCode">${configs['csp'].code}</pre>
-          <button class="copy-btn" onclick="copyFix(this)">Copy</button>
-        </div>
-        <div class="fix-note" id="fixNote">${configs['csp'].note}</div>
-      </div>
-    `;
-
-    document.getElementById('results').innerHTML = html2;
-
-    // Store configs for tab switching
-    window._mixedConfigs = configs;
-
-  } catch(e) {
-    document.getElementById('results').innerHTML = `<div style="color:var(--red);font-size:13px;padding:1rem">Error: ${e.message}</div>`;
-  } finally {
-    btn.disabled = false;
-    document.getElementById('spinner').style.display = 'none';
-    btn.childNodes[0].textContent = 'Scan for mixed content ';
+  if (resources.length === 0) {
+    document.getElementById('passBanner').style.display = 'block';
+    return;
   }
+
+  var active  = resources.filter(function(r) { return r.sev === 'active'; });
+  var passive = resources.filter(function(r) { return r.sev === 'passive'; });
+
+  var html = '<div class="summary-row">' +
+    stat(resources.length, 'HTTP resources', 'bad') +
+    stat(active.length,  'Active (blocked)', active.length > 0 ? 'bad' : 'good') +
+    stat(passive.length, 'Passive (warned)', passive.length > 0 ? 'warn' : 'good') +
+  '</div>';
+
+  if (active.length) {
+    html += '<div class="section-label">Active mixed content — browsers block these</div>';
+    active.forEach(function(r) { html += resRow(r, 'active'); });
+  }
+  if (passive.length) {
+    html += '<div class="section-label">Passive mixed content — browsers warn about these</div>';
+    passive.forEach(function(r) { html += resRow(r, 'passive'); });
+  }
+
+  var configs = getConfigs();
+  html += '<div class="fix-section">' +
+    '<div class="section-label">The fix — select your stack</div>' +
+    '<div class="fix-tabs">' +
+    Object.keys(configs).map(function(k) {
+      return '<button class="fix-tab' + (k === 'csp' ? ' active' : '') + '" onclick="setStack(\'' + k + '\', this)">' + configs[k].label + '</button>';
+    }).join('') +
+    '</div>' +
+    '<div class="code-block"><pre id="fixCode">' + configs['csp'].code + '</pre><button class="copy-btn" onclick="copyFix(this)">Copy</button></div>' +
+    '<div class="fix-note" id="fixNote">' + configs['csp'].note + '</div>' +
+  '</div>';
+
+  document.getElementById('results').innerHTML = html;
+  window._configs = configs;
+}
+
+function stat(num, label, cls) {
+  return '<div class="stat"><div class="stat-num ' + cls + '">' + num + '</div><div class="stat-label">' + label + '</div></div>';
+}
+
+function resRow(r, sev) {
+  return '<div class="resource-item ' + sev + '">' +
+    '<span class="res-type type-' + r.type + '">' + r.type + '</span>' +
+    '<span class="res-url">' + r.url + '</span>' +
+  '</div>';
+}
+
+function getConfigs() {
+  return {
+    csp: {
+      label: 'CSP (fastest)',
+      code: '# Add to your server response headers\n# Upgrades all HTTP subresource requests to HTTPS automatically\n\nContent-Security-Policy: upgrade-insecure-requests;\n\n# Alongside existing CSP:\nContent-Security-Policy: default-src \'self\'; upgrade-insecure-requests; [your directives]',
+      note: 'upgrade-insecure-requests rewrites http:// to https:// for all subresource requests at the browser level. Fastest fix — one header, no URL changes needed.'
+    },
+    nginx: {
+      label: 'Nginx',
+      code: '# Option 1 — CSP header (recommended)\nadd_header Content-Security-Policy "upgrade-insecure-requests" always;\n\n# Option 2 — Rewrite URLs in responses (requires sub_filter module)\nlocation / {\n    sub_filter \'http://yoursite.com\' \'https://yoursite.com\';\n    sub_filter_once off;\n    sub_filter_types text/html text/css application/javascript;\n}',
+      note: 'Use the CSP approach first. sub_filter is more thorough but requires the ngx_http_sub_module and knowing your exact domain.'
+    },
+    cloudflare: {
+      label: 'Cloudflare',
+      code: '# Option 1 — Automatic HTTPS Rewrites (recommended)\n# Dashboard → SSL/TLS → Edge Certificates\n# → Automatic HTTPS Rewrites: Enable\n\n# Option 2 — Transform Rule to add CSP header\n# Dashboard → Rules → Transform Rules → Modify Response Header\n# Header name: Content-Security-Policy\n# Value: upgrade-insecure-requests',
+      note: 'Cloudflare\'s Automatic HTTPS Rewrites rewrites http:// URLs in HTML, CSS, and JS at the edge before delivery. Fastest Cloudflare fix.'
+    },
+    vercel: {
+      label: 'Vercel',
+      code: '// vercel.json\n{\n  "headers": [\n    {\n      "source": "/(.*)",\n      "headers": [\n        {\n          "key": "Content-Security-Policy",\n          "value": "upgrade-insecure-requests"\n        }\n      ]\n    }\n  ]\n}',
+      note: 'Add to vercel.json at project root. Applies to all deployments automatically.'
+    },
+    wordpress: {
+      label: 'WordPress',
+      code: '// Option 1 — Plugin (recommended)\n// Install "Really Simple SSL"\n// It handles mixed content and HTTP → HTTPS rewrites automatically\n\n// Option 2 — Database search/replace\n// WP Admin → Tools → Search Replace DB (plugin)\n// Search:  http://yoursite.com\n// Replace: https://yoursite.com\n// Run on all tables\n\n// Option 3 — wp-config.php\ndefine(\'FORCE_SSL_ADMIN\', true);',
+      note: 'WordPress stores URLs in the database. Really Simple SSL handles most mixed content automatically. For persistent issues, a database search/replace is the thorough fix.'
+    }
+  };
 }
 
 function setStack(stack, btn) {
-  document.querySelectorAll('.fix-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.fix-tab').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
-  const cfg = window._mixedConfigs?.[stack];
+  currentStack = stack;
+  var cfg = window._configs && window._configs[stack];
   if (cfg) {
     document.getElementById('fixCode').textContent = cfg.code;
     document.getElementById('fixNote').textContent = cfg.note;
@@ -269,10 +304,9 @@ function setStack(stack, btn) {
 }
 
 function copyFix(btn) {
-  const text = document.getElementById('fixCode').textContent;
-  navigator.clipboard.writeText(text).then(() => {
+  navigator.clipboard.writeText(document.getElementById('fixCode').textContent).then(function() {
     btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy', 1500);
+    setTimeout(function() { btn.textContent = 'Copy'; }, 1500);
   });
 }
 </script>
