@@ -173,6 +173,7 @@
   <url><loc>https://httpfixer.dev/errors/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/errors/mixed-content-blocked/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/errors/redirect-uri-mismatch/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/errors/starlette-cors-wildcard-credentials/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/fix/cache/cloudflare/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/fix/cache/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/fix/cache/nginx/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -213,6 +214,7 @@
   <url><loc>https://httpfixer.dev/fix/pagespeed/nginx/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/fix/pagespeed/vercel/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/fix/pagespeed/wordpress/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/generators/cache-control/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/generators/cors/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/generators/csp/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/generators/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -247,7 +249,6 @@
   <url><loc>https://httpfixer.dev/glossary/vary-header/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/glossary/x-frame-options/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/glossary/xss/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://httpfixer.dev/headers/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/learn/content-security-policy/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/learn/cors/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -274,8 +275,12 @@
   <url><loc>https://httpfixer.dev/speedfixer/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/tools/badge/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/tools/cache-simulator/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/tools/csp-validator/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/tools/header-scorer/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/tools/hsts-preload/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/tools/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/tools/jwt/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/tools/mixed-content/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/tools/pre-launch-checklist/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/vs/httpfixer-vs-cors-anywhere/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/vs/httpfixer-vs-gtmetrix/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>

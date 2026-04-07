@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cache-Control Header Generator — HttpFixer</title>
+  <meta name="description" content="Generate the correct Cache-Control header for any asset type. Static assets, HTML pages, API responses, authenticated endpoints — exact Nginx, Vercel, Cloudflare, and Express config.">
+  <link rel="canonical" href="https://httpfixer.dev/generators/cache-control/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Cache-Control Header Generator — HttpFixer">
+  <meta property="og:description" content="Generate Cache-Control headers for any asset type with stack-specific config.">
+  <meta property="og:url" content="https://httpfixer.dev/generators/cache-control/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Cache-Control Generator","applicationCategory":"DeveloperApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://httpfixer.dev/generators/cache-control/","description":"Generate the correct Cache-Control header for any asset type with stack-specific config."},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Generators","item":"https://httpfixer.dev/generators/"},{"@type":"ListItem","position":3,"name":"Cache-Control Generator","item":"https://httpfixer.dev/generators/cache-control/"}]}]}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;--dim:#8B8FA8}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none;font-size:15px}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1.25rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.55;font-size:13px;transition:opacity 0.15s}
+    nav a:hover{opacity:1;color:var(--purple)}
+    .container{max-width:900px;margin:0 auto;padding:2.5rem 1.5rem 5rem;display:grid;grid-template-columns:340px 1fr;gap:2rem;align-items:start}
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.5rem}
+    .panel-title{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.45;margin-bottom:1.25rem}
+    .field{margin-bottom:1.25rem}
+    .field label{display:block;font-size:12px;opacity:0.6;margin-bottom:0.4rem}
+    .field select,.field input[type=number]{width:100%;background:#080a0f;border:1px solid var(--border);border-radius:5px;padding:0.6rem 0.75rem;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:13px;outline:none;appearance:none;cursor:pointer}
+    .field select:focus,.field input:focus{border-color:var(--purple)}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--border)}
+    .toggle-row:last-child{border-bottom:none}
+    .toggle-label{font-size:12px;opacity:0.75}
+    .toggle{position:relative;width:36px;height:20px;cursor:pointer}
+    .toggle input{opacity:0;width:0;height:0}
+    .toggle-track{position:absolute;inset:0;background:#1e2130;border-radius:20px;transition:background 0.2s;border:1px solid var(--border)}
+    .toggle input:checked + .toggle-track{background:var(--purple);border-color:var(--purple)}
+    .toggle-thumb{position:absolute;top:3px;left:3px;width:12px;height:12px;background:#fff;border-radius:50%;transition:transform 0.2s}
+    .toggle input:checked ~ .toggle-thumb{transform:translateX(16px)}
+    .output-panel{display:flex;flex-direction:column;gap:1rem}
+    .header-value{background:#080a0f;border:1px solid var(--border);border-radius:8px;padding:1.25rem;position:relative}
+    .hv-label{font-size:11px;opacity:0.4;margin-bottom:0.6rem;text-transform:uppercase;letter-spacing:0.06em}
+    .hv-value{font-size:14px;color:var(--green);word-break:break-all;line-height:1.6;padding-right:2.5rem}
+    .copy-btn{position:absolute;top:1rem;right:1rem;background:transparent;border:1px solid var(--border);color:var(--dim);padding:0.3rem 0.6rem;font-family:"JetBrains Mono",monospace;font-size:11px;border-radius:4px;cursor:pointer;transition:all 0.15s}
+    .copy-btn:hover{border-color:var(--purple);color:var(--purple)}
+    .copy-btn.copied{border-color:var(--green);color:var(--green)}
+    .stack-tabs{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:1rem}
+    .stack-tab{background:transparent;border:1px solid var(--border);color:var(--dim);padding:0.35rem 0.75rem;font-family:"JetBrains Mono",monospace;font-size:11px;border-radius:4px;cursor:pointer;transition:all 0.15s}
+    .stack-tab.active{border-color:var(--purple);color:var(--purple);background:rgba(108,99,255,0.08)}
+    .stack-tab:hover{border-color:var(--purple);color:var(--purple)}
+    .code-block{background:#080a0f;border:1px solid var(--border);border-radius:8px;padding:1.25rem;position:relative}
+    .code-block pre{font-size:12px;line-height:1.7;white-space:pre;overflow-x:auto;color:var(--text)}
+    .explanation{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem}
+    .explanation h3{font-size:12px;opacity:0.5;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem}
+    .directive-row{display:flex;gap:0.75rem;padding:0.4rem 0;border-bottom:1px solid rgba(37,40,54,0.6)}
+    .directive-row:last-child{border-bottom:none}
+    .directive-name{color:var(--purple);font-size:12px;min-width:160px;flex-shrink:0}
+    .directive-desc{font-size:12px;opacity:0.6;line-height:1.5}
+    .page-header{grid-column:1/-1;margin-bottom:0.5rem}
+    .page-header h1{font-size:1.4rem;font-weight:600;margin-bottom:0.4rem}
+    .page-header p{font-size:13px;opacity:0.55;line-height:1.6}
+    .related{font-size:12px;opacity:0.5;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-top:2rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.5}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.35;margin-top:0.5rem}
+    @media(max-width:700px){.container{grid-template-columns:1fr}.page-header{grid-column:1}nav .right{display:none}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Generators</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/csp/">CSP</a>
+    <a href="/edge/">Edge</a><a href="/generators/">Generators</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-header">
+    <h1>Cache-Control Generator</h1>
+    <p>Select your asset type and options — get the exact Cache-Control header value plus stack-specific config.</p>
+  </div>
+
+  <!-- LEFT: Controls -->
+  <div>
+    <div class="panel">
+      <div class="panel-title">Asset configuration</div>
+
+      <div class="field">
+        <label>Asset type</label>
+        <select id="assetType" onchange="generate()">
+          <option value="static">Static assets (JS, CSS, fonts, images)</option>
+          <option value="html">HTML pages</option>
+          <option value="api_public">Public API responses</option>
+          <option value="api_auth">Authenticated API responses</option>
+          <option value="cdn">CDN / edge cached assets</option>
+          <option value="stream">Streaming / real-time responses</option>
+        </select>
+      </div>
+
+      <div class="field" id="maxAgeField">
+        <label>Max age (seconds)</label>
+        <input type="number" id="maxAge" value="31536000" min="0" oninput="generate()">
+      </div>
+
+      <div class="panel-title" style="margin-top:1rem">Directives</div>
+      <div id="toggles"></div>
+    </div>
+
+    <div class="explanation" style="margin-top:1rem" id="explanationBox">
+      <h3>What each directive does</h3>
+      <div id="directiveExplanations"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Output -->
+  <div class="output-panel">
+    <div class="header-value">
+      <div class="hv-label">Cache-Control value</div>
+      <div class="hv-value" id="headerValue">public, max-age=31536000, immutable</div>
+      <button class="copy-btn" onclick="copyValue('headerValue', this)">Copy</button>
+    </div>
+
+    <div>
+      <div class="stack-tabs" id="stackTabs">
+        <button class="stack-tab active" onclick="setStack('nginx', this)">Nginx</button>
+        <button class="stack-tab" onclick="setStack('apache', this)">Apache</button>
+        <button class="stack-tab" onclick="setStack('vercel', this)">Vercel</button>
+        <button class="stack-tab" onclick="setStack('cloudflare', this)">Cloudflare</button>
+        <button class="stack-tab" onclick="setStack('express', this)">Express</button>
+        <button class="stack-tab" onclick="setStack('fastapi', this)">FastAPI</button>
+      </div>
+      <div class="code-block">
+        <pre id="stackConfig"></pre>
+        <button class="copy-btn" onclick="copyPre('stackConfig', this)">Copy</button>
+      </div>
+    </div>
+
+    <div class="header-value" id="varyBox" style="display:none">
+      <div class="hv-label">Recommended Vary header</div>
+      <div class="hv-value" id="varyValue"></div>
+      <button class="copy-btn" onclick="copyValue('varyValue', this)">Copy</button>
+    </div>
+
+    <div class="related">
+      Related:
+      <a href="/tools/cache-simulator/">Cache-Control Simulator</a>
+      <a href="/edge/">EdgeFix — audit live cache headers</a>
+      <a href="/blog/cache/cache-control-cheatsheet/">Cache-Control cheatsheet</a>
+      <a href="/glossary/cache-busting/">Cache busting</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations are based on open standards (RFC 7234, RFC 9111). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
+
+<script>
+let currentStack = 'nginx';
+
+const PRESETS = {
+  static: {
+    label: 'Static assets (hashed filenames)',
+    directives: { public: true, immutable: true, swr: false, noCache: false, noStore: false, private: false, mustRevalidate: false },
+    maxAge: 31536000,
+    vary: null,
+    note: 'Use only with fingerprinted/hashed filenames. The filename must change when content changes — otherwise users get stale files permanently.'
+  },
+  html: {
+    label: 'HTML pages',
+    directives: { public: false, immutable: false, swr: false, noCache: true, noStore: false, private: false, mustRevalidate: false },
+    maxAge: 0,
+    vary: null,
+    note: 'HTML pages should always be revalidated so users get updated asset URLs. no-cache stores the response but checks for updates on every request.'
+  },
+  api_public: {
+    label: 'Public API responses',
+    directives: { public: true, immutable: false, swr: true, noCache: false, noStore: false, private: false, mustRevalidate: false },
+    maxAge: 60,
+    vary: 'Accept, Accept-Encoding',
+    note: 'Public API responses can be cached at CDN layer. stale-while-revalidate allows background refresh without user-visible latency.'
+  },
+  api_auth: {
+    label: 'Authenticated API responses',
+    directives: { public: false, immutable: false, swr: false, noCache: false, noStore: true, private: false, mustRevalidate: false },
+    maxAge: 0,
+    vary: null,
+    note: 'Authenticated responses must never be cached by CDNs or shared caches. no-store prevents storage entirely — nothing written anywhere.'
+  },
+  cdn: {
+    label: 'CDN / edge cached assets',
+    directives: { public: true, immutable: false, swr: true, noCache: false, noStore: false, private: false, mustRevalidate: false },
+    maxAge: 3600,
+    vary: 'Accept-Encoding',
+    note: 'CDN-cached assets benefit from stale-while-revalidate — serve immediately from edge while refreshing in background.'
+  },
+  stream: {
+    label: 'Streaming / real-time',
+    directives: { public: false, immutable: false, swr: false, noCache: false, noStore: true, private: false, mustRevalidate: false },
+    maxAge: 0,
+    vary: null,
+    note: 'Real-time responses (SSE, live data) must not be cached anywhere.'
+  }
+};
+
+const TOGGLE_DEFS = [
+  { id: 'public',         label: 'public',                desc: 'Shared caches (CDNs) may cache this response' },
+  { id: 'private',        label: 'private',               desc: 'Only browser cache — CDNs must not store it' },
+  { id: 'noCache',        label: 'no-cache',              desc: 'Store but revalidate with server before every use' },
+  { id: 'noStore',        label: 'no-store',              desc: 'Never store anywhere — not browser, not CDN' },
+  { id: 'immutable',      label: 'immutable',             desc: 'Skip revalidation on page refresh (use with hashed filenames)' },
+  { id: 'mustRevalidate', label: 'must-revalidate',       desc: 'Once stale, must revalidate — no serving stale on error' },
+  { id: 'swr',            label: 'stale-while-revalidate',desc: 'Serve stale while fetching fresh in background' },
+];
+
+const STACK_CONFIGS = {
+  nginx: (val, assetType) => {
+    if (assetType === 'static') {
+      return `# Nginx — static assets (hashed filenames)\nlocation ~* \\.(js|css|woff2|woff|ttf|png|jpg|gif|ico|svg)$ {\n    add_header Cache-Control "${val}" always;\n    etag off;\n    expires 1y;\n}`;
+    }
+    if (assetType === 'html') {
+      return `# Nginx — HTML pages\nlocation ~* \\.html$ {\n    add_header Cache-Control "${val}" always;\n    add_header Vary "Accept-Encoding" always;\n}\n\n# Or for all locations:\nadd_header Cache-Control "${val}" always;`;
+    }
+    if (assetType === 'api_auth') {
+      return `# Nginx — authenticated API responses\nlocation /api/ {\n    add_header Cache-Control "${val}" always;\n    add_header Pragma "no-cache" always;\n    # Ensure auth headers are never cached\n    proxy_hide_header X-Cache;\n    proxy_pass http://backend;\n}`;
+    }
+    return `# Nginx\nadd_header Cache-Control "${val}" always;\nadd_header Vary "Accept-Encoding" always;`;
+  },
+  apache: (val) => `# Apache — .htaccess\n<IfModule mod_headers.c>\n    Header always set Cache-Control "${val}"\n</IfModule>\n\n# Or per file type:\n<FilesMatch "\\.(js|css|woff2)$">\n    Header set Cache-Control "${val}"\n</FilesMatch>`,
+  vercel: (val, assetType) => {
+    const src = assetType === 'static' ? '"/static/(.*)"' : '"/(.*)"';
+    return `// vercel.json\n{\n  "headers": [\n    {\n      "source": ${src},\n      "headers": [\n        {\n          "key": "Cache-Control",\n          "value": "${val}"\n        }\n      ]\n    }\n  ]\n}`;
+  },
+  cloudflare: (val) => `# Cloudflare Transform Rule\n# Rules → Transform Rules → Modify Response Header\n\nHeader name:  Cache-Control\nValue:        ${val}\n\n# Or via Wrangler (Workers):\nresponse.headers.set('Cache-Control', '${val}');`,
+  express: (val) => `// Express\napp.use((req, res, next) => {\n  res.set('Cache-Control', '${val}');\n  next();\n});\n\n// Or per route:\napp.get('/api/data', (req, res) => {\n  res.set('Cache-Control', '${val}');\n  res.json(data);\n});`,
+  fastapi: (val) => `# FastAPI\nfrom fastapi import Response\n\n@app.get("/api/data")\nasync def get_data(response: Response):\n    response.headers["Cache-Control"] = "${val}"\n    return {"data": "..."}`,
+};
+
+const DIRECTIVE_DOCS = {
+  public:         'Marks the response as cacheable by any cache including CDNs and proxies.',
+  private:        'Response may only be stored by browser cache. CDNs must not store it.',
+  'no-cache':     'Stores the response but requires revalidation with the origin before each use. Does NOT mean "don\'t cache."',
+  'no-store':     'Prevents storage anywhere — browser, CDN, proxy. Every request goes to origin.',
+  immutable:      'Tells browsers not to revalidate on page refresh. Use only with hashed filenames that change when content changes.',
+  'must-revalidate': 'Once stale, the cache must revalidate before serving. Returns 504 if origin is unreachable instead of serving stale.',
+  'stale-while-revalidate': 'Allows serving stale content while fetching a fresh copy in the background. No user-visible latency.',
+};
+
+function buildToggles() {
+  const container = document.getElementById('toggles');
+  container.innerHTML = TOGGLE_DEFS.map(t => `
+    <div class="toggle-row">
+      <span class="toggle-label">${t.label}</span>
+      <label class="toggle">
+        <input type="checkbox" id="tog_${t.id}" onchange="generate()">
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+    </div>`).join('');
+}
+
+function applyPreset(type) {
+  const p = PRESETS[type];
+  TOGGLE_DEFS.forEach(t => {
+    const el = document.getElementById('tog_' + t.id);
+    if (el) el.checked = !!p.directives[t.id];
+  });
+  const ma = document.getElementById('maxAge');
+  if (ma) ma.value = p.maxAge;
+  const mf = document.getElementById('maxAgeField');
+  if (mf) mf.style.display = (p.directives.noStore || p.directives.noCache) ? 'none' : '';
+}
+
+function buildValue() {
+  const type = document.getElementById('assetType').value;
+  const maxAge = parseInt(document.getElementById('maxAge').value) || 0;
+  const parts = [];
+
+  const pub = document.getElementById('tog_public')?.checked;
+  const priv = document.getElementById('tog_private')?.checked;
+  const noCache = document.getElementById('tog_noCache')?.checked;
+  const noStore = document.getElementById('tog_noStore')?.checked;
+  const immutable = document.getElementById('tog_immutable')?.checked;
+  const mustReval = document.getElementById('tog_mustRevalidate')?.checked;
+  const swr = document.getElementById('tog_swr')?.checked;
+
+  if (noStore) return 'no-store';
+  if (noCache) { parts.push('no-cache'); if (priv) parts.push('private'); return parts.join(', '); }
+
+  if (pub) parts.push('public');
+  else if (priv) parts.push('private');
+
+  if (maxAge > 0) parts.push(`max-age=${maxAge}`);
+  else parts.push('max-age=0');
+
+  if (immutable) parts.push('immutable');
+  if (mustReval) parts.push('must-revalidate');
+  if (swr) {
+    const swrVal = Math.max(maxAge * 5, 300);
+    parts.push(`stale-while-revalidate=${swrVal}`);
+  }
+
+  return parts.join(', ');
+}
+
+function generate() {
+  const type = document.getElementById('assetType').value;
+  applyPreset(type);
+
+  const val = buildValue();
+  document.getElementById('headerValue').textContent = val;
+
+  const preset = PRESETS[type];
+
+  // Vary
+  const varyBox = document.getElementById('varyBox');
+  if (preset.vary) {
+    varyBox.style.display = '';
+    document.getElementById('varyValue').textContent = preset.vary;
+  } else {
+    varyBox.style.display = 'none';
+  }
+
+  // Stack config
+  const fn = STACK_CONFIGS[currentStack];
+  document.getElementById('stackConfig').textContent = fn ? fn(val, type) : val;
+
+  // Directive explanations
+  const active = [];
+  const noStore = document.getElementById('tog_noStore')?.checked;
+  const noCache = document.getElementById('tog_noCache')?.checked;
+  if (noStore) active.push('no-store');
+  else if (noCache) active.push('no-cache');
+  else {
+    if (document.getElementById('tog_public')?.checked) active.push('public');
+    if (document.getElementById('tog_private')?.checked) active.push('private');
+    active.push('max-age');
+    if (document.getElementById('tog_immutable')?.checked) active.push('immutable');
+    if (document.getElementById('tog_mustRevalidate')?.checked) active.push('must-revalidate');
+    if (document.getElementById('tog_swr')?.checked) active.push('stale-while-revalidate');
+  }
+
+  const expHtml = active.map(d => `
+    <div class="directive-row">
+      <span class="directive-name">${d}</span>
+      <span class="directive-desc">${DIRECTIVE_DOCS[d] || ''}</span>
+    </div>`).join('');
+  document.getElementById('directiveExplanations').innerHTML = expHtml || '<div style="opacity:0.4;font-size:12px">Select directives to see explanations.</div>';
+}
+
+function setStack(stack, btn) {
+  currentStack = stack;
+  document.querySelectorAll('.stack-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  generate();
+}
+
+function copyValue(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+function copyPre(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+buildToggles();
+generate();
+</script>
+</body>
+</html>
