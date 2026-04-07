@@ -5,6 +5,7 @@
   <url><loc>https://httpfixer.dev/blog/cache/cache-control-cheatsheet/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/cache/cache-control-directives-reference/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/cache/etag-explained/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/cache/how-to-generate-cache-control-headers/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/cache/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/cache/no-cache-vs-no-store/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/cache/stale-while-revalidate-explained/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -54,6 +55,7 @@
   <url><loc>https://httpfixer.dev/blog/csp/fix-csp-nextjs/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/csp/fix-csp-refused-to-load/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/csp/how-to-generate-csp/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/csp/how-to-validate-csp-before-deploying/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/csp/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/errors/401-vs-403/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/errors/502-bad-gateway/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -87,6 +89,7 @@
   <url><loc>https://httpfixer.dev/blog/headers/fix-x-frame-options/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/headers/headless-cms-security-headers/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/headers/how-to-check-hsts-preload-status/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/headers/how-to-check-security-headers-score/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/headers/hsts-preload-list-requirements/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/headers/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/headers/most-commonly-missing-security-header/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
@@ -114,6 +117,7 @@
   <url><loc>https://httpfixer.dev/blog/oauth/fix-redirect-uri-mismatch/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/oauth/fix-refresh-token-expired/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/oauth/fix-supabase-auth/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/oauth/how-to-decode-validate-jwt/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/oauth/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/performance/fix-cache-control-cdn/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/performance/fix-mixed-content/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Decode and Validate a JWT &middot; HttpFixer</title>
+  <meta name="description" content="Decode a JSON Web Token, verify the claims, and check for security issues — none algorithm attack, missing expiry, expired tokens. Client-side JWT debugging explained.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/oauth/how-to-decode-validate-jwt/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="How to Decode and Validate a JWT">
+  <meta property="og:description" content="Decode a JSON Web Token, verify the claims, and check for security issues — none algorithm attack, missing expiry, expired tokens. Client-side JWT debugging explained.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/oauth/how-to-decode-validate-jwt/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"How to Decode and Validate a JWT","description":"Decode a JSON Web Token, verify the claims, and check for security issues — none algorithm attack, missing expiry, expired tokens. Client-side JWT debugging explained.","url":"https://httpfixer.dev/blog/oauth/how-to-decode-validate-jwt/","datePublished":"2026-04-06","dateModified":"2026-04-06","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://httpfixer.dev/blog/"},{"@type":"ListItem","position":3,"name":"How to Decode and Validate a JWT","item":"https://httpfixer.dev/blog/oauth/how-to-decode-validate-jwt/"}]}]}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .quick-answer strong{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;opacity:0.5;display:block;margin-bottom:0.5rem}
+    .quick-answer p{margin:0;opacity:1;font-size:13px;line-height:1.75}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a>
+    <a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/oauth/">OAuth</a> &rarr; How to Decode and Validate a JWT</div>
+  <div class="date">Updated April 2026</div>
+  <h1>How to Decode and Validate a JWT</h1>
+<div class="quick-answer">
+<strong>Quick Answer</strong>
+<p>A JWT has three base64url-encoded parts separated by dots: header, payload, signature. Decode the header and payload client-side by base64-decoding each part. Validate: check <code>exp</code> is in the future, <code>alg</code> is not "none", and <code>iss</code> matches your expected issuer. Signature verification requires the secret or public key on the server.</p>
+</div>
+
+<p class="lead">JWTs fail silently — expired tokens cause <code>invalid_grant</code> errors, wrong algorithms cause auth failures, missing claims break authorization. Decode the token first before debugging the auth flow.</p>
+
+<a href="/tools/jwt/" class="tool-cta">Decode your JWT &rarr;</a>
+
+<h2>JWT structure</h2>
+<p>Every JWT has three parts separated by dots:</p>
+<pre>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9   ← Header (base64url)
+.eyJzdWIiOiJ1c2VyXzEyMyIsImV4cCI6MTcwMH0   ← Payload (base64url)
+.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQ   ← Signature</pre>
+
+<h2>Decode manually in the browser console</h2>
+<pre>// Paste in browser DevTools console
+const token = 'your.jwt.here';
+const [header, payload] = token.split('.');
+const decode = str => JSON.parse(atob(str.replace(/-/g,'+').replace(/_/g,'/')));
+console.log('Header:', decode(header));
+console.log('Payload:', decode(payload));</pre>
+
+<h2>What to check in the header</h2>
+<table>
+  <thead><tr><th>Claim</th><th>What to check</th></tr></thead>
+  <tbody>
+    <tr><td><code>alg</code></td><td>Never "none". Prefer RS256 (asymmetric) over HS256 (symmetric) for public APIs.</td></tr>
+    <tr><td><code>typ</code></td><td>Should be "JWT". "at+JWT" for OAuth 2.0 access tokens.</td></tr>
+    <tr><td><code>kid</code></td><td>Key ID — tells the server which key to use for verification.</td></tr>
+  </tbody>
+</table>
+
+<h2>What to check in the payload</h2>
+<table>
+  <thead><tr><th>Claim</th><th>What to check</th></tr></thead>
+  <tbody>
+    <tr><td><code>exp</code></td><td>Unix timestamp. Must be in the future — <code>new Date(exp * 1000)</code> to read it.</td></tr>
+    <tr><td><code>iat</code></td><td>Issued at time. Should be recent — tokens issued far in the past may indicate replay attacks.</td></tr>
+    <tr><td><code>iss</code></td><td>Issuer. Must match your expected auth server URL exactly.</td></tr>
+    <tr><td><code>aud</code></td><td>Audience. Must match your API identifier — prevent tokens from one service being used on another.</td></tr>
+    <tr><td><code>sub</code></td><td>Subject — usually the user ID. Use this to identify the user, not email (which can change).</td></tr>
+  </tbody>
+</table>
+
+<h2>The none algorithm attack</h2>
+<p>Some early JWT libraries accepted <code>"alg": "none"</code> — meaning no signature required. An attacker could modify the payload and remove the signature entirely. Always reject tokens with <code>alg: none</code> on the server:</p>
+<pre># Node.js — jsonwebtoken
+jwt.verify(token, secret, { algorithms: ['RS256'] });
+// Explicitly allowlist algorithms — rejects 'none' automatically
+
+# Python — PyJWT
+jwt.decode(token, key, algorithms=['RS256'])
+# Never pass algorithms=None</pre>
+
+<h2>Check expiry in code</h2>
+<pre>// JavaScript
+const payload = JSON.parse(atob(token.split('.')[1]));
+const isExpired = payload.exp * 1000 < Date.now();
+if (isExpired) {
+  // Refresh the token or redirect to login
+}</pre>
+
+<h2>Signature verification</h2>
+<p>Signature verification requires the secret (HS256) or public key (RS256) — this must happen on the server, never in the browser. The JWT Debugger decodes and validates claims client-side but cannot verify the signature.</p>
+<pre># Node.js
+const decoded = jwt.verify(token, publicKey, { algorithms: ['RS256'] });
+// Throws JsonWebTokenError if signature invalid, expired, wrong issuer</pre>
+
+<a href="/tools/jwt/" class="tool-cta">Decode and validate your JWT &rarr;</a>
+<div class="related">Related: <a href="/oauth/">OAuthFixer — diagnose OAuth errors</a> <a href="/errors/invalid-grant-error/">Fix invalid_grant error</a> <a href="/glossary/pkce/">PKCE glossary</a></div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

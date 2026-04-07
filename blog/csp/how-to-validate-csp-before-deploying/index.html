@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How to Validate a Content Security Policy Before Deploying &middot; HttpFixer</title>
+  <meta name="description" content="Validate your CSP against the W3C spec before it breaks your site. Use report-only mode, check for unsafe directives, and confirm coverage of all resource types.">
+  <link rel="canonical" href="https://httpfixer.dev/blog/csp/how-to-validate-csp-before-deploying/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="How to Validate a Content Security Policy Before Deploying">
+  <meta property="og:description" content="Validate your CSP against the W3C spec before it breaks your site. Use report-only mode, check for unsafe directives, and confirm coverage of all resource types.">
+  <meta property="og:url" content="https://httpfixer.dev/blog/csp/how-to-validate-csp-before-deploying/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"How to Validate a Content Security Policy Before Deploying","description":"Validate your CSP against the W3C spec before it breaks your site. Use report-only mode, check for unsafe directives, and confirm coverage of all resource types.","url":"https://httpfixer.dev/blog/csp/how-to-validate-csp-before-deploying/","datePublished":"2026-04-06","dateModified":"2026-04-06","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://httpfixer.dev/blog/"},{"@type":"ListItem","position":3,"name":"How to Validate a Content Security Policy Before Deploying","item":"https://httpfixer.dev/blog/csp/how-to-validate-csp-before-deploying/"}]}]}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
+    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+    .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .quick-answer strong{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;opacity:0.5;display:block;margin-bottom:0.5rem}
+    .quick-answer p{margin:0;opacity:1;font-size:13px;line-height:1.75}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    pre code{background:none;color:var(--text);padding:0}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+    .tool-cta:hover{filter:brightness(1.1)}
+    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a>
+    <a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/csp/">CSP</a> &rarr; How to Validate a CSP Before Deploying</div>
+  <div class="date">Updated April 2026</div>
+  <h1>How to Validate a Content Security Policy Before Deploying</h1>
+<div class="quick-answer">
+<strong>Quick Answer</strong>
+<p>Deploy as <code>Content-Security-Policy-Report-Only</code> first — violations appear in the browser console without blocking anything. Use the CSP Validator to check for unsafe directives and missing protections. Switch to enforcing only when violations stop.</p>
+</div>
+
+<p class="lead">A wrong CSP breaks your site silently — fonts stop loading, analytics disappear, iframes stop embedding. Validate before enforcing to catch every issue without affecting users.</p>
+
+<a href="/tools/csp-validator/" class="tool-cta">Validate your CSP now &rarr;</a>
+
+<h2>Step 1 — Deploy in report-only mode first</h2>
+<p>Never deploy a new CSP directly as enforcing. Use <code>Content-Security-Policy-Report-Only</code> — identical syntax, zero blocking:</p>
+<pre># Nginx — report-only, nothing blocked
+add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; frame-ancestors 'none'; object-src 'none';" always;</pre>
+<p>Violations appear in the browser console as warnings, not errors. Check DevTools &rarr; Console for a few days before switching to enforcing.</p>
+
+<h2>Step 2 — Validate the policy string</h2>
+<p>The CSP Validator checks your policy against the W3C CSP Level 3 spec and flags:</p>
+<ul>
+  <li><strong>Critical:</strong> <code>'unsafe-inline'</code> in script-src, missing <code>default-src</code>, wildcard in script-src</li>
+  <li><strong>Warnings:</strong> missing <code>frame-ancestors</code>, missing <code>base-uri</code>, HTTP sources</li>
+  <li><strong>Info:</strong> <code>'unsafe-inline'</code> in style-src, missing <code>upgrade-insecure-requests</code></li>
+</ul>
+
+<h2>What to check manually</h2>
+
+<h3>1. default-src is set</h3>
+<p>Without <code>default-src</code>, any resource type not explicitly listed is implicitly allowed. Always set a baseline:</p>
+<pre>default-src 'self';  # Good baseline — blocks all external by default</pre>
+
+<h3>2. frame-ancestors is present</h3>
+<p><code>frame-ancestors</code> is not covered by <code>default-src</code> — it must be explicit. It replaces X-Frame-Options:</p>
+<pre>frame-ancestors 'none';   # Block all framing
+frame-ancestors 'self';   # Allow same origin only</pre>
+
+<h3>3. object-src 'none' is set</h3>
+<p>Without this, Flash and plugins are allowed. Always disable:</p>
+<pre>object-src 'none';</pre>
+
+<h3>4. No wildcard in script-src</h3>
+<pre># Dangerous — allows scripts from anywhere
+script-src *;
+
+# Correct — explicit domains only
+script-src 'self' https://www.googletagmanager.com;</pre>
+
+<h2>Step 3 — Switch to enforcing</h2>
+<p>When the browser console shows no more CSP violations for 2-3 days across different pages, switch from report-only to enforcing:</p>
+<pre># Before
+add_header Content-Security-Policy-Report-Only "..." always;
+
+# After
+add_header Content-Security-Policy "..." always;</pre>
+
+<h2>Common CSP that breaks things</h2>
+<table>
+  <thead><tr><th>What breaks</th><th>What to add</th></tr></thead>
+  <tbody>
+    <tr><td>Google Fonts</td><td><code>style-src https://fonts.googleapis.com; font-src https://fonts.gstatic.com</code></td></tr>
+    <tr><td>Google Analytics</td><td><code>script-src https://www.googletagmanager.com; connect-src https://www.google-analytics.com</code></td></tr>
+    <tr><td>Stripe</td><td><code>script-src https://js.stripe.com; frame-src https://js.stripe.com; connect-src https://api.stripe.com</code></td></tr>
+    <tr><td>Inline styles (CSS-in-JS)</td><td><code>style-src 'unsafe-inline'</code> — acceptable tradeoff for style-src</td></tr>
+    <tr><td>fetch() to API</td><td><code>connect-src https://api.example.com</code></td></tr>
+    <tr><td>WebSocket</td><td><code>connect-src wss://realtime.example.com</code></td></tr>
+  </tbody>
+</table>
+
+<a href="/tools/csp-validator/" class="tool-cta">Validate your CSP &rarr;</a>
+<div class="related">Related: <a href="/csp/">CSPFixer — generate CSP from live page</a> <a href="/blog/reference/csp-directives-cheatsheet/">CSP directives cheatsheet</a> <a href="/blog/csp/how-to-generate-csp/">How to generate a CSP</a> <a href="/glossary/csp/">CSP glossary</a></div>
+</main>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>
