@@ -2,7 +2,9 @@
   "cleanUrls": true,
   "redirects": [
     { "source": "/headers", "destination": "/", "permanent": true },
-    { "source": "/headers/", "destination": "/", "permanent": true }
+    { "source": "/headers/", "destination": "/", "permanent": true },
+    { "source": "/errors/invalid-grant-error", "destination": "/blog/oauth/fix-invalid-grant/", "permanent": true },
+    { "source": "/errors/invalid-grant-error/", "destination": "/blog/oauth/fix-invalid-grant/", "permanent": true }
   ],
   "headers": [
     {
