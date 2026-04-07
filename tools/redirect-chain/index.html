@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirect Chain Fixer — Fix ERR_TOO_MANY_REDIRECTS — HttpFixer</title>
+  <meta name="description" content="Follow your redirect chain hop by hop. Detects redirect loops, identifies your stack (Cloudflare, Vercel, Nginx), and generates the exact config to fix ERR_TOO_MANY_REDIRECTS.">
+  <link rel="canonical" href="https://httpfixer.dev/tools/redirect-chain/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Redirect Chain Fixer — HttpFixer">
+  <meta property="og:description" content="Fix ERR_TOO_MANY_REDIRECTS. Follow your redirect chain and get the exact fix for your stack.">
+  <meta property="og:url" content="https://httpfixer.dev/tools/redirect-chain/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Redirect Chain Fixer","applicationCategory":"DeveloperApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://httpfixer.dev/tools/redirect-chain/","description":"Follow your redirect chain hop by hop and get the exact fix for redirect loops."},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What causes ERR_TOO_MANY_REDIRECTS?","acceptedAnswer":{"@type":"Answer","text":"ERR_TOO_MANY_REDIRECTS is usually caused by a redirect loop — the server keeps redirecting back to itself. The most common cause is Cloudflare SSL mode set to Flexible when the origin server also redirects HTTP to HTTPS, creating an infinite loop."}},{"@type":"Question","name":"How do I fix a redirect loop on Cloudflare?","acceptedAnswer":{"@type":"Answer","text":"Change Cloudflare SSL/TLS mode from Flexible to Full or Full (Strict) in the dashboard under SSL/TLS. Flexible mode sends HTTP to your origin, which then redirects to HTTPS, causing a loop."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://httpfixer.dev/tools/"},{"@type":"ListItem","position":3,"name":"Redirect Chain Fixer","item":"https://httpfixer.dev/tools/redirect-chain/"}]}]}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;--dim:#8B8FA8;--yellow:#EAB308}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none;font-size:15px}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1.25rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.55;font-size:13px}
+    nav a:hover{opacity:1;color:var(--purple)}
+    .main{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+    h1{font-size:1.4rem;font-weight:600;margin-bottom:0.4rem}
+    .subtitle{font-size:13px;opacity:0.5;margin-bottom:2rem;line-height:1.6}
+    .url-row{display:flex;gap:0.75rem;margin-bottom:1rem}
+    .url-input{flex:1;background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:0.65rem 0.9rem;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:13px;outline:none}
+    .url-input:focus{border-color:var(--purple)}
+    .scan-btn{background:var(--purple);color:white;border:none;padding:0.65rem 1.5rem;font-family:"JetBrains Mono",monospace;font-size:13px;border-radius:6px;cursor:pointer;white-space:nowrap}
+    .scan-btn:hover{filter:brightness(1.1)}
+    .scan-btn:disabled{opacity:0.5;cursor:not-allowed}
+    .spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle;margin-left:0.5rem}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .chain-wrap{margin-top:1.5rem}
+    .hop{display:flex;align-items:flex-start;gap:0;margin-bottom:0}
+    .hop-left{display:flex;flex-direction:column;align-items:center;width:48px;flex-shrink:0}
+    .hop-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;z-index:1}
+    .hop-dot.s301{background:rgba(34,197,94,0.15);border:2px solid var(--green);color:var(--green)}
+    .hop-dot.s302{background:rgba(234,179,8,0.15);border:2px solid var(--yellow);color:var(--yellow)}
+    .hop-dot.s200{background:rgba(108,99,255,0.15);border:2px solid var(--purple);color:var(--purple)}
+    .hop-dot.s4xx{background:rgba(239,68,68,0.15);border:2px solid var(--red);color:var(--red)}
+    .hop-dot.sloop{background:rgba(239,68,68,0.3);border:2px solid var(--red);color:var(--red);animation:pulse 1s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+    .hop-line{width:2px;flex:1;min-height:20px;background:var(--border);margin:2px 0}
+    .hop-line.last{display:none}
+    .hop-content{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.9rem 1.1rem;margin-bottom:12px;margin-left:0.75rem}
+    .hop-content.loop{border-color:var(--red);background:rgba(239,68,68,0.04)}
+    .hop-content.final{border-color:var(--purple);background:rgba(108,99,255,0.04)}
+    .hop-url{font-size:12px;color:var(--text);opacity:0.85;word-break:break-all;margin-bottom:0.35rem}
+    .hop-meta{display:flex;gap:0.75rem;flex-wrap:wrap;font-size:11px;opacity:0.5}
+    .hop-meta span{display:flex;align-items:center;gap:0.25rem}
+    .badge{font-size:10px;font-weight:600;padding:0.15rem 0.45rem;border-radius:3px;text-transform:uppercase;letter-spacing:0.04em}
+    .badge-cf{background:rgba(249,115,22,0.2);color:var(--orange)}
+    .badge-vercel{background:rgba(255,255,255,0.1);color:#fff}
+    .badge-nginx{background:rgba(34,197,94,0.15);color:var(--green)}
+    .badge-apache{background:rgba(239,68,68,0.15);color:var(--red)}
+    .badge-netlify{background:rgba(108,99,255,0.15);color:var(--purple)}
+    .badge-loop{background:rgba(239,68,68,0.25);color:var(--red)}
+    .summary{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;gap:1.5rem;flex-wrap:wrap;align-items:center}
+    .sum-stat{text-align:center}
+    .sum-num{font-size:1.5rem;font-weight:600;line-height:1}
+    .sum-label{font-size:11px;opacity:0.4;margin-top:0.2rem;text-transform:uppercase;letter-spacing:0.05em}
+    .sum-num.good{color:var(--green)}
+    .sum-num.warn{color:var(--orange)}
+    .sum-num.bad{color:var(--red)}
+    .fix-section{margin-top:2rem}
+    .fix-title{font-size:11px;text-transform:uppercase;letter-spacing:0.07em;opacity:0.4;margin-bottom:0.75rem}
+    .fix-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:1rem}
+    .fix-card.critical{border-left:3px solid var(--red)}
+    .fix-card.warning{border-left:3px solid var(--orange)}
+    .fix-card.info{border-left:3px solid var(--purple)}
+    .fix-card-title{font-size:13px;font-weight:600;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem}
+    .fix-card-desc{font-size:12px;opacity:0.65;line-height:1.6;margin-bottom:0.75rem}
+    .code-block{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;position:relative;margin-top:0.5rem}
+    .code-block pre{font-size:12px;line-height:1.7;white-space:pre;overflow-x:auto}
+    .copy-btn{position:absolute;top:0.6rem;right:0.6rem;background:transparent;border:1px solid var(--border);color:var(--dim);padding:0.2rem 0.5rem;font-family:"JetBrains Mono",monospace;font-size:11px;border-radius:4px;cursor:pointer}
+    .copy-btn:hover{border-color:var(--purple);color:var(--purple)}
+    .empty-state{text-align:center;padding:4rem 2rem;opacity:0.3;font-size:13px;line-height:1.8}
+    .stack-detected{display:inline-flex;align-items:center;gap:0.4rem;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:0.25rem 0.65rem;font-size:11px;margin-bottom:1rem}
+    .stack-detected span{opacity:0.5}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-top:3rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.5}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.35;margin-top:0.5rem}
+    @media(max-width:600px){nav .right{display:none}.url-row{flex-direction:column}.summary{gap:1rem}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Redirect Chain</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/tools/">Tools</a>
+    <a href="/errors/">Errors</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+
+<div class="main">
+  <h1>Redirect Chain Fixer</h1>
+  <p class="subtitle">Follow your redirect chain hop by hop. Detects loops and your stack — generates the exact config to fix <code>ERR_TOO_MANY_REDIRECTS</code>.</p>
+
+  <div class="url-row">
+    <input type="url" class="url-input" id="urlInput" placeholder="https://yoursite.com" onkeydown="if(event.key==='Enter')scan()">
+    <button class="scan-btn" id="scanBtn" onclick="scan()">Follow chain <span class="spinner" id="spinner" style="display:none"></span></button>
+  </div>
+
+  <div id="output">
+    <div class="empty-state">
+      Enter any URL — the tool follows every redirect hop in real time<br>
+      and generates the exact fix if a loop is detected.<br><br>
+      <span style="opacity:0.5">Works with Cloudflare · Vercel · Nginx · Apache · Netlify</span>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/errors/err-too-many-redirects/">ERR_TOO_MANY_REDIRECTS guide</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Configurations based on open standards (RFC 7231, RFC 7538). Always test in a staging environment. &copy; 2026 MetricLogic.</p>
+</footer>
+
+<script>
+var PROXY = 'https://headers-proxy.metriclogicllc.workers.dev/?url=';
+var MAX_HOPS = 12;
+
+function detectStack(headers) {
+  var stacks = [];
+  if (headers['cf-ray'] || headers['cf-cache-status']) stacks.push('cloudflare');
+  if (headers['x-vercel-id'] || headers['x-vercel-cache']) stacks.push('vercel');
+  if ((headers['server'] || '').toLowerCase().indexOf('nginx') !== -1) stacks.push('nginx');
+  if ((headers['server'] || '').toLowerCase().indexOf('apache') !== -1) stacks.push('apache');
+  if (headers['x-nf-request-id']) stacks.push('netlify');
+  if (headers['x-amz-cf-id'] || headers['x-amz-request-id']) stacks.push('aws');
+  return stacks;
+}
+
+function stackBadge(stack) {
+  var labels = { cloudflare:'Cloudflare', vercel:'Vercel', nginx:'Nginx', apache:'Apache', netlify:'Netlify', aws:'AWS' };
+  var cls = { cloudflare:'badge-cf', vercel:'badge-vercel', nginx:'badge-nginx', apache:'badge-apache', netlify:'badge-netlify', aws:'badge-cf' };
+  return '<span class="badge ' + (cls[stack]||'') + '">' + (labels[stack]||stack) + '</span>';
+}
+
+function statusClass(code) {
+  if (!code) return 'sloop';
+  if (code === 301) return 's301';
+  if (code === 302 || code === 307 || code === 308) return 's302';
+  if (code >= 200 && code < 300) return 's200';
+  return 's4xx';
+}
+
+function formatMs(ms) {
+  return ms < 1000 ? ms + 'ms' : (ms/1000).toFixed(1) + 's';
+}
+
+async function fetchHop(url) {
+  var start = Date.now();
+  try {
+    var resp = await fetch(PROXY + encodeURIComponent(url));
+    var data = await resp.json();
+    var ms = Date.now() - start;
+    return {
+      url: url,
+      status: data.status || null,
+      location: (data.headers || {})['location'] || null,
+      headers: data.headers || {},
+      ms: ms,
+      error: data.error || null
+    };
+  } catch(e) {
+    return { url: url, status: null, location: null, headers: {}, ms: Date.now() - start, error: e.message };
+  }
+}
+
+async function scan() {
+  var url = document.getElementById('urlInput').value.trim();
+  if (!url) return;
+  if (!url.startsWith('http')) url = 'https://' + url;
+
+  var btn = document.getElementById('scanBtn');
+  btn.disabled = true;
+  document.getElementById('spinner').style.display = 'inline-block';
+  document.getElementById('output').innerHTML = '<div style="opacity:0.4;font-size:13px;padding:2rem 0">Following redirect chain...</div>';
+
+  var hops = [];
+  var visited = {};
+  var current = url;
+  var isLoop = false;
+  var allStacks = {};
+
+  for (var i = 0; i < MAX_HOPS; i++) {
+    // Check for loop
+    if (visited[current]) {
+      isLoop = true;
+      hops.push({ url: current, status: null, location: null, headers: {}, ms: 0, loop: true });
+      break;
+    }
+    visited[current] = true;
+
+    var hop = await fetchHop(current);
+    hops.push(hop);
+
+    // Collect stacks
+    var stacks = detectStack(hop.headers);
+    stacks.forEach(function(s) { allStacks[s] = true; });
+
+    // Stop if not a redirect
+    var s = hop.status;
+    if (!s || s < 300 || s >= 400 || !hop.location) break;
+
+    // Resolve relative location
+    var next = hop.location;
+    if (next.startsWith('/')) {
+      try { next = new URL(next, current).href; } catch(e) {}
+    }
+    current = next;
+  }
+
+  btn.disabled = false;
+  document.getElementById('spinner').style.display = 'none';
+
+  renderResults(hops, isLoop, Object.keys(allStacks));
+}
+
+function renderResults(hops, isLoop, stacks) {
+  var totalMs = hops.reduce(function(a, h) { return a + (h.ms || 0); }, 0);
+  var redirectCount = hops.filter(function(h) { return h.status >= 300 && h.status < 400; }).length;
+  var finalHop = hops[hops.length - 1];
+  var finalStatus = finalHop ? finalHop.status : null;
+
+  // Summary bar
+  var sumColor = isLoop ? 'bad' : (redirectCount > 3 ? 'warn' : 'good');
+  var sumLabel = isLoop ? '🔴 Loop detected' : (finalStatus === 200 ? '✅ Resolves cleanly' : '⚠️ Check final status');
+
+  var html = '<div class="summary">';
+  html += '<div class="sum-stat"><div class="sum-num ' + sumColor + '">' + (hops.length) + '</div><div class="sum-label">Hops</div></div>';
+  html += '<div class="sum-stat"><div class="sum-num ' + (redirectCount > 3 ? 'warn' : 'good') + '">' + redirectCount + '</div><div class="sum-label">Redirects</div></div>';
+  html += '<div class="sum-stat"><div class="sum-num ' + (totalMs > 2000 ? 'warn' : 'good') + '">' + formatMs(totalMs) + '</div><div class="sum-label">Total latency</div></div>';
+  html += '<div style="flex:1;font-size:13px;font-weight:600">' + sumLabel + '</div>';
+  html += '</div>';
+
+  // Stack badges
+  if (stacks.length) {
+    html += '<div class="stack-detected"><span>Stack detected:</span> ' + stacks.map(stackBadge).join(' ') + '</div>';
+  }
+
+  // Chain visualization
+  html += '<div class="chain-wrap">';
+  hops.forEach(function(hop, i) {
+    var isLast = i === hops.length - 1;
+    var isLoopHop = hop.loop;
+    var sc = isLoopHop ? 'sloop' : statusClass(hop.status);
+    var hopStacks = detectStack(hop.headers);
+    var contentClass = isLoopHop ? 'loop' : (isLast && !isLoopHop ? 'final' : '');
+
+    html += '<div class="hop">';
+    html += '<div class="hop-left">';
+    html += '<div class="hop-dot ' + sc + '">' + (isLoopHop ? '∞' : (hop.status || '?')) + '</div>';
+    if (!isLast) html += '<div class="hop-line"></div>';
+    html += '</div>';
+
+    html += '<div class="hop-content ' + contentClass + '">';
+    html += '<div class="hop-url">' + hop.url + '</div>';
+    html += '<div class="hop-meta">';
+    if (hop.status) html += '<span>' + hop.status + (hop.status === 301 ? ' Permanent' : hop.status === 302 ? ' Temporary' : hop.status === 307 ? ' Temporary (method preserved)' : hop.status === 308 ? ' Permanent (method preserved)' : hop.status === 200 ? ' OK' : '') + '</span>';
+    if (hop.ms) html += '<span>' + formatMs(hop.ms) + '</span>';
+    if (hop.location) html += '<span>→ ' + hop.location + '</span>';
+    hopStacks.forEach(function(s) { html += stackBadge(s); });
+    if (isLoopHop) html += '<span class="badge badge-loop">LOOP</span>';
+    html += '</div></div></div>';
+  });
+  html += '</div>';
+
+  // Fix section
+  var fixes = generateFixes(hops, isLoop, stacks);
+  if (fixes.length) {
+    html += '<div class="fix-section"><div class="fix-title">The fix</div>';
+    fixes.forEach(function(fix, fi) {
+      html += '<div class="fix-card ' + fix.level + '">';
+      html += '<div class="fix-card-title">' + fix.icon + ' ' + fix.title + '</div>';
+      html += '<div class="fix-card-desc">' + fix.desc + '</div>';
+      if (fix.code) {
+        html += '<div class="code-block"><pre id="fix' + fi + '">' + fix.code + '</pre>';
+        html += '<button class="copy-btn" onclick="cp(\'fix' + fi + '\',this)">Copy</button></div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  // Related links
+  html += '<div style="font-size:12px;opacity:0.5;margin-top:2rem;border-top:1px solid var(--border);padding-top:1rem">';
+  html += 'Related: <a href="/errors/err-too-many-redirects/" style="color:var(--purple)">ERR_TOO_MANY_REDIRECTS guide</a> &nbsp;';
+  html += '<a href="/" style="color:var(--purple)">HeadersFixer — full header audit</a> &nbsp;';
+  html += '<a href="/tools/header-scorer/" style="color:var(--purple)">Security Headers Scorer</a>';
+  html += '</div>';
+
+  document.getElementById('output').innerHTML = html;
+}
+
+function generateFixes(hops, isLoop, stacks) {
+  var fixes = [];
+  var hasCF = stacks.indexOf('cloudflare') !== -1;
+  var hasVercel = stacks.indexOf('vercel') !== -1;
+  var hasNginx = stacks.indexOf('nginx') !== -1;
+  var hasApache = stacks.indexOf('apache') !== -1;
+  var hasNetlify = stacks.indexOf('netlify') !== -1;
+
+  if (!isLoop && hops.length <= 2) {
+    fixes.push({
+      level: 'info', icon: '✅',
+      title: 'Chain looks healthy',
+      desc: 'No redirect loop detected. ' + hops.length + ' hop' + (hops.length !== 1 ? 's' : '') + ' total. If you are still seeing ERR_TOO_MANY_REDIRECTS, it may be happening in a browser session with cached redirects — try clearing cookies and cache.',
+      code: null
+    });
+    return fixes;
+  }
+
+  if (isLoop) {
+    // Cloudflare + Nginx/Apache loop (most common)
+    if (hasCF && (hasNginx || hasApache)) {
+      fixes.push({
+        level: 'critical', icon: '🚨',
+        title: 'Cloudflare + origin redirect loop — SSL mode is Flexible',
+        desc: 'Cloudflare SSL mode "Flexible" sends HTTP to your origin. Your origin redirects HTTP to HTTPS. This creates an infinite loop. Fix: change SSL mode to Full (Strict) in the Cloudflare dashboard.',
+        code: '# Step 1 — Cloudflare Dashboard\nSSL/TLS → Overview → change mode from "Flexible" to "Full (Strict)"\n\n# Step 2 — Remove the HTTP redirect from your origin\n# Nginx — you no longer need this block when Cloudflare handles HTTPS:\n# server {\n#   listen 80;\n#   return 301 https://$host$request_uri;  ← remove or keep, either works\n# }\n\n# With Full (Strict), Cloudflare connects to origin over HTTPS\n# Your origin must have a valid SSL certificate (Let\'s Encrypt works)'
+      });
+    }
+
+    // Cloudflare + Vercel loop
+    if (hasCF && hasVercel) {
+      fixes.push({
+        level: 'critical', icon: '🚨',
+        title: 'Cloudflare + Vercel redirect loop',
+        desc: 'Cloudflare SSL mode "Flexible" sends HTTP to Vercel. Vercel redirects HTTP to HTTPS. Loop. Fix: set Cloudflare SSL to Full.',
+        code: '# Cloudflare Dashboard\nSSL/TLS → Overview → set to "Full" (not Flexible, not Full Strict)\n\n# Vercel handles its own HTTPS — you do not need redirect rules in vercel.json\n# Remove any HTTP→HTTPS redirects from vercel.json if present:\n# { "redirects": [...] }  ← remove HTTP redirect entries\n\n# Cloudflare proxied (orange cloud) + Full SSL = correct setup'
+      });
+    }
+
+    // Pure Nginx loop (no Cloudflare)
+    if (!hasCF && hasNginx) {
+      fixes.push({
+        level: 'critical', icon: '🚨',
+        title: 'Nginx redirect loop — conflicting server blocks',
+        desc: 'Two Nginx server blocks are redirecting to each other, or the HTTPS block is also redirecting to HTTPS. Check your server_name values match exactly.',
+        code: '# Correct Nginx HTTP → HTTPS redirect pattern\nserver {\n    listen 80;\n    server_name example.com www.example.com;\n    return 301 https://example.com$request_uri;\n}\n\nserver {\n    listen 443 ssl;\n    server_name example.com www.example.com;\n    # NO return 301 here — this block is the final destination\n    ssl_certificate /etc/nginx/ssl/fullchain.pem;\n    ssl_certificate_key /etc/nginx/ssl/privkey.pem;\n    # ... your location blocks\n}\n\n# Common mistake: return 301 inside the 443 block redirecting to itself\n# Test with: nginx -t && nginx -s reload'
+      });
+    }
+
+    // Pure Apache loop
+    if (!hasCF && hasApache) {
+      fixes.push({
+        level: 'critical', icon: '🚨',
+        title: 'Apache redirect loop — .htaccess conflict',
+        desc: 'RewriteRule in .htaccess is redirecting in a loop. Use the X-Forwarded-Proto check to avoid redirecting already-HTTPS requests.',
+        code: '# Correct Apache HTTP → HTTPS redirect in .htaccess\nRewriteEngine On\n\n# Check the original protocol — prevents loop behind proxies\nRewriteCond %{HTTP:X-Forwarded-Proto} !https\nRewriteCond %{HTTPS} off\nRewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]\n\n# Without X-Forwarded-Proto check, the rule fires even on HTTPS requests\n# causing an infinite redirect loop behind Cloudflare or a load balancer'
+      });
+    }
+
+    // Generic loop fallback
+    if (fixes.length === 0) {
+      fixes.push({
+        level: 'critical', icon: '🚨',
+        title: 'Redirect loop detected',
+        desc: 'The chain is redirecting back to a previously visited URL. Common causes: conflicting HTTP→HTTPS rules, www/non-www redirect conflicts, or CDN SSL mode mismatch.',
+        code: '# Debug steps:\n\n# 1. Check with curl (bypasses browser cache)\ncurl -sIL --max-redirs 10 https://yoursite.com | grep -E "HTTP|Location"\n\n# 2. Check for conflicting redirects\n# - Is Cloudflare SSL mode set to Flexible? → change to Full\n# - Does your origin redirect HTTP→HTTPS AND the CDN also does? → remove one\n# - Do you have www→non-www AND non-www→www rules? → remove one direction\n\n# 3. Clear browser cookies and try in incognito — cached redirects can cause loops'
+      });
+    }
+  }
+
+  // Too many hops warning (no loop but slow)
+  if (!isLoop && hops.length >= 4) {
+    fixes.push({
+      level: 'warning', icon: '⚠️',
+      title: hops.length + ' hops — chain is too long',
+      desc: 'Every redirect adds latency and loses PageRank. Ideal: 0-1 redirects. More than 3 is a problem.',
+      code: '# Aim to redirect directly to final URL\n\n# Bad — 3 hops:\n# http://www.example.com → https://www.example.com → https://example.com\n\n# Good — 1 hop:\n# http://www.example.com → https://example.com\n\n# In Nginx — combine www + HTTP redirect into one rule:\nserver {\n    listen 80;\n    server_name example.com www.example.com;\n    return 301 https://example.com$request_uri;\n}\n\nserver {\n    listen 443 ssl;\n    server_name www.example.com;\n    return 301 https://example.com$request_uri;\n}'
+    });
+  }
+
+  // 302 instead of 301 warning
+  var has302 = hops.some(function(h) { return h.status === 302; });
+  if (has302 && !isLoop) {
+    fixes.push({
+      level: 'warning', icon: '⚠️',
+      title: '302 Temporary redirect — should this be 301?',
+      desc: '302 redirects are not cached by browsers and do not pass PageRank. If this redirect is permanent, use 301.',
+      code: '# Nginx — change 302 to 301\nreturn 301 https://example.com$request_uri;\n\n# Apache .htaccess\nRedirect 301 /old-path https://example.com/new-path\n\n# Express\nres.redirect(301, "https://example.com/new-path");'
+    });
+  }
+
+  return fixes;
+}
+
+function cp(id, btn) {
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(function() {
+    btn.textContent = 'Copied!';
+    setTimeout(function() { btn.textContent = 'Copy'; }, 1500);
+  });
+}
+</script>
+</body>
+</html>
