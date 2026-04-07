@@ -95,7 +95,7 @@
 
       <div class="field">
         <label>Asset type</label>
-        <select id="assetType" onchange="generate()">
+        <select id="assetType" onchange="onAssetTypeChange()">
           <option value="static">Static assets (JS, CSS, fonts, images)</option>
           <option value="html">HTML pages</option>
           <option value="api_public">Public API responses</option>
@@ -313,14 +313,22 @@ function buildValue() {
   return parts.join(', ');
 }
 
-function generate() {
+function onAssetTypeChange() {
   const type = document.getElementById('assetType').value;
   applyPreset(type);
+  generate();
+}
+
+function generate() {
+  const type = document.getElementById('assetType').value;
+  // NOTE: applyPreset is only called from onAssetTypeChange, NOT here
+  // so toggles are not reset on every keystroke/toggle
 
   const val = buildValue();
   document.getElementById('headerValue').textContent = val;
 
-  const preset = PRESETS[type];
+  const currentType = document.getElementById('assetType').value;
+  const preset = PRESETS[currentType];
 
   // Vary
   const varyBox = document.getElementById('varyBox');
