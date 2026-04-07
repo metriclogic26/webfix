@@ -1,157 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CORS — How It Works and How to Fix It — HttpFixer Learn</title>
-  <meta name="description" content="Why browsers enforce CORS, how OPTIONS preflight works, the five misconfigurations teams hit most, and framework-specific fixes.">
-  <link rel="canonical" href="https://httpfixer.dev/learn/cors/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="CORS — How It Works and How to Fix It — HttpFixer Learn">
-  <meta property="og:description" content="Preflight, credentials, wildcards, and Vary: Origin—explained with real fixes for Express, Nginx, FastAPI, and Django.">
-  <meta property="og:url" content="https://httpfixer.dev/learn/cors/">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">
-{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://httpfixer.dev/learn/"},{"@type":"ListItem","position":3,"name":"CORS — How It Works and How to Fix It","item":"https://httpfixer.dev/learn/cors/"}]},{"@type":"TechArticle","headline":"CORS — How It Works and How to Fix It","description":"Developer guide to Cross-Origin Resource Sharing, preflight requests, and common API misconfigurations.","url":"https://httpfixer.dev/learn/cors/","datePublished":"2026-03-31","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does curl succeed but the browser fails?","acceptedAnswer":{"@type":"Answer","text":"curl does not enforce same-origin policy. The browser sends extra CORS headers and may send an OPTIONS preflight the server must answer with matching Allow-* metadata."}},{"@type":"Question","name":"Do all requests trigger a preflight?","acceptedAnswer":{"@type":"Answer","text":"No. Simple GET/HEAD requests with safelisted headers often skip preflight. JSON bodies, custom headers like Authorization, or methods like PUT trigger OPTIONS first."}},{"@type":"Question","name":"Why add Vary: Origin when CORS is dynamic?","acceptedAnswer":{"@type":"Answer","text":"CDNs cache one response per URL. If you echo different Access-Control-Allow-Origin values per caller, the cache can hand the wrong CORS headers to the next client without Vary: Origin."}}]}]}
-  </script>
-  <style>
-    :root {
-      --bg: #0B0D14; --surface: #12151F; --border: #252836;
-      --purple: #6C63FF; --green: #22C55E; --orange: #F97316;
-      --red: #EF4444; --text: #E2E4F0;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; }
-    nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); }
-    nav .brand { font-weight: 600; color: var(--text); text-decoration: none; }
-    nav .brand span { color: var(--purple); }
-    nav .right { display: flex; gap: 1rem; align-items: center; }
-    nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; }
-    nav a:hover { color: var(--purple); opacity: 1; }
-    main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
-    .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; }
-    .breadcrumb a { color: var(--purple); text-decoration: none; }
-    h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; }
-    h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); }
-    h3 { font-size: 1rem; font-weight: 600; margin: 1.25rem 0 0.5rem; opacity: 0.95; }
-    p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; }
-    .lead { font-size: 1.05rem; opacity: 0.95; margin-bottom: 1.25rem; }
-    article a { color: var(--purple); }
-    .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; }
-    .tool-cta:hover { filter: brightness(1.1); }
-    .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
-    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
-    .related-links a { color: var(--purple); text-decoration: none; }
-    footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
-    footer a { color: var(--text); text-decoration: none; }
-    @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
-  </style>
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="HttpFixer">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@metriclogic">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>CORS — How It Works and How to Fix It — HttpFixer Learn</title> <meta name="description" content="Why browsers enforce CORS, how OPTIONS preflight works, the five misconfigurations teams hit most, and framework-specific fixes."> <link rel="canonical" href="https://httpfixer.dev/learn/cors/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="CORS — How It Works and How to Fix It — HttpFixer Learn"> <meta property="og:description" content="Preflight, credentials, wildcards, and Vary: Origin—explained with real fixes for Express, Nginx, FastAPI, and Django."> <meta property="og:url" content="https://httpfixer.dev/learn/cors/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://httpfixer.dev/learn/"},{"@type":"ListItem","position":3,"name":"CORS — How It Works and How to Fix It","item":"https://httpfixer.dev/learn/cors/"}]},{"@type":"TechArticle","headline":"CORS — How It Works and How to Fix It","description":"Developer guide to Cross-Origin Resource Sharing, preflight requests, and common API misconfigurations.","url":"https://httpfixer.dev/learn/cors/","datePublished":"2026-03-31","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does curl succeed but the browser fails?","acceptedAnswer":{"@type":"Answer","text":"curl does not enforce same-origin policy. The browser sends extra CORS headers and may send an OPTIONS preflight the server must answer with matching Allow-* metadata."}},{"@type":"Question","name":"Do all requests trigger a preflight?","acceptedAnswer":{"@type":"Answer","text":"No. Simple GET/HEAD requests with safelisted headers often skip preflight. JSON bodies, custom headers like Authorization, or methods like PUT trigger OPTIONS first."}},{"@type":"Question","name":"Why add Vary: Origin when CORS is dynamic?","acceptedAnswer":{"@type":"Answer","text":"CDNs cache one response per URL. If you echo different Access-Control-Allow-Origin values per caller, the cache can hand the wrong CORS headers to the next client without Vary: Origin."}}]}]} </script> <style> :root { --bg: #0B0D14; --surface: #12151F; --border: #252836; --purple: #6C63FF; --green: #22C55E; --orange: #F97316; --red: #EF4444; --text: #E2E4F0; } * { box-sizing: border-box; margin: 0; padding: 0; } body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; } nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); } nav .brand { font-weight: 600; color: var(--text); text-decoration: none; } nav .brand span { color: var(--purple); } nav .right { display: flex; gap: 1rem; align-items: center; } nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; } nav a:hover { color: var(--purple); opacity: 1; } main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; } .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; } .breadcrumb a { color: var(--purple); text-decoration: none; } h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; } h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); } h3 { font-size: 1rem; font-weight: 600; margin: 1.25rem 0 0.5rem; opacity: 0.95; } p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; } .lead { font-size: 1.05rem; opacity: 0.95; margin-bottom: 1.25rem; } article a { color: var(--purple); } .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; } .tool-cta:hover { filter: brightness(1.1); } .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre-wrap; word-break: break-word; } .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; } .related-links a { color: var(--purple); text-decoration: none; } footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; } footer a { color: var(--text); text-decoration: none; } @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } } </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
 </head>
-<body>
-  <nav>
-    <a href="/" class="brand">HttpFixer <span>/</span> Learn</a>
-    <div class="right">
-      <a href="/headers/">Headers</a>
-      <a href="/cors/">CORS</a>
-      <a href="/oauth/">OAuth</a>
-      <a href="/csp/">CSP</a>
-      <a href="/edge/">Edge</a>
-      <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a>
-    </div>
-  </nav>
-  <main>
-    <div class="breadcrumb"><a href="/">HttpFixer</a> → Learn → CORS — How It Works and How to Fix It</div>
-    <article>
-      <h1>CORS — How It Works and How to Fix It</h1>
-      <p class="lead">Cross-Origin Resource Sharing is not a server bug you toggle off—it’s the browser enforcing a contract between your frontend origin and your API origin. When the contract is wrong, the network tab shows a failed request even though the origin returned HTTP 200.</p>
-
-      <h2>Why browsers enforce it</h2>
-      <p>Documents at <code>https://app.example</code> cannot read responses from <code>https://api.example</code> unless the API explicitly opts in with <code>Access-Control-Allow-Origin</code> (and related headers). That keeps third-party sites from scraping authenticated JSON with your users’ cookies. The pain shows up when <em>your</em> SPA and API are cross-origin by design.</p>
-
-      <h2>What preflight is doing</h2>
-      <p>Non-simple requests trigger an <code>OPTIONS</code> call first. The browser sends <code>Access-Control-Request-Method</code> and maybe <code>Access-Control-Request-Headers</code>. Your server answers with allowed methods, headers, and optionally <code>Access-Control-Max-Age</code> so repeat visits skip the round trip. If <code>OPTIONS</code> 404s or omits <code>Allow-Headers</code>, the real <code>POST</code> never fires.</p>
-      <div class="code-block">Access-Control-Allow-Origin: https://app.example
+<body> <nav> <a href="/" class="brand">HttpFixer <span>/</span> Learn</a> <div class="right"> <a href="/headers/">Headers</a> <a href="/cors/">CORS</a> <a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a> <a href="/edge/">Edge</a> <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a> </div> </nav> <main> <div class="breadcrumb"><a href="/">HttpFixer</a> → Learn → CORS — How It Works and How to Fix It</div> <article> <h1>CORS — How It Works and How to Fix It</h1> <p class="lead">Cross-Origin Resource Sharing is not a server bug you toggle off—it’s the browser enforcing a contract between your frontend origin and your API origin. When the contract is wrong, the network tab shows a failed request even though the origin returned HTTP 200.</p> <h2>Why browsers enforce it</h2> <p>Documents at <code>https://app.example</code> cannot read responses from <code>https://api.example</code> unless the API explicitly opts in with <code>Access-Control-Allow-Origin</code> (and related headers). That keeps third-party sites from scraping authenticated JSON with your users’ cookies. The pain shows up when <em>your</em> SPA and API are cross-origin by design.</p> <h2>What preflight is doing</h2> <p>Non-simple requests trigger an <code>OPTIONS</code> call first. The browser sends <code>Access-Control-Request-Method</code> and maybe <code>Access-Control-Request-Headers</code>. Your server answers with allowed methods, headers, and optionally <code>Access-Control-Max-Age</code> so repeat visits skip the round trip. If <code>OPTIONS</code> 404s or omits <code>Allow-Headers</code>, the real <code>POST</code> never fires.</p> <div class="code-block">Access-Control-Allow-Origin: https://app.example
 Access-Control-Allow-Methods: GET, POST, OPTIONS
 Access-Control-Allow-Headers: Authorization, Content-Type
-Access-Control-Allow-Credentials: true</div>
-
-      <h2>Five misconfigs and how to fix them</h2>
-
-      <h3>1. Wildcard with credentials</h3>
-      <p><code>Access-Control-Allow-Origin: *</code> plus <code>credentials: 'include'</code> is invalid—Chrome rejects it outright. Mirror the request’s <code>Origin</code> header when it matches an allowlist instead.</p>
-      <div class="code-block">const cors = require('cors');
-app.use(cors({
-  origin: ['https://app.example', 'https://staging.example'],
-  credentials: true
-}));</div>
-
-      <h3>2. 200 without CORS headers</h3>
-      <p>The handler runs but forgets headers on success <em>and</em> error paths—especially 401 JSON bodies. Centralize middleware so every response path gets the same decorator.</p>
-
-      <h3>3. OPTIONS not routed</h3>
-      <p>API gateways or Flask blueprints that only register <code>@app.route(..., methods=['GET','POST'])</code> drop OPTIONS. Add explicit OPTIONS handlers or middleware that short-circuits before auth.</p>
-
-      <h3>4. Missing <code>Vary: Origin</code> behind a CDN</h3>
-      <p>If you vary <code>Allow-Origin</code> by caller, cache keys must include <code>Origin</code> or you serve user A’s headers to user B.</p>
-      <div class="code-block">add_header Vary "Origin" always;</div>
-
-      <h3>5. Preflight cache poisoning via wrong <code>Max-Age</code></h3>
-      <p>A permissive preflight cached for hours hides tight fixes. Use <code>0</code> while debugging, then settle on minutes—not days—until you trust the matrix.</p>
-
-      <h2>Nginx proxy in front of Node</h2>
-      <div class="code-block">location /api/ {
-  if ($request_method = OPTIONS) {
-    add_header Access-Control-Allow-Origin $http_origin always;
-    add_header Access-Control-Allow-Methods "GET, POST, OPTIONS" always;
-    add_header Access-Control-Allow-Headers "Authorization, Content-Type" always;
-    return 204;
-  }
-  proxy_pass http://127.0.0.1:3000;
-}</div>
-      <p>Prefer application-level CORS when you can—Nginx <code>if</code> is brittle—but this pattern unblocks teams stuck behind a legacy edge.</p>
-
-      <h2>FastAPI sketch</h2>
-      <div class="code-block">from fastapi.middleware.cors import CORSMiddleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["https://app.example"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["Authorization", "Content-Type"],
-)</div>
-
-      <h2>Django (<code>django-cors-headers</code>)</h2>
-      <div class="code-block">CORS_ALLOWED_ORIGINS = [
-    "https://app.example",
+Access-Control-Allow-Credentials: true</div> <h2>Five misconfigs and how to fix them</h2> <h3>1. Wildcard with credentials</h3> <p><code>Access-Control-Allow-Origin: *</code> plus <code>credentials: 'include'</code> is invalid—Chrome rejects it outright. Mirror the request’s <code>Origin</code> header when it matches an allowlist instead.</p> <div class="code-block">const cors = require('cors');
+app.use(cors({ origin: ['https://app.example', 'https://staging.example'], credentials: true
+}));</div> <h3>2. 200 without CORS headers</h3> <p>The handler runs but forgets headers on success <em>and</em> error paths—especially 401 JSON bodies. Centralize middleware so every response path gets the same decorator.</p> <h3>3. OPTIONS not routed</h3> <p>API gateways or Flask blueprints that only register <code>@app.route(..., methods=['GET','POST'])</code> drop OPTIONS. Add explicit OPTIONS handlers or middleware that short-circuits before auth.</p> <h3>4. Missing <code>Vary: Origin</code> behind a CDN</h3> <p>If you vary <code>Allow-Origin</code> by caller, cache keys must include <code>Origin</code> or you serve user A’s headers to user B.</p> <div class="code-block">add_header Vary "Origin" always;</div> <h3>5. Preflight cache poisoning via wrong <code>Max-Age</code></h3> <p>A permissive preflight cached for hours hides tight fixes. Use <code>0</code> while debugging, then settle on minutes—not days—until you trust the matrix.</p> <h2>Nginx proxy in front of Node</h2> <div class="code-block">location /api/ { if ($request_method = OPTIONS) { add_header Access-Control-Allow-Origin $http_origin always; add_header Access-Control-Allow-Methods "GET, POST, OPTIONS" always; add_header Access-Control-Allow-Headers "Authorization, Content-Type" always; return 204; } proxy_pass http://127.0.0.1:3000;
+}</div> <p>Prefer application-level CORS when you can—Nginx <code>if</code> is brittle—but this pattern unblocks teams stuck behind a legacy edge.</p> <h2>FastAPI sketch</h2> <div class="code-block">from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware( CORSMiddleware, allow_origins=["https://app.example"], allow_credentials=True, allow_methods=["*"], allow_headers=["Authorization", "Content-Type"],
+)</div> <h2>Django (<code>django-cors-headers</code>)</h2> <div class="code-block">CORS_ALLOWED_ORIGINS = [ "https://app.example",
 ]
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = ["https://app.example"]</div>
-      <p>Django separates CSRF trusted origins from CORS—you need both when the SPA posts cookies across sites. Missing <code>CSRF_TRUSTED_ORIGINS</code> surfaces as 403s that look like CORS failures in the console because the preflight succeeded.</p>
-
-      <h2>Debugging checklist</h2>
-      <p>When stuck, capture the failing request in DevTools: confirm whether it’s “simple” or preflight, verify the response includes every allowed header name the browser asked for (case-insensitive match on names, not values), and replay with <code>curl -v -X OPTIONS</code> using the same <code>Origin</code>. If middleware order matters—auth before CORS—swap so CORS answers fail fast for browsers while still logging security events server-side.</p>
-
-      <h2>Local development hosts</h2>
-      <p>Adding <code>http://localhost:5173</code> to <code>allow_origins</code> is fine for dev, but strip those entries before production deploys or you create predictable reflection points. Use environment-driven arrays and reject requests when <code>NODE_ENV=production</code> still sees dev origins in configuration.</p>
-    </article>
-
-    <div class="related-links"><span>Related:</span> <a href="/glossary/cors/">CORS (glossary)</a> · <a href="/glossary/preflight-request/">Preflight request</a> · <a href="/glossary/vary-header/">Vary header</a> · <a href="/fix/cors/express/">Fix CORS (Express)</a> · <a href="/fix/cors/nginx/">Fix CORS (Nginx)</a> · <a href="/fix/cors/fastapi/">Fix CORS (FastAPI)</a> · <a href="/error/cors-blocked/">CORS blocked error</a></div>
-    <a href="/cors/" class="tool-cta">Open CORSFixer →</a>
-  </main>
-  <footer>
-    <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/httpfixer">GitHub →</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+CSRF_TRUSTED_ORIGINS = ["https://app.example"]</div> <p>Django separates CSRF trusted origins from CORS—you need both when the SPA posts cookies across sites. Missing <code>CSRF_TRUSTED_ORIGINS</code> surfaces as 403s that look like CORS failures in the console because the preflight succeeded.</p> <h2>Debugging checklist</h2> <p>When stuck, capture the failing request in DevTools: confirm whether it’s “simple” or preflight, verify the response includes every allowed header name the browser asked for (case-insensitive match on names, not values), and replay with <code>curl -v -X OPTIONS</code> using the same <code>Origin</code>. If middleware order matters—auth before CORS—swap so CORS answers fail fast for browsers while still logging security events server-side.</p> <h2>Local development hosts</h2> <p>Adding <code>http://localhost:5173</code> to <code>allow_origins</code> is fine for dev, but strip those entries before production deploys or you create predictable reflection points. Use environment-driven arrays and reject requests when <code>NODE_ENV=production</code> still sees dev origins in configuration.</p> </article> <div class="related-links"><span>Related:</span> <a href="/glossary/cors/">CORS (glossary)</a> · <a href="/glossary/preflight-request/">Preflight request</a> · <a href="/glossary/vary-header/">Vary header</a> · <a href="/fix/cors/express/">Fix CORS (Express)</a> · <a href="/fix/cors/nginx/">Fix CORS (Nginx)</a> · <a href="/fix/cors/fastapi/">Fix CORS (FastAPI)</a> · <a href="/error/cors-blocked/">CORS blocked error</a></div> <a href="/cors/" class="tool-cta">Open CORSFixer →</a> </main> <footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span>MIT · <a href="https://github.com/metriclogic26/httpfixer">GitHub →</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

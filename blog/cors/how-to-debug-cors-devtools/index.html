@@ -1,209 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Debug CORS Errors in Chrome DevTools — Step by Step · HttpFixer</title>
-  <meta name="description" content="The browser console shows a CORS error but not the root cause. DevTools Network tab shows everything. Here is exactly how to read it and find what is wrong.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/cors/how-to-debug-cors-devtools/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="How to Debug CORS Errors in Chrome DevTools — Step by Step">
-  <meta property="og:description" content="The browser console shows a CORS error but not the root cause. DevTools Network tab shows everything. Here is exactly how to read it and find what is wrong.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/cors/how-to-debug-cors-devtools/">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "TechArticle",
-      "headline": "How to Debug CORS Errors in Chrome DevTools \u2014 Step by Step",
-      "description": "The browser console shows a CORS error but not the root cause. DevTools Network tab shows everything. Here is exactly how to read it and find what is wrong.",
-      "url": "https://httpfixer.dev/blog/cors/how-to-debug-cors-devtools/",
-      "datePublished": "2026-04-03",
-      "dateModified": "2026-04-03",
-      "author": {
-        "@type": "Organization",
-        "name": "MetricLogic"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "MetricLogic",
-        "url": "https://metriclogic.dev"
-      }
-    },
-    {
-      "@type": "HowTo",
-      "name": "How to Debug CORS Errors in Chrome DevTools \u2014 Step by Step",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Open DevTools Network tab before reproducing the error",
-          "text": "Clear the log first so you can see the specific failing request."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Find the OPTIONS preflight request",
-          "text": "For POST/PUT/DELETE with custom headers, look for a separate OPTIONS request above the failing request."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Read the exact console error message",
-          "text": "Each CORS error string tells you exactly which header is wrong or missing."
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Why does my API work in Postman but fail in the browser?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Postman is a developer tool that does not enforce browser security policies including CORS. The browser enforces CORS by blocking responses that lack the correct headers."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What does status 0 mean in the Network tab?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Status 0 means no response was received at all. This is usually a network error, SSL certificate issue, or blocked preflight \u2014 not a CORS header problem."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Why does the browser show a CORS error when the server returned 200?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "The server processed and responded to the request, but the browser blocked JavaScript from reading the response because CORS headers were missing or incorrect."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "HttpFixer",
-          "item": "https://httpfixer.dev"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Blog",
-          "item": "https://httpfixer.dev/blog/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "How to Debug CORS Errors in Chrome DevTools \u2014 Step by Step",
-          "item": "https://httpfixer.dev/blog/cors/how-to-debug-cors-devtools/"
-        }
-      ]
-    }
-  ]
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem;align-items:center}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .breadcrumb a{color:var(--purple);text-decoration:none}
-    .error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;font-family:"JetBrains Mono",monospace;line-height:1.6}
-    .error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em}
-    .warn-box{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
-    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.2);color:var(--purple)}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .tool-cta:hover{filter:brightness(1.1)}
-    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
-  </style>
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>How to Debug CORS Errors in Chrome DevTools — Step by Step · HttpFixer</title> <meta name="description" content="The browser console shows a CORS error but not the root cause. DevTools Network tab shows everything. Here is exactly how to read it and find what is wrong."> <link rel="canonical" href="https://httpfixer.dev/blog/cors/how-to-debug-cors-devtools/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="How to Debug CORS Errors in Chrome DevTools — Step by Step"> <meta property="og:description" content="The browser console shows a CORS error but not the root cause. DevTools Network tab shows everything. Here is exactly how to read it and find what is wrong."> <meta property="og:url" content="https://httpfixer.dev/blog/cors/how-to-debug-cors-devtools/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@type": "TechArticle", "headline": "How to Debug CORS Errors in Chrome DevTools \u2014 Step by Step", "description": "The browser console shows a CORS error but not the root cause. DevTools Network tab shows everything. Here is exactly how to read it and find what is wrong.", "url": "https://httpfixer.dev/blog/cors/how-to-debug-cors-devtools/", "datePublished": "2026-04-03", "dateModified": "2026-04-03", "author": { "@type": "Organization", "name": "MetricLogic" }, "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://" } }, { "@type": "HowTo", "name": "How to Debug CORS Errors in Chrome DevTools \u2014 Step by Step", "step": [ { "@type": "HowToStep", "position": 1, "name": "Open DevTools Network tab before reproducing the error", "text": "Clear the log first so you can see the specific failing request." }, { "@type": "HowToStep", "position": 2, "name": "Find the OPTIONS preflight request", "text": "For POST/PUT/DELETE with custom headers, look for a separate OPTIONS request above the failing request." }, { "@type": "HowToStep", "position": 3, "name": "Read the exact console error message", "text": "Each CORS error string tells you exactly which header is wrong or missing." } ] }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "Why does my API work in Postman but fail in the browser?", "acceptedAnswer": { "@type": "Answer", "text": "Postman is a developer tool that does not enforce browser security policies including CORS. The browser enforces CORS by blocking responses that lack the correct headers." } }, { "@type": "Question", "name": "What does status 0 mean in the Network tab?", "acceptedAnswer": { "@type": "Answer", "text": "Status 0 means no response was received at all. This is usually a network error, SSL certificate issue, or blocked preflight \u2014 not a CORS header problem." } }, { "@type": "Question", "name": "Why does the browser show a CORS error when the server returned 200?", "acceptedAnswer": { "@type": "Answer", "text": "The server processed and responded to the request, but the browser blocked JavaScript from reading the response because CORS headers were missing or incorrect." } } ] }, { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev" }, { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://httpfixer.dev/blog/" }, { "@type": "ListItem", "position": 3, "name": "How to Debug CORS Errors in Chrome DevTools \u2014 Step by Step", "item": "https://httpfixer.dev/blog/cors/how-to-debug-cors-devtools/" } ] } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem;align-items:center} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;font-family:"JetBrains Mono",monospace;line-height:1.6} .error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em} .warn-box{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6} .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.2);color:var(--purple)} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/cors/">Cors</a> → How to Debug CORS Errors in Chrome DevTools — Step by Step</div>
-  <span class="tag">CORS</span>
-  <h1>How to Debug CORS Errors in Chrome DevTools</h1>
-<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
-  
-<div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace">
-  <span style="font-size:12px;opacity:0.7">Reading this article? Verify your fix in real-time.</span>
-  <a href="/cors/" style="display:inline-block;padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Send a live preflight to your API → CORSFixer</a>
-</div>
-  
-<p class="lead">The console shows one CORS error. The actual problem could be four different things. DevTools Network tab shows the exact request and response — here is how to read it in 60 seconds.</p>
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/cors/">Cors</a> → How to Debug CORS Errors in Chrome DevTools — Step by Step</div> <span class="tag">CORS</span> <h1>How to Debug CORS Errors in Chrome DevTools</h1>
+<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p> <div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace"> <span style="font-size:12px;opacity:0.7">Reading this article? Verify your fix in real-time.</span> <a href="/cors/" style="display:inline-block;padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Send a live preflight to your API → CORSFixer</a>
+</div> <p class="lead">The console shows one CORS error. The actual problem could be four different things. DevTools Network tab shows the exact request and response — here is how to read it in 60 seconds.</p>
 
 <h2>Step 1 — Open DevTools Network tab before reproducing</h2>
 <p>Open DevTools (F12) → Network tab → clear the log → reproduce the error. The CORS error will appear in Console, but the Network tab has the detail.</p>
 
 <h2>Step 2 — Find the failing request</h2>
 <p>In Network tab, look for requests with a red warning icon or status 0/CORS. Click on the request. You will see:</p>
-<ul>
-  <li><strong>Headers tab</strong> — request headers (what the browser sent) and response headers (what the server returned)</li>
-  <li><strong>Preview / Response tab</strong> — the response body (if any)</li>
+<ul> <li><strong>Headers tab</strong> — request headers (what the browser sent) and response headers (what the server returned)</li> <li><strong>Preview / Response tab</strong> — the response body (if any)</li>
 </ul>
 
 <h2>Step 3 — Check the Response Headers</h2>
 <p>In the Headers tab, scroll to Response Headers. Look for:</p>
-<table>
-  <thead><tr><th>What you see</th><th>What it means</th><th>Fix</th></tr></thead>
-  <tbody>
-    <tr><td>No Access-Control-Allow-Origin</td><td>Server did not add CORS headers</td><td>Add CORS middleware to your server</td></tr>
-    <tr><td>Access-Control-Allow-Origin: *</td><td>Wildcard — works unless you use credentials</td><td>Change to explicit origin if using cookies/auth</td></tr>
-    <tr><td>Access-Control-Allow-Origin: https://wrong.com</td><td>Wrong origin in response</td><td>Fix server config to match your actual frontend origin</td></tr>
-    <tr><td>No response at all (status 0)</td><td>Network error before CORS check</td><td>Check SSL certificate, DNS, server availability</td></tr>
-  </tbody>
+<table> <thead><tr><th>What you see</th><th>What it means</th><th>Fix</th></tr></thead> <tbody> <tr><td>No Access-Control-Allow-Origin</td><td>Server did not add CORS headers</td><td>Add CORS middleware to your server</td></tr> <tr><td>Access-Control-Allow-Origin: *</td><td>Wildcard — works unless you use credentials</td><td>Change to explicit origin if using cookies/auth</td></tr> <tr><td>Access-Control-Allow-Origin: https://wrong.com</td><td>Wrong origin in response</td><td>Fix server config to match your actual frontend origin</td></tr> <tr><td>No response at all (status 0)</td><td>Network error before CORS check</td><td>Check SSL certificate, DNS, server availability</td></tr> </tbody>
 </table>
 
 <h2>Step 4 — Check for the OPTIONS preflight</h2>
 <p>If your request uses POST, PUT, DELETE, or custom headers — look for a separate OPTIONS request in the Network tab. It appears just before the actual request.</p>
-<ul>
-  <li><strong>OPTIONS returns 404</strong> → server does not handle preflight. Add an OPTIONS handler.</li>
-  <li><strong>OPTIONS returns 200 but no CORS headers</strong> → server handles OPTIONS but does not add CORS headers to it.</li>
-  <li><strong>OPTIONS returns 204 with CORS headers</strong> → preflight is correct. Check the actual request headers.</li>
+<ul> <li><strong>OPTIONS returns 404</strong> → server does not handle preflight. Add an OPTIONS handler.</li> <li><strong>OPTIONS returns 200 but no CORS headers</strong> → server handles OPTIONS but does not add CORS headers to it.</li> <li><strong>OPTIONS returns 204 with CORS headers</strong> → preflight is correct. Check the actual request headers.</li>
 </ul>
 
 <h2>Step 5 — Read the exact Console error message</h2>
@@ -232,14 +54,9 @@
 <p>If your API works in Postman but fails in the browser — it is always a CORS issue. Postman does not enforce CORS. The browser does. Your server is responding but not including CORS headers.</p>
 
 <h2>Use CORSFixer for a live preflight test</h2>
-<p>Instead of manually checking headers, CORSFixer sends a real OPTIONS preflight from the browser to your API and shows exactly what was sent and what came back — with a diagnosis of what is wrong.</p>
-  <a href="/cors/" class="tool-cta">Send a live preflight to your API → CORSFixer</a>
-  <div class="related">Related: <a href="/blog/cors/fix-cors-express/">Express CORS fix</a> <a href="/blog/cors/fix-cors-preflight-options/">Preflight OPTIONS fix</a> <a href="/blog/explainers/what-is-preflight/">What is a preflight?</a></div>
+<p>Instead of manually checking headers, CORSFixer sends a real OPTIONS preflight from the browser to your API and shows exactly what was sent and what came back — with a diagnosis of what is wrong.</p> <a href="/cors/" class="tool-cta">Send a live preflight to your API → CORSFixer</a> <div class="related">Related: <a href="/blog/cors/fix-cors-express/">Express CORS fix</a> <a href="/blog/cors/fix-cors-preflight-options/">Preflight OPTIONS fix</a> <a href="/blog/explainers/what-is-preflight/">What is a preflight?</a></div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/privacy/">Terms</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/privacy/">Terms</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

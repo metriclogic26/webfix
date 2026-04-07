@@ -1,197 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SameSite Cookie Issues in Iframes — Why Your Embedded App Loses Session &middot; HttpFixer</title>
-  <meta name="description" content="SameSite=Lax cookies are not sent inside cross-site iframes. If your app is embedded as an iframe and users lose their session, SameSite is why.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/headers/samesite-cookies-iframes/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="SameSite Cookie Issues in Iframes — Why Your Embedded App Loses Session">
-  <meta property="og:description" content="SameSite=Lax cookies are not sent inside cross-site iframes. If your app is embedded as an iframe and users lose their session, SameSite is why.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/headers/samesite-cookies-iframes/">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "TechArticle",
-      "headline": "SameSite Cookie Issues in Iframes \u2014 Why Your Embedded App Loses Session",
-      "description": "SameSite=Lax cookies are not sent inside cross-site iframes. If your app is embedded as an iframe and users lose their session, SameSite is why.",
-      "url": "https://httpfixer.dev/blog/headers/samesite-cookies-iframes/",
-      "datePublished": "2026-04-03",
-      "dateModified": "2026-04-03",
-      "author": {
-        "@type": "Organization",
-        "name": "MetricLogic"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "MetricLogic",
-        "url": "https://metriclogic.dev"
-      }
-    },
-    {
-      "@type": "HowTo",
-      "name": "SameSite Cookie Issues in Iframes \u2014 Why Your Embedded App Loses Session",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Identify if your app is embedded in an iframe on another domain",
-          "text": "If yes, SameSite=Lax cookies are blocked. You need SameSite=None; Secure for cross-site cookie access."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Add SameSite=None; Secure to cookies that must work in iframes",
-          "text": "Only apply this to the specific cookies that need cross-site access. Keep session and auth cookies as Lax or Strict."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Add the Partitioned attribute",
-          "text": "For Chrome 2026 compatibility, also add Partitioned to cookies used in embedded contexts."
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What is the default SameSite value if I do not set it?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Lax in all modern browsers. This means cookies are sent on top-level navigation but not on cross-site subresource requests \u2014 including requests from iframes on another domain."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Does SameSite=None have security implications?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes \u2014 SameSite=None allows cookies to be sent on any cross-site request, including from pages controlled by attackers. Always combine with CSRF token validation and use it only for cookies that genuinely need cross-site access."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I use SameSite=Lax for some cookies and None for others?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes \u2014 set different SameSite values per cookie. Session and auth cookies should stay Lax or Strict. Only the specific cookie that needs iframe access should be None."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "HttpFixer",
-          "item": "https://httpfixer.dev"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Blog",
-          "item": "https://httpfixer.dev/blog/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "SameSite Cookie Issues in Iframes \u2014 Why Your Embedded App Loses Session",
-          "item": "https://httpfixer.dev/blog/headers/samesite-cookies-iframes/"
-        }
-      ]
-    }
-  ]
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .bc{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .bc a{color:var(--purple);text-decoration:none}
-    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.2);color:var(--red)}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    .inline-cta{background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    .inline-cta span{font-size:12px;opacity:0.7}
-    .inline-cta a{padding:0.4rem 0.9rem;background:var(--purple);color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .tool-cta:hover{filter:brightness(1.1)}
-    .related{font-size:12px;opacity:0.7;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    .related a:hover{text-decoration:underline}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
-    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
-    .xlink{display:inline-block;margin:0.25rem 0.25rem 0.25rem 0;padding:0.25rem 0.6rem;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);border-radius:4px;font-size:12px;color:var(--purple);text-decoration:none}
-    .xlink:hover{background:rgba(108,99,255,0.2)}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}h1{font-size:1.3rem}}
-  </style>
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>SameSite Cookie Issues in Iframes — Why Your Embedded App Loses Session &middot; HttpFixer</title> <meta name="description" content="SameSite=Lax cookies are not sent inside cross-site iframes. If your app is embedded as an iframe and users lose their session, SameSite is why."> <link rel="canonical" href="https://httpfixer.dev/blog/headers/samesite-cookies-iframes/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="SameSite Cookie Issues in Iframes — Why Your Embedded App Loses Session"> <meta property="og:description" content="SameSite=Lax cookies are not sent inside cross-site iframes. If your app is embedded as an iframe and users lose their session, SameSite is why."> <meta property="og:url" content="https://httpfixer.dev/blog/headers/samesite-cookies-iframes/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@type": "TechArticle", "headline": "SameSite Cookie Issues in Iframes \u2014 Why Your Embedded App Loses Session", "description": "SameSite=Lax cookies are not sent inside cross-site iframes. If your app is embedded as an iframe and users lose their session, SameSite is why.", "url": "https://httpfixer.dev/blog/headers/samesite-cookies-iframes/", "datePublished": "2026-04-03", "dateModified": "2026-04-03", "author": { "@type": "Organization", "name": "MetricLogic" }, "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://" } }, { "@type": "HowTo", "name": "SameSite Cookie Issues in Iframes \u2014 Why Your Embedded App Loses Session", "step": [ { "@type": "HowToStep", "position": 1, "name": "Identify if your app is embedded in an iframe on another domain", "text": "If yes, SameSite=Lax cookies are blocked. You need SameSite=None; Secure for cross-site cookie access." }, { "@type": "HowToStep", "position": 2, "name": "Add SameSite=None; Secure to cookies that must work in iframes", "text": "Only apply this to the specific cookies that need cross-site access. Keep session and auth cookies as Lax or Strict." }, { "@type": "HowToStep", "position": 3, "name": "Add the Partitioned attribute", "text": "For Chrome 2026 compatibility, also add Partitioned to cookies used in embedded contexts." } ] }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "What is the default SameSite value if I do not set it?", "acceptedAnswer": { "@type": "Answer", "text": "Lax in all modern browsers. This means cookies are sent on top-level navigation but not on cross-site subresource requests \u2014 including requests from iframes on another domain." } }, { "@type": "Question", "name": "Does SameSite=None have security implications?", "acceptedAnswer": { "@type": "Answer", "text": "Yes \u2014 SameSite=None allows cookies to be sent on any cross-site request, including from pages controlled by attackers. Always combine with CSRF token validation and use it only for cookies that genuinely need cross-site access." } }, { "@type": "Question", "name": "Can I use SameSite=Lax for some cookies and None for others?", "acceptedAnswer": { "@type": "Answer", "text": "Yes \u2014 set different SameSite values per cookie. Session and auth cookies should stay Lax or Strict. Only the specific cookie that needs iframe access should be None." } } ] }, { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev" }, { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://httpfixer.dev/blog/" }, { "@type": "ListItem", "position": 3, "name": "SameSite Cookie Issues in Iframes \u2014 Why Your Embedded App Loses Session", "item": "https://httpfixer.dev/blog/headers/samesite-cookies-iframes/" } ] } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .bc{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .bc a{color:var(--purple);text-decoration:none} .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.2);color:var(--red)} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} .inline-cta{background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} .inline-cta span{font-size:12px;opacity:0.7} .inline-cta a{padding:0.4rem 0.9rem;background:var(--purple);color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.7;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} .related a:hover{text-decoration:underline} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85} .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6} .xlink{display:inline-block;margin:0.25rem 0.25rem 0.25rem 0;padding:0.25rem 0.6rem;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);border-radius:4px;font-size:12px;color:var(--purple);text-decoration:none} .xlink:hover{background:rgba(108,99,255,0.2)} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}h1{font-size:1.3rem}} </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a>
-    <a href="/cors/">CORS</a>
-    <a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a>
-    <a href="/edge/">Edge</a>
-    <a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a> <a href="/cors/">CORS</a> <a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a> <a href="/edge/">Edge</a> <a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <div class="bc"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/headers/">Headers</a> &rarr; SameSite Cookie Issues in Iframes — Why Your Embedded App Loses Session</div>
-  <span class="tag">Headers</span>
-  <h1>SameSite Cookie Issues in Iframes — Why Your Embedded App Loses Session</h1>
-<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
-  <div class="inline-cta">
-  <span>Reading this? Verify your fix in real-time.</span>
-  <a href="/">Scan your cookie headers &rarr; HeadersFixer</a>
-</div>
-  
-<p class="lead">You embedded your dashboard inside a partner's page. Users are logged out the moment the iframe loads. Their browser sent the session cookie on the top-level navigation but not inside the iframe. SameSite=Lax is working as designed — blocking your embed.</p>
+<main> <div class="bc"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/headers/">Headers</a> &rarr; SameSite Cookie Issues in Iframes — Why Your Embedded App Loses Session</div> <span class="tag">Headers</span> <h1>SameSite Cookie Issues in Iframes — Why Your Embedded App Loses Session</h1>
+<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p> <div class="inline-cta"> <span>Reading this? Verify your fix in real-time.</span> <a href="/">Scan your cookie headers &rarr; HeadersFixer</a>
+</div> <p class="lead">You embedded your dashboard inside a partner's page. Users are logged out the moment the iframe loads. Their browser sent the session cookie on the top-level navigation but not inside the iframe. SameSite=Lax is working as designed — blocking your embed.</p>
 
 <h2>Understanding the SameSite values</h2>
-<table>
-  <thead><tr><th>Value</th><th>Sent on top-level navigation</th><th>Sent in iframes (cross-site)</th><th>CSRF protection</th></tr></thead>
-  <tbody>
-    <tr><td>Strict</td><td>Same-site only</td><td>No</td><td>Maximum</td></tr>
-    <tr><td>Lax (default)</td><td>Yes (GET only)</td><td>No</td><td>Good</td></tr>
-    <tr><td>None; Secure</td><td>Yes</td><td>Yes</td><td>None from SameSite — need CSRF tokens</td></tr>
-  </tbody>
+<table> <thead><tr><th>Value</th><th>Sent on top-level navigation</th><th>Sent in iframes (cross-site)</th><th>CSRF protection</th></tr></thead> <tbody> <tr><td>Strict</td><td>Same-site only</td><td>No</td><td>Maximum</td></tr> <tr><td>Lax (default)</td><td>Yes (GET only)</td><td>No</td><td>Good</td></tr> <tr><td>None; Secure</td><td>Yes</td><td>Yes</td><td>None from SameSite — need CSRF tokens</td></tr> </tbody>
 </table>
 
 <h2>The fix for embedded apps</h2>
@@ -205,28 +25,15 @@ Set-Cookie: embed_session=abc123; SameSite=None; Secure; HttpOnly; Partitioned; 
 
 <h3>Express / Node.js</h3>
 <pre>// Only set None for cookies that need iframe access
-res.cookie("embed_session", sessionId, {
-  sameSite: "none",  // must be lowercase string
-  secure: true,
-  httpOnly: true,
-  path: "/"
+res.cookie("embed_session", sessionId, { sameSite: "none",  // must be lowercase string secure: true, httpOnly: true, path: "/"
 });
 
 // Session cookie stays Lax
-res.cookie("session", sessionId, {
-  sameSite: "lax",
-  secure: true,
-  httpOnly: true
+res.cookie("session", sessionId, { sameSite: "lax", secure: true, httpOnly: true
 });</pre>
 
 <h3>FastAPI / Python</h3>
-<pre>response.set_cookie(
-    key="embed_session",
-    value=session_id,
-    samesite="none",
-    secure=True,
-    httponly=True,
-    path="/"
+<pre>response.set_cookie( key="embed_session", value=session_id, samesite="none", secure=True, httponly=True, path="/"
 )</pre>
 
 <h3>Django</h3>
@@ -234,12 +41,7 @@ res.cookie("session", sessionId, {
 # Do NOT change SESSION_COOKIE_SAMESITE globally to "None"
 # Set it per-cookie in your view:
 
-response.set_cookie(
-    "embed_session",
-    value=session_id,
-    samesite="None",
-    secure=True,
-    httponly=True
+response.set_cookie( "embed_session", value=session_id, samesite="None", secure=True, httponly=True
 )</pre>
 
 <h2>You also need X-Frame-Options removed (or set to SAMEORIGIN)</h2>
@@ -254,29 +56,13 @@ Content-Security-Policy: frame-ancestors 'self' https://partner.com;</pre>
 <p>When you use <code>SameSite=None</code>, you lose CSRF protection from cookies. You need explicit CSRF tokens:</p>
 <pre>// Generate a CSRF token per session and include it in responses
 // The iframe JavaScript must send it as a header with state-changing requests
-app.post("/api/action", (req, res) => {
-  const csrfToken = req.headers["x-csrf-token"];
-  const storedToken = req.session.csrfToken;
+app.post("/api/action", (req, res) => { const csrfToken = req.headers["x-csrf-token"]; const storedToken = req.session.csrfToken; if (!csrfToken || csrfToken !== storedToken) { return res.status(403).json({ error: "CSRF token invalid" }); } // process request
+});</pre> <a href="/" class="tool-cta">Scan your cookie headers &rarr; HeadersFixer</a> <div class="related"> <strong>Related:</strong> <a class="xlink" href="/blog/headers/secure-httponly-cookies/">Secure + HttpOnly cookies</a><a class="xlink" href="/blog/headers/chips-partitioned-cookies/">CHIPS Partitioned cookies</a><a class="xlink" href="/blog/headers/clear-site-data/">Clear-Site-Data on logout</a><a class="xlink" href="/blog/compare/cors-vs-csrf/">CORS vs CSRF</a> </div>
 
-  if (!csrfToken || csrfToken !== storedToken) {
-    return res.status(403).json({ error: "CSRF token invalid" });
-  }
-  // process request
-});</pre>
-  <a href="/" class="tool-cta">Scan your cookie headers &rarr; HeadersFixer</a>
-  <div class="related">
-    <strong>Related:</strong>
-    <a class="xlink" href="/blog/headers/secure-httponly-cookies/">Secure + HttpOnly cookies</a><a class="xlink" href="/blog/headers/chips-partitioned-cookies/">CHIPS Partitioned cookies</a><a class="xlink" href="/blog/headers/clear-site-data/">Clear-Site-Data on logout</a><a class="xlink" href="/blog/compare/cors-vs-csrf/">CORS vs CSRF</a>
-  </div>
-
-<div style="margin-top:2rem;padding:1rem;background:#12151F;border:1px solid #252836;border-radius:8px;font-size:13px">
-  <a href="/tools/hsts-preload/" style="color:#6C63FF;text-decoration:none;font-weight:500">Check if your domain is on the HSTS preload list → HSTS Preload Checker</a>
+<div style="margin-top:2rem;padding:1rem;background:#12151F;border:1px solid #252836;border-radius:8px;font-size:13px"> <a href="/tools/hsts-preload/" style="color:#6C63FF;text-decoration:none;font-weight:500">Check if your domain is on the HSTS preload list → HSTS Preload Checker</a>
 </div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/generators/">Generators</a> &middot; <a href="/privacy/">Privacy</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue &rarr;</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  &middot; <a href="/blog/">Blog</a> &middot; <a href="/generators/">Generators</a> &middot; <a href="/privacy/">Privacy</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue &rarr;</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

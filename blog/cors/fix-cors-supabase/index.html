@@ -1,180 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fix CORS Error in Supabase Edge Functions · HttpFixer</title>
-  <meta name="description" content="Supabase Edge Functions require explicit CORS headers. Here is the exact handler setup for preflight and the standard Deno response pattern.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/cors/fix-cors-supabase/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Fix CORS Error in Supabase Edge Functions">
-  <meta property="og:description" content="Supabase Edge Functions require explicit CORS headers. Here is the exact handler setup for preflight and the standard Deno response pattern.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/cors/fix-cors-supabase/">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "TechArticle",
-      "headline": "Fix CORS Error in Supabase Edge Functions",
-      "description": "Supabase Edge Functions require explicit CORS headers. Here is the exact handler setup for preflight and the standard Deno response pattern.",
-      "url": "https://httpfixer.dev/blog/cors/fix-cors-supabase/",
-      "datePublished": "2026-04-03",
-      "dateModified": "2026-04-03",
-      "author": {
-        "@type": "Organization",
-        "name": "MetricLogic"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "MetricLogic",
-        "url": "https://metriclogic.dev"
-      }
-    },
-    {
-      "@type": "HowTo",
-      "name": "Fix CORS Error in Supabase Edge Functions",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Add corsHeaders constant",
-          "text": "Define your CORS headers object with Allow-Origin, Allow-Headers, and Allow-Methods."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Return corsHeaders for OPTIONS",
-          "text": "Return a 200 response with corsHeaders when the request method is OPTIONS."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Spread corsHeaders into every response",
-          "text": "Add ...corsHeaders to all your response headers, not just the OPTIONS handler."
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Why does Supabase not add CORS headers automatically?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Edge Functions run as raw Deno server functions \u2014 there is no framework adding headers. You control every header in every response."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What headers does the Supabase JS client send?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "The Supabase client adds authorization, x-client-info, and apikey headers. All three must be in Access-Control-Allow-Headers."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I set CORS globally for all Edge Functions?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Not currently \u2014 each function handles its own CORS. Define a shared corsHeaders constant in a shared utils file and import it."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "HttpFixer",
-          "item": "https://httpfixer.dev"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Blog",
-          "item": "https://httpfixer.dev/blog/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Fix CORS Error in Supabase Edge Functions",
-          "item": "https://httpfixer.dev/blog/cors/fix-cors-supabase/"
-        }
-      ]
-    }
-  ]
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem;align-items:center}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .breadcrumb a{color:var(--purple);text-decoration:none}
-    .error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;font-family:"JetBrains Mono",monospace;line-height:1.6}
-    .error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em}
-    .warn-box{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
-    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.2);color:var(--purple)}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .tool-cta:hover{filter:brightness(1.1)}
-    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
-  </style>
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Fix CORS Error in Supabase Edge Functions · HttpFixer</title> <meta name="description" content="Supabase Edge Functions require explicit CORS headers. Here is the exact handler setup for preflight and the standard Deno response pattern."> <link rel="canonical" href="https://httpfixer.dev/blog/cors/fix-cors-supabase/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="Fix CORS Error in Supabase Edge Functions"> <meta property="og:description" content="Supabase Edge Functions require explicit CORS headers. Here is the exact handler setup for preflight and the standard Deno response pattern."> <meta property="og:url" content="https://httpfixer.dev/blog/cors/fix-cors-supabase/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@type": "TechArticle", "headline": "Fix CORS Error in Supabase Edge Functions", "description": "Supabase Edge Functions require explicit CORS headers. Here is the exact handler setup for preflight and the standard Deno response pattern.", "url": "https://httpfixer.dev/blog/cors/fix-cors-supabase/", "datePublished": "2026-04-03", "dateModified": "2026-04-03", "author": { "@type": "Organization", "name": "MetricLogic" }, "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://" } }, { "@type": "HowTo", "name": "Fix CORS Error in Supabase Edge Functions", "step": [ { "@type": "HowToStep", "position": 1, "name": "Add corsHeaders constant", "text": "Define your CORS headers object with Allow-Origin, Allow-Headers, and Allow-Methods." }, { "@type": "HowToStep", "position": 2, "name": "Return corsHeaders for OPTIONS", "text": "Return a 200 response with corsHeaders when the request method is OPTIONS." }, { "@type": "HowToStep", "position": 3, "name": "Spread corsHeaders into every response", "text": "Add ...corsHeaders to all your response headers, not just the OPTIONS handler." } ] }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "Why does Supabase not add CORS headers automatically?", "acceptedAnswer": { "@type": "Answer", "text": "Edge Functions run as raw Deno server functions \u2014 there is no framework adding headers. You control every header in every response." } }, { "@type": "Question", "name": "What headers does the Supabase JS client send?", "acceptedAnswer": { "@type": "Answer", "text": "The Supabase client adds authorization, x-client-info, and apikey headers. All three must be in Access-Control-Allow-Headers." } }, { "@type": "Question", "name": "Can I set CORS globally for all Edge Functions?", "acceptedAnswer": { "@type": "Answer", "text": "Not currently \u2014 each function handles its own CORS. Define a shared corsHeaders constant in a shared utils file and import it." } } ] }, { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev" }, { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://httpfixer.dev/blog/" }, { "@type": "ListItem", "position": 3, "name": "Fix CORS Error in Supabase Edge Functions", "item": "https://httpfixer.dev/blog/cors/fix-cors-supabase/" } ] } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem;align-items:center} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;font-family:"JetBrains Mono",monospace;line-height:1.6} .error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em} .warn-box{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6} .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.2);color:var(--purple)} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/cors/">Cors</a> → Fix CORS Error in Supabase Edge Functions</div>
-  <span class="tag">CORS</span>
-  <h1>Fix CORS Error in Supabase Edge Functions</h1>
-<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
-  
-<div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace">
-  <span style="font-size:12px;opacity:0.7">Reading this article? Verify your fix in real-time.</span>
-  <a href="/cors/" style="display:inline-block;padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Test your Supabase Edge Function CORS → CORSFixer</a>
-</div>
-  
-<p class="lead">Supabase Edge Functions run on Deno and do not add CORS headers automatically. You need to handle the OPTIONS preflight and add headers to every response.</p>
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/cors/">Cors</a> → Fix CORS Error in Supabase Edge Functions</div> <span class="tag">CORS</span> <h1>Fix CORS Error in Supabase Edge Functions</h1>
+<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p> <div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace"> <span style="font-size:12px;opacity:0.7">Reading this article? Verify your fix in real-time.</span> <a href="/cors/" style="display:inline-block;padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Test your Supabase Edge Function CORS → CORSFixer</a>
+</div> <p class="lead">Supabase Edge Functions run on Deno and do not add CORS headers automatically. You need to handle the OPTIONS preflight and add headers to every response.</p>
 
 <div class="error-box"><div class="error-label">Browser Console</div>Access to fetch at 'https://yourproject.supabase.co/functions/v1/my-function' from origin 'https://yourapp.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.</div>
 
@@ -182,58 +16,17 @@
 <pre>// supabase/functions/my-function/index.ts
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://yourapp.com",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+const corsHeaders = { "Access-Control-Allow-Origin": "https://yourapp.com", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type", "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
 };
 
-serve(async (req) => {
-  // Handle OPTIONS preflight
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
-
-  try {
-    const data = { message: "Hello from Edge Function" };
-
-    return new Response(JSON.stringify(data), {
-      headers: {
-        ...corsHeaders,
-        "Content-Type": "application/json",
-      },
-      status: 200,
-    });
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
-  }
+serve(async (req) => { // Handle OPTIONS preflight if (req.method === "OPTIONS") { return new Response("ok", { headers: corsHeaders }); } try { const data = { message: "Hello from Edge Function" }; return new Response(JSON.stringify(data), { headers: { ...corsHeaders, "Content-Type": "application/json", }, status: 200, }); } catch (error) { return new Response(JSON.stringify({ error: error.message }), { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500, }); }
 });</pre>
 
 <h2>Allow multiple origins</h2>
-<pre>const ALLOWED_ORIGINS = [
-  "https://yourapp.com",
-  "https://staging.yourapp.com",
-  "http://localhost:3000",
+<pre>const ALLOWED_ORIGINS = [ "https://yourapp.com", "https://staging.yourapp.com", "http://localhost:3000",
 ];
 
-serve(async (req) => {
-  const origin = req.headers.get("Origin") || "";
-  const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : "";
-
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": allowedOrigin,
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-    "Vary": "Origin",
-  };
-
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
-  }
-  // ...
+serve(async (req) => { const origin = req.headers.get("Origin") || ""; const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ""; const corsHeaders = { "Access-Control-Allow-Origin": allowedOrigin, "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type", "Vary": "Origin", }; if (req.method === "OPTIONS") { return new Response("ok", { headers: corsHeaders }); } // ...
 });</pre>
 
 <h2>Using Supabase client from the browser</h2>
@@ -242,14 +35,9 @@ serve(async (req) => {
 
 <h2>Deploy and test</h2>
 <pre>supabase functions deploy my-function
-supabase functions serve my-function --env-file .env.local</pre>
-  <a href="/cors/" class="tool-cta">Test your Supabase Edge Function CORS → CORSFixer</a>
-  <div class="related">Related: <a href="/blog/cors/fix-cors-fastapi/">FastAPI CORS</a> <a href="/blog/cors/fix-cors-vercel/">Vercel CORS</a> <a href="/blog/platform/cors-cloudflare-workers/">Cloudflare Workers CORS</a></div>
+supabase functions serve my-function --env-file .env.local</pre> <a href="/cors/" class="tool-cta">Test your Supabase Edge Function CORS → CORSFixer</a> <div class="related">Related: <a href="/blog/cors/fix-cors-fastapi/">FastAPI CORS</a> <a href="/blog/cors/fix-cors-vercel/">Vercel CORS</a> <a href="/blog/platform/cors-cloudflare-workers/">Cloudflare Workers CORS</a></div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/privacy/">Terms</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/privacy/">Terms</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

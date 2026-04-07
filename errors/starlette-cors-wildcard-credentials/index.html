@@ -1,107 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Starlette CORSMiddleware allow_origins=['*'] allow_credentials=True Error — HttpFixer</title>
-  <meta name="description" content="Fix the Starlette CORSMiddleware error: allow_origins=['*'] is not allowed when allow_credentials=True. Exact FastAPI fix with explicit origin list.">
-  <link rel="canonical" href="https://httpfixer.dev/errors/starlette-cors-wildcard-credentials/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Starlette CORSMiddleware allow_origins=['*'] allow_credentials=True Error">
-  <meta property="og:description" content="Fix the Starlette CORS wildcard credentials error. Exact FastAPI config.">
-  <meta property="og:url" content="https://httpfixer.dev/errors/starlette-cors-wildcard-credentials/">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Starlette CORSMiddleware allow_origins=['*'] allow_credentials=True Error","description":"Fix the Starlette CORS wildcard credentials error in FastAPI.","url":"https://httpfixer.dev/errors/starlette-cors-wildcard-credentials/","datePublished":"2026-04-06","dateModified":"2026-04-06","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does Starlette reject allow_origins=['*'] with allow_credentials=True?","acceptedAnswer":{"@type":"Answer","text":"Browsers reject responses with Access-Control-Allow-Origin: * when the request includes credentials (cookies or Authorization headers). Starlette enforces this at the middleware level — it raises a ValueError before the response is sent to prevent the invalid CORS configuration."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Errors","item":"https://httpfixer.dev/errors/"},{"@type":"ListItem","position":3,"name":"Starlette CORS wildcard credentials","item":"https://httpfixer.dev/errors/starlette-cors-wildcard-credentials/"}]}]}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .breadcrumb a{color:var(--purple);text-decoration:none}
-    .error-msg{background:#100a0a;border:1px solid var(--red);border-left:3px solid var(--red);border-radius:6px;padding:1rem 1.25rem;margin-bottom:2rem;font-size:13px;color:#f87171;line-height:1.6}
-    .quick-fix{background:var(--surface);border:1px solid var(--green);border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
-    .quick-fix p{margin:0;opacity:1}
-    h1{font-size:1.5rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    pre code{background:none;color:var(--text);padding:0}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .tool-cta:hover{filter:brightness(1.1)}
-    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
-  </style>
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Starlette CORSMiddleware allow_origins=['*'] allow_credentials=True Error — HttpFixer</title> <meta name="description" content="Fix the Starlette CORSMiddleware error: allow_origins=['*'] is not allowed when allow_credentials=True. Exact FastAPI fix with explicit origin list."> <link rel="canonical" href="https://httpfixer.dev/errors/starlette-cors-wildcard-credentials/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="Starlette CORSMiddleware allow_origins=['*'] allow_credentials=True Error"> <meta property="og:description" content="Fix the Starlette CORS wildcard credentials error. Exact FastAPI config."> <meta property="og:url" content="https://httpfixer.dev/errors/starlette-cors-wildcard-credentials/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Starlette CORSMiddleware allow_origins=['*'] allow_credentials=True Error","description":"Fix the Starlette CORS wildcard credentials error in FastAPI.","url":"https://httpfixer.dev/errors/starlette-cors-wildcard-credentials/","datePublished":"2026-04-06","dateModified":"2026-04-06","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does Starlette reject allow_origins=['*'] with allow_credentials=True?","acceptedAnswer":{"@type":"Answer","text":"Browsers reject responses with Access-Control-Allow-Origin: * when the request includes credentials (cookies or Authorization headers). Starlette enforces this at the middleware level — it raises a ValueError before the response is sent to prevent the invalid CORS configuration."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Errors","item":"https://httpfixer.dev/errors/"},{"@type":"ListItem","position":3,"name":"Starlette CORS wildcard credentials","item":"https://httpfixer.dev/errors/starlette-cors-wildcard-credentials/"}]}]}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .right{display:flex;gap:1rem;flex-wrap:wrap} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .error-msg{background:#100a0a;border:1px solid var(--red);border-left:3px solid var(--red);border-radius:6px;padding:1rem 1.25rem;margin-bottom:2rem;font-size:13px;color:#f87171;line-height:1.6} .quick-fix{background:var(--surface);border:1px solid var(--green);border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0} .quick-fix p{margin:0;opacity:1} h1{font-size:1.5rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} pre code{background:none;color:var(--text);padding:0} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a>
-    <a href="/errors/" style="color:var(--purple);opacity:1">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/" style="color:var(--purple);opacity:1">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/errors/">Errors</a> &rarr; Starlette CORS wildcard credentials</div>
-  <div class="date">Updated April 2026</div>
-  <h1>Starlette CORSMiddleware: allow_origins=['*'] Not Allowed with allow_credentials=True</h1>
-
-  <div class="error-msg">ValueError: allow_origins=['*'] is not allowed when allow_credentials=True.
-Starlette's CORSMiddleware will not allow combining allow_origins=['*'] with allow_credentials=True.</div>
-
-  <div class="quick-fix">
-    <p><strong>The fix:</strong> Replace <code>allow_origins=['*']</code> with an explicit list of your allowed origins.</p>
-  </div>
-
-  <h2>Why this error happens</h2>
-  <p>Browsers reject <code>Access-Control-Allow-Origin: *</code> when the request includes credentials — cookies, Authorization headers, or TLS client certificates. The wildcard and credentials combination is forbidden by the CORS spec.</p>
-  <p>Starlette enforces this at the middleware level. It raises a <code>ValueError</code> on startup rather than sending an invalid response that browsers would silently reject.</p>
-
-  <h2>The fix — FastAPI / Starlette</h2>
-  <pre># Wrong — raises ValueError on startup
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,  # ← conflict
-    allow_methods=["*"],
-    allow_headers=["*"],
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/errors/">Errors</a> &rarr; Starlette CORS wildcard credentials</div> <div class="date">Updated April 2026</div> <h1>Starlette CORSMiddleware: allow_origins=['*'] Not Allowed with allow_credentials=True</h1> <div class="error-msg">ValueError: allow_origins=['*'] is not allowed when allow_credentials=True.
+Starlette's CORSMiddleware will not allow combining allow_origins=['*'] with allow_credentials=True.</div> <div class="quick-fix"> <p><strong>The fix:</strong> Replace <code>allow_origins=['*']</code> with an explicit list of your allowed origins.</p> </div> <h2>Why this error happens</h2> <p>Browsers reject <code>Access-Control-Allow-Origin: *</code> when the request includes credentials — cookies, Authorization headers, or TLS client certificates. The wildcard and credentials combination is forbidden by the CORS spec.</p> <p>Starlette enforces this at the middleware level. It raises a <code>ValueError</code> on startup rather than sending an invalid response that browsers would silently reject.</p> <h2>The fix — FastAPI / Starlette</h2> <pre># Wrong — raises ValueError on startup
+app.add_middleware( CORSMiddleware, allow_origins=["*"], allow_credentials=True,  # ← conflict allow_methods=["*"], allow_headers=["*"],
 )
 
 # Correct — explicit origin list
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "https://app.example.com",
-        "https://staging.example.com",
-    ],
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"],
-)</pre>
-
-  <h2>Dynamic origins from environment</h2>
-  <p>In production, read origins from an environment variable so you don't hardcode them:</p>
-  <pre>import os
+app.add_middleware( CORSMiddleware, allow_origins=[ "https://app.example.com", "https://staging.example.com", ], allow_credentials=True, allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], allow_headers=["Content-Type", "Authorization"],
+)</pre> <h2>Dynamic origins from environment</h2> <p>In production, read origins from an environment variable so you don't hardcode them:</p> <pre>import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -109,41 +20,11 @@ app = FastAPI()
 
 origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization"],
-)</pre>
-  <p>Set in your environment:</p>
-  <pre>ALLOWED_ORIGINS=https://app.example.com,https://staging.example.com</pre>
-
-  <h2>If you don't need credentials</h2>
-  <p>If your API doesn't use cookies or Authorization headers, you can keep the wildcard and remove <code>allow_credentials</code>:</p>
-  <pre>app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],        # Fine without credentials
-    allow_credentials=False,    # Default — can omit entirely
-    allow_methods=["*"],
-    allow_headers=["*"],
-)</pre>
-
-  <h2>Testing your fix</h2>
-  <p>After updating, paste your API URL into CORSFixer to send a real OPTIONS preflight and confirm the CORS headers are correct:</p>
-
-  <a href="/cors/" class="tool-cta">Test your FastAPI CORS config live — CORSFixer &rarr;</a>
-  <div class="related">Related:
-    <a href="/blog/cors/fix-cors-fastapi/">Fix CORS on FastAPI — full guide</a>
-    <a href="/errors/blocked-by-cors-policy/">Blocked by CORS policy</a>
-    <a href="/glossary/cors/">CORS glossary</a>
-    <a href="/generators/cors/">CORS Generator</a>
-  </div>
+app.add_middleware( CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], allow_headers=["Content-Type", "Authorization"],
+)</pre> <p>Set in your environment:</p> <pre>ALLOWED_ORIGINS=https://app.example.com,https://staging.example.com</pre> <h2>If you don't need credentials</h2> <p>If your API doesn't use cookies or Authorization headers, you can keep the wildcard and remove <code>allow_credentials</code>:</p> <pre>app.add_middleware( CORSMiddleware, allow_origins=["*"], # Fine without credentials allow_credentials=False, # Default — can omit entirely allow_methods=["*"], allow_headers=["*"],
+)</pre> <h2>Testing your fix</h2> <p>After updating, paste your API URL into CORSFixer to send a real OPTIONS preflight and confirm the CORS headers are correct:</p> <a href="/cors/" class="tool-cta">Test your FastAPI CORS config live — CORSFixer &rarr;</a> <div class="related">Related: <a href="/blog/cors/fix-cors-fastapi/">Fix CORS on FastAPI — full guide</a> <a href="/errors/blocked-by-cors-policy/">Blocked by CORS policy</a> <a href="/glossary/cors/">CORS glossary</a> <a href="/generators/cors/">CORS Generator</a> </div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

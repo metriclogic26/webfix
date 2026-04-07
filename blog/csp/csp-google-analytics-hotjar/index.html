@@ -1,205 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CSP for Google Analytics, Hotjar and Third-Party Scripts · HttpFixer</title>
-  <meta name="description" content="Marketing scripts are the hardest part of CSP. Here are the exact directives for GA4, Hotjar, Intercom, HubSpot, and Stripe — tested and working.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/csp/csp-google-analytics-hotjar/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="CSP for Google Analytics, Hotjar and Third-Party Scripts">
-  <meta property="og:description" content="Marketing scripts are the hardest part of CSP. Here are the exact directives for GA4, Hotjar, Intercom, HubSpot, and Stripe — tested and working.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/csp/csp-google-analytics-hotjar/">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "TechArticle",
-      "headline": "CSP for Google Analytics, Hotjar and Third-Party Scripts",
-      "description": "Marketing scripts are the hardest part of CSP. Here are the exact directives for GA4, Hotjar, Intercom, HubSpot, and Stripe \u2014 tested and working.",
-      "url": "https://httpfixer.dev/blog/csp/csp-google-analytics-hotjar/",
-      "datePublished": "2026-04-02",
-      "author": {
-        "@type": "Organization",
-        "name": "MetricLogic"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "MetricLogic",
-        "url": "https://metriclogic.dev"
-      }
-    },
-    {
-      "@type": "HowTo",
-      "name": "CSP for Google Analytics, Hotjar and Third-Party Scripts",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Identify your third-party scripts",
-          "text": "Check the Network tab in DevTools for external script and connect requests."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Add required domains to CSP directives",
-          "text": "Each service needs specific domains added to script-src, connect-src, and sometimes img-src."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Test with CSPFixer",
-          "text": "Verify no violations remain after updating your CSP."
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Why do third-party scripts break CSP?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Third-party scripts often load from multiple subdomains, make XHR/fetch calls to their own APIs, and sometimes inject inline scripts. Each of these needs a separate allowlist entry."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I use wildcards for subdomains in CSP?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes \u2014 https://*.hotjar.com covers all Hotjar subdomains. Be specific where possible; wildcards increase the attack surface slightly."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the safest way to add marketing scripts?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Use Partytown to offload them to a Web Worker. This keeps them out of the main thread and reduces CSP complexity since Worker scripts have a separate policy."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "HttpFixer",
-          "item": "https://httpfixer.dev"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Blog",
-          "item": "https://httpfixer.dev/blog/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "CSP for Google Analytics, Hotjar and Third-Party Scripts",
-          "item": "https://httpfixer.dev/blog/csp/csp-google-analytics-hotjar/"
-        }
-      ]
-    }
-  ]
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem;align-items:center}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .breadcrumb a{color:var(--purple);text-decoration:none}
-    .error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;font-family:"JetBrains Mono",monospace;line-height:1.6}
-    .error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em}
-    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(34,197,94,0.2);color:var(--green);}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .tool-cta:hover{filter:brightness(1.1)}
-    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
-  </style>
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="HttpFixer">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@metriclogic">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>CSP for Google Analytics, Hotjar and Third-Party Scripts · HttpFixer</title> <meta name="description" content="Marketing scripts are the hardest part of CSP. Here are the exact directives for GA4, Hotjar, Intercom, HubSpot, and Stripe — tested and working."> <link rel="canonical" href="https://httpfixer.dev/blog/csp/csp-google-analytics-hotjar/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="CSP for Google Analytics, Hotjar and Third-Party Scripts"> <meta property="og:description" content="Marketing scripts are the hardest part of CSP. Here are the exact directives for GA4, Hotjar, Intercom, HubSpot, and Stripe — tested and working."> <meta property="og:url" content="https://httpfixer.dev/blog/csp/csp-google-analytics-hotjar/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@type": "TechArticle", "headline": "CSP for Google Analytics, Hotjar and Third-Party Scripts", "description": "Marketing scripts are the hardest part of CSP. Here are the exact directives for GA4, Hotjar, Intercom, HubSpot, and Stripe \u2014 tested and working.", "url": "https://httpfixer.dev/blog/csp/csp-google-analytics-hotjar/", "datePublished": "2026-04-02", "author": { "@type": "Organization", "name": "MetricLogic" }, "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://" } }, { "@type": "HowTo", "name": "CSP for Google Analytics, Hotjar and Third-Party Scripts", "step": [ { "@type": "HowToStep", "position": 1, "name": "Identify your third-party scripts", "text": "Check the Network tab in DevTools for external script and connect requests." }, { "@type": "HowToStep", "position": 2, "name": "Add required domains to CSP directives", "text": "Each service needs specific domains added to script-src, connect-src, and sometimes img-src." }, { "@type": "HowToStep", "position": 3, "name": "Test with CSPFixer", "text": "Verify no violations remain after updating your CSP." } ] }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "Why do third-party scripts break CSP?", "acceptedAnswer": { "@type": "Answer", "text": "Third-party scripts often load from multiple subdomains, make XHR/fetch calls to their own APIs, and sometimes inject inline scripts. Each of these needs a separate allowlist entry." } }, { "@type": "Question", "name": "Can I use wildcards for subdomains in CSP?", "acceptedAnswer": { "@type": "Answer", "text": "Yes \u2014 https://*.hotjar.com covers all Hotjar subdomains. Be specific where possible; wildcards increase the attack surface slightly." } }, { "@type": "Question", "name": "What is the safest way to add marketing scripts?", "acceptedAnswer": { "@type": "Answer", "text": "Use Partytown to offload them to a Web Worker. This keeps them out of the main thread and reduces CSP complexity since Worker scripts have a separate policy." } } ] }, { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev" }, { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://httpfixer.dev/blog/" }, { "@type": "ListItem", "position": 3, "name": "CSP for Google Analytics, Hotjar and Third-Party Scripts", "item": "https://httpfixer.dev/blog/csp/csp-google-analytics-hotjar/" } ] } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem;align-items:center} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;font-family:"JetBrains Mono",monospace;line-height:1.6} .error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em} .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(34,197,94,0.2);color:var(--green);} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/speedfixer/">Speed</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/speedfixer/">Speed</a> </div>
 </nav>
-<main>
-  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/csp/">CSP</a> → CSP for Google Analytics, Hotjar and Third-Party Scripts</div>
-  <span class="tag">CSP</span>
-  <h1>CSP for Google Analytics, Hotjar and Third-Party Scripts</h1>
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/csp/">CSP</a> → CSP for Google Analytics, Hotjar and Third-Party Scripts</div> <span class="tag">CSP</span> <h1>CSP for Google Analytics, Hotjar and Third-Party Scripts</h1>
 <p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
 
 <!-- Top CTA — auto-injected by 29_robots_cta_privacy_llms.py -->
-<div class="top-cta-bar" style="
-  background: rgba(108,99,255,0.06);
-  border: 1px solid #22C55E33;
-  border-radius: 6px;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  font-family: 'JetBrains Mono', monospace;
-">
-  <span style="font-size:12px;opacity:0.7;color:var(--text,#E2E4F0)">Reading this article? Verify your fix in real-time.</span>
-  <a href="/csp/" style="
-    display:inline-block;
-    padding:0.4rem 0.9rem;
-    background:#22C55E;
-    color:white;
-    text-decoration:none;
-    border-radius:4px;
-    font-size:12px;
-    font-weight:600;
-    white-space:nowrap;
-  ">Scan your page CSP — CSPFixer →</a>
-</div>
-  
-<p class="lead">Marketing and analytics scripts are the hardest part of getting CSP right. They load from multiple subdomains, inject inline scripts, and make API calls — each requiring separate CSP entries. Here are the exact directives for the most common services.</p>
+<div class="top-cta-bar" style=" background: rgba(108,99,255,0.06); border: 1px solid #22C55E33; border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; font-family: 'JetBrains Mono', monospace;
+"> <span style="font-size:12px;opacity:0.7;color:var(--text,#E2E4F0)">Reading this article? Verify your fix in real-time.</span> <a href="/csp/" style=" display:inline-block; padding:0.4rem 0.9rem; background:#22C55E; color:white; text-decoration:none; border-radius:4px; font-size:12px; font-weight:600; white-space:nowrap; ">Scan your page CSP — CSPFixer →</a>
+</div> <p class="lead">Marketing and analytics scripts are the hardest part of getting CSP right. They load from multiple subdomains, inject inline scripts, and make API calls — each requiring separate CSP entries. Here are the exact directives for the most common services.</p>
 
 <h2>Google Analytics 4 (GA4)</h2>
 <pre>script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com;
@@ -237,23 +50,14 @@ connect-src 'self' https://www.google.com/recaptcha/;</pre>
 <p>Instead of allowlisting all these domains, you can run third-party scripts in a Web Worker using Partytown. They execute off the main thread, improve performance, and simplify your CSP:</p>
 <pre>&lt;!-- Replace your GA4 script type with text/partytown --&gt;
 &lt;script type="text/partytown" src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"&gt;&lt;/script&gt;
-&lt;script type="text/partytown"&gt;
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){ dataLayer.push(arguments); }
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXX');
+&lt;script type="text/partytown"&gt; window.dataLayer = window.dataLayer || []; function gtag(){ dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-XXXXXXX');
 &lt;/script&gt;
 
 &lt;!-- Partytown loader --&gt;
 &lt;script&gt;partytown = { forward: ['dataLayer.push'] };&lt;/script&gt;
-&lt;script src="https://cdn.jsdelivr.net/npm/@builder.io/partytown/partytown.js"&gt;&lt;/script&gt;</pre>
-  <a href="/csp/" class="tool-cta">Scan your page to find all third-party scripts →</a>
-  <div class="related">Related: <a href="/blog/csp/fix-csp-refused-to-load/">Fix refused to load errors</a> <a href="/glossary/content-security-policy/">What is CSP?</a> <a href="/blog/csp/csp-unsafe-inline-nonce-hash/">Nonce vs hash vs unsafe-inline</a></div>
+&lt;script src="https://cdn.jsdelivr.net/npm/@builder.io/partytown/partytown.js"&gt;&lt;/script&gt;</pre> <a href="/csp/" class="tool-cta">Scan your page to find all third-party scripts →</a> <div class="related">Related: <a href="/blog/csp/fix-csp-refused-to-load/">Fix refused to load errors</a> <a href="/glossary/content-security-policy/">What is CSP?</a> <a href="/blog/csp/csp-unsafe-inline-nonce-hash/">Nonce vs hash vs unsafe-inline</a></div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a> · <a href="/privacy/">Privacy</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a> · <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

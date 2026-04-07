@@ -1,180 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fix CORS Error in ASP.NET Core — AddCors and UseCors · HttpFixer</title>
-  <meta name="description" content="ASP.NET Core requires explicit CORS policy registration. Add AddCors in Program.cs and apply it with UseCors — here is the exact config for Web API and minimal APIs.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/cors/fix-cors-aspnet/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Fix CORS Error in ASP.NET Core — AddCors and UseCors">
-  <meta property="og:description" content="ASP.NET Core requires explicit CORS policy registration. Add AddCors in Program.cs and apply it with UseCors — here is the exact config for Web API and minimal APIs.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/cors/fix-cors-aspnet/">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "TechArticle",
-      "headline": "Fix CORS Error in ASP.NET Core \u2014 AddCors and UseCors",
-      "description": "ASP.NET Core requires explicit CORS policy registration. Add AddCors in Program.cs and apply it with UseCors \u2014 here is the exact config for Web API and minimal APIs.",
-      "url": "https://httpfixer.dev/blog/cors/fix-cors-aspnet/",
-      "datePublished": "2026-04-03",
-      "dateModified": "2026-04-03",
-      "author": {
-        "@type": "Organization",
-        "name": "MetricLogic"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "MetricLogic",
-        "url": "https://metriclogic.dev"
-      }
-    },
-    {
-      "@type": "HowTo",
-      "name": "Fix CORS Error in ASP.NET Core \u2014 AddCors and UseCors",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Register CORS policy with AddCors",
-          "text": "Call builder.Services.AddCors() with your policy name and allowed origins."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Apply with UseCors before UseAuthorization",
-          "text": "Call app.UseCors() before UseAuthorization \u2014 middleware order is critical."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Use AllowCredentials with explicit origins only",
-          "text": "Never combine AllowAnyOrigin with AllowCredentials \u2014 ASP.NET will throw an exception."
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Why must UseCors come before UseAuthorization?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "ASP.NET Core middleware processes in order. Authorization middleware may return 401 before CORS headers are added, causing the browser to show a CORS error instead of the actual 401."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I use AllowAnyOrigin with AllowCredentials?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No \u2014 ASP.NET Core throws an InvalidOperationException if you combine them. Use WithOrigins with your specific domains."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do I enable CORS for SignalR?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Add .WithOrigins(...).AllowCredentials() to your CORS policy and configure SignalR hubs to use the same policy."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "HttpFixer",
-          "item": "https://httpfixer.dev"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Blog",
-          "item": "https://httpfixer.dev/blog/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Fix CORS Error in ASP.NET Core \u2014 AddCors and UseCors",
-          "item": "https://httpfixer.dev/blog/cors/fix-cors-aspnet/"
-        }
-      ]
-    }
-  ]
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem;align-items:center}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .breadcrumb a{color:var(--purple);text-decoration:none}
-    .error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;font-family:"JetBrains Mono",monospace;line-height:1.6}
-    .error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em}
-    .warn-box{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
-    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.2);color:var(--purple)}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .tool-cta:hover{filter:brightness(1.1)}
-    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
-  </style>
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Fix CORS Error in ASP.NET Core — AddCors and UseCors · HttpFixer</title> <meta name="description" content="ASP.NET Core requires explicit CORS policy registration. Add AddCors in Program.cs and apply it with UseCors — here is the exact config for Web API and minimal APIs."> <link rel="canonical" href="https://httpfixer.dev/blog/cors/fix-cors-aspnet/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="Fix CORS Error in ASP.NET Core — AddCors and UseCors"> <meta property="og:description" content="ASP.NET Core requires explicit CORS policy registration. Add AddCors in Program.cs and apply it with UseCors — here is the exact config for Web API and minimal APIs."> <meta property="og:url" content="https://httpfixer.dev/blog/cors/fix-cors-aspnet/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@type": "TechArticle", "headline": "Fix CORS Error in ASP.NET Core \u2014 AddCors and UseCors", "description": "ASP.NET Core requires explicit CORS policy registration. Add AddCors in Program.cs and apply it with UseCors \u2014 here is the exact config for Web API and minimal APIs.", "url": "https://httpfixer.dev/blog/cors/fix-cors-aspnet/", "datePublished": "2026-04-03", "dateModified": "2026-04-03", "author": { "@type": "Organization", "name": "MetricLogic" }, "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://" } }, { "@type": "HowTo", "name": "Fix CORS Error in ASP.NET Core \u2014 AddCors and UseCors", "step": [ { "@type": "HowToStep", "position": 1, "name": "Register CORS policy with AddCors", "text": "Call builder.Services.AddCors() with your policy name and allowed origins." }, { "@type": "HowToStep", "position": 2, "name": "Apply with UseCors before UseAuthorization", "text": "Call app.UseCors() before UseAuthorization \u2014 middleware order is critical." }, { "@type": "HowToStep", "position": 3, "name": "Use AllowCredentials with explicit origins only", "text": "Never combine AllowAnyOrigin with AllowCredentials \u2014 ASP.NET will throw an exception." } ] }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "Why must UseCors come before UseAuthorization?", "acceptedAnswer": { "@type": "Answer", "text": "ASP.NET Core middleware processes in order. Authorization middleware may return 401 before CORS headers are added, causing the browser to show a CORS error instead of the actual 401." } }, { "@type": "Question", "name": "Can I use AllowAnyOrigin with AllowCredentials?", "acceptedAnswer": { "@type": "Answer", "text": "No \u2014 ASP.NET Core throws an InvalidOperationException if you combine them. Use WithOrigins with your specific domains." } }, { "@type": "Question", "name": "How do I enable CORS for SignalR?", "acceptedAnswer": { "@type": "Answer", "text": "Add .WithOrigins(...).AllowCredentials() to your CORS policy and configure SignalR hubs to use the same policy." } } ] }, { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev" }, { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://httpfixer.dev/blog/" }, { "@type": "ListItem", "position": 3, "name": "Fix CORS Error in ASP.NET Core \u2014 AddCors and UseCors", "item": "https://httpfixer.dev/blog/cors/fix-cors-aspnet/" } ] } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem;align-items:center} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;font-family:"JetBrains Mono",monospace;line-height:1.6} .error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em} .warn-box{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6} .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.2);color:var(--purple)} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/cors/">Cors</a> → Fix CORS Error in ASP.NET Core — AddCors and UseCors</div>
-  <span class="tag">CORS</span>
-  <h1>Fix CORS Error in ASP.NET Core</h1>
-<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
-  
-<div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace">
-  <span style="font-size:12px;opacity:0.7">Reading this article? Verify your fix in real-time.</span>
-  <a href="/cors/" style="display:inline-block;padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Test your ASP.NET CORS config live → CORSFixer</a>
-</div>
-  
-<p class="lead">ASP.NET Core does not allow cross-origin requests by default. Register a CORS policy in <code>Program.cs</code> with <code>builder.Services.AddCors()</code> and apply it with <code>app.UseCors()</code>.</p>
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/cors/">Cors</a> → Fix CORS Error in ASP.NET Core — AddCors and UseCors</div> <span class="tag">CORS</span> <h1>Fix CORS Error in ASP.NET Core</h1>
+<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p> <div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace"> <span style="font-size:12px;opacity:0.7">Reading this article? Verify your fix in real-time.</span> <a href="/cors/" style="display:inline-block;padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Test your ASP.NET CORS config live → CORSFixer</a>
+</div> <p class="lead">ASP.NET Core does not allow cross-origin requests by default. Register a CORS policy in <code>Program.cs</code> with <code>builder.Services.AddCors()</code> and apply it with <code>app.UseCors()</code>.</p>
 
 <div class="error-box"><div class="error-label">Browser Console</div>Access to fetch at 'https://api.yourapp.com/api/products' from origin 'https://yourapp.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.</div>
 
@@ -182,13 +16,7 @@
 <pre>var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend", policy =>
-    {
-        policy.WithOrigins("https://yourapp.com")
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-    });
+{ options.AddPolicy("AllowFrontend", policy => { policy.WithOrigins("https://yourapp.com") .AllowAnyMethod() .AllowAnyHeader(); });
 });
 
 builder.Services.AddControllers();
@@ -204,21 +32,11 @@ app.Run();</pre>
 
 <h2>With credentials (cookies / Authorization)</h2>
 <pre>builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend", policy =>
-    {
-        policy.WithOrigins("https://yourapp.com")  // must be explicit
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();  // enables credentials
-    });
+{ options.AddPolicy("AllowFrontend", policy => { policy.WithOrigins("https://yourapp.com")  // must be explicit .AllowAnyMethod() .AllowAnyHeader() .AllowCredentials();  // enables credentials });
 });</pre>
 
 <h2>Multiple origins</h2>
-<pre>policy.WithOrigins(
-    "https://yourapp.com",
-    "https://staging.yourapp.com",
-    "http://localhost:3000"  // development only
+<pre>policy.WithOrigins( "https://yourapp.com", "https://staging.yourapp.com", "http://localhost:3000"  // development only
 )</pre>
 
 <h2>Per-controller or per-action</h2>
@@ -234,8 +52,7 @@ public class ProductsController : ControllerBase { }
 public IActionResult InternalEndpoint() { }</pre>
 
 <h2>Minimal API endpoints</h2>
-<pre>app.MapGet("/api/data", () => Results.Ok(new { status = "ok" }))
-   .RequireCors("AllowFrontend");</pre>
+<pre>app.MapGet("/api/data", () => Results.Ok(new { status = "ok" })) .RequireCors("AllowFrontend");</pre>
 
 <h2>Common mistake — wrong middleware order</h2>
 <pre>// WRONG — UseCors after UseAuthorization
@@ -244,14 +61,9 @@ app.UseCors("AllowFrontend");  // too late
 
 // CORRECT — UseCors before UseAuthorization
 app.UseCors("AllowFrontend");
-app.UseAuthorization();</pre>
-  <a href="/cors/" class="tool-cta">Test your ASP.NET CORS config live → CORSFixer</a>
-  <div class="related">Related: <a href="/blog/cors/fix-cors-spring-boot/">Spring Boot CORS</a> <a href="/blog/cors/fix-cors-nginx/">Nginx CORS</a> <a href="/glossary/preflight-request/">Preflight requests</a></div>
+app.UseAuthorization();</pre> <a href="/cors/" class="tool-cta">Test your ASP.NET CORS config live → CORSFixer</a> <div class="related">Related: <a href="/blog/cors/fix-cors-spring-boot/">Spring Boot CORS</a> <a href="/blog/cors/fix-cors-nginx/">Nginx CORS</a> <a href="/glossary/preflight-request/">Preflight requests</a></div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/privacy/">Terms</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/privacy/">Terms</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

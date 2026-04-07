@@ -1,187 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cloudflare Page Rules vs Transform Rules — Which to Use for Headers · HttpFixer</title>
-  <meta name="description" content="Cloudflare deprecated Page Rules in favour of Transform Rules and Cache Rules. Here is the difference, what changed, and how to migrate your header rules.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/headers/cloudflare-page-rules-vs-transform-rules/">
-  <meta name="robots" content="index, follow">
-  <meta property="og:title" content="Cloudflare Page Rules vs Transform Rules — Which to Use for Headers">
-  <meta property="og:description" content="Cloudflare deprecated Page Rules in favour of Transform Rules and Cache Rules. Here is the difference, what changed, and how to migrate your header rules.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/headers/cloudflare-page-rules-vs-transform-rules/">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "TechArticle",
-      "headline": "Cloudflare Page Rules vs Transform Rules \u2014 Which to Use for Headers",
-      "description": "Cloudflare deprecated Page Rules in favour of Transform Rules and Cache Rules. Here is the difference, what changed, and how to migrate your header rules.",
-      "url": "https://httpfixer.dev/blog/headers/cloudflare-page-rules-vs-transform-rules/",
-      "datePublished": "2026-04-03",
-      "dateModified": "2026-04-03",
-      "author": {
-        "@type": "Organization",
-        "name": "MetricLogic"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "MetricLogic",
-        "url": "https://metriclogic.dev"
-      }
-    },
-    {
-      "@type": "HowTo",
-      "name": "Cloudflare Page Rules vs Transform Rules \u2014 Which to Use for Headers",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Understand the deprecation",
-          "text": "Page Rules are deprecated as of 2024. Migrate to Transform Rules, Cache Rules, and Redirect Rules."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Use Transform Rules for header injection",
-          "text": "Workers & Pages \u2192 Transform Rules \u2192 Modify Response Headers replaces Page Rules header modification."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Test after migration",
-          "text": "Use HeadersFixer to verify headers are appearing correctly after switching from Page Rules to Transform Rules."
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Are Cloudflare Page Rules still working?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes \u2014 existing Page Rules still work. But Cloudflare deprecated them in 2024 and recommends migrating to the new rule types. New accounts have limited Page Rules."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What replaced Page Rules for adding security headers?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Transform Rules (Modify Response Headers) replace the header modification functionality of Page Rules. They are more powerful and support more operators."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I add CORS headers with Transform Rules?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes \u2014 add Access-Control-Allow-Origin and other CORS headers as response header modifications in Transform Rules."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "HttpFixer",
-          "item": "https://httpfixer.dev"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Blog",
-          "item": "https://httpfixer.dev/blog/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Cloudflare Page Rules vs Transform Rules \u2014 Which to Use for Headers",
-          "item": "https://httpfixer.dev/blog/headers/cloudflare-page-rules-vs-transform-rules/"
-        }
-      ]
-    }
-  ]
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .breadcrumb a{color:var(--purple);text-decoration:none}
-    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.2);color:var(--red)}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
-    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column}}
-  </style>
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Cloudflare Page Rules vs Transform Rules — Which to Use for Headers · HttpFixer</title> <meta name="description" content="Cloudflare deprecated Page Rules in favour of Transform Rules and Cache Rules. Here is the difference, what changed, and how to migrate your header rules."> <link rel="canonical" href="https://httpfixer.dev/blog/headers/cloudflare-page-rules-vs-transform-rules/"> <meta name="robots" content="index, follow"> <meta property="og:title" content="Cloudflare Page Rules vs Transform Rules — Which to Use for Headers"> <meta property="og:description" content="Cloudflare deprecated Page Rules in favour of Transform Rules and Cache Rules. Here is the difference, what changed, and how to migrate your header rules."> <meta property="og:url" content="https://httpfixer.dev/blog/headers/cloudflare-page-rules-vs-transform-rules/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@type": "TechArticle", "headline": "Cloudflare Page Rules vs Transform Rules \u2014 Which to Use for Headers", "description": "Cloudflare deprecated Page Rules in favour of Transform Rules and Cache Rules. Here is the difference, what changed, and how to migrate your header rules.", "url": "https://httpfixer.dev/blog/headers/cloudflare-page-rules-vs-transform-rules/", "datePublished": "2026-04-03", "dateModified": "2026-04-03", "author": { "@type": "Organization", "name": "MetricLogic" }, "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://" } }, { "@type": "HowTo", "name": "Cloudflare Page Rules vs Transform Rules \u2014 Which to Use for Headers", "step": [ { "@type": "HowToStep", "position": 1, "name": "Understand the deprecation", "text": "Page Rules are deprecated as of 2024. Migrate to Transform Rules, Cache Rules, and Redirect Rules." }, { "@type": "HowToStep", "position": 2, "name": "Use Transform Rules for header injection", "text": "Workers & Pages \u2192 Transform Rules \u2192 Modify Response Headers replaces Page Rules header modification." }, { "@type": "HowToStep", "position": 3, "name": "Test after migration", "text": "Use HeadersFixer to verify headers are appearing correctly after switching from Page Rules to Transform Rules." } ] }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "Are Cloudflare Page Rules still working?", "acceptedAnswer": { "@type": "Answer", "text": "Yes \u2014 existing Page Rules still work. But Cloudflare deprecated them in 2024 and recommends migrating to the new rule types. New accounts have limited Page Rules." } }, { "@type": "Question", "name": "What replaced Page Rules for adding security headers?", "acceptedAnswer": { "@type": "Answer", "text": "Transform Rules (Modify Response Headers) replace the header modification functionality of Page Rules. They are more powerful and support more operators." } }, { "@type": "Question", "name": "Can I add CORS headers with Transform Rules?", "acceptedAnswer": { "@type": "Answer", "text": "Yes \u2014 add Access-Control-Allow-Origin and other CORS headers as response header modifications in Transform Rules." } } ] }, { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev" }, { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://httpfixer.dev/blog/" }, { "@type": "ListItem", "position": 3, "name": "Cloudflare Page Rules vs Transform Rules \u2014 Which to Use for Headers", "item": "https://httpfixer.dev/blog/headers/cloudflare-page-rules-vs-transform-rules/" } ] } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.2);color:var(--red)} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85} .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column}} </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/headers/">Headers</a> → Cloudflare Page Rules vs Transform Rules — Which to Use for Headers</div>
-  <span class="tag">Headers</span>
-  <h1>Cloudflare Page Rules vs Transform Rules — Which to Use for Headers</h1>
-<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
-  <div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace">
-  <span style="font-size:12px;opacity:0.7">Reading this? Verify your fix live.</span>
-  <a href="/" style="padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Scan your headers → HeadersFixer</a>
-</div>
-  
-<p class="lead">Cloudflare deprecated Page Rules in 2024. If you have security headers or CORS headers configured in Page Rules, they still work — but the migration path is Transform Rules, and new features are only in the newer system.</p>
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/headers/">Headers</a> → Cloudflare Page Rules vs Transform Rules — Which to Use for Headers</div> <span class="tag">Headers</span> <h1>Cloudflare Page Rules vs Transform Rules — Which to Use for Headers</h1>
+<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p> <div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace"> <span style="font-size:12px;opacity:0.7">Reading this? Verify your fix live.</span> <a href="/" style="padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Scan your headers → HeadersFixer</a>
+</div> <p class="lead">Cloudflare deprecated Page Rules in 2024. If you have security headers or CORS headers configured in Page Rules, they still work — but the migration path is Transform Rules, and new features are only in the newer system.</p>
 
 <h2>What replaced Page Rules</h2>
-<table>
-  <thead><tr><th>Old (Page Rules)</th><th>New equivalent</th></tr></thead>
-  <tbody>
-    <tr><td>Add response headers</td><td>Transform Rules → Modify Response Headers</td></tr>
-    <tr><td>Redirect</td><td>Redirect Rules</td></tr>
-    <tr><td>Cache level / TTL</td><td>Cache Rules</td></tr>
-    <tr><td>Browser integrity check</td><td>Configuration Rules</td></tr>
-    <tr><td>Forwarding URL</td><td>Redirect Rules</td></tr>
-  </tbody>
+<table> <thead><tr><th>Old (Page Rules)</th><th>New equivalent</th></tr></thead> <tbody> <tr><td>Add response headers</td><td>Transform Rules → Modify Response Headers</td></tr> <tr><td>Redirect</td><td>Redirect Rules</td></tr> <tr><td>Cache level / TTL</td><td>Cache Rules</td></tr> <tr><td>Browser integrity check</td><td>Configuration Rules</td></tr> <tr><td>Forwarding URL</td><td>Redirect Rules</td></tr> </tbody>
 </table>
 
 <h2>Add security headers with Transform Rules</h2>
@@ -191,10 +21,7 @@
 # Example: Add X-Frame-Options to all pages
 Rule name: Security Headers
 When: Hostname equals yourapp.com
-Then:
-  Set header: X-Frame-Options = SAMEORIGIN
-  Set header: X-Content-Type-Options = nosniff
-  Set header: Referrer-Policy = strict-origin-when-cross-origin</pre>
+Then: Set header: X-Frame-Options = SAMEORIGIN Set header: X-Content-Type-Options = nosniff Set header: Referrer-Policy = strict-origin-when-cross-origin</pre>
 
 <h2>Transform Rules — Set vs Add</h2>
 <pre># SET: overwrites existing header value (use to avoid duplicates)
@@ -206,29 +33,17 @@ Then:
 <h2>Add CORS headers with Transform Rules</h2>
 <pre># Rule for CORS
 When: Hostname equals api.yourapp.com
-Then:
-  Set header: Access-Control-Allow-Origin = https://yourapp.com
-  Set header: Access-Control-Allow-Methods = GET, POST, PUT, DELETE, OPTIONS
-  Set header: Access-Control-Allow-Headers = Authorization, Content-Type
-  Set header: Vary = Origin</pre>
+Then: Set header: Access-Control-Allow-Origin = https://yourapp.com Set header: Access-Control-Allow-Methods = GET, POST, PUT, DELETE, OPTIONS Set header: Access-Control-Allow-Headers = Authorization, Content-Type Set header: Vary = Origin</pre>
 
 <h2>Add Cache-Control with Cache Rules</h2>
 <pre># Rules → Cache Rules → Create Rule
 When: File extension is in [js, css, png, jpg, woff2]
-Cache settings:
-  Eligible for cache: Yes
-  Edge TTL: 1 year
-  Browser TTL: 1 year
-  Serve stale: Yes (while revalidating)</pre>
+Cache settings: Eligible for cache: Yes Edge TTL: 1 year Browser TTL: 1 year Serve stale: Yes (while revalidating)</pre>
 
 <h2>Page Rules migration checklist</h2>
-<pre>1. Identify all existing Page Rules:
-   Dashboard → Rules → Page Rules
+<pre>1. Identify all existing Page Rules: Dashboard → Rules → Page Rules
 
-2. For each rule, identify its type:
-   - Header modification → Transform Rules
-   - Redirect → Redirect Rules
-   - Cache settings → Cache Rules
+2. For each rule, identify its type: - Header modification → Transform Rules - Redirect → Redirect Rules - Cache settings → Cache Rules
 
 3. Recreate in the new system
 4. Test with HeadersFixer and curl
@@ -236,24 +51,13 @@ Cache settings:
 6. After 30 days with no issues — delete old Page Rules</pre>
 
 <h2>Why Transform Rules are better</h2>
-<ul>
-  <li>Support for more operators (regex, complex conditions)</li>
-  <li>Can be ordered — rules process in sequence</li>
-  <li>Wildcard and regex URL matching</li>
-  <li>No limit on the number of rules (Page Rules were limited)</li>
-  <li>Works with Workers (Page Rules did not interact cleanly with Workers)</li>
-</ul>
-  <a href="/" class="tool-cta">Scan your headers → HeadersFixer</a>
-  <div class="related">Related: <a href="/blog/cors/fix-cors-cloudflare/">Cloudflare CORS fix</a> <a href="/blog/platform/cors-cloudflare-workers/">Cloudflare Workers</a> <a href="/case-studies/cloudfront-strips-security-headers/">CDN header stripping</a></div>
+<ul> <li>Support for more operators (regex, complex conditions)</li> <li>Can be ordered — rules process in sequence</li> <li>Wildcard and regex URL matching</li> <li>No limit on the number of rules (Page Rules were limited)</li> <li>Works with Workers (Page Rules did not interact cleanly with Workers)</li>
+</ul> <a href="/" class="tool-cta">Scan your headers → HeadersFixer</a> <div class="related">Related: <a href="/blog/cors/fix-cors-cloudflare/">Cloudflare CORS fix</a> <a href="/blog/platform/cors-cloudflare-workers/">Cloudflare Workers</a> <a href="/case-studies/cloudfront-strips-security-headers/">CDN header stripping</a></div>
 
-<div style="margin-top:2rem;padding:1rem;background:#12151F;border:1px solid #252836;border-radius:8px;font-size:13px">
-  <a href="/tools/hsts-preload/" style="color:#6C63FF;text-decoration:none;font-weight:500">Check if your domain is on the HSTS preload list → HSTS Preload Checker</a>
+<div style="margin-top:2rem;padding:1rem;background:#12151F;border:1px solid #252836;border-radius:8px;font-size:13px"> <a href="/tools/hsts-preload/" style="color:#6C63FF;text-decoration:none;font-weight:500">Check if your domain is on the HSTS preload list → HSTS Preload Checker</a>
 </div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

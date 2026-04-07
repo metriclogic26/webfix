@@ -1,117 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CSP Fix Guides &middot; HttpFixer Blog</title>
-  <meta name="description" content="Fix Content Security Policy violations. Generate working CSP headers without breaking your site. Nonces, hashes, third-party scripts, and violation reporting.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/csp/">
-  <meta name="robots" content="index, follow">
-  <meta property="og:title" content="CSP Fix Guides &mdash; HttpFixer">
-  <meta property="og:description" content="Fix Content Security Policy violations. Generate working CSP headers without breaking your site. Nonces, hashes, third-party scripts, and violation reporting.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/csp/">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "name": "CSP Fix Guides",
-  "description": "Fix Content Security Policy violations. Generate working CSP headers without breaking your site. Nonces, hashes, third-party scripts, and violation reporting.",
-  "url": "https://httpfixer.dev/blog/csp/"
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--text:#E2E4F0}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .bc{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .bc a{color:var(--purple);text-decoration:none}
-    h1{font-size:1.6rem;font-weight:600;margin-bottom:0.75rem}
-    .lead{font-size:14px;opacity:0.7;margin-bottom:2rem;line-height:1.8}
-    .count{display:inline-block;background:rgba(108,99,255,0.15);color:var(--purple);padding:0.2rem 0.6rem;border-radius:4px;font-size:12px;margin-bottom:1.5rem}
-    ul{list-style:none;padding:0}
-    li{border-bottom:1px solid var(--border)}
-    li a{display:flex;align-items:center;gap:0.5rem;padding:0.85rem 0;color:var(--text);text-decoration:none;font-size:13px;opacity:0.8;transition:all 0.15s}
-    li a:hover{color:var(--purple);opacity:1;padding-left:0.5rem}
-    .arr{color:var(--purple);opacity:0.5;flex-shrink:0}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column}}
-  </style>
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>CSP Fix Guides &middot; HttpFixer Blog</title> <meta name="description" content="Fix Content Security Policy violations. Generate working CSP headers without breaking your site. Nonces, hashes, third-party scripts, and violation reporting."> <link rel="canonical" href="https://httpfixer.dev/blog/csp/"> <meta name="robots" content="index, follow"> <meta property="og:title" content="CSP Fix Guides &mdash; HttpFixer"> <meta property="og:description" content="Fix Content Security Policy violations. Generate working CSP headers without breaking your site. Nonces, hashes, third-party scripts, and violation reporting."> <meta property="og:url" content="https://httpfixer.dev/blog/csp/"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@type": "CollectionPage", "name": "CSP Fix Guides", "description": "Fix Content Security Policy violations. Generate working CSP headers without breaking your site. Nonces, hashes, third-party scripts, and violation reporting.", "url": "https://httpfixer.dev/blog/csp/"
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--text:#E2E4F0} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .bc{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .bc a{color:var(--purple);text-decoration:none} h1{font-size:1.6rem;font-weight:600;margin-bottom:0.75rem} .lead{font-size:14px;opacity:0.7;margin-bottom:2rem;line-height:1.8} .count{display:inline-block;background:rgba(108,99,255,0.15);color:var(--purple);padding:0.2rem 0.6rem;border-radius:4px;font-size:12px;margin-bottom:1.5rem} ul{list-style:none;padding:0} li{border-bottom:1px solid var(--border)} li a{display:flex;align-items:center;gap:0.5rem;padding:0.85rem 0;color:var(--text);text-decoration:none;font-size:13px;opacity:0.8;transition:all 0.15s} li a:hover{color:var(--purple);opacity:1;padding-left:0.5rem} .arr{color:var(--purple);opacity:0.5;flex-shrink:0} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column}} </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <div class="bc"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; CSP Fix Guides</div>
-  <h1>CSP Fix Guides</h1>
-<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
-  <p class="lead">Fix Content Security Policy violations. Generate working CSP headers without breaking your site. Nonces, hashes, third-party scripts, and violation reporting.</p>
-  <span class="count">7 articles</span>
-  <ul>
-      <li>
-        <a href="/blog/csp/fix-csp-nextjs/">
-          <span class="arr">&rarr;</span>
-          Fix CSP in Next.js — Nonce-Based
-        </a>
-      </li>
-      <li>
-        <a href="/blog/csp/csp-generator-vercel/">
-          <span class="arr">&rarr;</span>
-          CSP for Vercel
-        </a>
-      </li>
-      <li>
-        <a href="/blog/csp/fix-csp-refused-to-load/">
-          <span class="arr">&rarr;</span>
-          Fix Refused to Load Script
-        </a>
-      </li>
-      <li>
-        <a href="/blog/csp/csp-google-analytics-hotjar/">
-          <span class="arr">&rarr;</span>
-          CSP for GA4, Hotjar, Stripe
-        </a>
-      </li>
-      <li>
-        <a href="/blog/csp/csp-unsafe-inline-nonce-hash/">
-          <span class="arr">&rarr;</span>
-          Nonce vs Hash vs unsafe-inline
-        </a>
-      </li>
-      <li>
-        <a href="/blog/csp/csp-wordpress/">
-          <span class="arr">&rarr;</span>
-          CSP for WordPress
-        </a>
-      </li>
-      <li>
-        <a href="/blog/csp/csp-report-to-violation-reporting/">
-          <span class="arr">&rarr;</span>
-          CSP Violation Reporting — report-to
-        </a>
-      </li>
-  </ul>
-  <a href="/" class="tool-cta">Scan your live site &rarr; HttpFixer Tools</a>
+<main> <div class="bc"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; CSP Fix Guides</div> <h1>CSP Fix Guides</h1>
+<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p> <p class="lead">Fix Content Security Policy violations. Generate working CSP headers without breaking your site. Nonces, hashes, third-party scripts, and violation reporting.</p> <span class="count">7 articles</span> <ul> <li> <a href="/blog/csp/fix-csp-nextjs/"> <span class="arr">&rarr;</span> Fix CSP in Next.js — Nonce-Based </a> </li> <li> <a href="/blog/csp/csp-generator-vercel/"> <span class="arr">&rarr;</span> CSP for Vercel </a> </li> <li> <a href="/blog/csp/fix-csp-refused-to-load/"> <span class="arr">&rarr;</span> Fix Refused to Load Script </a> </li> <li> <a href="/blog/csp/csp-google-analytics-hotjar/"> <span class="arr">&rarr;</span> CSP for GA4, Hotjar, Stripe </a> </li> <li> <a href="/blog/csp/csp-unsafe-inline-nonce-hash/"> <span class="arr">&rarr;</span> Nonce vs Hash vs unsafe-inline </a> </li> <li> <a href="/blog/csp/csp-wordpress/"> <span class="arr">&rarr;</span> CSP for WordPress </a> </li> <li> <a href="/blog/csp/csp-report-to-violation-reporting/"> <span class="arr">&rarr;</span> CSP Violation Reporting — report-to </a> </li> </ul> <a href="/" class="tool-cta">Scan your live site &rarr; HttpFixer Tools</a>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/privacy/">Privacy</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  &middot; <a href="/blog/">Blog</a> &middot; <a href="/privacy/">Privacy</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

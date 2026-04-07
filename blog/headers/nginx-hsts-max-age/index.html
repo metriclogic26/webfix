@@ -1,212 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nginx HSTS max-age — Best Practices and Common Mistakes · HttpFixer</title>
-  <meta name="description" content="HSTS max-age of 0 removes HSTS. Too short and it provides no real protection. Here is the right value, when to use preload, and how to safely ramp up.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/headers/nginx-hsts-max-age/">
-  <meta name="robots" content="index, follow">
-  <meta property="og:title" content="Nginx HSTS max-age — Best Practices and Common Mistakes">
-  <meta property="og:description" content="HSTS max-age of 0 removes HSTS. Too short and it provides no real protection. Here is the right value, when to use preload, and how to safely ramp up.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/headers/nginx-hsts-max-age/">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "TechArticle",
-      "headline": "Nginx HSTS max-age \u2014 Best Practices and Common Mistakes",
-      "description": "HSTS max-age of 0 removes HSTS. Too short and it provides no real protection. Here is the right value, when to use preload, and how to safely ramp up.",
-      "url": "https://httpfixer.dev/blog/headers/nginx-hsts-max-age/",
-      "datePublished": "2026-04-03",
-      "dateModified": "2026-04-03",
-      "author": {
-        "@type": "Organization",
-        "name": "MetricLogic"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "MetricLogic",
-        "url": "https://metriclogic.dev"
-      }
-    },
-    {
-      "@type": "HowTo",
-      "name": "Nginx HSTS max-age \u2014 Best Practices and Common Mistakes",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Start with a short max-age",
-          "text": "Begin with 86400 (1 day) while verifying HTTPS works perfectly."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Increase to 1 year",
-          "text": "After confirming HTTPS is stable, set max-age=31536000."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Add includeSubDomains then preload",
-          "text": "Only after all subdomains support HTTPS, add includeSubDomains. Then optionally submit to the preload list."
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What happens if I add HSTS and HTTPS breaks?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Users who visited before are locked out until max-age expires \u2014 they cannot bypass the HSTS rule even by typing http://. This is why you ramp up max-age gradually."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the minimum max-age accepted by the HSTS preload list?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "1 year (31536000 seconds). hstspreload.org will reject submissions with lower values."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do I remove HSTS if I need to revert to HTTP?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Set max-age=0. But users who already received HSTS need to receive this over HTTPS \u2014 you cannot fix it over HTTP. Plan HTTPS thoroughly before adding HSTS."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "HttpFixer",
-          "item": "https://httpfixer.dev"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Blog",
-          "item": "https://httpfixer.dev/blog/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Nginx HSTS max-age \u2014 Best Practices and Common Mistakes",
-          "item": "https://httpfixer.dev/blog/headers/nginx-hsts-max-age/"
-        }
-      ]
-    }
-  ]
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .breadcrumb a{color:var(--purple);text-decoration:none}
-    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.2);color:var(--red)}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
-    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column}}
-  </style>
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Nginx HSTS max-age — Best Practices and Common Mistakes · HttpFixer</title> <meta name="description" content="HSTS max-age of 0 removes HSTS. Too short and it provides no real protection. Here is the right value, when to use preload, and how to safely ramp up."> <link rel="canonical" href="https://httpfixer.dev/blog/headers/nginx-hsts-max-age/"> <meta name="robots" content="index, follow"> <meta property="og:title" content="Nginx HSTS max-age — Best Practices and Common Mistakes"> <meta property="og:description" content="HSTS max-age of 0 removes HSTS. Too short and it provides no real protection. Here is the right value, when to use preload, and how to safely ramp up."> <meta property="og:url" content="https://httpfixer.dev/blog/headers/nginx-hsts-max-age/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@type": "TechArticle", "headline": "Nginx HSTS max-age \u2014 Best Practices and Common Mistakes", "description": "HSTS max-age of 0 removes HSTS. Too short and it provides no real protection. Here is the right value, when to use preload, and how to safely ramp up.", "url": "https://httpfixer.dev/blog/headers/nginx-hsts-max-age/", "datePublished": "2026-04-03", "dateModified": "2026-04-03", "author": { "@type": "Organization", "name": "MetricLogic" }, "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://" } }, { "@type": "HowTo", "name": "Nginx HSTS max-age \u2014 Best Practices and Common Mistakes", "step": [ { "@type": "HowToStep", "position": 1, "name": "Start with a short max-age", "text": "Begin with 86400 (1 day) while verifying HTTPS works perfectly." }, { "@type": "HowToStep", "position": 2, "name": "Increase to 1 year", "text": "After confirming HTTPS is stable, set max-age=31536000." }, { "@type": "HowToStep", "position": 3, "name": "Add includeSubDomains then preload", "text": "Only after all subdomains support HTTPS, add includeSubDomains. Then optionally submit to the preload list." } ] }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "What happens if I add HSTS and HTTPS breaks?", "acceptedAnswer": { "@type": "Answer", "text": "Users who visited before are locked out until max-age expires \u2014 they cannot bypass the HSTS rule even by typing http://. This is why you ramp up max-age gradually." } }, { "@type": "Question", "name": "What is the minimum max-age accepted by the HSTS preload list?", "acceptedAnswer": { "@type": "Answer", "text": "1 year (31536000 seconds). hstspreload.org will reject submissions with lower values." } }, { "@type": "Question", "name": "How do I remove HSTS if I need to revert to HTTP?", "acceptedAnswer": { "@type": "Answer", "text": "Set max-age=0. But users who already received HSTS need to receive this over HTTPS \u2014 you cannot fix it over HTTP. Plan HTTPS thoroughly before adding HSTS." } } ] }, { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev" }, { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://httpfixer.dev/blog/" }, { "@type": "ListItem", "position": 3, "name": "Nginx HSTS max-age \u2014 Best Practices and Common Mistakes", "item": "https://httpfixer.dev/blog/headers/nginx-hsts-max-age/" } ] } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.2);color:var(--red)} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85} .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column}} </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/headers/">Headers</a> → Nginx HSTS max-age — Best Practices and Common Mistakes</div>
-  <span class="tag">Headers</span>
-  <h1>Nginx HSTS max-age — Best Practices and Common Mistakes</h1>
-<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
-  <div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace">
-  <span style="font-size:12px;opacity:0.7">Reading this? Verify your fix live.</span>
-  <a href="/" style="padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Check your HSTS config → HeadersFixer</a>
-</div>
-  
-<p class="lead">HSTS max-age is the most consequential number in your HTTP headers. Set it too high before you're ready and users are locked out if HTTPS breaks. Set it too low and it provides no protection between visits. Here is the right progression.</p>
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/headers/">Headers</a> → Nginx HSTS max-age — Best Practices and Common Mistakes</div> <span class="tag">Headers</span> <h1>Nginx HSTS max-age — Best Practices and Common Mistakes</h1>
+<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p> <div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace"> <span style="font-size:12px;opacity:0.7">Reading this? Verify your fix live.</span> <a href="/" style="padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Check your HSTS config → HeadersFixer</a>
+</div> <p class="lead">HSTS max-age is the most consequential number in your HTTP headers. Set it too high before you're ready and users are locked out if HTTPS breaks. Set it too low and it provides no protection between visits. Here is the right progression.</p>
 
 <h2>The correct Nginx HSTS config</h2>
-<pre>server {
-    listen 80;
-    server_name yourapp.com www.yourapp.com;
-    # Redirect HTTP to HTTPS — do NOT add HSTS here
-    return 301 https://yourapp.com$request_uri;
+<pre>server { listen 80; server_name yourapp.com www.yourapp.com; # Redirect HTTP to HTTPS — do NOT add HSTS here return 301 https://yourapp.com$request_uri;
 }
 
-server {
-    listen 443 ssl http2;
-    server_name yourapp.com;
-
-    # HSTS goes only in the HTTPS block
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+server { listen 443 ssl http2; server_name yourapp.com; # HSTS goes only in the HTTPS block add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
 }</pre>
 
 <h2>The ramp-up progression</h2>
-<table>
-  <thead><tr><th>Stage</th><th>max-age value</th><th>Duration</th><th>What to verify</th></tr></thead>
-  <tbody>
-    <tr><td>1. Testing</td><td>86400 (1 day)</td><td>1 week</td><td>HTTPS works, cert renews, no broken subdomains</td></tr>
-    <tr><td>2. Stable</td><td>2592000 (30 days)</td><td>2 weeks</td><td>No HTTPS issues, no complaints</td></tr>
-    <tr><td>3. Production</td><td>31536000 (1 year)</td><td>Permanent</td><td>All good — this is your target</td></tr>
-    <tr><td>4. Preload</td><td>31536000 + preload flag</td><td>Submit to list</td><td>All subdomains HTTPS, includeSubDomains set</td></tr>
-  </tbody>
+<table> <thead><tr><th>Stage</th><th>max-age value</th><th>Duration</th><th>What to verify</th></tr></thead> <tbody> <tr><td>1. Testing</td><td>86400 (1 day)</td><td>1 week</td><td>HTTPS works, cert renews, no broken subdomains</td></tr> <tr><td>2. Stable</td><td>2592000 (30 days)</td><td>2 weeks</td><td>No HTTPS issues, no complaints</td></tr> <tr><td>3. Production</td><td>31536000 (1 year)</td><td>Permanent</td><td>All good — this is your target</td></tr> <tr><td>4. Preload</td><td>31536000 + preload flag</td><td>Submit to list</td><td>All subdomains HTTPS, includeSubDomains set</td></tr> </tbody>
 </table>
 
 <h2>Common mistakes</h2>
 
 <h3>Mistake 1 — HSTS in the HTTP block</h3>
 <pre># Wrong — browsers ignore HSTS over HTTP
-server {
-    listen 80;
-    add_header Strict-Transport-Security "max-age=31536000"; # ← ignored
-    return 301 https://...;
+server { listen 80; add_header Strict-Transport-Security "max-age=31536000"; # ← ignored return 301 https://...;
 }</pre>
 
 <h3>Mistake 2 — max-age=0 thinking it disables HSTS</h3>
@@ -214,8 +33,7 @@ server {
 # This is the correct way to remove HSTS — but you must send it over HTTPS
 # Sending max-age=0 over HTTP does nothing
 
-Strict-Transport-Security: max-age=0  # sent over HTTPS = removes HSTS
-                                       # sent over HTTP = ignored</pre>
+Strict-Transport-Security: max-age=0  # sent over HTTPS = removes HSTS # sent over HTTP = ignored</pre>
 
 <h3>Mistake 3 — includeSubDomains before all subdomains are ready</h3>
 <pre># includeSubDomains applies HSTS to ALL subdomains
@@ -242,18 +60,12 @@ Strict-Transport-Security: max-age=0  # sent over HTTPS = removes HSTS
 # Should return:
 # strict-transport-security: max-age=31536000; includeSubDomains; preload</pre>
 
-<p>Use HeadersFixer to scan your live site — it checks HSTS is present, sent over HTTPS only, and has a sufficient max-age value.</p>
-  <a href="/" class="tool-cta">Check your HSTS config → HeadersFixer</a>
-  <div class="related">Related: <a href="/blog/headers/fix-hsts/">Fix HSTS issues</a> <a href="/blog/explainers/what-is-hsts/">What is HSTS?</a> <a href="/blog/headers/security-headers-checklist/">Headers checklist</a></div>
+<p>Use HeadersFixer to scan your live site — it checks HSTS is present, sent over HTTPS only, and has a sufficient max-age value.</p> <a href="/" class="tool-cta">Check your HSTS config → HeadersFixer</a> <div class="related">Related: <a href="/blog/headers/fix-hsts/">Fix HSTS issues</a> <a href="/blog/explainers/what-is-hsts/">What is HSTS?</a> <a href="/blog/headers/security-headers-checklist/">Headers checklist</a></div>
 
-<div style="margin-top:2rem;padding:1rem;background:#12151F;border:1px solid #252836;border-radius:8px;font-size:13px">
-  <a href="/tools/hsts-preload/" style="color:#6C63FF;text-decoration:none;font-weight:500">Check if your domain is on the HSTS preload list → HSTS Preload Checker</a>
+<div style="margin-top:2rem;padding:1rem;background:#12151F;border:1px solid #252836;border-radius:8px;font-size:13px"> <a href="/tools/hsts-preload/" style="color:#6C63FF;text-decoration:none;font-weight:500">Check if your domain is on the HSTS preload list → HSTS Preload Checker</a>
 </div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

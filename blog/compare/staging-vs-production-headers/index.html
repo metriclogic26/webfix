@@ -1,158 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Staging vs Production Header Differences — How to Find What Is Missing &middot; HttpFixer</title>
-  <meta name="description" content="Security headers that pass on staging often go missing in production behind a CDN or load balancer. Here is how to spot the difference in 30 seconds.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/compare/staging-vs-production-headers/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Staging vs Production Header Differences — How to Find What Is Missing">
-  <meta property="og:description" content="Security headers that pass on staging often go missing in production behind a CDN or load balancer. Here is how to spot the difference in 30 seconds.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/compare/staging-vs-production-headers/">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@context": "https://schema.org",
-      "@type": "TechArticle",
-      "headline": "Staging vs Production Header Differences",
-      "description": "Find missing headers between staging and production in 30 seconds.",
-      "url": "https://httpfixer.dev/blog/compare/staging-vs-production-headers/",
-      "datePublished": "2026-04-04",
-      "dateModified": "2026-04-04",
-      "author": {
-        "@type": "Organization",
-        "name": "MetricLogic"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "MetricLogic",
-        "url": "https://metriclogic.dev"
-      }
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Why do headers differ between staging and production?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "CDNs, load balancers, and reverse proxies can strip or modify headers set by your origin server. Headers that work in staging may disappear in production behind Cloudflare or a load balancer."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do I compare headers between two URLs?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Paste both URLs into Header Diff — it fetches live headers from both and highlights every difference, missing header, and value change side by side."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Why does Nginx drop security headers in some locations?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Nginx add_header in a location block does not inherit from the parent server block. If any location has its own add_header, you must repeat all headers in that location or use include files."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "HowTo",
-      "name": "Staging vs Production Header Differences",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Scan both URLs",
-          "text": "Paste your staging and production URLs into Header Diff to see a side-by-side comparison."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Identify missing headers",
-          "text": "Look for headers present on staging but absent on production — these are being stripped by CDN, load balancer, or proxy."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Fix at the right layer",
-          "text": "Set headers at the CDN/edge layer for headers that must survive the entire stack. For Cloudflare, use Transform Rules rather than relying on origin pass-through."
-        }
-      ]
-    }
-  ]
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .breadcrumb a{color:var(--purple);text-decoration:none}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    pre code{background:none;color:var(--text);padding:0}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
-    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .tool-cta:hover{filter:brightness(1.1)}
-    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
-  </style>
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Staging vs Production Header Differences — How to Find What Is Missing &middot; HttpFixer</title> <meta name="description" content="Security headers that pass on staging often go missing in production behind a CDN or load balancer. Here is how to spot the difference in 30 seconds."> <link rel="canonical" href="https://httpfixer.dev/blog/compare/staging-vs-production-headers/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="Staging vs Production Header Differences — How to Find What Is Missing"> <meta property="og:description" content="Security headers that pass on staging often go missing in production behind a CDN or load balancer. Here is how to spot the difference in 30 seconds."> <meta property="og:url" content="https://httpfixer.dev/blog/compare/staging-vs-production-headers/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@context": "https://schema.org", "@type": "TechArticle", "headline": "Staging vs Production Header Differences", "description": "Find missing headers between staging and production in 30 seconds.", "url": "https://httpfixer.dev/blog/compare/staging-vs-production-headers/", "datePublished": "2026-04-04", "dateModified": "2026-04-04", "author": { "@type": "Organization", "name": "MetricLogic" }, "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://" } }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "Why do headers differ between staging and production?", "acceptedAnswer": { "@type": "Answer", "text": "CDNs, load balancers, and reverse proxies can strip or modify headers set by your origin server. Headers that work in staging may disappear in production behind Cloudflare or a load balancer." } }, { "@type": "Question", "name": "How do I compare headers between two URLs?", "acceptedAnswer": { "@type": "Answer", "text": "Paste both URLs into Header Diff — it fetches live headers from both and highlights every difference, missing header, and value change side by side." } }, { "@type": "Question", "name": "Why does Nginx drop security headers in some locations?", "acceptedAnswer": { "@type": "Answer", "text": "Nginx add_header in a location block does not inherit from the parent server block. If any location has its own add_header, you must repeat all headers in that location or use include files." } } ] }, { "@type": "HowTo", "name": "Staging vs Production Header Differences", "step": [ { "@type": "HowToStep", "position": 1, "name": "Scan both URLs", "text": "Paste your staging and production URLs into Header Diff to see a side-by-side comparison." }, { "@type": "HowToStep", "position": 2, "name": "Identify missing headers", "text": "Look for headers present on staging but absent on production — these are being stripped by CDN, load balancer, or proxy." }, { "@type": "HowToStep", "position": 3, "name": "Fix at the right layer", "text": "Set headers at the CDN/edge layer for headers that must survive the entire stack. For Cloudflare, use Transform Rules rather than relying on origin pass-through." } ] } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} pre code{background:none;color:var(--text);padding:0} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85} .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/compare/">Compare</a> &rarr; Staging vs Production Headers</div>
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/compare/">Compare</a> &rarr; Staging vs Production Headers</div>
 <h1>Staging vs Production Header Differences — How to Find What Is Missing</h1>
 <p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
 <p class="lead">Security headers you carefully configured in staging often disappear in production — stripped by a CDN, load balancer, or reverse proxy. Here is how to find the exact difference in 30 seconds.</p>
 
 <h2>Why headers differ between environments</h2>
 <p>Your app server sets the headers. But in production, the response passes through layers that can modify or strip them:</p>
-<ul>
-  <li><strong>CDNs</strong> (Cloudflare, CloudFront) — may strip or override headers, add their own</li>
-  <li><strong>Load balancers</strong> — often strip custom headers unless explicitly forwarded</li>
-  <li><strong>Reverse proxies</strong> (Nginx, Traefik) — misconfigured <code>proxy_pass</code> can drop add_header directives</li>
-  <li><strong>WAFs</strong> — may modify security headers to avoid conflicts</li>
+<ul> <li><strong>CDNs</strong> (Cloudflare, CloudFront) — may strip or override headers, add their own</li> <li><strong>Load balancers</strong> — often strip custom headers unless explicitly forwarded</li> <li><strong>Reverse proxies</strong> (Nginx, Traefik) — misconfigured <code>proxy_pass</code> can drop add_header directives</li> <li><strong>WAFs</strong> — may modify security headers to avoid conflicts</li>
 </ul>
 
 <h2>The fastest way to find differences</h2>
@@ -171,55 +32,30 @@ curl -sI https://yourapp.com | sort > prod-headers.txt
 diff staging-headers.txt prod-headers.txt</pre>
 
 <h2>The most commonly dropped headers</h2>
-<table>
-  <thead><tr><th>Header</th><th>Why it gets dropped</th><th>Fix</th></tr></thead>
-  <tbody>
-    <tr><td>Content-Security-Policy</td><td>CDN strips large headers, or proxy_pass doesn't forward</td><td>Set at CDN layer (Transform Rules) not just origin</td></tr>
-    <tr><td>Strict-Transport-Security</td><td>Load balancer terminates SSL, strips HSTS</td><td>Set on the load balancer / CDN, not the backend</td></tr>
-    <tr><td>X-Frame-Options</td><td>Nginx proxy_pass without add_header in server block</td><td>Move add_header to the server{} block, not location{}</td></tr>
-    <tr><td>Permissions-Policy</td><td>Relatively new, often missed in CDN configs</td><td>Add via Transform Rules or response header policy</td></tr>
-  </tbody>
+<table> <thead><tr><th>Header</th><th>Why it gets dropped</th><th>Fix</th></tr></thead> <tbody> <tr><td>Content-Security-Policy</td><td>CDN strips large headers, or proxy_pass doesn't forward</td><td>Set at CDN layer (Transform Rules) not just origin</td></tr> <tr><td>Strict-Transport-Security</td><td>Load balancer terminates SSL, strips HSTS</td><td>Set on the load balancer / CDN, not the backend</td></tr> <tr><td>X-Frame-Options</td><td>Nginx proxy_pass without add_header in server block</td><td>Move add_header to the server{} block, not location{}</td></tr> <tr><td>Permissions-Policy</td><td>Relatively new, often missed in CDN configs</td><td>Add via Transform Rules or response header policy</td></tr> </tbody>
 </table>
 
 <h2>Common Nginx mistake</h2>
 <p>In Nginx, <code>add_header</code> in a <code>location{}</code> block does not inherit from the parent <code>server{}</code> block. If you have <code>add_header</code> in any nested location, you must repeat all headers in that location:</p>
 
 <pre># Wrong — CSP will be dropped in /api/ responses
-server {
-  add_header Content-Security-Policy "default-src 'self'";
-  
-  location /api/ {
-    add_header X-Custom "value";  # This wipes the CSP header
-    proxy_pass http://backend;
-  }
+server { add_header Content-Security-Policy "default-src 'self'"; location /api/ { add_header X-Custom "value";  # This wipes the CSP header proxy_pass http://backend; }
 }
 
 # Correct — repeat all headers
-server {
-  location /api/ {
-    add_header Content-Security-Policy "default-src 'self'" always;
-    add_header X-Custom "value" always;
-    proxy_pass http://backend;
-  }
+server { location /api/ { add_header Content-Security-Policy "default-src 'self'" always; add_header X-Custom "value" always; proxy_pass http://backend; }
 }</pre>
 
 <h2>Cloudflare stripping headers</h2>
 <p>If your origin sets security headers but Cloudflare strips them, set them in Cloudflare Rules → Transform Rules → Modify Response Header instead of relying on origin pass-through. This ensures headers are set at the edge regardless of origin behaviour.</p>
 
 <h2>Pre-deployment checklist</h2>
-<ul>
-  <li>Compare headers between <code>staging.yourapp.com</code> and <code>yourapp.com</code> using Header Diff</li>
-  <li>Run HeadersFixer on your production URL after every deploy</li>
-  <li>Set headers at the CDN/edge layer for headers that must survive the entire stack</li>
-  <li>Use <code>always</code> in Nginx add_header to ensure headers appear on error responses too</li>
+<ul> <li>Compare headers between <code>staging.yourapp.com</code> and <code>yourapp.com</code> using Header Diff</li> <li>Run HeadersFixer on your production URL after every deploy</li> <li>Set headers at the CDN/edge layer for headers that must survive the entire stack</li> <li>Use <code>always</code> in Nginx add_header to ensure headers appear on error responses too</li>
 </ul>
 
 <div class="related">Related: <a href="/">HeadersFixer — scan live security headers</a> &nbsp;<a href="/blog/headers/security-headers-checklist/">Security headers checklist</a> &nbsp;<a href="/diff/">Header Diff tool</a> &nbsp;<a href="/tools/pre-launch-checklist/">Pre-Launch Checklist</a> &nbsp;<a href="/tools/redirect-chain/">Redirect Chain Fixer</a></div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

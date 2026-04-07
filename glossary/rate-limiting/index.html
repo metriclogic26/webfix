@@ -1,117 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rate Limiting — HttpFixer Glossary</title>
-  <meta name="description" content="Rate limiting controls how many requests a client can make to a server in a given time window. Prevents abuse, DDoS, and credential stuffing. Implemented via 429 Too Many Requests responses.">
-  <link rel="canonical" href="https://httpfixer.dev/glossary/rate-limiting/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Rate Limiting — HttpFixer Glossary">
-  <meta property="og:description" content="Rate limiting controls how many requests a client can make to a server in a given time window. Prevents abuse, DDoS, and credential stuffing. Implemented via 429 Too Many Requests responses.">
-  <meta property="og:url" content="https://httpfixer.dev/glossary/rate-limiting/">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"Rate Limiting","description":"Rate limiting controls how many requests a client can make to a server in a given time window. Prevents abuse, DDoS, and credential stuffing. Implemented via 429 Too Many Requests responses.","url":"https://httpfixer.dev/glossary/rate-limiting/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Glossary","item":"https://httpfixer.dev/glossary/"},{"@type":"ListItem","position":3,"name":"Rate Limiting","item":"https://httpfixer.dev/glossary/rate-limiting/"}]}]}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .breadcrumb a{color:var(--purple);text-decoration:none}
-    .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem}
-    .quick-answer p{margin:0;opacity:1;font-size:14px;line-height:1.7}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    pre code{background:none;color:var(--text);padding:0}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .tool-cta:hover{filter:brightness(1.1)}
-    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
-  </style>
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Rate Limiting — HttpFixer Glossary</title> <meta name="description" content="Rate limiting controls how many requests a client can make to a server in a given time window. Prevents abuse, DDoS, and credential stuffing. Implemented via 429 Too Many Requests responses."> <link rel="canonical" href="https://httpfixer.dev/glossary/rate-limiting/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="Rate Limiting — HttpFixer Glossary"> <meta property="og:description" content="Rate limiting controls how many requests a client can make to a server in a given time window. Prevents abuse, DDoS, and credential stuffing. Implemented via 429 Too Many Requests responses."> <meta property="og:url" content="https://httpfixer.dev/glossary/rate-limiting/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"Rate Limiting","description":"Rate limiting controls how many requests a client can make to a server in a given time window. Prevents abuse, DDoS, and credential stuffing. Implemented via 429 Too Many Requests responses.","url":"https://httpfixer.dev/glossary/rate-limiting/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Glossary","item":"https://httpfixer.dev/glossary/"},{"@type":"ListItem","position":3,"name":"Rate Limiting","item":"https://httpfixer.dev/glossary/rate-limiting/"}]}]}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem;flex-wrap:wrap} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem} .quick-answer p{margin:0;opacity:1;font-size:14px;line-height:1.7} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} pre code{background:none;color:var(--text);padding:0} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a>
-    <a href="/errors/">Errors</a><a href="/glossary/" style="color:var(--purple);opacity:1">Glossary</a><a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/">Errors</a><a href="/glossary/" style="color:var(--purple);opacity:1">Glossary</a><a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/glossary/">Glossary</a> &rarr; Rate Limiting</div>
-  <div class="date">Updated April 2026</div>
-  <h1>Rate Limiting</h1>
-  <div class="quick-answer"><p>Rate limiting restricts how many requests a client can make within a time window. When the limit is exceeded, the server returns 429 Too Many Requests. It prevents brute-force attacks, API abuse, and DDoS while protecting backend resources.</p></div>
-  <h2>How it works</h2>
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/glossary/">Glossary</a> &rarr; Rate Limiting</div> <div class="date">Updated April 2026</div> <h1>Rate Limiting</h1> <div class="quick-answer"><p>Rate limiting restricts how many requests a client can make within a time window. When the limit is exceeded, the server returns 429 Too Many Requests. It prevents brute-force attacks, API abuse, and DDoS while protecting backend resources.</p></div> <h2>How it works</h2>
 <p>The server tracks request counts per client (by IP, API key, or user ID). When the count exceeds the configured limit, subsequent requests get a 429 response until the window resets.</p>
 
 <h2>Headers that accompany 429</h2>
-<table>
-  <thead><tr><th>Header</th><th>Value</th><th>Meaning</th></tr></thead>
-  <tbody>
-    <tr><td>Retry-After</td><td>60</td><td>Seconds until the limit resets</td></tr>
-    <tr><td>X-RateLimit-Limit</td><td>100</td><td>Max requests per window</td></tr>
-    <tr><td>X-RateLimit-Remaining</td><td>0</td><td>Requests left in current window</td></tr>
-    <tr><td>X-RateLimit-Reset</td><td>1712001600</td><td>Unix timestamp when limit resets</td></tr>
-  </tbody>
+<table> <thead><tr><th>Header</th><th>Value</th><th>Meaning</th></tr></thead> <tbody> <tr><td>Retry-After</td><td>60</td><td>Seconds until the limit resets</td></tr> <tr><td>X-RateLimit-Limit</td><td>100</td><td>Max requests per window</td></tr> <tr><td>X-RateLimit-Remaining</td><td>0</td><td>Requests left in current window</td></tr> <tr><td>X-RateLimit-Reset</td><td>1712001600</td><td>Unix timestamp when limit resets</td></tr> </tbody>
 </table>
 
 <h2>Nginx rate limiting</h2>
 <pre># Define zone: 10MB memory, 10 requests/second per IP
 limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
 
-server {
-  location /api/ {
-    limit_req zone=api burst=20 nodelay;
-    limit_req_status 429;
-    add_header Retry-After 60 always;
-  }
+server { location /api/ { limit_req zone=api burst=20 nodelay; limit_req_status 429; add_header Retry-After 60 always; }
 }</pre>
 
 <h2>Cloudflare rate limiting</h2>
 <p>Dashboard &rarr; Security &rarr; Rate Limiting &rarr; Create Rule. Set the threshold, path, and mitigation action (Block, Challenge, or Simulate).</p>
 
 <h2>Common mistakes</h2>
-<ul>
-  <li>Rate limiting by IP alone fails behind shared NAT (office networks all look like one IP)</li>
-  <li>Not sending Retry-After means clients don't know when to retry, causing retry storms</li>
-  <li>Applying the same limit to login endpoints and public APIs — auth endpoints need tighter limits</li>
-</ul>
-  <a href="/" class="tool-cta">Scan your response headers — HeadersFixer &rarr;</a>
-  <div class="related">Related: <a href="/blog/reference/http-status-codes-cheatsheet/">HTTP Status Codes</a> &nbsp;<a href="/blog/headers/security-headers-checklist/">Security headers checklist</a></div>
+<ul> <li>Rate limiting by IP alone fails behind shared NAT (office networks all look like one IP)</li> <li>Not sending Retry-After means clients don't know when to retry, causing retry storms</li> <li>Applying the same limit to login endpoints and public APIs — auth endpoints need tighter limits</li>
+</ul> <a href="/" class="tool-cta">Scan your response headers — HeadersFixer &rarr;</a> <div class="related">Related: <a href="/blog/reference/http-status-codes-cheatsheet/">HTTP Status Codes</a> &nbsp;<a href="/blog/headers/security-headers-checklist/">Security headers checklist</a></div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

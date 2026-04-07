@@ -1,176 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clear-Site-Data Header — Secure Logout Implementation · HttpFixer</title>
-  <meta name="description" content="Clear-Site-Data tells the browser to wipe cookies, storage, and cache on logout. Here is how to implement it and what it actually clears.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/headers/clear-site-data/">
-  <meta name="robots" content="index, follow">
-  <meta property="og:title" content="Clear-Site-Data Header — Secure Logout Implementation">
-  <meta property="og:description" content="Clear-Site-Data tells the browser to wipe cookies, storage, and cache on logout. Here is how to implement it and what it actually clears.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/headers/clear-site-data/">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "TechArticle",
-      "headline": "Clear-Site-Data Header \u2014 Secure Logout Implementation",
-      "description": "Clear-Site-Data tells the browser to wipe cookies, storage, and cache on logout. Here is how to implement it and what it actually clears.",
-      "url": "https://httpfixer.dev/blog/headers/clear-site-data/",
-      "datePublished": "2026-04-03",
-      "dateModified": "2026-04-03",
-      "author": {
-        "@type": "Organization",
-        "name": "MetricLogic"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "MetricLogic",
-        "url": "https://metriclogic.dev"
-      }
-    },
-    {
-      "@type": "HowTo",
-      "name": "Clear-Site-Data Header \u2014 Secure Logout Implementation",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Add Clear-Site-Data to your logout endpoint",
-          "text": "Send the header in the response from your logout API route."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Choose what to clear",
-          "text": "Use 'cookies', 'storage', 'cache', or '*' for everything."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Verify with DevTools",
-          "text": "Application tab shows cookies and storage cleared after logout."
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Does Clear-Site-Data actually log users out?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "It clears browser-side storage including cookies, localStorage, and cache. If your session is server-side (the server also needs to invalidate the session token), you must do both."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What does * clear?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "The wildcard clears cookies, localStorage, sessionStorage, IndexedDB, cache storage, and service worker registrations. It is the most thorough option."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Does Clear-Site-Data work on all browsers?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Chrome and Edge support it fully. Firefox supports it. Safari has partial support. Use it as an enhancement \u2014 always also clear cookies server-side."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "HttpFixer",
-          "item": "https://httpfixer.dev"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Blog",
-          "item": "https://httpfixer.dev/blog/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Clear-Site-Data Header \u2014 Secure Logout Implementation",
-          "item": "https://httpfixer.dev/blog/headers/clear-site-data/"
-        }
-      ]
-    }
-  ]
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .breadcrumb a{color:var(--purple);text-decoration:none}
-    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.2);color:var(--red)}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
-    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column}}
-  </style>
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Clear-Site-Data Header — Secure Logout Implementation · HttpFixer</title> <meta name="description" content="Clear-Site-Data tells the browser to wipe cookies, storage, and cache on logout. Here is how to implement it and what it actually clears."> <link rel="canonical" href="https://httpfixer.dev/blog/headers/clear-site-data/"> <meta name="robots" content="index, follow"> <meta property="og:title" content="Clear-Site-Data Header — Secure Logout Implementation"> <meta property="og:description" content="Clear-Site-Data tells the browser to wipe cookies, storage, and cache on logout. Here is how to implement it and what it actually clears."> <meta property="og:url" content="https://httpfixer.dev/blog/headers/clear-site-data/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@type": "TechArticle", "headline": "Clear-Site-Data Header \u2014 Secure Logout Implementation", "description": "Clear-Site-Data tells the browser to wipe cookies, storage, and cache on logout. Here is how to implement it and what it actually clears.", "url": "https://httpfixer.dev/blog/headers/clear-site-data/", "datePublished": "2026-04-03", "dateModified": "2026-04-03", "author": { "@type": "Organization", "name": "MetricLogic" }, "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://" } }, { "@type": "HowTo", "name": "Clear-Site-Data Header \u2014 Secure Logout Implementation", "step": [ { "@type": "HowToStep", "position": 1, "name": "Add Clear-Site-Data to your logout endpoint", "text": "Send the header in the response from your logout API route." }, { "@type": "HowToStep", "position": 2, "name": "Choose what to clear", "text": "Use 'cookies', 'storage', 'cache', or '*' for everything." }, { "@type": "HowToStep", "position": 3, "name": "Verify with DevTools", "text": "Application tab shows cookies and storage cleared after logout." } ] }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "Does Clear-Site-Data actually log users out?", "acceptedAnswer": { "@type": "Answer", "text": "It clears browser-side storage including cookies, localStorage, and cache. If your session is server-side (the server also needs to invalidate the session token), you must do both." } }, { "@type": "Question", "name": "What does * clear?", "acceptedAnswer": { "@type": "Answer", "text": "The wildcard clears cookies, localStorage, sessionStorage, IndexedDB, cache storage, and service worker registrations. It is the most thorough option." } }, { "@type": "Question", "name": "Does Clear-Site-Data work on all browsers?", "acceptedAnswer": { "@type": "Answer", "text": "Chrome and Edge support it fully. Firefox supports it. Safari has partial support. Use it as an enhancement \u2014 always also clear cookies server-side." } } ] }, { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev" }, { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://httpfixer.dev/blog/" }, { "@type": "ListItem", "position": 3, "name": "Clear-Site-Data Header \u2014 Secure Logout Implementation", "item": "https://httpfixer.dev/blog/headers/clear-site-data/" } ] } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.2);color:var(--red)} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85} .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column}} </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/headers/">Headers</a> → Clear-Site-Data Header — Secure Logout Implementation</div>
-  <span class="tag">Headers</span>
-  <h1>Clear-Site-Data Header — Secure Logout Implementation</h1>
-<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
-  <div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace">
-  <span style="font-size:12px;opacity:0.7">Reading this? Verify your fix live.</span>
-  <a href="/" style="padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Scan your security headers → HeadersFixer</a>
-</div>
-  
-<p class="lead">When a user logs out, their session cookie is deleted by your server — but their browser may still have localStorage tokens, service worker caches, and IndexedDB data. <code>Clear-Site-Data</code> wipes all of it in one header.</p>
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/headers/">Headers</a> → Clear-Site-Data Header — Secure Logout Implementation</div> <span class="tag">Headers</span> <h1>Clear-Site-Data Header — Secure Logout Implementation</h1>
+<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p> <div style="background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;font-family:'JetBrains Mono',monospace"> <span style="font-size:12px;opacity:0.7">Reading this? Verify your fix live.</span> <a href="/" style="padding:0.4rem 0.9rem;background:#6C63FF;color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600">Scan your security headers → HeadersFixer</a>
+</div> <p class="lead">When a user logs out, their session cookie is deleted by your server — but their browser may still have localStorage tokens, service worker caches, and IndexedDB data. <code>Clear-Site-Data</code> wipes all of it in one header.</p>
 
 <h2>The header</h2>
 <pre># Clear everything (recommended for logout)
@@ -180,65 +18,36 @@ Clear-Site-Data: "cache", "cookies", "storage"
 Clear-Site-Data: "*"
 
 # Clear only specific types
-Clear-Site-Data: "cookies"          # just cookies
-Clear-Site-Data: "storage"          # localStorage, sessionStorage, IndexedDB
-Clear-Site-Data: "cache"            # HTTP cache and service worker caches</pre>
+Clear-Site-Data: "cookies" # just cookies
+Clear-Site-Data: "storage" # localStorage, sessionStorage, IndexedDB
+Clear-Site-Data: "cache" # HTTP cache and service worker caches</pre>
 
 <h2>Add to your logout endpoint</h2>
 
 <h3>Express / Node.js</h3>
-<pre>app.post("/api/logout", (req, res) => {
-  // Invalidate server-side session
-  req.session.destroy();
-
-  // Clear browser-side data
-  res.setHeader("Clear-Site-Data", '"cache", "cookies", "storage"');
-
-  // Also clear the session cookie explicitly
-  res.clearCookie("session");
-
-  res.json({ success: true });
+<pre>app.post("/api/logout", (req, res) => { // Invalidate server-side session req.session.destroy(); // Clear browser-side data res.setHeader("Clear-Site-Data", '"cache", "cookies", "storage"'); // Also clear the session cookie explicitly res.clearCookie("session"); res.json({ success: true });
 });</pre>
 
 <h3>FastAPI / Python</h3>
 <pre>from fastapi import Response
 
 @app.post("/api/logout")
-def logout(response: Response):
-    response.headers["Clear-Site-Data"] = '"cache", "cookies", "storage"'
-    response.delete_cookie("session")
-    return {"success": True}</pre>
+def logout(response: Response): response.headers["Clear-Site-Data"] = '"cache", "cookies", "storage"' response.delete_cookie("session") return {"success": True}</pre>
 
 <h3>Next.js App Router</h3>
 <pre>// app/api/auth/logout/route.ts
 import { NextResponse } from "next/server";
 
-export async function POST() {
-  const response = NextResponse.json({ success: true });
-  response.headers.set("Clear-Site-Data", '"cache", "cookies", "storage"');
-  response.cookies.delete("session");
-  return response;
+export async function POST() { const response = NextResponse.json({ success: true }); response.headers.set("Clear-Site-Data", '"cache", "cookies", "storage"'); response.cookies.delete("session"); return response;
 }</pre>
 
 <h3>Django</h3>
 <pre>from django.contrib.auth import logout
 
-def logout_view(request):
-    logout(request)
-    response = JsonResponse({"success": True})
-    response["Clear-Site-Data"] = '"cache", "cookies", "storage"'
-    return response</pre>
+def logout_view(request): logout(request) response = JsonResponse({"success": True}) response["Clear-Site-Data"] = '"cache", "cookies", "storage"' return response</pre>
 
 <h2>What each value clears</h2>
-<table>
-  <thead><tr><th>Value</th><th>Clears</th></tr></thead>
-  <tbody>
-    <tr><td>"cookies"</td><td>All cookies for the origin</td></tr>
-    <tr><td>"storage"</td><td>localStorage, sessionStorage, IndexedDB, Web SQL</td></tr>
-    <tr><td>"cache"</td><td>HTTP cache, service worker caches, CacheStorage</td></tr>
-    <tr><td>"executionContexts"</td><td>Reloads all open tabs for the origin</td></tr>
-    <tr><td>"*"</td><td>All of the above</td></tr>
-  </tbody>
+<table> <thead><tr><th>Value</th><th>Clears</th></tr></thead> <tbody> <tr><td>"cookies"</td><td>All cookies for the origin</td></tr> <tr><td>"storage"</td><td>localStorage, sessionStorage, IndexedDB, Web SQL</td></tr> <tr><td>"cache"</td><td>HTTP cache, service worker caches, CacheStorage</td></tr> <tr><td>"executionContexts"</td><td>Reloads all open tabs for the origin</td></tr> <tr><td>"*"</td><td>All of the above</td></tr> </tbody>
 </table>
 
 <h2>Important — HTTPS required</h2>
@@ -249,18 +58,12 @@ def logout_view(request):
 <pre># Always do both:
 # 1. Add Clear-Site-Data header to logout response
 # 2. Invalidate the session on the server (delete from DB/Redis/etc.)
-await redis.del(`session:${sessionId}`);</pre>
-  <a href="/" class="tool-cta">Scan your security headers → HeadersFixer</a>
-  <div class="related">Related: <a href="/blog/headers/security-headers-checklist/">Headers checklist</a> <a href="/blog/explainers/what-is-hsts/">HSTS explained</a> <a href="/blog/headers/secure-httponly-cookies/">Secure cookies guide</a></div>
+await redis.del(`session:${sessionId}`);</pre> <a href="/" class="tool-cta">Scan your security headers → HeadersFixer</a> <div class="related">Related: <a href="/blog/headers/security-headers-checklist/">Headers checklist</a> <a href="/blog/explainers/what-is-hsts/">HSTS explained</a> <a href="/blog/headers/secure-httponly-cookies/">Secure cookies guide</a></div>
 
-<div style="margin-top:2rem;padding:1rem;background:#12151F;border:1px solid #252836;border-radius:8px;font-size:13px">
-  <a href="/tools/hsts-preload/" style="color:#6C63FF;text-decoration:none;font-weight:500">Check if your domain is on the HSTS preload list → HSTS Preload Checker</a>
+<div style="margin-top:2rem;padding:1rem;background:#12151F;border:1px solid #252836;border-radius:8px;font-size:13px"> <a href="/tools/hsts-preload/" style="color:#6C63FF;text-decoration:none;font-weight:500">Check if your domain is on the HSTS preload list → HSTS Preload Checker</a>
 </div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/privacy/">Privacy</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

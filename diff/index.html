@@ -1,340 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Header Diff &mdash; Compare Staging vs Production Headers &middot; HttpFixer</title>
-  <meta name="description" content="Compare HTTP response headers between two URLs. Find missing security headers, different Cache-Control values, or CORS mismatches between staging and production.">
-  <link rel="canonical" href="https://httpfixer.dev/diff/">
-  <meta name="robots" content="index, follow">
-  <meta property="og:title" content="Header Diff &mdash; Staging vs Production">
-  <meta property="og:description" content="Compare HTTP headers between two URLs. Find what is missing in production that staging has.">
-  <meta property="og:url" content="https://httpfixer.dev/diff/">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebApplication",
-      "name": "Header Diff — Staging vs Production",
-      "url": "https://httpfixer.dev/diff/",
-      "description": "Compare HTTP response headers between two URLs. Find headers that are missing in production but present in staging, or vice versa.",
-      "applicationCategory": "DeveloperApplication",
-      "operatingSystem": "Any",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      }
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What does the Header Diff tool do?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "It fetches HTTP response headers from two URLs and shows a side-by-side comparison. Headers present in one but not the other are highlighted, and headers with different values between the two URLs are flagged."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is it useful for?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Comparing staging and production deployments to catch missing security headers, different Cache-Control values, or CORS headers that were added to staging but not deployed to production."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "SoftwareApplication",
-      "name": "Header Diff",
-      "description": "Compare HTTP headers between two URLs side by side. Find what is missing in production that staging has, or vice versa.",
-      "url": "https://httpfixer.dev/diff/",
-      "applicationCategory": "DeveloperApplication",
-      "operatingSystem": "Web",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      }
-    }
-  ]
-}</script>
-  <style>
-
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:960px;margin:0 auto;padding:2rem 1.5rem 4rem}
-    h1{font-size:1.5rem;font-weight:600;margin-bottom:0.5rem}
-    .subtitle{font-size:13px;opacity:0.6;margin-bottom:2rem;line-height:1.7}
-    .input-row{display:flex;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap}
-    .input-row input{flex:1;min-width:200px;background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:0.6rem 0.9rem;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:13px}
-    .input-row input:focus{outline:none;border-color:var(--purple)}
-    .input-row input::placeholder{opacity:0.4}
-    .btn{padding:0.6rem 1.25rem;background:var(--purple);color:white;border:none;border-radius:6px;font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
-    .btn:hover{filter:brightness(1.1)}
-    .btn:disabled{opacity:0.4;cursor:not-allowed}
-    .btn-outline{padding:0.5rem 1rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:6px;font-family:"JetBrains Mono",monospace;font-size:12px;cursor:pointer}
-    .btn-outline:hover{background:rgba(108,99,255,0.1)}
-    .status{font-size:12px;opacity:0.5;margin:0.5rem 0;min-height:20px}
-    .error{color:var(--red);font-size:12px;margin:0.5rem 0}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}.input-row{flex-direction:column}}
-
-    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem}
-    @media(max-width:700px){.two-col{grid-template-columns:1fr}}
-    .col-header{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.5;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem}
-    .col-url{font-size:12px;color:var(--purple);word-break:break-all;margin-bottom:0.75rem}
-    .header-table{width:100%;border-collapse:collapse;font-size:12px}
-    .header-table td{padding:0.45rem 0.6rem;border-bottom:1px solid var(--border);vertical-align:top;word-break:break-word}
-    .header-table td:first-child{color:var(--text);opacity:0.6;width:40%;white-space:nowrap}
-    .header-table td:last-child{color:var(--text)}
-    .row-match td{background:transparent}
-    .row-diff td{background:rgba(249,115,22,0.08)}
-    .row-diff td:first-child{color:var(--orange)!important;opacity:1!important}
-    .row-only td{background:rgba(239,68,68,0.08)}
-    .row-only td:first-child{color:var(--red)!important;opacity:1!important}
-    .row-new td{background:rgba(34,197,94,0.08)}
-    .row-new td:first-child{color:var(--green)!important;opacity:1!important}
-    .legend{display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;font-size:11px}
-    .leg{display:flex;align-items:center;gap:0.4rem}
-    .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-    .summary-bar{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;gap:2rem;flex-wrap:wrap;font-size:12px}
-    .sum-item strong{color:var(--purple)}
-    .diff-badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:3px;font-size:10px;font-weight:600;margin-left:0.4rem}
-    .badge-diff{background:rgba(249,115,22,0.2);color:var(--orange)}
-    .badge-miss{background:rgba(239,68,68,0.2);color:var(--red)}
-    .badge-new{background:rgba(34,197,94,0.2);color:var(--green)}
-    .section-label{font-size:11px;font-weight:600;opacity:0.5;text-transform:uppercase;letter-spacing:0.08em;margin:1.5rem 0 0.75rem;padding-top:0.75rem;border-top:1px solid var(--border)}
-  </style>
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Header Diff &mdash; Compare Staging vs Production Headers &middot; HttpFixer</title> <meta name="description" content="Compare HTTP response headers between two URLs. Find missing security headers, different Cache-Control values, or CORS mismatches between staging and production."> <link rel="canonical" href="https://httpfixer.dev/diff/"> <meta name="robots" content="index, follow"> <meta property="og:title" content="Header Diff &mdash; Staging vs Production"> <meta property="og:description" content="Compare HTTP headers between two URLs. Find what is missing in production that staging has."> <meta property="og:url" content="https://httpfixer.dev/diff/"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@type": "WebApplication", "name": "Header Diff — Staging vs Production", "url": "https://httpfixer.dev/diff/", "description": "Compare HTTP response headers between two URLs. Find headers that are missing in production but present in staging, or vice versa.", "applicationCategory": "DeveloperApplication", "operatingSystem": "Any", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "What does the Header Diff tool do?", "acceptedAnswer": { "@type": "Answer", "text": "It fetches HTTP response headers from two URLs and shows a side-by-side comparison. Headers present in one but not the other are highlighted, and headers with different values between the two URLs are flagged." } }, { "@type": "Question", "name": "What is it useful for?", "acceptedAnswer": { "@type": "Answer", "text": "Comparing staging and production deployments to catch missing security headers, different Cache-Control values, or CORS headers that were added to staging but not deployed to production." } } ] }, { "@type": "SoftwareApplication", "name": "Header Diff", "description": "Compare HTTP headers between two URLs side by side. Find what is missing in production that staging has, or vice versa.", "url": "https://httpfixer.dev/diff/", "applicationCategory": "DeveloperApplication", "operatingSystem": "Web", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:960px;margin:0 auto;padding:2rem 1.5rem 4rem} h1{font-size:1.5rem;font-weight:600;margin-bottom:0.5rem} .subtitle{font-size:13px;opacity:0.6;margin-bottom:2rem;line-height:1.7} .input-row{display:flex;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap} .input-row input{flex:1;min-width:200px;background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:0.6rem 0.9rem;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:13px} .input-row input:focus{outline:none;border-color:var(--purple)} .input-row input::placeholder{opacity:0.4} .btn{padding:0.6rem 1.25rem;background:var(--purple);color:white;border:none;border-radius:6px;font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap} .btn:hover{filter:brightness(1.1)} .btn:disabled{opacity:0.4;cursor:not-allowed} .btn-outline{padding:0.5rem 1rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:6px;font-family:"JetBrains Mono",monospace;font-size:12px;cursor:pointer} .btn-outline:hover{background:rgba(108,99,255,0.1)} .status{font-size:12px;opacity:0.5;margin:0.5rem 0;min-height:20px} .error{color:var(--red);font-size:12px;margin:0.5rem 0} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}.input-row{flex-direction:column}} .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem} @media(max-width:700px){.two-col{grid-template-columns:1fr}} .col-header{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.5;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem} .col-url{font-size:12px;color:var(--purple);word-break:break-all;margin-bottom:0.75rem} .header-table{width:100%;border-collapse:collapse;font-size:12px} .header-table td{padding:0.45rem 0.6rem;border-bottom:1px solid var(--border);vertical-align:top;word-break:break-word} .header-table td:first-child{color:var(--text);opacity:0.6;width:40%;white-space:nowrap} .header-table td:last-child{color:var(--text)} .row-match td{background:transparent} .row-diff td{background:rgba(249,115,22,0.08)} .row-diff td:first-child{color:var(--orange)!important;opacity:1!important} .row-only td{background:rgba(239,68,68,0.08)} .row-only td:first-child{color:var(--red)!important;opacity:1!important} .row-new td{background:rgba(34,197,94,0.08)} .row-new td:first-child{color:var(--green)!important;opacity:1!important} .legend{display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;font-size:11px} .leg{display:flex;align-items:center;gap:0.4rem} .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0} .summary-bar{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;gap:2rem;flex-wrap:wrap;font-size:12px} .sum-item strong{color:var(--purple)} .diff-badge{display:inline-block;padding:0.15rem 0.5rem;border-radius:3px;font-size:10px;font-weight:600;margin-left:0.4rem} .badge-diff{background:rgba(249,115,22,0.2);color:var(--orange)} .badge-miss{background:rgba(239,68,68,0.2);color:var(--red)} .badge-new{background:rgba(34,197,94,0.2);color:var(--green)} .section-label{font-size:11px;font-weight:600;opacity:0.5;text-transform:uppercase;letter-spacing:0.08em;margin:1.5rem 0 0.75rem;padding-top:0.75rem;border-top:1px solid var(--border)} </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Header Diff</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Header Diff</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <h1>Staging vs Production — Header Diff</h1>
-  <p class="subtitle">Enter two URLs to compare their HTTP response headers side by side. Missing security headers, different Cache-Control values, and CORS differences are highlighted automatically.</p>
-
-  <div class="input-row">
-    <input type="url" id="url1" placeholder="https://staging.yourapp.com" autocomplete="off" spellcheck="false">
-    <input type="url" id="url2" placeholder="https://yourapp.com" autocomplete="off" spellcheck="false">
-    <button class="btn" id="compareBtn" onclick="runDiff()">Compare Headers</button>
-  </div>
-
-  <div class="input-row" style="margin-top:-0.25rem">
-    <button class="btn-outline" onclick="loadExample()">Try example</button>
-    <button class="btn-outline" onclick="clearAll()">Clear</button>
-  </div>
-
-  <div class="status" id="status"></div>
-  <div class="error" id="err"></div>
-
-  <div id="results" style="display:none">
-    <div class="summary-bar" id="summary"></div>
-    <div class="legend">
-      <div class="leg"><div class="dot" style="background:var(--green)"></div>Only in URL 2 (production)</div>
-      <div class="leg"><div class="dot" style="background:var(--red)"></div>Only in URL 1 (staging)</div>
-      <div class="leg"><div class="dot" style="background:var(--orange)"></div>Different value</div>
-      <div class="leg"><div class="dot" style="background:var(--border)"></div>Same</div>
-    </div>
-    <div class="two-col" id="diffOutput"></div>
-  </div>
+<main> <h1>Staging vs Production — Header Diff</h1> <p class="subtitle">Enter two URLs to compare their HTTP response headers side by side. Missing security headers, different Cache-Control values, and CORS differences are highlighted automatically.</p> <div class="input-row"> <input type="url" id="url1" placeholder="https://staging.yourapp.com" autocomplete="off" spellcheck="false"> <input type="url" id="url2" placeholder="https://yourapp.com" autocomplete="off" spellcheck="false"> <button class="btn" id="compareBtn" onclick="runDiff()">Compare Headers</button> </div> <div class="input-row" style="margin-top:-0.25rem"> <button class="btn-outline" onclick="loadExample()">Try example</button> <button class="btn-outline" onclick="clearAll()">Clear</button> </div> <div class="status" id="status"></div> <div class="error" id="err"></div> <div id="results" style="display:none"> <div class="summary-bar" id="summary"></div> <div class="legend"> <div class="leg"><div class="dot" style="background:var(--green)"></div>Only in URL 2 (production)</div> <div class="leg"><div class="dot" style="background:var(--red)"></div>Only in URL 1 (staging)</div> <div class="leg"><div class="dot" style="background:var(--orange)"></div>Different value</div> <div class="leg"><div class="dot" style="background:var(--border)"></div>Same</div> </div> <div class="two-col" id="diffOutput"></div> </div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/hsts-preload/">HSTS Checker</a> &middot; <a href="/diff/">Header Diff</a> &middot; <a href="/tools/cache-simulator/">Cache Simulator</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/about/">About</a> &middot; <a href="/privacy/">Privacy</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/hsts-preload/">HSTS Checker</a> &middot; <a href="/diff/">Header Diff</a> &middot; <a href="/tools/cache-simulator/">Cache Simulator</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/about/">About</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 
 <script>
 const PROXY = "https://headers-proxy.metriclogicllc.workers.dev";
 
-async function fetchHeaders(url) {
-  const res = await fetch(`${PROXY}/?url=${encodeURIComponent(url)}`, {
-    method: "GET",
-    headers: { "Accept": "application/json" }
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status} from proxy`);
-  const data = await res.json();
-  // proxy returns {headers: {name: value}}
-  return data.headers || data;
+async function fetchHeaders(url) { const res = await fetch(`${PROXY}/?url=${encodeURIComponent(url)}`, { method: "GET", headers: { "Accept": "application/json" } }); if (!res.ok) throw new Error(`HTTP ${res.status} from proxy`); const data = await res.json(); // proxy returns {headers: {name: value}} return data.headers || data;
 }
 
-function normalizeHeaders(raw) {
-  const result = {};
-  for (const [k, v] of Object.entries(raw)) {
-    result[k.toLowerCase()] = Array.isArray(v) ? v.join(", ") : String(v);
-  }
-  return result;
+function normalizeHeaders(raw) { const result = {}; for (const [k, v] of Object.entries(raw)) { result[k.toLowerCase()] = Array.isArray(v) ? v.join(", ") : String(v); } return result;
 }
 
-async function runDiff() {
-  const url1 = document.getElementById("url1").value.trim();
-  const url2 = document.getElementById("url2").value.trim();
-  const status = document.getElementById("status");
-  const err = document.getElementById("err");
-  const btn = document.getElementById("compareBtn");
-  const results = document.getElementById("results");
-
-  err.textContent = "";
-  results.style.display = "none";
-
-  if (!url1 || !url2) { err.textContent = "Enter both URLs to compare."; return; }
-  if (!url1.startsWith("http") || !url2.startsWith("http")) {
-    err.textContent = "URLs must start with https://"; return;
-  }
-
-  btn.disabled = true;
-  status.textContent = "Fetching headers from both URLs...";
-
-  try {
-    const [h1raw, h2raw] = await Promise.all([fetchHeaders(url1), fetchHeaders(url2)]);
-    const h1 = normalizeHeaders(h1raw);
-    const h2 = normalizeHeaders(h2raw);
-
-    renderDiff(url1, url2, h1, h2);
-    status.textContent = "";
-    results.style.display = "block";
-  } catch(e) {
-    err.textContent = `Error: ${e.message}. Check the URL is publicly accessible.`;
-    status.textContent = "";
-  } finally {
-    btn.disabled = false;
-  }
+async function runDiff() { const url1 = document.getElementById("url1").value.trim(); const url2 = document.getElementById("url2").value.trim(); const status = document.getElementById("status"); const err = document.getElementById("err"); const btn = document.getElementById("compareBtn"); const results = document.getElementById("results"); err.textContent = ""; results.style.display = "none"; if (!url1 || !url2) { err.textContent = "Enter both URLs to compare."; return; } if (!url1.startsWith("http") || !url2.startsWith("http")) { err.textContent = "URLs must start with https://"; return; } btn.disabled = true; status.textContent = "Fetching headers from both URLs..."; try { const [h1raw, h2raw] = await Promise.all([fetchHeaders(url1), fetchHeaders(url2)]); const h1 = normalizeHeaders(h1raw); const h2 = normalizeHeaders(h2raw); renderDiff(url1, url2, h1, h2); status.textContent = ""; results.style.display = "block"; } catch(e) { err.textContent = `Error: ${e.message}. Check the URL is publicly accessible.`; status.textContent = ""; } finally { btn.disabled = false; }
 }
 
-function renderDiff(url1, url2, h1, h2) {
-  const allKeys = new Set([...Object.keys(h1), ...Object.keys(h2)]);
-
-  // Security headers to highlight specially
-  const SECURITY = new Set(["strict-transport-security","content-security-policy",
-    "x-frame-options","x-content-type-options","referrer-policy","permissions-policy",
-    "cross-origin-opener-policy","cross-origin-embedder-policy","server"]);
-
-  const CACHE = new Set(["cache-control","vary","age","etag","last-modified",
-    "surrogate-control","cdn-cache-control","cloudflare-cdn-cache-control"]);
-
-  const CORS = new Set(["access-control-allow-origin","access-control-allow-methods",
-    "access-control-allow-headers","access-control-allow-credentials",
-    "access-control-max-age","access-control-expose-headers"]);
-
-  let identical = 0, different = 0, onlyIn1 = 0, onlyIn2 = 0;
-
-  const sorted = [...allKeys].sort((a, b) => {
-    // Group: security first, then CORS, then cache, then rest
-    const ga = SECURITY.has(a) ? 0 : CORS.has(a) ? 1 : CACHE.has(a) ? 2 : 3;
-    const gb = SECURITY.has(b) ? 0 : CORS.has(b) ? 1 : CACHE.has(b) ? 2 : 3;
-    return ga !== gb ? ga - gb : a.localeCompare(b);
-  });
-
-  let left1 = "", left2 = "";
-  let prevGroup = -1;
-
-  sorted.forEach(key => {
-    const inGroup = SECURITY.has(key) ? 0 : CORS.has(key) ? 1 : CACHE.has(key) ? 2 : 3;
-    const groupLabel = ["Security Headers","CORS Headers","Cache Headers","Other Headers"];
-
-    if (inGroup !== prevGroup) {
-      const label = `<div class="section-label" style="grid-column:1/-1;display:block">${groupLabel[inGroup]}</div>`;
-      // We'll inject section labels separately
-      left1 += `<tr><td colspan="2" class="section-label" style="background:transparent;border:none;padding:0.75rem 0 0.4rem;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.4">${groupLabel[inGroup]}</td></tr>`;
-      left2 += `<tr><td colspan="2" class="section-label" style="background:transparent;border:none;padding:0.75rem 0 0.4rem;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.4">&nbsp;</td></tr>`;
-      prevGroup = inGroup;
-    }
-
-    const v1 = h1[key];
-    const v2 = h2[key];
-
-    if (v1 && v2) {
-      if (v1 === v2) {
-        identical++;
-        const rowCls = "row-match";
-        left1 += `<tr class="${rowCls}"><td>${key}</td><td>${v1}</td></tr>`;
-        left2 += `<tr class="${rowCls}"><td>${key}</td><td>${v2}</td></tr>`;
-      } else {
-        different++;
-        left1 += `<tr class="row-diff"><td>${key} <span class="diff-badge badge-diff">DIFF</span></td><td>${v1}</td></tr>`;
-        left2 += `<tr class="row-diff"><td>${key} <span class="diff-badge badge-diff">DIFF</span></td><td>${v2}</td></tr>`;
-      }
-    } else if (v1 && !v2) {
-      onlyIn1++;
-      left1 += `<tr class="row-only"><td>${key} <span class="diff-badge badge-miss">STAGING ONLY</span></td><td>${v1}</td></tr>`;
-      left2 += `<tr class="row-only"><td>${key}</td><td style="opacity:0.3">— missing</td></tr>`;
-    } else {
-      onlyIn2++;
-      left1 += `<tr class="row-new"><td>${key}</td><td style="opacity:0.3">— missing</td></tr>`;
-      left2 += `<tr class="row-new"><td>${key} <span class="diff-badge badge-new">PROD ONLY</span></td><td>${v2}</td></tr>`;
-    }
-  });
-
-  document.getElementById("summary").innerHTML = `
-    <div class="sum-item">Total headers: <strong>${allKeys.size}</strong></div>
-    <div class="sum-item">Identical: <strong>${identical}</strong></div>
-    <div class="sum-item" style="color:var(--orange)">Different value: <strong>${different}</strong></div>
-    <div class="sum-item" style="color:var(--red)">Missing in URL 2: <strong>${onlyIn1}</strong></div>
-    <div class="sum-item" style="color:var(--green)">Missing in URL 1: <strong>${onlyIn2}</strong></div>
-  `;
-
-  document.getElementById("diffOutput").innerHTML = `
-    <div>
-      <div class="col-header"><span style="color:var(--orange)">&#11044;</span> URL 1 &mdash; Staging</div>
-      <div class="col-url">${url1}</div>
-      <table class="header-table"><tbody>${left1}</tbody></table>
-    </div>
-    <div>
-      <div class="col-header"><span style="color:var(--purple)">&#11044;</span> URL 2 &mdash; Production</div>
-      <div class="col-url">${url2}</div>
-      <table class="header-table"><tbody>${left2}</tbody></table>
-    </div>
-  `;
+function renderDiff(url1, url2, h1, h2) { const allKeys = new Set([...Object.keys(h1), ...Object.keys(h2)]); // Security headers to highlight specially const SECURITY = new Set(["strict-transport-security","content-security-policy", "x-frame-options","x-content-type-options","referrer-policy","permissions-policy", "cross-origin-opener-policy","cross-origin-embedder-policy","server"]); const CACHE = new Set(["cache-control","vary","age","etag","last-modified", "surrogate-control","cdn-cache-control","cloudflare-cdn-cache-control"]); const CORS = new Set(["access-control-allow-origin","access-control-allow-methods", "access-control-allow-headers","access-control-allow-credentials", "access-control-max-age","access-control-expose-headers"]); let identical = 0, different = 0, onlyIn1 = 0, onlyIn2 = 0; const sorted = [...allKeys].sort((a, b) => { // Group: security first, then CORS, then cache, then rest const ga = SECURITY.has(a) ? 0 : CORS.has(a) ? 1 : CACHE.has(a) ? 2 : 3; const gb = SECURITY.has(b) ? 0 : CORS.has(b) ? 1 : CACHE.has(b) ? 2 : 3; return ga !== gb ? ga - gb : a.localeCompare(b); }); let left1 = "", left2 = ""; let prevGroup = -1; sorted.forEach(key => { const inGroup = SECURITY.has(key) ? 0 : CORS.has(key) ? 1 : CACHE.has(key) ? 2 : 3; const groupLabel = ["Security Headers","CORS Headers","Cache Headers","Other Headers"]; if (inGroup !== prevGroup) { const label = `<div class="section-label" style="grid-column:1/-1;display:block">${groupLabel[inGroup]}</div>`; // We'll inject section labels separately left1 += `<tr><td colspan="2" class="section-label" style="background:transparent;border:none;padding:0.75rem 0 0.4rem;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.4">${groupLabel[inGroup]}</td></tr>`; left2 += `<tr><td colspan="2" class="section-label" style="background:transparent;border:none;padding:0.75rem 0 0.4rem;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.4">&nbsp;</td></tr>`; prevGroup = inGroup; } const v1 = h1[key]; const v2 = h2[key]; if (v1 && v2) { if (v1 === v2) { identical++; const rowCls = "row-match"; left1 += `<tr class="${rowCls}"><td>${key}</td><td>${v1}</td></tr>`; left2 += `<tr class="${rowCls}"><td>${key}</td><td>${v2}</td></tr>`; } else { different++; left1 += `<tr class="row-diff"><td>${key} <span class="diff-badge badge-diff">DIFF</span></td><td>${v1}</td></tr>`; left2 += `<tr class="row-diff"><td>${key} <span class="diff-badge badge-diff">DIFF</span></td><td>${v2}</td></tr>`; } } else if (v1 && !v2) { onlyIn1++; left1 += `<tr class="row-only"><td>${key} <span class="diff-badge badge-miss">STAGING ONLY</span></td><td>${v1}</td></tr>`; left2 += `<tr class="row-only"><td>${key}</td><td style="opacity:0.3">— missing</td></tr>`; } else { onlyIn2++; left1 += `<tr class="row-new"><td>${key}</td><td style="opacity:0.3">— missing</td></tr>`; left2 += `<tr class="row-new"><td>${key} <span class="diff-badge badge-new">PROD ONLY</span></td><td>${v2}</td></tr>`; } }); document.getElementById("summary").innerHTML = ` <div class="sum-item">Total headers: <strong>${allKeys.size}</strong></div> <div class="sum-item">Identical: <strong>${identical}</strong></div> <div class="sum-item" style="color:var(--orange)">Different value: <strong>${different}</strong></div> <div class="sum-item" style="color:var(--red)">Missing in URL 2: <strong>${onlyIn1}</strong></div> <div class="sum-item" style="color:var(--green)">Missing in URL 1: <strong>${onlyIn2}</strong></div> `; document.getElementById("diffOutput").innerHTML = ` <div> <div class="col-header"><span style="color:var(--orange)">&#11044;</span> URL 1 &mdash; Staging</div> <div class="col-url">${url1}</div> <table class="header-table"><tbody>${left1}</tbody></table> </div> <div> <div class="col-header"><span style="color:var(--purple)">&#11044;</span> URL 2 &mdash; Production</div> <div class="col-url">${url2}</div> <table class="header-table"><tbody>${left2}</tbody></table> </div> `;
 }
 
-function loadExample() {
-  document.getElementById("url1").value = "https://httpfixer.dev/";
-  document.getElementById("url2").value = "https://www.httpfixer.dev/";
-  runDiff();
+function loadExample() { document.getElementById("url1").value = "https://httpfixer.dev/"; document.getElementById("url2").value = "https://www.httpfixer.dev/"; runDiff();
 }
 
-function clearAll() {
-  document.getElementById("url1").value = "";
-  document.getElementById("url2").value = "";
-  document.getElementById("status").textContent = "";
-  document.getElementById("err").textContent = "";
-  document.getElementById("results").style.display = "none";
+function clearAll() { document.getElementById("url1").value = ""; document.getElementById("url2").value = ""; document.getElementById("status").textContent = ""; document.getElementById("err").textContent = ""; document.getElementById("results").style.display = "none";
 }
 
-document.addEventListener("keydown", e => {
-  if (e.key === "Enter") runDiff();
+document.addEventListener("keydown", e => { if (e.key === "Enter") runDiff();
 });
 </script>
-<div style="border-top:1px solid #252836;padding:1rem 2rem 0.5rem;text-align:center;font-size:11px;opacity:0.4;margin-top:0.5rem">
-  MetricLogic network:
-  <a href="https://configclarity.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">configclarity.dev</a> &middot;
-  <a href="https://domainpreflight.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">domainpreflight.dev</a> &middot;
-  <a href="https://httpfixer.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">httpfixer.dev</a> &middot;
-  <a href="https://hardenkit.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">hardenkit.dev</a> &middot;
-  <a href="https://crawlfix.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">crawlfix.dev</a> &middot;
-  <a href="https://metriclogic.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">metriclogic.dev</a>
-</div>
+<div style="border-top:1px solid #252836;padding:1rem 2rem 0.5rem;text-align:center;font-size:11px;opacity:0.4;margin-top:0.5rem"> MetricLogic network: <a href="https://configclarity.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">configclarity.dev</a> &middot; <a href="https://domainpreflight.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">domainpreflight.dev</a> &middot; <a href="https://httpfixer.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">httpfixer.dev</a> &middot; &middot; </div>
 </body>
 </html>

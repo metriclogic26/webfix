@@ -1,229 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OAuth PKCE Flow Errors — Fix code_challenge and code_verifier · HttpFixer</title>
-  <meta name="description" content="PKCE errors almost always mean a verifier mismatch. Here is how PKCE works and the three most common implementation bugs.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/oauth/fix-pkce-errors/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="OAuth PKCE Flow Errors — Fix code_challenge and code_verifier">
-  <meta property="og:description" content="PKCE errors almost always mean a verifier mismatch. Here is how PKCE works and the three most common implementation bugs.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/oauth/fix-pkce-errors/">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "TechArticle",
-      "headline": "OAuth PKCE Flow Errors \u2014 Fix code_challenge and code_verifier",
-      "description": "PKCE errors almost always mean a verifier mismatch. Here is how PKCE works and the three most common implementation bugs.",
-      "url": "https://httpfixer.dev/blog/oauth/fix-pkce-errors/",
-      "datePublished": "2026-04-02",
-      "author": {
-        "@type": "Organization",
-        "name": "MetricLogic"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "MetricLogic",
-        "url": "https://metriclogic.dev"
-      }
-    },
-    {
-      "@type": "HowTo",
-      "name": "OAuth PKCE Flow Errors \u2014 Fix code_challenge and code_verifier",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Generate verifier before redirect",
-          "text": "Create a random 32-byte string and store it in sessionStorage before redirecting to the auth server."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Compute SHA-256 challenge",
-          "text": "Hash the verifier using SHA-256 and base64url encode it (no padding, - and _ instead of + and /)."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Send verifier on token exchange",
-          "text": "Retrieve the stored verifier from sessionStorage and include it in the token request as code_verifier."
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What is PKCE?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Proof Key for Code Exchange \u2014 an OAuth extension that prevents authorization code interception. Required for public clients like SPAs and mobile apps."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the difference between code_challenge and code_verifier?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "The verifier is a random secret you generate. The challenge is a SHA-256 hash of the verifier. You send the challenge with the auth request and the verifier with the token exchange."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Why does my PKCE implementation fail only sometimes?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Usually a race condition \u2014 the callback page loads before sessionStorage is populated. Or React re-renders the callback component, regenerating the verifier."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "HttpFixer",
-          "item": "https://httpfixer.dev"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Blog",
-          "item": "https://httpfixer.dev/blog/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "OAuth PKCE Flow Errors \u2014 Fix code_challenge and code_verifier",
-          "item": "https://httpfixer.dev/blog/oauth/fix-pkce-errors/"
-        }
-      ]
-    }
-  ]
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem;align-items:center}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .breadcrumb a{color:var(--purple);text-decoration:none}
-    .error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;font-family:"JetBrains Mono",monospace;line-height:1.6}
-    .error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em}
-    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(249,115,22,0.2);color:var(--orange);}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .tool-cta:hover{filter:brightness(1.1)}
-    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
-  </style>
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="HttpFixer">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@metriclogic">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>OAuth PKCE Flow Errors — Fix code_challenge and code_verifier · HttpFixer</title> <meta name="description" content="PKCE errors almost always mean a verifier mismatch. Here is how PKCE works and the three most common implementation bugs."> <link rel="canonical" href="https://httpfixer.dev/blog/oauth/fix-pkce-errors/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="OAuth PKCE Flow Errors — Fix code_challenge and code_verifier"> <meta property="og:description" content="PKCE errors almost always mean a verifier mismatch. Here is how PKCE works and the three most common implementation bugs."> <meta property="og:url" content="https://httpfixer.dev/blog/oauth/fix-pkce-errors/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@type": "TechArticle", "headline": "OAuth PKCE Flow Errors \u2014 Fix code_challenge and code_verifier", "description": "PKCE errors almost always mean a verifier mismatch. Here is how PKCE works and the three most common implementation bugs.", "url": "https://httpfixer.dev/blog/oauth/fix-pkce-errors/", "datePublished": "2026-04-02", "author": { "@type": "Organization", "name": "MetricLogic" }, "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://" } }, { "@type": "HowTo", "name": "OAuth PKCE Flow Errors \u2014 Fix code_challenge and code_verifier", "step": [ { "@type": "HowToStep", "position": 1, "name": "Generate verifier before redirect", "text": "Create a random 32-byte string and store it in sessionStorage before redirecting to the auth server." }, { "@type": "HowToStep", "position": 2, "name": "Compute SHA-256 challenge", "text": "Hash the verifier using SHA-256 and base64url encode it (no padding, - and _ instead of + and /)." }, { "@type": "HowToStep", "position": 3, "name": "Send verifier on token exchange", "text": "Retrieve the stored verifier from sessionStorage and include it in the token request as code_verifier." } ] }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "What is PKCE?", "acceptedAnswer": { "@type": "Answer", "text": "Proof Key for Code Exchange \u2014 an OAuth extension that prevents authorization code interception. Required for public clients like SPAs and mobile apps." } }, { "@type": "Question", "name": "What is the difference between code_challenge and code_verifier?", "acceptedAnswer": { "@type": "Answer", "text": "The verifier is a random secret you generate. The challenge is a SHA-256 hash of the verifier. You send the challenge with the auth request and the verifier with the token exchange." } }, { "@type": "Question", "name": "Why does my PKCE implementation fail only sometimes?", "acceptedAnswer": { "@type": "Answer", "text": "Usually a race condition \u2014 the callback page loads before sessionStorage is populated. Or React re-renders the callback component, regenerating the verifier." } } ] }, { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev" }, { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://httpfixer.dev/blog/" }, { "@type": "ListItem", "position": 3, "name": "OAuth PKCE Flow Errors \u2014 Fix code_challenge and code_verifier", "item": "https://httpfixer.dev/blog/oauth/fix-pkce-errors/" } ] } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem;align-items:center} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;font-family:"JetBrains Mono",monospace;line-height:1.6} .error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em} .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(249,115,22,0.2);color:var(--orange);} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/speedfixer/">Speed</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/speedfixer/">Speed</a> </div>
 </nav>
-<main>
-  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/oauth/">OAuth</a> → OAuth PKCE Flow Errors — Fix code_challenge and code_verifier</div>
-  <span class="tag">OAuth</span>
-  <h1>OAuth PKCE Flow Errors — Fix code_challenge and code_verifier</h1>
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/oauth/">OAuth</a> → OAuth PKCE Flow Errors — Fix code_challenge and code_verifier</div> <span class="tag">OAuth</span> <h1>OAuth PKCE Flow Errors — Fix code_challenge and code_verifier</h1>
 <p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
 
 <!-- Top CTA — auto-injected by 29_robots_cta_privacy_llms.py -->
-<div class="top-cta-bar" style="
-  background: rgba(108,99,255,0.06);
-  border: 1px solid #F9731633;
-  border-radius: 6px;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  font-family: 'JetBrains Mono', monospace;
-">
-  <span style="font-size:12px;opacity:0.7;color:var(--text,#E2E4F0)">Reading this article? Verify your fix in real-time.</span>
-  <a href="/oauth/" style="
-    display:inline-block;
-    padding:0.4rem 0.9rem;
-    background:#F97316;
-    color:white;
-    text-decoration:none;
-    border-radius:4px;
-    font-size:12px;
-    font-weight:600;
-    white-space:nowrap;
-  ">Debug your OAuth error — OAuthFixer →</a>
-</div>
-  
-<p class="lead">PKCE errors are almost always caused by a code_verifier that does not match the code_challenge you sent in the authorization request. Here is how the flow works and where it typically breaks.</p>
+<div class="top-cta-bar" style=" background: rgba(108,99,255,0.06); border: 1px solid #F9731633; border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; font-family: 'JetBrains Mono', monospace;
+"> <span style="font-size:12px;opacity:0.7;color:var(--text,#E2E4F0)">Reading this article? Verify your fix in real-time.</span> <a href="/oauth/" style=" display:inline-block; padding:0.4rem 0.9rem; background:#F97316; color:white; text-decoration:none; border-radius:4px; font-size:12px; font-weight:600; white-space:nowrap; ">Debug your OAuth error — OAuthFixer →</a>
+</div> <p class="lead">PKCE errors are almost always caused by a code_verifier that does not match the code_challenge you sent in the authorization request. Here is how the flow works and where it typically breaks.</p>
 
 <div class="error-box"><div class="error-label">OAuth Error Response</div>{"error": "invalid_grant", "error_description": "PKCE verification failed"}</div>
 
 <h2>How PKCE works</h2>
 <pre>// Step 1 — Generate a random verifier (before redirect)
-function generateVerifier() {
-  const array = new Uint8Array(32);
-  crypto.getRandomValues(array);
-  return base64URLEncode(array);
+function generateVerifier() { const array = new Uint8Array(32); crypto.getRandomValues(array); return base64URLEncode(array);
 }
 
 // Step 2 — Generate challenge from verifier
-async function generateChallenge(verifier) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(verifier);
-  const digest = await crypto.subtle.digest('SHA-256', data);
-  return base64URLEncode(new Uint8Array(digest));
+async function generateChallenge(verifier) { const encoder = new TextEncoder(); const data = encoder.encode(verifier); const digest = await crypto.subtle.digest('SHA-256', data); return base64URLEncode(new Uint8Array(digest));
 }
 
-function base64URLEncode(array) {
-  return btoa(String.fromCharCode(...array))
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
+function base64URLEncode(array) { return btoa(String.fromCharCode(...array)) .replace(/\+/g, '-') .replace(/\//g, '_') .replace(/=/g, '');
 }</pre>
 
 <h2>Step 3 — Authorization request with challenge</h2>
@@ -232,14 +34,7 @@ sessionStorage.setItem('pkce_verifier', verifier); // STORE IT
 
 const challenge = await generateChallenge(verifier);
 
-const params = new URLSearchParams({
-  client_id: CLIENT_ID,
-  redirect_uri: REDIRECT_URI,
-  response_type: 'code',
-  scope: 'openid profile',
-  code_challenge: challenge,
-  code_challenge_method: 'S256',
-  state: generateState(),
+const params = new URLSearchParams({ client_id: CLIENT_ID, redirect_uri: REDIRECT_URI, response_type: 'code', scope: 'openid profile', code_challenge: challenge, code_challenge_method: 'S256', state: generateState(),
 });
 
 window.location.href = `${AUTH_URL}?${params}`;</pre>
@@ -248,35 +43,14 @@ window.location.href = `${AUTH_URL}?${params}`;</pre>
 <pre>// On callback page
 const verifier = sessionStorage.getItem('pkce_verifier'); // RETRIEVE IT
 
-const tokens = await fetch(TOKEN_URL, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-  body: new URLSearchParams({
-    grant_type: 'authorization_code',
-    client_id: CLIENT_ID,
-    redirect_uri: REDIRECT_URI,
-    code: authorizationCode,
-    code_verifier: verifier, // must match original
-  }),
+const tokens = await fetch(TOKEN_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ grant_type: 'authorization_code', client_id: CLIENT_ID, redirect_uri: REDIRECT_URI, code: authorizationCode, code_verifier: verifier, // must match original }),
 }).then(r => r.json());</pre>
 
 <h2>Common bugs</h2>
-<table>
-  <thead><tr><th>Bug</th><th>Symptom</th><th>Fix</th></tr></thead>
-  <tbody>
-    <tr><td>Verifier not stored before redirect</td><td>sessionStorage empty on callback</td><td>Store before window.location.href</td></tr>
-    <tr><td>Wrong hash method</td><td>Challenge does not match</td><td>Always use SHA-256, not plain</td></tr>
-    <tr><td>Wrong base64 encoding</td><td>Challenge character mismatch</td><td>Use base64url (- and _ not + and /), no padding</td></tr>
-    <tr><td>Verifier regenerated on callback</td><td>New verifier does not match original challenge</td><td>Read from storage, do not regenerate</td></tr>
-  </tbody>
-</table>
-  <a href="/oauth/" class="tool-cta">Debug your OAuth error live → OAuthFixer</a>
-  <div class="related">Related: <a href="/glossary/pkce/">What is PKCE?</a> <a href="/glossary/oauth-grant-types/">OAuth grant types</a> <a href="/error/invalid-grant/">invalid_grant error</a></div>
+<table> <thead><tr><th>Bug</th><th>Symptom</th><th>Fix</th></tr></thead> <tbody> <tr><td>Verifier not stored before redirect</td><td>sessionStorage empty on callback</td><td>Store before window.location.href</td></tr> <tr><td>Wrong hash method</td><td>Challenge does not match</td><td>Always use SHA-256, not plain</td></tr> <tr><td>Wrong base64 encoding</td><td>Challenge character mismatch</td><td>Use base64url (- and _ not + and /), no padding</td></tr> <tr><td>Verifier regenerated on callback</td><td>New verifier does not match original challenge</td><td>Read from storage, do not regenerate</td></tr> </tbody>
+</table> <a href="/oauth/" class="tool-cta">Debug your OAuth error live → OAuthFixer</a> <div class="related">Related: <a href="/glossary/pkce/">What is PKCE?</a> <a href="/glossary/oauth-grant-types/">OAuth grant types</a> <a href="/error/invalid-grant/">invalid_grant error</a></div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a> · <a href="/privacy/">Privacy</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a> · <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

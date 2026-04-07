@@ -1,276 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Permissions-Policy Header Generator · HttpFixer</title>
-  <meta name="description" content="Generate a Permissions-Policy header to control camera, microphone, geolocation, and other browser features. Copy-paste config for Nginx, Apache, Vercel.">
-  <link rel="canonical" href="https://httpfixer.dev/generators/permissions-policy/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Permissions-Policy Header Generator">
-  <meta property="og:description" content="Generate a Permissions-Policy header to control camera, microphone, geolocation, and other browser features. Copy-paste config for Nginx, Apache, Vercel.">
-  <meta property="og:url" content="https://httpfixer.dev/generators/permissions-policy/">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "HttpFixer",
-          "item": "https://httpfixer.dev"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Permissions-Policy Header Generator",
-          "item": "https://httpfixer.dev/generators/permissions-policy/"
-        }
-      ]
-    },
-    {
-      "@type": "TechArticle",
-      "headline": "Permissions-Policy Header Generator",
-      "description": "Generate the Permissions-Policy header to control browser feature access.",
-      "url": "https://httpfixer.dev/generators/permissions-policy/",
-      "datePublished": "2026-04-03",
-      "dateModified": "2026-04-03",
-      "author": {
-        "@type": "Organization",
-        "name": "MetricLogic"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "MetricLogic",
-        "url": "https://metriclogic.dev"
-      }
-    },
-    {
-      "@type": "WebApplication",
-      "name": "Permissions-Policy Generator",
-      "url": "https://httpfixer.dev/generators/permissions-policy/",
-      "description": "Generate the Permissions-Policy header to control browser feature access.",
-      "applicationCategory": "DeveloperApplication",
-      "operatingSystem": "Any",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      }
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What is Permissions-Policy?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "An HTTP header that controls which browser features your page and embedded iframes can access \u2014 camera, microphone, geolocation, payment, USB, and more. Restricting unused features reduces your attack surface."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is the difference between Permissions-Policy and Feature-Policy?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Feature-Policy was the old name, deprecated in 2020. Permissions-Policy is the current standard with a different syntax. Most modern browsers support Permissions-Policy."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Should I disable all features by default?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Disable features your site does not use. If you never use the camera or geolocation, set them to (). This prevents third-party scripts on your page from accessing these features without your knowledge."
-          }
-        }
-      ]
-    }
-  ]
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem;align-items:center}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .breadcrumb a{color:var(--purple);text-decoration:none}
-    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .tool-cta:hover{filter:brightness(1.1)}
-    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    .note-box{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
-    .warn-box{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
-    .warn-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
-
-    .gen-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
-    .gen-box label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.5;margin-bottom:0.5rem}
-    .gen-box select,.gen-box input[type=text]{width:100%;background:#080a0f;border:1px solid var(--border);border-radius:4px;padding:0.5rem 0.75rem;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:13px;margin-bottom:0.75rem}
-    .gen-box select:focus,.gen-box input[type=text]:focus{outline:none;border-color:var(--purple)}
-    .gen-output{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin-top:1rem;min-height:80px;white-space:pre-wrap;word-break:break-all;line-height:1.6;color:#a8b4c8}
-    .gen-btn{padding:0.5rem 1rem;background:var(--purple);color:white;border:none;border-radius:4px;font-family:"JetBrains Mono",monospace;font-size:13px;cursor:pointer;margin-right:0.5rem}
-    .gen-btn:hover{filter:brightness(1.1)}
-    .copy-btn{padding:0.5rem 1rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:"JetBrains Mono",monospace;font-size:13px;cursor:pointer}
-    .copy-btn:hover{background:rgba(108,99,255,0.1)}
-    .checkbox-group{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem}
-    .checkbox-group label{display:flex;align-items:center;gap:0.4rem;font-size:12px;cursor:pointer;opacity:0.8;background:#0d1117;padding:0.3rem 0.6rem;border-radius:4px;border:1px solid var(--border)}
-    .checkbox-group input{width:auto;margin:0}
-  </style>
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="HttpFixer">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@metriclogic">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Permissions-Policy Header Generator · HttpFixer</title> <meta name="description" content="Generate a Permissions-Policy header to control camera, microphone, geolocation, and other browser features. Copy-paste config for Nginx, Apache, Vercel."> <link rel="canonical" href="https://httpfixer.dev/generators/permissions-policy/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="Permissions-Policy Header Generator"> <meta property="og:description" content="Generate a Permissions-Policy header to control camera, microphone, geolocation, and other browser features. Copy-paste config for Nginx, Apache, Vercel."> <meta property="og:url" content="https://httpfixer.dev/generators/permissions-policy/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev" }, { "@type": "ListItem", "position": 2, "name": "Permissions-Policy Header Generator", "item": "https://httpfixer.dev/generators/permissions-policy/" } ] }, { "@type": "TechArticle", "headline": "Permissions-Policy Header Generator", "description": "Generate the Permissions-Policy header to control browser feature access.", "url": "https://httpfixer.dev/generators/permissions-policy/", "datePublished": "2026-04-03", "dateModified": "2026-04-03", "author": { "@type": "Organization", "name": "MetricLogic" }, "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://" } }, { "@type": "WebApplication", "name": "Permissions-Policy Generator", "url": "https://httpfixer.dev/generators/permissions-policy/", "description": "Generate the Permissions-Policy header to control browser feature access.", "applicationCategory": "DeveloperApplication", "operatingSystem": "Any", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" } }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "What is Permissions-Policy?", "acceptedAnswer": { "@type": "Answer", "text": "An HTTP header that controls which browser features your page and embedded iframes can access \u2014 camera, microphone, geolocation, payment, USB, and more. Restricting unused features reduces your attack surface." } }, { "@type": "Question", "name": "What is the difference between Permissions-Policy and Feature-Policy?", "acceptedAnswer": { "@type": "Answer", "text": "Feature-Policy was the old name, deprecated in 2020. Permissions-Policy is the current standard with a different syntax. Most modern browsers support Permissions-Policy." } }, { "@type": "Question", "name": "Should I disable all features by default?", "acceptedAnswer": { "@type": "Answer", "text": "Disable features your site does not use. If you never use the camera or geolocation, set them to (). This prevents third-party scripts on your page from accessing these features without your knowledge." } } ] } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem;align-items:center} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .note-box{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85} .warn-box{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6} .warn-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} .gen-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0} .gen-box label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;opacity:0.5;margin-bottom:0.5rem} .gen-box select,.gen-box input[type=text]{width:100%;background:#080a0f;border:1px solid var(--border);border-radius:4px;padding:0.5rem 0.75rem;color:var(--text);font-family:"JetBrains Mono",monospace;font-size:13px;margin-bottom:0.75rem} .gen-box select:focus,.gen-box input[type=text]:focus{outline:none;border-color:var(--purple)} .gen-output{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin-top:1rem;min-height:80px;white-space:pre-wrap;word-break:break-all;line-height:1.6;color:#a8b4c8} .gen-btn{padding:0.5rem 1rem;background:var(--purple);color:white;border:none;border-radius:4px;font-family:"JetBrains Mono",monospace;font-size:13px;cursor:pointer;margin-right:0.5rem} .gen-btn:hover{filter:brightness(1.1)} .copy-btn{padding:0.5rem 1rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:"JetBrains Mono",monospace;font-size:13px;cursor:pointer} .copy-btn:hover{background:rgba(108,99,255,0.1)} .checkbox-group{display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem} .checkbox-group label{display:flex;align-items:center;gap:0.4rem;font-size:12px;cursor:pointer;opacity:0.8;background:#0d1117;padding:0.3rem 0.6rem;border-radius:4px;border:1px solid var(--border)} .checkbox-group input{width:auto;margin:0} </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Generators</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Generators</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/generators/">Generators</a> → Permissions-Policy Generator</div>
-  <span class="tag" style="background:rgba(239,68,68,0.2);color:var(--red)">Generator</span>
-  <h1>Permissions-Policy Header Generator</h1>
-  
-<p class="lead">Control which browser APIs your page can access. Restricting unused features prevents third-party scripts from silently accessing your users' camera, microphone, or location.</p>
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/generators/">Generators</a> → Permissions-Policy Generator</div> <span class="tag" style="background:rgba(239,68,68,0.2);color:var(--red)">Generator</span> <h1>Permissions-Policy Header Generator</h1> <p class="lead">Control which browser APIs your page can access. Restricting unused features prevents third-party scripts from silently accessing your users' camera, microphone, or location.</p>
 
-<div class="gen-box">
-  <p style="font-size:12px;opacity:0.6;margin-bottom:1rem">For each feature: <strong>() = blocked for all</strong> · <strong>self = your origin only</strong> · <strong>* = allow all</strong></p>
-
-  <label>Sensor / Device Features</label>
-  <table style="margin:0 0 1rem;font-size:12px">
-    <thead><tr><th>Feature</th><th>() Block</th><th>self only</th><th>* Allow all</th></tr></thead>
-    <tbody id="perm-table">
-      <tr><td>camera</td><td><input type="radio" name="camera" value="()" checked></td><td><input type="radio" name="camera" value="self"></td><td><input type="radio" name="camera" value="*"></td></tr>
-      <tr><td>microphone</td><td><input type="radio" name="microphone" value="()" checked></td><td><input type="radio" name="microphone" value="self"></td><td><input type="radio" name="microphone" value="*"></td></tr>
-      <tr><td>geolocation</td><td><input type="radio" name="geolocation" value="()" checked></td><td><input type="radio" name="geolocation" value="self"></td><td><input type="radio" name="geolocation" value="*"></td></tr>
-      <tr><td>accelerometer</td><td><input type="radio" name="accelerometer" value="()" checked></td><td><input type="radio" name="accelerometer" value="self"></td><td><input type="radio" name="accelerometer" value="*"></td></tr>
-      <tr><td>gyroscope</td><td><input type="radio" name="gyroscope" value="()" checked></td><td><input type="radio" name="gyroscope" value="self"></td><td><input type="radio" name="gyroscope" value="*"></td></tr>
-    </tbody>
-  </table>
-
-  <label>Payment / Commerce</label>
-  <table style="margin:0 0 1rem;font-size:12px">
-    <thead><tr><th>Feature</th><th>() Block</th><th>self only</th><th>* Allow all</th></tr></thead>
-    <tbody>
-      <tr><td>payment</td><td><input type="radio" name="payment" value="()"></td><td><input type="radio" name="payment" value="self" checked></td><td><input type="radio" name="payment" value="*"></td></tr>
-      <tr><td>usb</td><td><input type="radio" name="usb" value="()" checked></td><td><input type="radio" name="usb" value="self"></td><td><input type="radio" name="usb" value="*"></td></tr>
-    </tbody>
-  </table>
-
-  <label>Privacy</label>
-  <table style="margin:0 0 1rem;font-size:12px">
-    <thead><tr><th>Feature</th><th>() Block</th><th>self only</th><th>* Allow all</th></tr></thead>
-    <tbody>
-      <tr><td>interest-cohort</td><td><input type="radio" name="interest-cohort" value="()" checked></td><td><input type="radio" name="interest-cohort" value="self"></td><td><input type="radio" name="interest-cohort" value="*"></td></tr>
-      <tr><td>fullscreen</td><td><input type="radio" name="fullscreen" value="()"></td><td><input type="radio" name="fullscreen" value="self" checked></td><td><input type="radio" name="fullscreen" value="*"></td></tr>
-    </tbody>
-  </table>
-
-  <button class="gen-btn" onclick="buildPermsPolicy()">Generate Header</button>
-
-  <label style="margin-top:1rem">Generated Header</label>
-  <div style="position:relative">
-    <div class="gen-output" id="perms-output">Click "Generate Header" to build your policy.</div>
-    <button onclick="copyOutput('perms-output')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button>
-  </div>
-
-  <label style="margin-top:1rem">Nginx</label>
-  <div style="position:relative">
-    <div class="gen-output" id="perms-nginx"></div>
-    <button onclick="copyOutput('perms-nginx')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button>
-  </div>
-
-  <label style="margin-top:1rem">Apache</label>
-  <div style="position:relative">
-    <div class="gen-output" id="perms-apache"></div>
-    <button onclick="copyOutput('perms-apache')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button>
-  </div>
-
-  <label style="margin-top:1rem">Vercel (vercel.json)</label>
-  <div style="position:relative">
-    <div class="gen-output" id="perms-vercel"></div>
-    <button onclick="copyOutput('perms-vercel')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button>
-  </div>
+<div class="gen-box"> <p style="font-size:12px;opacity:0.6;margin-bottom:1rem">For each feature: <strong>() = blocked for all</strong> · <strong>self = your origin only</strong> · <strong>* = allow all</strong></p> <label>Sensor / Device Features</label> <table style="margin:0 0 1rem;font-size:12px"> <thead><tr><th>Feature</th><th>() Block</th><th>self only</th><th>* Allow all</th></tr></thead> <tbody id="perm-table"> <tr><td>camera</td><td><input type="radio" name="camera" value="()" checked></td><td><input type="radio" name="camera" value="self"></td><td><input type="radio" name="camera" value="*"></td></tr> <tr><td>microphone</td><td><input type="radio" name="microphone" value="()" checked></td><td><input type="radio" name="microphone" value="self"></td><td><input type="radio" name="microphone" value="*"></td></tr> <tr><td>geolocation</td><td><input type="radio" name="geolocation" value="()" checked></td><td><input type="radio" name="geolocation" value="self"></td><td><input type="radio" name="geolocation" value="*"></td></tr> <tr><td>accelerometer</td><td><input type="radio" name="accelerometer" value="()" checked></td><td><input type="radio" name="accelerometer" value="self"></td><td><input type="radio" name="accelerometer" value="*"></td></tr> <tr><td>gyroscope</td><td><input type="radio" name="gyroscope" value="()" checked></td><td><input type="radio" name="gyroscope" value="self"></td><td><input type="radio" name="gyroscope" value="*"></td></tr> </tbody> </table> <label>Payment / Commerce</label> <table style="margin:0 0 1rem;font-size:12px"> <thead><tr><th>Feature</th><th>() Block</th><th>self only</th><th>* Allow all</th></tr></thead> <tbody> <tr><td>payment</td><td><input type="radio" name="payment" value="()"></td><td><input type="radio" name="payment" value="self" checked></td><td><input type="radio" name="payment" value="*"></td></tr> <tr><td>usb</td><td><input type="radio" name="usb" value="()" checked></td><td><input type="radio" name="usb" value="self"></td><td><input type="radio" name="usb" value="*"></td></tr> </tbody> </table> <label>Privacy</label> <table style="margin:0 0 1rem;font-size:12px"> <thead><tr><th>Feature</th><th>() Block</th><th>self only</th><th>* Allow all</th></tr></thead> <tbody> <tr><td>interest-cohort</td><td><input type="radio" name="interest-cohort" value="()" checked></td><td><input type="radio" name="interest-cohort" value="self"></td><td><input type="radio" name="interest-cohort" value="*"></td></tr> <tr><td>fullscreen</td><td><input type="radio" name="fullscreen" value="()"></td><td><input type="radio" name="fullscreen" value="self" checked></td><td><input type="radio" name="fullscreen" value="*"></td></tr> </tbody> </table> <button class="gen-btn" onclick="buildPermsPolicy()">Generate Header</button> <label style="margin-top:1rem">Generated Header</label> <div style="position:relative"> <div class="gen-output" id="perms-output">Click "Generate Header" to build your policy.</div> <button onclick="copyOutput('perms-output')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button> </div> <label style="margin-top:1rem">Nginx</label> <div style="position:relative"> <div class="gen-output" id="perms-nginx"></div> <button onclick="copyOutput('perms-nginx')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button> </div> <label style="margin-top:1rem">Apache</label> <div style="position:relative"> <div class="gen-output" id="perms-apache"></div> <button onclick="copyOutput('perms-apache')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button> </div> <label style="margin-top:1rem">Vercel (vercel.json)</label> <div style="position:relative"> <div class="gen-output" id="perms-vercel"></div> <button onclick="copyOutput('perms-vercel')" style="position:absolute;top:0.5rem;right:0.5rem;padding:0.25rem 0.6rem;background:transparent;color:var(--purple);border:1px solid var(--purple);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;cursor:pointer">Copy</button> </div>
 </div>
 
 <script>
 const FEATURES = ['camera','microphone','geolocation','accelerometer','gyroscope','payment','usb','interest-cohort','fullscreen'];
 
-function buildPermsPolicy() {
-  const parts = FEATURES.map(f => {
-    const el = document.querySelector('input[name="' + f + '"]:checked');
-    return f + '=' + (el ? el.value : '()');
-  });
-  const val = parts.join(', ');
-  document.getElementById('perms-output').textContent = 'Permissions-Policy: ' + val;
-  document.getElementById('perms-nginx').textContent = 'add_header Permissions-Policy "' + val + '" always;';
-  document.getElementById('perms-apache').textContent = 'Header always set Permissions-Policy "' + val + '"';
-  document.getElementById('perms-vercel').textContent = JSON.stringify({headers:[{source:"/(.*)",headers:[{key:"Permissions-Policy",value:val}]}]},null,2);
+function buildPermsPolicy() { const parts = FEATURES.map(f => { const el = document.querySelector('input[name="' + f + '"]:checked'); return f + '=' + (el ? el.value : '()'); }); const val = parts.join(', '); document.getElementById('perms-output').textContent = 'Permissions-Policy: ' + val; document.getElementById('perms-nginx').textContent = 'add_header Permissions-Policy "' + val + '" always;'; document.getElementById('perms-apache').textContent = 'Header always set Permissions-Policy "' + val + '"'; document.getElementById('perms-vercel').textContent = JSON.stringify({headers:[{source:"/(.*)",headers:[{key:"Permissions-Policy",value:val}]}]},null,2);
 }
 
-function copyOutput(id) {
-  const text = document.getElementById(id).textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = event.target;
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy', 1500);
-  });
+function copyOutput(id) { const text = document.getElementById(id).textContent; navigator.clipboard.writeText(text).then(() => { const btn = event.target; btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 1500); });
 }
-</script>
-
-  <a href="/" class="tool-cta">Scan all your security headers → HeadersFixer</a>
-  <div class="related">Related: <a href="/blog/headers/security-headers-checklist/">Security headers checklist</a> <a href="/generators/security-headers/">Security headers generator</a></div>
+</script> <a href="/" class="tool-cta">Scan all your security headers → HeadersFixer</a> <div class="related">Related: <a href="/blog/headers/security-headers-checklist/">Security headers checklist</a> <a href="/generators/security-headers/">Security headers generator</a></div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a> · <a href="/privacy/">Privacy</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a> · <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
-<div style="border-top:1px solid #252836;padding:1rem 2rem 0.5rem;text-align:center;font-size:11px;opacity:0.4;margin-top:0.5rem">
-  MetricLogic network:
-  <a href="https://configclarity.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">configclarity.dev</a> &middot;
-  <a href="https://domainpreflight.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">domainpreflight.dev</a> &middot;
-  <a href="https://httpfixer.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">httpfixer.dev</a> &middot;
-  <a href="https://hardenkit.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">hardenkit.dev</a> &middot;
-  <a href="https://crawlfix.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">crawlfix.dev</a> &middot;
-  <a href="https://metriclogic.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">metriclogic.dev</a>
-</div>
+<div style="border-top:1px solid #252836;padding:1rem 2rem 0.5rem;text-align:center;font-size:11px;opacity:0.4;margin-top:0.5rem"> MetricLogic network: <a href="https://configclarity.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">configclarity.dev</a> &middot; <a href="https://domainpreflight.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">domainpreflight.dev</a> &middot; <a href="https://httpfixer.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">httpfixer.dev</a> &middot; &middot; </div>
 </body>
 </html>

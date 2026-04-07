@@ -1,144 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HTTP Security Headers — Complete Guide — HttpFixer Learn</title>
-  <meta name="description" content="HSTS, CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy, COOP, and COEP—what they do, how people break them, and copy-paste Nginx, Apache, and Vercel snippets.">
-  <link rel="canonical" href="https://httpfixer.dev/learn/security-headers/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="HTTP Security Headers — Complete Guide — HttpFixer Learn">
-  <meta property="og:description" content="What each security header does, common misconfigurations, and exact server config examples.">
-  <meta property="og:url" content="https://httpfixer.dev/learn/security-headers/">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">
-{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://httpfixer.dev/learn/"},{"@type":"ListItem","position":3,"name":"HTTP Security Headers — Complete Guide","item":"https://httpfixer.dev/learn/security-headers/"}]},{"@type":"TechArticle","headline":"HTTP Security Headers — Complete Guide","description":"Guide to HSTS, CSP, framing, MIME sniffing, referrer, permissions, and cross-origin isolation headers with server config examples.","url":"https://httpfixer.dev/learn/security-headers/","datePublished":"2026-03-31","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do I need every security header on day one?","acceptedAnswer":{"@type":"Answer","text":"No. Ship HSTS only after HTTPS works end-to-end, then CSP in report-only before enforcement. Framing and MIME-sniffing headers are usually low risk to add early."}},{"@type":"Question","name":"Why does my CSP work in curl but fail in the browser?","acceptedAnswer":{"@type":"Answer","text":"Browsers enforce CSP on documents they render. Extensions, service workers, and inline scripts all interact with the policy. Test in a clean profile and check the console for blocked-uri reports."}},{"@type":"Question","name":"What is the difference between COOP and COEP?","acceptedAnswer":{"@type":"Answer","text":"COOP isolates your window from other browsing contexts; COEP requires explicit opt-in for cross-origin resources so sensitive APIs like SharedArrayBuffer can be enabled safely."}}]}]}
-  </script>
-  <style>
-    :root {
-      --bg: #0B0D14; --surface: #12151F; --border: #252836;
-      --purple: #6C63FF; --green: #22C55E; --orange: #F97316;
-      --red: #EF4444; --text: #E2E4F0;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; }
-    nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); }
-    nav .brand { font-weight: 600; color: var(--text); text-decoration: none; }
-    nav .brand span { color: var(--purple); }
-    nav .right { display: flex; gap: 1rem; align-items: center; }
-    nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; }
-    nav a:hover { color: var(--purple); opacity: 1; }
-    main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
-    .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; }
-    .breadcrumb a { color: var(--purple); text-decoration: none; }
-    h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; }
-    h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); }
-    p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; }
-    .lead { font-size: 1.05rem; opacity: 0.95; margin-bottom: 1.25rem; }
-    ul { margin: 0 0 1rem 1.25rem; opacity: 0.9; line-height: 1.7; }
-    li { margin-bottom: 0.35rem; }
-    article a { color: var(--purple); }
-    .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; }
-    .tool-cta:hover { filter: brightness(1.1); }
-    .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre-wrap; word-break: break-word; }
-    .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; }
-    .related-links a { color: var(--purple); text-decoration: none; }
-    footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; }
-    footer a { color: var(--text); text-decoration: none; }
-    @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } }
-  </style>
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="HttpFixer">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@metriclogic">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>HTTP Security Headers — Complete Guide — HttpFixer Learn</title> <meta name="description" content="HSTS, CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy, COOP, and COEP—what they do, how people break them, and copy-paste Nginx, Apache, and Vercel snippets."> <link rel="canonical" href="https://httpfixer.dev/learn/security-headers/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="HTTP Security Headers — Complete Guide — HttpFixer Learn"> <meta property="og:description" content="What each security header does, common misconfigurations, and exact server config examples."> <meta property="og:url" content="https://httpfixer.dev/learn/security-headers/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://httpfixer.dev/learn/"},{"@type":"ListItem","position":3,"name":"HTTP Security Headers — Complete Guide","item":"https://httpfixer.dev/learn/security-headers/"}]},{"@type":"TechArticle","headline":"HTTP Security Headers — Complete Guide","description":"Guide to HSTS, CSP, framing, MIME sniffing, referrer, permissions, and cross-origin isolation headers with server config examples.","url":"https://httpfixer.dev/learn/security-headers/","datePublished":"2026-03-31","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Do I need every security header on day one?","acceptedAnswer":{"@type":"Answer","text":"No. Ship HSTS only after HTTPS works end-to-end, then CSP in report-only before enforcement. Framing and MIME-sniffing headers are usually low risk to add early."}},{"@type":"Question","name":"Why does my CSP work in curl but fail in the browser?","acceptedAnswer":{"@type":"Answer","text":"Browsers enforce CSP on documents they render. Extensions, service workers, and inline scripts all interact with the policy. Test in a clean profile and check the console for blocked-uri reports."}},{"@type":"Question","name":"What is the difference between COOP and COEP?","acceptedAnswer":{"@type":"Answer","text":"COOP isolates your window from other browsing contexts; COEP requires explicit opt-in for cross-origin resources so sensitive APIs like SharedArrayBuffer can be enabled safely."}}]}]} </script> <style> :root { --bg: #0B0D14; --surface: #12151F; --border: #252836; --purple: #6C63FF; --green: #22C55E; --orange: #F97316; --red: #EF4444; --text: #E2E4F0; } * { box-sizing: border-box; margin: 0; padding: 0; } body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; } nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); } nav .brand { font-weight: 600; color: var(--text); text-decoration: none; } nav .brand span { color: var(--purple); } nav .right { display: flex; gap: 1rem; align-items: center; } nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; } nav a:hover { color: var(--purple); opacity: 1; } main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; } .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; } .breadcrumb a { color: var(--purple); text-decoration: none; } h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; } h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); } p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; } .lead { font-size: 1.05rem; opacity: 0.95; margin-bottom: 1.25rem; } ul { margin: 0 0 1rem 1.25rem; opacity: 0.9; line-height: 1.7; } li { margin-bottom: 0.35rem; } article a { color: var(--purple); } .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; } .tool-cta:hover { filter: brightness(1.1); } .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre-wrap; word-break: break-word; } .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; } .related-links a { color: var(--purple); text-decoration: none; } footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; } footer a { color: var(--text); text-decoration: none; } @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } } </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
 </head>
-<body>
-  <nav>
-    <a href="/" class="brand">HttpFixer <span>/</span> Learn</a>
-    <div class="right">
-      <a href="/headers/">Headers</a>
-      <a href="/cors/">CORS</a>
-      <a href="/oauth/">OAuth</a>
-      <a href="/csp/">CSP</a>
-      <a href="/edge/">Edge</a>
-      <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a>
-    </div>
-  </nav>
-  <main>
-    <div class="breadcrumb"><a href="/">HttpFixer</a> → Learn → HTTP Security Headers — Complete Guide</div>
-    <article>
-      <h1>HTTP Security Headers — Complete Guide</h1>
-      <p class="lead">Response headers are the cheapest defense-in-depth layer you own: the browser reads them on every navigation and applies policy before your JavaScript runs. Here’s what teams actually ship, how those headers get misconfigured, and copy-paste snippets that fix them on common stacks.</p>
-
-      <h2>What each header does</h2>
-      <p><strong>HSTS</strong> pins HTTPS for a host so bookmarks and typed HTTP URLs upgrade instead of falling through cleartext. You want a sane <code>max-age</code>, <code>includeSubDomains</code> only when every subdomain is TLS-clean, and <code>preload</code> only after you mean it.</p>
-      <p><strong>CSP</strong> lists where scripts, styles, images, frames, and connections may load from. It’s the main XSS mitigation for modern apps when you move off <code>unsafe-inline</code> toward nonces or hashes.</p>
-      <p><strong>X-Frame-Options</strong> (or <code>frame-ancestors</code> in CSP) blocks clickjacking by refusing to render your site inside foreign iframes.</p>
-      <p><strong>X-Content-Type-Options: nosniff</strong> stops the browser from MIME-sniffing responses into executable contexts—especially important for user-upload directories and static hosts that serve <code>text/plain</code> wrong.</p>
-      <p><strong>Referrer-Policy</strong> trims what lands in the <code>Referer</code> header so query tokens and internal paths do not leak to analytics or OAuth intermediaries.</p>
-      <p><strong>Permissions-Policy</strong> disables powerful features (camera, geolocation, payment) until a frame explicitly needs them.</p>
-      <p><strong>COOP</strong> and <strong>COEP</strong> isolate your browsing context. Pair them when you rely on <code>SharedArrayBuffer</code> or hardened Spectre-related modes; mis-sized CORP on third-party assets is the usual failure mode.</p>
-
-      <h2>Patterns that break in production</h2>
-      <ul>
-        <li>HSTS with <code>includeSubDomains</code> while one legacy box still serves HTTP—users brick themselves until max-age expires.</li>
-        <li>CSP copied from a tutorial with <code>https:</code> or overly broad <code>*</code> sources—works until someone adds a JSONP endpoint you forgot.</li>
-        <li>Duplicate header lines where the stricter value loses depending on CDN merge order.</li>
-        <li>Framing policy missing on login pages while CSP allows <code>frame-ancestors *</code> on the API only.</li>
-        <li>COEP <code>require-corp</code> without <code>Cross-Origin-Resource-Policy</code> on CDNs—assets silently fail.</li>
-      </ul>
-
-      <h2>Nginx</h2>
-      <div class="code-block">add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+<body> <nav> <a href="/" class="brand">HttpFixer <span>/</span> Learn</a> <div class="right"> <a href="/headers/">Headers</a> <a href="/cors/">CORS</a> <a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a> <a href="/edge/">Edge</a> <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a> </div> </nav> <main> <div class="breadcrumb"><a href="/">HttpFixer</a> → Learn → HTTP Security Headers — Complete Guide</div> <article> <h1>HTTP Security Headers — Complete Guide</h1> <p class="lead">Response headers are the cheapest defense-in-depth layer you own: the browser reads them on every navigation and applies policy before your JavaScript runs. Here’s what teams actually ship, how those headers get misconfigured, and copy-paste snippets that fix them on common stacks.</p> <h2>What each header does</h2> <p><strong>HSTS</strong> pins HTTPS for a host so bookmarks and typed HTTP URLs upgrade instead of falling through cleartext. You want a sane <code>max-age</code>, <code>includeSubDomains</code> only when every subdomain is TLS-clean, and <code>preload</code> only after you mean it.</p> <p><strong>CSP</strong> lists where scripts, styles, images, frames, and connections may load from. It’s the main XSS mitigation for modern apps when you move off <code>unsafe-inline</code> toward nonces or hashes.</p> <p><strong>X-Frame-Options</strong> (or <code>frame-ancestors</code> in CSP) blocks clickjacking by refusing to render your site inside foreign iframes.</p> <p><strong>X-Content-Type-Options: nosniff</strong> stops the browser from MIME-sniffing responses into executable contexts—especially important for user-upload directories and static hosts that serve <code>text/plain</code> wrong.</p> <p><strong>Referrer-Policy</strong> trims what lands in the <code>Referer</code> header so query tokens and internal paths do not leak to analytics or OAuth intermediaries.</p> <p><strong>Permissions-Policy</strong> disables powerful features (camera, geolocation, payment) until a frame explicitly needs them.</p> <p><strong>COOP</strong> and <strong>COEP</strong> isolate your browsing context. Pair them when you rely on <code>SharedArrayBuffer</code> or hardened Spectre-related modes; mis-sized CORP on third-party assets is the usual failure mode.</p> <h2>Patterns that break in production</h2> <ul> <li>HSTS with <code>includeSubDomains</code> while one legacy box still serves HTTP—users brick themselves until max-age expires.</li> <li>CSP copied from a tutorial with <code>https:</code> or overly broad <code>*</code> sources—works until someone adds a JSONP endpoint you forgot.</li> <li>Duplicate header lines where the stricter value loses depending on CDN merge order.</li> <li>Framing policy missing on login pages while CSP allows <code>frame-ancestors *</code> on the API only.</li> <li>COEP <code>require-corp</code> without <code>Cross-Origin-Resource-Policy</code> on CDNs—assets silently fail.</li> </ul> <h2>Nginx</h2> <div class="code-block">add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 add_header X-Frame-Options "SAMEORIGIN" always;
 add_header X-Content-Type-Options "nosniff" always;
 add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-add_header Cross-Origin-Opener-Policy "same-origin" always;</div>
-      <p>CSP belongs in one line you can iterate—start report-only, then enforce:</p>
-      <div class="code-block">add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https:; frame-ancestors 'self'" always;</div>
-
-      <h2>Apache (<code>mod_headers</code>)</h2>
-      <div class="code-block">Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+add_header Cross-Origin-Opener-Policy "same-origin" always;</div> <p>CSP belongs in one line you can iterate—start report-only, then enforce:</p> <div class="code-block">add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https:; frame-ancestors 'self'" always;</div> <h2>Apache (<code>mod_headers</code>)</h2> <div class="code-block">Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
 Header always set X-Frame-Options "SAMEORIGIN"
 Header always set X-Content-Type-Options "nosniff"
-Header always set Referrer-Policy "strict-origin-when-cross-origin"</div>
-
-      <h2>Vercel (<code>vercel.json</code>)</h2>
-      <div class="code-block">{
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
-      ]
-    }
-  ]
-}</div>
-      <p>Edge platforms merge headers from multiple layers—middleware, <code>vercel.json</code>, and upstream. When you see duplicated <code>Content-Security-Policy</code> values in DevTools, check whether both the framework and the edge are emitting policy; browsers intersect or favor the strictest interpretation depending on directive.</p>
-
-      <h2>Permissions-Policy sample</h2>
-      <p>Start deny-by-default for sensors you do not use, then open specific origins if a payment or maps iframe needs them:</p>
-      <div class="code-block">Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(self "https://pay.example")</div>
-
-      <h2>Operational habit</h2>
-      <p>Scan your live deployment, then diff what you ship versus what your HTML actually loads—that is fewer iterations than guessing in staging. Store the header block in version control next to infra code so reviews catch regressions when someone bumps a CDN preset. HeadersFixer reads your site URL and mirrors the stack tabs you already deploy—paste, reload, and verify Security panel before closing the ticket.</p>
-    </article>
-
-    <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS</a> · <a href="/glossary/content-security-policy/">Content-Security-Policy</a> · <a href="/glossary/x-frame-options/">X-Frame-Options</a> · <a href="/glossary/referrer-policy/">Referrer-Policy</a> · <a href="/glossary/permissions-policy/">Permissions-Policy</a> · <a href="/glossary/coop-coep/">COOP / COEP</a> · <a href="/fix/headers/nginx/">Fix headers (Nginx)</a> · <a href="/fix/headers/apache/">Fix headers (Apache)</a> · <a href="/fix/headers/vercel/">Fix headers (Vercel)</a></div>
-    <a href="/headers/" class="tool-cta">Open HeadersFixer →</a>
-  </main>
-  <footer>
-    <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span>
-    <span>MIT · <a href="https://github.com/metriclogic26/httpfixer">GitHub →</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+Header always set Referrer-Policy "strict-origin-when-cross-origin"</div> <h2>Vercel (<code>vercel.json</code>)</h2> <div class="code-block">{ "headers": [ { "source": "/(.*)", "headers": [ { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" }, { "key": "X-Content-Type-Options", "value": "nosniff" }, { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" } ] } ]
+}</div> <p>Edge platforms merge headers from multiple layers—middleware, <code>vercel.json</code>, and upstream. When you see duplicated <code>Content-Security-Policy</code> values in DevTools, check whether both the framework and the edge are emitting policy; browsers intersect or favor the strictest interpretation depending on directive.</p> <h2>Permissions-Policy sample</h2> <p>Start deny-by-default for sensors you do not use, then open specific origins if a payment or maps iframe needs them:</p> <div class="code-block">Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(self "https://pay.example")</div> <h2>Operational habit</h2> <p>Scan your live deployment, then diff what you ship versus what your HTML actually loads—that is fewer iterations than guessing in staging. Store the header block in version control next to infra code so reviews catch regressions when someone bumps a CDN preset. HeadersFixer reads your site URL and mirrors the stack tabs you already deploy—paste, reload, and verify Security panel before closing the ticket.</p> </article> <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS</a> · <a href="/glossary/content-security-policy/">Content-Security-Policy</a> · <a href="/glossary/x-frame-options/">X-Frame-Options</a> · <a href="/glossary/referrer-policy/">Referrer-Policy</a> · <a href="/glossary/permissions-policy/">Permissions-Policy</a> · <a href="/glossary/coop-coep/">COOP / COEP</a> · <a href="/fix/headers/nginx/">Fix headers (Nginx)</a> · <a href="/fix/headers/apache/">Fix headers (Apache)</a> · <a href="/fix/headers/vercel/">Fix headers (Vercel)</a></div> <a href="/headers/" class="tool-cta">Open HeadersFixer →</a> </main> <footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span>MIT · <a href="https://github.com/metriclogic26/httpfixer">GitHub →</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

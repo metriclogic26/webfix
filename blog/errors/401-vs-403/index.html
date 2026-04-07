@@ -1,169 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>401 vs 403 — The HTTP Status Code Difference Every Developer Gets Wrong &middot; HttpFixer</title>
-  <meta name="description" content="401 means unauthenticated. 403 means unauthorized. They are not interchangeable. Here is the exact difference, when to return each, and what headers go with them.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/errors/401-vs-403/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="401 vs 403 — The HTTP Status Code Difference Every Developer Gets Wrong">
-  <meta property="og:description" content="401 means unauthenticated. 403 means unauthorized. They are not interchangeable. Here is the exact difference, when to return each, and what headers go with them.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/errors/401-vs-403/">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "TechArticle",
-      "headline": "401 vs 403 — HTTP Status Code Difference",
-      "description": "401 vs 403 explained with exact use cases and headers.",
-      "url": "https://httpfixer.dev/blog/errors/401-vs-403/",
-      "datePublished": "2026-04-04",
-      "dateModified": "2026-04-04",
-      "author": {
-        "@type": "Organization",
-        "name": "MetricLogic"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "MetricLogic",
-        "url": "https://metriclogic.dev"
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "HttpFixer",
-          "item": "https://httpfixer.dev"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Blog",
-          "item": "https://httpfixer.dev/blog/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "401 vs 403 — HTTP Status Code Difference",
-          "item": "https://httpfixer.dev/blog/errors/401-vs-403/"
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Should I return 401 or 403 for an expired JWT?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Return 401. An expired token means authentication failed — the user needs to re-authenticate. 403 would signal their identity is known but access is permanently denied."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I return 404 instead of 403?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes, deliberately. Returning 404 for unauthorized private resources prevents attackers from enumerating which resources exist. This is a common security pattern for admin endpoints."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What header is required with a 401 response?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "The HTTP spec requires WWW-Authenticate header on 401 responses. It tells the client how to authenticate: WWW-Authenticate: Bearer realm=api"
-          }
-        }
-      ]
-    },
-    {
-      "@type": "HowTo",
-      "name": "401 vs 403 — HTTP Status Code Difference",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Determine authentication status",
-          "text": "Check if the request has valid credentials at all. No token or invalid token → 401."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Check authorization",
-          "text": "If authenticated, check if the user has permission for this resource. No permission → 403."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Add required headers",
-          "text": "Include WWW-Authenticate on 401 responses. Consider returning 404 for sensitive resources to prevent enumeration."
-        }
-      ]
-    }
-  ]
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .breadcrumb a{color:var(--purple);text-decoration:none}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    pre code{background:none;color:var(--text);padding:0}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
-    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .tool-cta:hover{filter:brightness(1.1)}
-    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
-  </style>
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>401 vs 403 — The HTTP Status Code Difference Every Developer Gets Wrong &middot; HttpFixer</title> <meta name="description" content="401 means unauthenticated. 403 means unauthorized. They are not interchangeable. Here is the exact difference, when to return each, and what headers go with them."> <link rel="canonical" href="https://httpfixer.dev/blog/errors/401-vs-403/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="401 vs 403 — The HTTP Status Code Difference Every Developer Gets Wrong"> <meta property="og:description" content="401 means unauthenticated. 403 means unauthorized. They are not interchangeable. Here is the exact difference, when to return each, and what headers go with them."> <meta property="og:url" content="https://httpfixer.dev/blog/errors/401-vs-403/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@type": "TechArticle", "headline": "401 vs 403 — HTTP Status Code Difference", "description": "401 vs 403 explained with exact use cases and headers.", "url": "https://httpfixer.dev/blog/errors/401-vs-403/", "datePublished": "2026-04-04", "dateModified": "2026-04-04", "author": { "@type": "Organization", "name": "MetricLogic" }, "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://" } }, { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev" }, { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://httpfixer.dev/blog/" }, { "@type": "ListItem", "position": 3, "name": "401 vs 403 — HTTP Status Code Difference", "item": "https://httpfixer.dev/blog/errors/401-vs-403/" } ] }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "Should I return 401 or 403 for an expired JWT?", "acceptedAnswer": { "@type": "Answer", "text": "Return 401. An expired token means authentication failed — the user needs to re-authenticate. 403 would signal their identity is known but access is permanently denied." } }, { "@type": "Question", "name": "Can I return 404 instead of 403?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, deliberately. Returning 404 for unauthorized private resources prevents attackers from enumerating which resources exist. This is a common security pattern for admin endpoints." } }, { "@type": "Question", "name": "What header is required with a 401 response?", "acceptedAnswer": { "@type": "Answer", "text": "The HTTP spec requires WWW-Authenticate header on 401 responses. It tells the client how to authenticate: WWW-Authenticate: Bearer realm=api" } } ] }, { "@type": "HowTo", "name": "401 vs 403 — HTTP Status Code Difference", "step": [ { "@type": "HowToStep", "position": 1, "name": "Determine authentication status", "text": "Check if the request has valid credentials at all. No token or invalid token → 401." }, { "@type": "HowToStep", "position": 2, "name": "Check authorization", "text": "If authenticated, check if the user has permission for this resource. No permission → 403." }, { "@type": "HowToStep", "position": 3, "name": "Add required headers", "text": "Include WWW-Authenticate on 401 responses. Consider returning 404 for sensitive resources to prevent enumeration." } ] } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} pre code{background:none;color:var(--text);padding:0} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85} .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/errors/">Errors</a> &rarr; 401 vs 403</div>
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/errors/">Errors</a> &rarr; 401 vs 403</div>
 <h1>401 vs 403 — The HTTP Status Code Difference Every Developer Gets Wrong</h1>
 <p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
 <div style="background:var(--surface,#12151F);border:1px solid var(--purple,#6C63FF);border-radius:8px;padding:1.25rem 1.5rem;margin:0 0 2rem 0;font-size:13px;line-height:1.75;color:var(--text,#E2E4F0)">
@@ -173,12 +16,7 @@
 <p class="lead"><code>401 Unauthorized</code> means the user is not authenticated — they need to log in. <code>403 Forbidden</code> means the user is authenticated but not allowed. They are not interchangeable and using the wrong one breaks clients, caches, and monitoring.</p>
 
 <h2>The one-line rule</h2>
-<table>
-  <thead><tr><th>Code</th><th>Meaning</th><th>Who are you?</th></tr></thead>
-  <tbody>
-    <tr><td><strong>401</strong></td><td>Unauthorized</td><td>I don't know who you are. Log in.</td></tr>
-    <tr><td><strong>403</strong></td><td>Forbidden</td><td>I know who you are. You can't do this.</td></tr>
-  </tbody>
+<table> <thead><tr><th>Code</th><th>Meaning</th><th>Who are you?</th></tr></thead> <tbody> <tr><td><strong>401</strong></td><td>Unauthorized</td><td>I don't know who you are. Log in.</td></tr> <tr><td><strong>403</strong></td><td>Forbidden</td><td>I know who you are. You can't do this.</td></tr> </tbody>
 </table>
 
 <h2>401 — Unauthenticated</h2>
@@ -191,12 +29,7 @@ Content-Type: application/json
 {"error": "authentication_required", "message": "No valid token provided"}</pre>
 
 <p>When to return 401:</p>
-<ul>
-  <li>No Authorization header present</li>
-  <li>JWT is expired</li>
-  <li>API key is invalid or revoked</li>
-  <li>Session cookie is missing or expired</li>
-  <li>OAuth token has been revoked</li>
+<ul> <li>No Authorization header present</li> <li>JWT is expired</li> <li>API key is invalid or revoked</li> <li>Session cookie is missing or expired</li> <li>OAuth token has been revoked</li>
 </ul>
 
 <h2>403 — Forbidden</h2>
@@ -207,13 +40,7 @@ Content-Type: application/json
 {"error": "insufficient_permissions", "message": "Admin role required"}</pre>
 
 <p>When to return 403:</p>
-<ul>
-  <li>User is logged in but tries to access another user's resource</li>
-  <li>Free tier user tries to access a paid feature</li>
-  <li>Read-only user tries to write</li>
-  <li>IP is blocked by a firewall rule</li>
-  <li>CORS preflight is rejected</li>
-  <li>Rate limit exceeded for a specific endpoint (sometimes 429 is better)</li>
+<ul> <li>User is logged in but tries to access another user's resource</li> <li>Free tier user tries to access a paid feature</li> <li>Read-only user tries to write</li> <li>IP is blocked by a firewall rule</li> <li>CORS preflight is rejected</li> <li>Rate limit exceeded for a specific endpoint (sometimes 429 is better)</li>
 </ul>
 
 <h2>The security case for 404 instead of 403</h2>
@@ -225,59 +52,35 @@ GET /admin/users/123 → 403 Forbidden  # Attacker knows the resource exists
 GET /admin/users/123 → 404 Not Found  # Attacker learns nothing</pre>
 
 <h2>What breaks when you mix them up</h2>
-<table>
-  <thead><tr><th>Wrong code</th><th>What breaks</th></tr></thead>
-  <tbody>
-    <tr><td>Returning 403 for missing token</td><td>OAuth clients won't retry with fresh token — they treat 403 as a permanent permission error</td></tr>
-    <tr><td>Returning 401 for insufficient permissions</td><td>Clients loop on auth refresh — they think re-authenticating will fix it</td></tr>
-    <tr><td>Returning 200 for auth errors</td><td>Monitoring misses failures, retry logic breaks, caches store error responses</td></tr>
-  </tbody>
+<table> <thead><tr><th>Wrong code</th><th>What breaks</th></tr></thead> <tbody> <tr><td>Returning 403 for missing token</td><td>OAuth clients won't retry with fresh token — they treat 403 as a permanent permission error</td></tr> <tr><td>Returning 401 for insufficient permissions</td><td>Clients loop on auth refresh — they think re-authenticating will fix it</td></tr> <tr><td>Returning 200 for auth errors</td><td>Monitoring misses failures, retry logic breaks, caches store error responses</td></tr> </tbody>
 </table>
 
 <h2>Framework examples</h2>
 
 <h3>Express</h3>
 <pre>// 401 — missing or invalid token
-app.use((req, res, next) => {
-  if (!req.headers.authorization) {
-    return res.status(401)
-      .set('WWW-Authenticate', 'Bearer realm="api"')
-      .json({ error: 'authentication_required' })
-  }
-  next()
+app.use((req, res, next) => { if (!req.headers.authorization) { return res.status(401) .set('WWW-Authenticate', 'Bearer realm="api"') .json({ error: 'authentication_required' }) } next()
 })
 
 // 403 — valid token but wrong role
-app.get('/admin', requireAuth, (req, res) => {
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ error: 'insufficient_permissions' })
-  }
-  // ...
+app.get('/admin', requireAuth, (req, res) => { if (req.user.role !== 'admin') { return res.status(403).json({ error: 'insufficient_permissions' }) } // ...
 })</pre>
 
 <h3>FastAPI</h3>
 <pre>from fastapi import HTTPException, status
 
 # 401
-raise HTTPException(
-    status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="Invalid credentials",
-    headers={"WWW-Authenticate": "Bearer"},
+raise HTTPException( status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials", headers={"WWW-Authenticate": "Bearer"},
 )
 
 # 403
-raise HTTPException(
-    status_code=status.HTTP_403_FORBIDDEN,
-    detail="Not enough permissions",
+raise HTTPException( status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions",
 )</pre>
 
 <a href="/" class="tool-cta">Scan your API headers &rarr; HeadersFixer</a>
 <div class="related">Related: <a href="/blog/reference/http-status-codes-cheatsheet/">HTTP status codes cheatsheet</a> &nbsp;<a href="/oauth/">OAuthFixer — diagnose auth errors</a> &nbsp;<a href="/blog/errors/invalid-grant-error/">Fix invalid_grant error</a></div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

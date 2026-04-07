@@ -1,188 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Securing Webhooks With Signature Headers — Stripe, GitHub, Custom &middot; HttpFixer</title>
-  <meta name="description" content="Webhook endpoints are public URLs that accept POST requests from anyone. Signature headers (X-Hub-Signature, Stripe-Signature) prove the request came from the legitimate sender.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/headers/webhook-signature-security/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="Securing Webhooks With Signature Headers — Stripe, GitHub, Custom">
-  <meta property="og:description" content="Webhook endpoints are public URLs that accept POST requests from anyone. Signature headers (X-Hub-Signature, Stripe-Signature) prove the request came from the legitimate sender.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/headers/webhook-signature-security/">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "TechArticle",
-      "headline": "Securing Webhooks With Signature Headers \u2014 Stripe, GitHub, Custom",
-      "description": "Webhook endpoints are public URLs that accept POST requests from anyone. Signature headers (X-Hub-Signature, Stripe-Signature) prove the request came from the legitimate sender.",
-      "url": "https://httpfixer.dev/blog/headers/webhook-signature-security/",
-      "datePublished": "2026-04-03",
-      "dateModified": "2026-04-03",
-      "author": {
-        "@type": "Organization",
-        "name": "MetricLogic"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "MetricLogic",
-        "url": "https://metriclogic.dev"
-      }
-    },
-    {
-      "@type": "HowTo",
-      "name": "Securing Webhooks With Signature Headers \u2014 Stripe, GitHub, Custom",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Read the signature from the request header",
-          "text": "The sender includes an HMAC-SHA256 signature of the request body in a header like X-Hub-Signature-256 or Stripe-Signature."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Compute the expected signature",
-          "text": "Use the shared secret and the raw request body to compute the expected HMAC-SHA256 value."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Compare with constant-time comparison",
-          "text": "Use a timing-safe comparison function to avoid timing attacks when comparing signatures."
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Why do I need to verify webhook signatures?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Your webhook endpoint is a public URL. Without signature verification, anyone who knows your endpoint URL can send fake webhook events. An attacker could send a fake payment.succeeded event to trigger order fulfillment without an actual payment."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is a timing attack and why does it matter for signature verification?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "A naive string comparison short-circuits on the first mismatch. An attacker can measure response time differences to guess signatures character by character. Constant-time comparison always takes the same time regardless of where the mismatch occurs."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What happens if the signature is invalid?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Return 400 Bad Request. Do not process the event. Log the failure with the source IP for security monitoring."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "HttpFixer",
-          "item": "https://httpfixer.dev"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Blog",
-          "item": "https://httpfixer.dev/blog/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Securing Webhooks With Signature Headers \u2014 Stripe, GitHub, Custom",
-          "item": "https://httpfixer.dev/blog/headers/webhook-signature-security/"
-        }
-      ]
-    }
-  ]
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .bc{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .bc a{color:var(--purple);text-decoration:none}
-    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.2);color:var(--red)}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    .inline-cta{background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    .inline-cta span{font-size:12px;opacity:0.7}
-    .inline-cta a{padding:0.4rem 0.9rem;background:var(--purple);color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .tool-cta:hover{filter:brightness(1.1)}
-    .related{font-size:12px;opacity:0.7;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    .related a:hover{text-decoration:underline}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
-    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
-    .xlink{display:inline-block;margin:0.25rem 0.25rem 0.25rem 0;padding:0.25rem 0.6rem;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);border-radius:4px;font-size:12px;color:var(--purple);text-decoration:none}
-    .xlink:hover{background:rgba(108,99,255,0.2)}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}h1{font-size:1.3rem}}
-  </style>
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Securing Webhooks With Signature Headers — Stripe, GitHub, Custom &middot; HttpFixer</title> <meta name="description" content="Webhook endpoints are public URLs that accept POST requests from anyone. Signature headers (X-Hub-Signature, Stripe-Signature) prove the request came from the legitimate sender."> <link rel="canonical" href="https://httpfixer.dev/blog/headers/webhook-signature-security/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="Securing Webhooks With Signature Headers — Stripe, GitHub, Custom"> <meta property="og:description" content="Webhook endpoints are public URLs that accept POST requests from anyone. Signature headers (X-Hub-Signature, Stripe-Signature) prove the request came from the legitimate sender."> <meta property="og:url" content="https://httpfixer.dev/blog/headers/webhook-signature-security/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@type": "TechArticle", "headline": "Securing Webhooks With Signature Headers \u2014 Stripe, GitHub, Custom", "description": "Webhook endpoints are public URLs that accept POST requests from anyone. Signature headers (X-Hub-Signature, Stripe-Signature) prove the request came from the legitimate sender.", "url": "https://httpfixer.dev/blog/headers/webhook-signature-security/", "datePublished": "2026-04-03", "dateModified": "2026-04-03", "author": { "@type": "Organization", "name": "MetricLogic" }, "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://" } }, { "@type": "HowTo", "name": "Securing Webhooks With Signature Headers \u2014 Stripe, GitHub, Custom", "step": [ { "@type": "HowToStep", "position": 1, "name": "Read the signature from the request header", "text": "The sender includes an HMAC-SHA256 signature of the request body in a header like X-Hub-Signature-256 or Stripe-Signature." }, { "@type": "HowToStep", "position": 2, "name": "Compute the expected signature", "text": "Use the shared secret and the raw request body to compute the expected HMAC-SHA256 value." }, { "@type": "HowToStep", "position": 3, "name": "Compare with constant-time comparison", "text": "Use a timing-safe comparison function to avoid timing attacks when comparing signatures." } ] }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "Why do I need to verify webhook signatures?", "acceptedAnswer": { "@type": "Answer", "text": "Your webhook endpoint is a public URL. Without signature verification, anyone who knows your endpoint URL can send fake webhook events. An attacker could send a fake payment.succeeded event to trigger order fulfillment without an actual payment." } }, { "@type": "Question", "name": "What is a timing attack and why does it matter for signature verification?", "acceptedAnswer": { "@type": "Answer", "text": "A naive string comparison short-circuits on the first mismatch. An attacker can measure response time differences to guess signatures character by character. Constant-time comparison always takes the same time regardless of where the mismatch occurs." } }, { "@type": "Question", "name": "What happens if the signature is invalid?", "acceptedAnswer": { "@type": "Answer", "text": "Return 400 Bad Request. Do not process the event. Log the failure with the source IP for security monitoring." } } ] }, { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev" }, { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://httpfixer.dev/blog/" }, { "@type": "ListItem", "position": 3, "name": "Securing Webhooks With Signature Headers \u2014 Stripe, GitHub, Custom", "item": "https://httpfixer.dev/blog/headers/webhook-signature-security/" } ] } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .bc{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .bc a{color:var(--purple);text-decoration:none} .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.2);color:var(--red)} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} .inline-cta{background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} .inline-cta span{font-size:12px;opacity:0.7} .inline-cta a{padding:0.4rem 0.9rem;background:var(--purple);color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.7;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} .related a:hover{text-decoration:underline} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85} .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6} .xlink{display:inline-block;margin:0.25rem 0.25rem 0.25rem 0;padding:0.25rem 0.6rem;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);border-radius:4px;font-size:12px;color:var(--purple);text-decoration:none} .xlink:hover{background:rgba(108,99,255,0.2)} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}h1{font-size:1.3rem}} </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a>
-    <a href="/cors/">CORS</a>
-    <a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a>
-    <a href="/edge/">Edge</a>
-    <a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a> <a href="/cors/">CORS</a> <a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a> <a href="/edge/">Edge</a> <a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <div class="bc"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/headers/">Headers</a> &rarr; Securing Webhooks With Signature Headers — Stripe, GitHub, Custom</div>
-  <span class="tag">Headers</span>
-  <h1>Securing Webhooks With Signature Headers — Stripe, GitHub, Custom</h1>
-<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
-  <div class="inline-cta">
-  <span>Reading this? Verify your fix in real-time.</span>
-  <a href="/">Scan your API security headers &rarr; HeadersFixer</a>
-</div>
-  
-<p class="lead">Your Stripe webhook endpoint processes payment events. Your GitHub webhook triggers deployments. Both accept POST requests from any IP address on the internet. Signature verification is the only thing stopping attackers from sending fake events.</p>
+<main> <div class="bc"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/headers/">Headers</a> &rarr; Securing Webhooks With Signature Headers — Stripe, GitHub, Custom</div> <span class="tag">Headers</span> <h1>Securing Webhooks With Signature Headers — Stripe, GitHub, Custom</h1>
+<p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p> <div class="inline-cta"> <span>Reading this? Verify your fix in real-time.</span> <a href="/">Scan your API security headers &rarr; HeadersFixer</a>
+</div> <p class="lead">Your Stripe webhook endpoint processes payment events. Your GitHub webhook triggers deployments. Both accept POST requests from any IP address on the internet. Signature verification is the only thing stopping attackers from sending fake events.</p>
 
 <h2>How webhook signatures work</h2>
 <p>The sender (Stripe, GitHub, your own system) generates an HMAC-SHA256 of the request body using a shared secret, then includes it in a request header. Your endpoint computes the same HMAC and compares. If they match, the request is genuine.</p>
@@ -190,109 +16,30 @@
 <h2>Verify Stripe webhook signatures</h2>
 <pre>const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-app.post("/webhooks/stripe",
-  express.raw({ type: "application/json" }), // raw body required
-  (req, res) => {
-    const sig = req.headers["stripe-signature"];
-    let event;
-
-    try {
-      event = stripe.webhooks.constructEvent(
-        req.body,                              // raw buffer
-        sig,
-        process.env.STRIPE_WEBHOOK_SECRET      // from Stripe dashboard
-      );
-    } catch (err) {
-      console.error(`Signature verification failed: ${err.message}`);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
-    }
-
-    // Signature valid — process the event
-    switch (event.type) {
-      case "payment_intent.succeeded":
-        // fulfill order
-        break;
-    }
-
-    res.json({ received: true });
-  }
+app.post("/webhooks/stripe", express.raw({ type: "application/json" }), // raw body required (req, res) => { const sig = req.headers["stripe-signature"]; let event; try { event = stripe.webhooks.constructEvent( req.body, // raw buffer sig, process.env.STRIPE_WEBHOOK_SECRET // from Stripe dashboard ); } catch (err) { console.error(`Signature verification failed: ${err.message}`); return res.status(400).send(`Webhook Error: ${err.message}`); } // Signature valid — process the event switch (event.type) { case "payment_intent.succeeded": // fulfill order break; } res.json({ received: true }); }
 );</pre>
 
 <h2>Verify GitHub webhook signatures</h2>
 <pre>const crypto = require("crypto");
 
-function verifyGitHubSignature(payload, signature, secret) {
-  const expected = "sha256=" + crypto
-    .createHmac("sha256", secret)
-    .update(payload, "utf8")
-    .digest("hex");
-
-  // Constant-time comparison — prevents timing attacks
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expected)
-  );
+function verifyGitHubSignature(payload, signature, secret) { const expected = "sha256=" + crypto .createHmac("sha256", secret) .update(payload, "utf8") .digest("hex"); // Constant-time comparison — prevents timing attacks return crypto.timingSafeEqual( Buffer.from(signature), Buffer.from(expected) );
 }
 
-app.post("/webhooks/github", express.raw({ type: "application/json" }), (req, res) => {
-  const signature = req.headers["x-hub-signature-256"];
-  const body = req.body;
-
-  if (!signature || !verifyGitHubSignature(body, signature, process.env.GITHUB_WEBHOOK_SECRET)) {
-    return res.status(401).send("Invalid signature");
-  }
-
-  const event = req.headers["x-github-event"];
-  // process event...
-  res.sendStatus(200);
+app.post("/webhooks/github", express.raw({ type: "application/json" }), (req, res) => { const signature = req.headers["x-hub-signature-256"]; const body = req.body; if (!signature || !verifyGitHubSignature(body, signature, process.env.GITHUB_WEBHOOK_SECRET)) { return res.status(401).send("Invalid signature"); } const event = req.headers["x-github-event"]; // process event... res.sendStatus(200);
 });</pre>
 
 <h2>Build your own webhook system with signatures</h2>
 <pre># Sending side — sign the payload
 const crypto = require("crypto");
 
-function signPayload(payload, secret) {
-  return "sha256=" + crypto
-    .createHmac("sha256", secret)
-    .update(JSON.stringify(payload))
-    .digest("hex");
+function signPayload(payload, secret) { return "sha256=" + crypto .createHmac("sha256", secret) .update(JSON.stringify(payload)) .digest("hex");
 }
 
-async function sendWebhook(url, payload, secret) {
-  const signature = signPayload(payload, secret);
-  await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Webhook-Signature": signature,
-      "X-Webhook-Timestamp": Date.now().toString()
-    },
-    body: JSON.stringify(payload)
-  });
+async function sendWebhook(url, payload, secret) { const signature = signPayload(payload, secret); await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", "X-Webhook-Signature": signature, "X-Webhook-Timestamp": Date.now().toString() }, body: JSON.stringify(payload) });
 }
 
 # Receiving side — verify
-app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => {
-  const signature = req.headers["x-webhook-signature"];
-  const timestamp = req.headers["x-webhook-timestamp"];
-
-  // Reject requests older than 5 minutes (replay attack protection)
-  if (Date.now() - parseInt(timestamp) > 300000) {
-    return res.status(400).send("Request too old");
-  }
-
-  const expected = "sha256=" + crypto
-    .createHmac("sha256", process.env.WEBHOOK_SECRET)
-    .update(req.body)
-    .digest("hex");
-
-  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
-    return res.status(401).send("Invalid signature");
-  }
-
-  // Safe to process
-  const event = JSON.parse(req.body);
-  res.sendStatus(200);
+app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => { const signature = req.headers["x-webhook-signature"]; const timestamp = req.headers["x-webhook-timestamp"]; // Reject requests older than 5 minutes (replay attack protection) if (Date.now() - parseInt(timestamp) > 300000) { return res.status(400).send("Request too old"); } const expected = "sha256=" + crypto .createHmac("sha256", process.env.WEBHOOK_SECRET) .update(req.body) .digest("hex"); if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) { return res.status(401).send("Invalid signature"); } // Safe to process const event = JSON.parse(req.body); res.sendStatus(200);
 });</pre>
 
 <h2>Critical: use raw body for signature verification</h2>
@@ -301,28 +48,17 @@ app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => {
 
 # Wrong — JSON parsing changes the bytes
 app.use(express.json());
-app.post("/webhook", (req, res) => {
-  // req.body is now a JS object — signature will not match ❌
+app.post("/webhook", (req, res) => { // req.body is now a JS object — signature will not match ❌
 });
 
 # Right — raw body preserved
-app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => {
-  // req.body is the original Buffer — signature matches ✅
-});</pre>
-  <a href="/" class="tool-cta">Scan your API security headers &rarr; HeadersFixer</a>
-  <div class="related">
-    <strong>Related:</strong>
-    <a class="xlink" href="/blog/cors/cors-misconfiguration-vulnerabilities/">CORS security misconfigurations</a><a class="xlink" href="/blog/headers/secure-httponly-cookies/">Secure cookies</a><a class="xlink" href="/blog/compare/cors-vs-csrf/">CORS vs CSRF</a><a class="xlink" href="/cors/">CORSFixer &mdash; test your API endpoints</a>
-  </div>
+app.post("/webhook", express.raw({ type: "application/json" }), (req, res) => { // req.body is the original Buffer — signature matches ✅
+});</pre> <a href="/" class="tool-cta">Scan your API security headers &rarr; HeadersFixer</a> <div class="related"> <strong>Related:</strong> <a class="xlink" href="/blog/cors/cors-misconfiguration-vulnerabilities/">CORS security misconfigurations</a><a class="xlink" href="/blog/headers/secure-httponly-cookies/">Secure cookies</a><a class="xlink" href="/blog/compare/cors-vs-csrf/">CORS vs CSRF</a><a class="xlink" href="/cors/">CORSFixer &mdash; test your API endpoints</a> </div>
 
-<div style="margin-top:2rem;padding:1rem;background:#12151F;border:1px solid #252836;border-radius:8px;font-size:13px">
-  <a href="/tools/hsts-preload/" style="color:#6C63FF;text-decoration:none;font-weight:500">Check if your domain is on the HSTS preload list → HSTS Preload Checker</a>
+<div style="margin-top:2rem;padding:1rem;background:#12151F;border:1px solid #252836;border-radius:8px;font-size:13px"> <a href="/tools/hsts-preload/" style="color:#6C63FF;text-decoration:none;font-weight:500">Check if your domain is on the HSTS preload list → HSTS Preload Checker</a>
 </div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/generators/">Generators</a> &middot; <a href="/privacy/">Privacy</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue &rarr;</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  &middot; <a href="/blog/">Blog</a> &middot; <a href="/generators/">Generators</a> &middot; <a href="/privacy/">Privacy</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue &rarr;</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

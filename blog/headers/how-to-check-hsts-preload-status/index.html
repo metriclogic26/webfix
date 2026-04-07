@@ -1,147 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Check If Your Domain Is on the HSTS Preload List &middot; HttpFixer</title>
-  <meta name="description" content="Check if your domain is on the browser HSTS preload list, understand what preload status means, and see the exact requirements to get listed.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/headers/how-to-check-hsts-preload-status/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="How to Check If Your Domain Is on the HSTS Preload List">
-  <meta property="og:description" content="Check if your domain is on the browser HSTS preload list, understand what preload status means, and see the exact requirements to get listed.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/headers/how-to-check-hsts-preload-status/">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@context": "https://schema.org",
-      "@type": "TechArticle",
-      "headline": "How to Check If Your Domain Is on the HSTS Preload List",
-      "description": "Check HSTS preload status and understand requirements to get listed.",
-      "url": "https://httpfixer.dev/blog/headers/how-to-check-hsts-preload-status/",
-      "datePublished": "2026-04-04",
-      "dateModified": "2026-04-04",
-      "author": {
-        "@type": "Organization",
-        "name": "MetricLogic"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "MetricLogic",
-        "url": "https://metriclogic.dev"
-      }
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "How long does it take to get on the HSTS preload list?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "After submission at hstspreload.org, it takes 2-3 months to appear in Chrome stable, followed by Firefox and Safari stable releases."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I remove my domain from the HSTS preload list?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes, but removal takes 6-12 months. Only submit if you are certain all subdomains will support HTTPS permanently."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Do I need the preload directive to use HSTS?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. HSTS works without preload — the preload directive only signals intent to be on the preload list. Basic HSTS just needs max-age."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "HowTo",
-      "name": "How to Check If Your Domain Is on the HSTS Preload List",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Check your current HSTS status",
-          "text": "Use the HSTS Preload Checker to query the preload list and scan your live HSTS header simultaneously."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Verify requirements are met",
-          "text": "Ensure max-age is at least 31536000, includeSubDomains is present, and all subdomains support HTTPS."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Submit at hstspreload.org",
-          "text": "Once requirements are met, submit at hstspreload.org and wait 2-3 months for inclusion in browser releases."
-        }
-      ]
-    }
-  ]
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .breadcrumb a{color:var(--purple);text-decoration:none}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    pre code{background:none;color:var(--text);padding:0}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
-    .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .tool-cta:hover{filter:brightness(1.1)}
-    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
-  </style>
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>How to Check If Your Domain Is on the HSTS Preload List &middot; HttpFixer</title> <meta name="description" content="Check if your domain is on the browser HSTS preload list, understand what preload status means, and see the exact requirements to get listed."> <link rel="canonical" href="https://httpfixer.dev/blog/headers/how-to-check-hsts-preload-status/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="How to Check If Your Domain Is on the HSTS Preload List"> <meta property="og:description" content="Check if your domain is on the browser HSTS preload list, understand what preload status means, and see the exact requirements to get listed."> <meta property="og:url" content="https://httpfixer.dev/blog/headers/how-to-check-hsts-preload-status/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@context": "https://schema.org", "@type": "TechArticle", "headline": "How to Check If Your Domain Is on the HSTS Preload List", "description": "Check HSTS preload status and understand requirements to get listed.", "url": "https://httpfixer.dev/blog/headers/how-to-check-hsts-preload-status/", "datePublished": "2026-04-04", "dateModified": "2026-04-04", "author": { "@type": "Organization", "name": "MetricLogic" }, "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://" } }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "How long does it take to get on the HSTS preload list?", "acceptedAnswer": { "@type": "Answer", "text": "After submission at hstspreload.org, it takes 2-3 months to appear in Chrome stable, followed by Firefox and Safari stable releases." } }, { "@type": "Question", "name": "Can I remove my domain from the HSTS preload list?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, but removal takes 6-12 months. Only submit if you are certain all subdomains will support HTTPS permanently." } }, { "@type": "Question", "name": "Do I need the preload directive to use HSTS?", "acceptedAnswer": { "@type": "Answer", "text": "No. HSTS works without preload — the preload directive only signals intent to be on the preload list. Basic HSTS just needs max-age." } } ] }, { "@type": "HowTo", "name": "How to Check If Your Domain Is on the HSTS Preload List", "step": [ { "@type": "HowToStep", "position": 1, "name": "Check your current HSTS status", "text": "Use the HSTS Preload Checker to query the preload list and scan your live HSTS header simultaneously." }, { "@type": "HowToStep", "position": 2, "name": "Verify requirements are met", "text": "Ensure max-age is at least 31536000, includeSubDomains is present, and all subdomains support HTTPS." }, { "@type": "HowToStep", "position": 3, "name": "Submit at hstspreload.org", "text": "Once requirements are met, submit at hstspreload.org and wait 2-3 months for inclusion in browser releases." } ] } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} pre code{background:none;color:var(--text);padding:0} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85} .warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
 </nav>
-<main>
-  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/headers/">Headers</a> &rarr; How to Check HSTS Preload Status</div>
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; <a href="/blog/headers/">Headers</a> &rarr; How to Check HSTS Preload Status</div>
 <h1>How to Check If Your Domain Is on the HSTS Preload List</h1>
 <p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
 <p class="lead">The HSTS preload list is a hardcoded list of domains built into Chrome, Firefox, Safari, and Edge. If your domain is on it, HTTPS is enforced before the browser makes any request — closing the gap that HSTS alone cannot close.</p>
@@ -161,38 +26,19 @@
 # Returns: {"status": "preloaded"} or {"status": "unknown"}</pre>
 
 <h2>Status meanings</h2>
-<table>
-  <thead><tr><th>Status</th><th>Meaning</th><th>Action</th></tr></thead>
-  <tbody>
-    <tr><td>preloaded</td><td>Domain is in the list — all browsers enforce HTTPS</td><td>Nothing required</td></tr>
-    <tr><td>pending</td><td>Submitted but not yet in browser releases</td><td>Wait 2–3 months for Chrome stable</td></tr>
-    <tr><td>unknown</td><td>Not on the list</td><td>Check requirements below</td></tr>
-  </tbody>
+<table> <thead><tr><th>Status</th><th>Meaning</th><th>Action</th></tr></thead> <tbody> <tr><td>preloaded</td><td>Domain is in the list — all browsers enforce HTTPS</td><td>Nothing required</td></tr> <tr><td>pending</td><td>Submitted but not yet in browser releases</td><td>Wait 2–3 months for Chrome stable</td></tr> <tr><td>unknown</td><td>Not on the list</td><td>Check requirements below</td></tr> </tbody>
 </table>
 
 <h2>Requirements to get listed</h2>
-<ol>
-  <li>Valid HTTPS certificate on the domain</li>
-  <li>All HTTP traffic redirected to HTTPS</li>
-  <li>HSTS header with <code>max-age</code> of at least 31536000 (1 year)</li>
-  <li><code>includeSubDomains</code> directive present — all subdomains must support HTTPS</li>
-  <li><code>preload</code> directive present — signals intent to be preloaded</li>
+<ol> <li>Valid HTTPS certificate on the domain</li> <li>All HTTP traffic redirected to HTTPS</li> <li>HSTS header with <code>max-age</code> of at least 31536000 (1 year)</li> <li><code>includeSubDomains</code> directive present — all subdomains must support HTTPS</li> <li><code>preload</code> directive present — signals intent to be preloaded</li>
 </ol>
 
 <pre>Strict-Transport-Security: max-age=31536000; includeSubDomains; preload</pre>
 
 <h2>The ramp-up process</h2>
-<div class="warn">
-  Do not add <code>includeSubDomains</code> and <code>preload</code> immediately. If any subdomain does not support HTTPS, users will be locked out. Ramp up gradually.
+<div class="warn"> Do not add <code>includeSubDomains</code> and <code>preload</code> immediately. If any subdomain does not support HTTPS, users will be locked out. Ramp up gradually.
 </div>
-<ol>
-  <li>Start with a short max-age (e.g. 300 seconds) to verify HTTPS works</li>
-  <li>Ensure all subdomains support HTTPS</li>
-  <li>Increase max-age to 1 year</li>
-  <li>Add includeSubDomains</li>
-  <li>Add preload directive</li>
-  <li>Submit at <a href="https://hstspreload.org" target="_blank" rel="noopener" style="color:var(--purple)">hstspreload.org</a></li>
-  <li>Wait 2–3 months for inclusion in Chrome, Firefox, Safari stable releases</li>
+<ol> <li>Start with a short max-age (e.g. 300 seconds) to verify HTTPS works</li> <li>Ensure all subdomains support HTTPS</li> <li>Increase max-age to 1 year</li> <li>Add includeSubDomains</li> <li>Add preload directive</li> <li>Submit at <a href="https://hstspreload.org" target="_blank" rel="noopener" style="color:var(--purple)">hstspreload.org</a></li> <li>Wait 2–3 months for inclusion in Chrome, Firefox, Safari stable releases</li>
 </ol>
 
 <h2>How long does it take?</h2>
@@ -200,10 +46,7 @@
 
 <div class="related">Related: <a href="/tools/hsts-preload/">HSTS Preload Checker tool</a> &nbsp;<a href="/blog/headers/fix-hsts/">Fix HSTS configuration</a> &nbsp;<a href="/blog/headers/hsts-preload-list-requirements/">HSTS preload requirements in detail</a> &nbsp;<a href="/glossary/hsts/">HSTS glossary</a></div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

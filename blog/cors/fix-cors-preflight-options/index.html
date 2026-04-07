@@ -1,205 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CORS Preflight Failing — OPTIONS Returns 404 or 403 · HttpFixer</title>
-  <meta name="description" content="Your POST works in Postman but fails in the browser. That is a missing preflight handler. Here is exactly what the browser sends and how to respond.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/cors/fix-cors-preflight-options/">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MetricLogic">
-  <meta property="og:title" content="CORS Preflight Failing — OPTIONS Returns 404 or 403">
-  <meta property="og:description" content="Your POST works in Postman but fails in the browser. That is a missing preflight handler. Here is exactly what the browser sends and how to respond.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/cors/fix-cors-preflight-options/">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "TechArticle",
-      "headline": "CORS Preflight Failing \u2014 OPTIONS Returns 404 or 403",
-      "description": "Fix failing CORS preflight requests across Express, Nginx, FastAPI, and Django.",
-      "url": "https://httpfixer.dev/blog/cors/fix-cors-preflight-options/",
-      "datePublished": "2026-04-02",
-      "author": {
-        "@type": "Organization",
-        "name": "MetricLogic"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "MetricLogic",
-        "url": "https://metriclogic.dev"
-      }
-    },
-    {
-      "@type": "HowTo",
-      "name": "CORS Preflight Failing \u2014 OPTIONS Returns 404 or 403",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "position": 1,
-          "name": "Understand the preflight",
-          "text": "The browser sends OPTIONS before POST, PUT, or DELETE with custom headers."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 2,
-          "name": "Return 204 with CORS headers",
-          "text": "Your server must respond to OPTIONS with a 200 or 204 and the correct CORS headers."
-        },
-        {
-          "@type": "HowToStep",
-          "position": 3,
-          "name": "Cache the preflight result",
-          "text": "Set Access-Control-Max-Age to reduce repeated preflight requests."
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Why does my API work in Postman but fail in the browser?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Postman is a developer tool that does not enforce CORS. The browser sends an OPTIONS preflight that your server is not handling. Add an OPTIONS route handler that returns 204 with CORS headers."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What status code should OPTIONS return?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Return 204 (No Content) or 200 with the CORS headers and no body."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What is Access-Control-Max-Age?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "It tells the browser how long to cache the preflight result in seconds. Set it to 86400 (24 hours) to avoid a preflight on every request."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "HttpFixer",
-          "item": "https://httpfixer.dev"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Blog",
-          "item": "https://httpfixer.dev/blog/"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "CORS Preflight Failing \u2014 OPTIONS Returns 404 or 403",
-          "item": "https://httpfixer.dev/blog/cors/fix-cors-preflight-options/"
-        }
-      ]
-    }
-  ]
-}</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem;align-items:center}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
-    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
-    .breadcrumb a{color:var(--purple);text-decoration:none}
-    .error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;font-family:"JetBrains Mono",monospace;line-height:1.6}
-    .error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em}
-    .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.2);color:var(--purple);}
-    h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
-    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
-    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
-    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
-    .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
-    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
-    p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
-    .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
-    .tool-cta:hover{filter:brightness(1.1)}
-    .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
-    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
-    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
-    th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
-    th{background:var(--surface);color:var(--purple);font-weight:600}
-    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
-    ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
-    li{margin-bottom:0.4rem;line-height:1.7}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
-  </style>
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="HttpFixer">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@metriclogic">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>CORS Preflight Failing — OPTIONS Returns 404 or 403 · HttpFixer</title> <meta name="description" content="Your POST works in Postman but fails in the browser. That is a missing preflight handler. Here is exactly what the browser sends and how to respond."> <link rel="canonical" href="https://httpfixer.dev/blog/cors/fix-cors-preflight-options/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="CORS Preflight Failing — OPTIONS Returns 404 or 403"> <meta property="og:description" content="Your POST works in Postman but fails in the browser. That is a missing preflight handler. Here is exactly what the browser sends and how to respond."> <meta property="og:url" content="https://httpfixer.dev/blog/cors/fix-cors-preflight-options/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@graph": [ { "@type": "TechArticle", "headline": "CORS Preflight Failing \u2014 OPTIONS Returns 404 or 403", "description": "Fix failing CORS preflight requests across Express, Nginx, FastAPI, and Django.", "url": "https://httpfixer.dev/blog/cors/fix-cors-preflight-options/", "datePublished": "2026-04-02", "author": { "@type": "Organization", "name": "MetricLogic" }, "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://" } }, { "@type": "HowTo", "name": "CORS Preflight Failing \u2014 OPTIONS Returns 404 or 403", "step": [ { "@type": "HowToStep", "position": 1, "name": "Understand the preflight", "text": "The browser sends OPTIONS before POST, PUT, or DELETE with custom headers." }, { "@type": "HowToStep", "position": 2, "name": "Return 204 with CORS headers", "text": "Your server must respond to OPTIONS with a 200 or 204 and the correct CORS headers." }, { "@type": "HowToStep", "position": 3, "name": "Cache the preflight result", "text": "Set Access-Control-Max-Age to reduce repeated preflight requests." } ] }, { "@type": "FAQPage", "mainEntity": [ { "@type": "Question", "name": "Why does my API work in Postman but fail in the browser?", "acceptedAnswer": { "@type": "Answer", "text": "Postman is a developer tool that does not enforce CORS. The browser sends an OPTIONS preflight that your server is not handling. Add an OPTIONS route handler that returns 204 with CORS headers." } }, { "@type": "Question", "name": "What status code should OPTIONS return?", "acceptedAnswer": { "@type": "Answer", "text": "Return 204 (No Content) or 200 with the CORS headers and no body." } }, { "@type": "Question", "name": "What is Access-Control-Max-Age?", "acceptedAnswer": { "@type": "Answer", "text": "It tells the browser how long to cache the preflight result in seconds. Set it to 86400 (24 hours) to avoid a preflight on every request." } } ] }, { "@type": "BreadcrumbList", "itemListElement": [ { "@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev" }, { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://httpfixer.dev/blog/" }, { "@type": "ListItem", "position": 3, "name": "CORS Preflight Failing \u2014 OPTIONS Returns 404 or 403", "item": "https://httpfixer.dev/blog/cors/fix-cors-preflight-options/" } ] } ]
+}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem;align-items:center} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;font-family:"JetBrains Mono",monospace;line-height:1.6} .error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em} .tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.2);color:var(--purple);} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/speedfixer/">Speed</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/speedfixer/">Speed</a> </div>
 </nav>
-<main>
-  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/cors/">CORS</a> → Preflight Failing</div>
-  <span class="tag">CORS</span>
-  <h1>CORS Preflight Failing — OPTIONS Returns 404 or 403</h1>
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/blog/">Blog</a> → <a href="/blog/cors/">CORS</a> → Preflight Failing</div> <span class="tag">CORS</span> <h1>CORS Preflight Failing — OPTIONS Returns 404 or 403</h1>
 <p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
 
 <!-- Top CTA — auto-injected by 29_robots_cta_privacy_llms.py -->
-<div class="top-cta-bar" style="
-  background: rgba(108,99,255,0.06);
-  border: 1px solid #6C63FF33;
-  border-radius: 6px;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  font-family: 'JetBrains Mono', monospace;
-">
-  <span style="font-size:12px;opacity:0.7;color:var(--text,#E2E4F0)">Reading this article? Verify your fix in real-time.</span>
-  <a href="/cors/" style="
-    display:inline-block;
-    padding:0.4rem 0.9rem;
-    background:#6C63FF;
-    color:white;
-    text-decoration:none;
-    border-radius:4px;
-    font-size:12px;
-    font-weight:600;
-    white-space:nowrap;
-  ">Test your CORS config live — CORSFixer →</a>
-</div>
-  
-<p class="lead">Postman works. curl works. The browser fails. That is almost always a missing preflight handler. Browsers send an OPTIONS request before POST, PUT, or DELETE — and your server is not responding to it correctly.</p>
+<div class="top-cta-bar" style=" background: rgba(108,99,255,0.06); border: 1px solid #6C63FF33; border-radius: 6px; padding: 0.75rem 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; font-family: 'JetBrains Mono', monospace;
+"> <span style="font-size:12px;opacity:0.7;color:var(--text,#E2E4F0)">Reading this article? Verify your fix in real-time.</span> <a href="/cors/" style=" display:inline-block; padding:0.4rem 0.9rem; background:#6C63FF; color:white; text-decoration:none; border-radius:4px; font-size:12px; font-weight:600; white-space:nowrap; ">Test your CORS config live — CORSFixer →</a>
+</div> <p class="lead">Postman works. curl works. The browser fails. That is almost always a missing preflight handler. Browsers send an OPTIONS request before POST, PUT, or DELETE — and your server is not responding to it correctly.</p>
 
 <div class="error-box"><div class="error-label">Browser Console Error</div>Access to fetch at 'https://api.example.com/submit' from origin 'https://app.example.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: It does not have HTTP ok status.</div>
 
@@ -214,10 +27,7 @@ Access-Control-Request-Headers: Content-Type, Authorization</pre>
 
 <h2>What triggers a preflight</h2>
 <p>Not all requests get a preflight. Simple requests (GET, HEAD, POST with only simple headers like Content-Type: application/x-www-form-urlencoded) skip it. You get a preflight when you use:</p>
-<ul>
-  <li>Methods: PUT, DELETE, PATCH</li>
-  <li>Headers: Authorization, Content-Type: application/json, or any custom header</li>
-  <li>Credentials: any request with credentials: 'include'</li>
+<ul> <li>Methods: PUT, DELETE, PATCH</li> <li>Headers: Authorization, Content-Type: application/json, or any custom header</li> <li>Credentials: any request with credentials: 'include'</li>
 </ul>
 
 <h2>Fix by framework</h2>
@@ -227,22 +37,12 @@ Access-Control-Request-Headers: Content-Type, Authorization</pre>
 app.use(cors({ origin: 'https://app.example.com' }));</pre>
 
 <h3>Nginx</h3>
-<pre>if ($request_method = OPTIONS) {
-    add_header Access-Control-Allow-Origin "https://app.example.com";
-    add_header Access-Control-Allow-Methods "POST, GET, PUT, DELETE, OPTIONS";
-    add_header Access-Control-Allow-Headers "Content-Type, Authorization";
-    add_header Access-Control-Max-Age 86400;
-    add_header Content-Length 0;
-    return 204;
+<pre>if ($request_method = OPTIONS) { add_header Access-Control-Allow-Origin "https://app.example.com"; add_header Access-Control-Allow-Methods "POST, GET, PUT, DELETE, OPTIONS"; add_header Access-Control-Allow-Headers "Content-Type, Authorization"; add_header Access-Control-Max-Age 86400; add_header Content-Length 0; return 204;
 }</pre>
 
 <h3>FastAPI</h3>
 <pre># CORSMiddleware handles OPTIONS automatically — no extra config needed
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["https://app.example.com"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+app.add_middleware( CORSMiddleware, allow_origins=["https://app.example.com"], allow_methods=["*"], allow_headers=["*"],
 )</pre>
 
 <h3>Django</h3>
@@ -256,15 +56,9 @@ CORS_ALLOWED_ORIGINS = ['https://app.example.com']
 CORS_ALLOW_CREDENTIALS = True</pre>
 
 <h2>Cache the preflight</h2>
-<p><code>Access-Control-Max-Age: 86400</code> tells the browser to cache the preflight result for 24 hours. Without it, the browser sends OPTIONS before every single request — visible as extra network calls in DevTools.</p>
-
-  <a href="/cors/" class="tool-cta">Send a live OPTIONS preflight to your API →</a>
-  <div class="related">Related: <a href="/glossary/preflight-request/">What is a preflight?</a> <a href="/glossary/cors/">What is CORS?</a> <a href="/error/cors-blocked/">CORS blocked errors</a></div>
+<p><code>Access-Control-Max-Age: 86400</code> tells the browser to cache the preflight result for 24 hours. Without it, the browser sends OPTIONS before every single request — visible as extra network calls in DevTools.</p> <a href="/cors/" class="tool-cta">Send a live OPTIONS preflight to your API →</a> <div class="related">Related: <a href="/glossary/preflight-request/">What is a preflight?</a> <a href="/glossary/cors/">What is CORS?</a> <a href="/error/cors-blocked/">CORS blocked errors</a></div>
 </main>
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a> · <a href="/privacy/">Privacy</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a> · <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>

@@ -1,282 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HttpFixer Blog — CORS, CSP, OAuth, Security Headers Guides</title>
-  <meta name="description" content="Free guides, fix references, and explainers for CORS errors, Content Security Policy, OAuth 2.0, HTTP security headers, and web performance. Exact copy-paste fixes for your stack.">
-  <link rel="canonical" href="https://httpfixer.dev/blog/">
-  <meta name="robots" content="index, follow">
-  <meta property="og:title" content="HttpFixer Blog — CORS, CSP, OAuth, Security Headers">
-  <meta property="og:description" content="Exact copy-paste fixes for CORS errors, CSP violations, OAuth errors, and security header misconfigurations — for your specific stack.">
-  <meta property="og:url" content="https://httpfixer.dev/blog/">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script type="application/ld+json">{
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "name": "HttpFixer Blog",
-    "description": "CORS, CSP, OAuth, and security header fix guides for developers.",
-    "url": "https://httpfixer.dev/blog/",
-    "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev"}
-  }</script>
-  <style>
-    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
-    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
-    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
-    nav .brand span{color:var(--purple)}
-    nav .right{display:flex;gap:1rem;align-items:center}
-    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
-    nav a:hover{color:var(--purple);opacity:1}
-    .hero{max-width:900px;margin:0 auto;padding:3rem 1.5rem 2rem}
-    .hero h1{font-size:2rem;font-weight:600;line-height:1.2;margin-bottom:0.75rem}
-    .hero h1 span{color:var(--purple)}
-    .hero p{opacity:0.7;max-width:560px;line-height:1.8;margin-bottom:2rem}
-    .stats{display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:0;}
-    .stat{display:flex;flex-direction:column}
-    .stat strong{font-size:1.4rem;color:var(--purple)}
-    .stat span{font-size:11px;opacity:0.5;text-transform:uppercase;letter-spacing:0.05em}
-    .grid{max-width:900px;margin:0 auto;padding:0 1.5rem 4rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:1.5rem}
-    .cat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;transition:border-color 0.2s}
-    .cat-card:hover{border-color:var(--purple)}
-    .cat-header{display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.75rem}
-    .cat-icon{font-size:1.4rem;line-height:1;margin-top:2px}
-    .cat-title{display:block;font-size:0.95rem;font-weight:600;color:var(--text);text-decoration:none}
-    .cat-title:hover{color:var(--purple)}
-    .cat-count{display:block;font-size:11px;opacity:0.4;margin-top:0.2rem}
-    .cat-desc{font-size:12px;opacity:0.6;margin-bottom:1rem;line-height:1.7}
-    .article-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--border);padding-top:0.75rem}
-    .article-list li{margin-bottom:0.35rem}
-    .article-list a{color:var(--text);text-decoration:none;font-size:12px;opacity:0.7;display:block;padding:0.2rem 0;transition:color 0.15s,opacity 0.15s}
-    .article-list a:hover{color:var(--purple);opacity:1}
-    .article-list a::before{content:"→ ";color:var(--purple);opacity:0.5}
-    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
-    footer a{color:var(--text);text-decoration:none;opacity:0.6}
-    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
-    @media(max-width:600px){.hero h1{font-size:1.5rem}.grid{grid-template-columns:1fr}.stats{gap:1.5rem}nav .right{display:none}footer{flex-direction:column;text-align:center}}
-  </style>
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="HttpFixer">
-  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@metriclogic">
-  <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>HttpFixer Blog — CORS, CSP, OAuth, Security Headers Guides</title> <meta name="description" content="Free guides, fix references, and explainers for CORS errors, Content Security Policy, OAuth 2.0, HTTP security headers, and web performance. Exact copy-paste fixes for your stack."> <link rel="canonical" href="https://httpfixer.dev/blog/"> <meta name="robots" content="index, follow"> <meta property="og:title" content="HttpFixer Blog — CORS, CSP, OAuth, Security Headers"> <meta property="og:description" content="Exact copy-paste fixes for CORS errors, CSP violations, OAuth errors, and security header misconfigurations — for your specific stack."> <meta property="og:url" content="https://httpfixer.dev/blog/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{ "@context": "https://schema.org", "@type": "CollectionPage", "name": "HttpFixer Blog", "description": "CORS, CSP, OAuth, and security header fix guides for developers.", "url": "https://httpfixer.dev/blog/", "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://"} }</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem;align-items:center} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} .hero{max-width:900px;margin:0 auto;padding:3rem 1.5rem 2rem} .hero h1{font-size:2rem;font-weight:600;line-height:1.2;margin-bottom:0.75rem} .hero h1 span{color:var(--purple)} .hero p{opacity:0.7;max-width:560px;line-height:1.8;margin-bottom:2rem} .stats{display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:0;} .stat{display:flex;flex-direction:column} .stat strong{font-size:1.4rem;color:var(--purple)} .stat span{font-size:11px;opacity:0.5;text-transform:uppercase;letter-spacing:0.05em} .grid{max-width:900px;margin:0 auto;padding:0 1.5rem 4rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:1.5rem} .cat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;transition:border-color 0.2s} .cat-card:hover{border-color:var(--purple)} .cat-header{display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:0.75rem} .cat-icon{font-size:1.4rem;line-height:1;margin-top:2px} .cat-title{display:block;font-size:0.95rem;font-weight:600;color:var(--text);text-decoration:none} .cat-title:hover{color:var(--purple)} .cat-count{display:block;font-size:11px;opacity:0.4;margin-top:0.2rem} .cat-desc{font-size:12px;opacity:0.6;margin-bottom:1rem;line-height:1.7} .article-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--border);padding-top:0.75rem} .article-list li{margin-bottom:0.35rem} .article-list a{color:var(--text);text-decoration:none;font-size:12px;opacity:0.7;display:block;padding:0.2rem 0;transition:color 0.15s,opacity 0.15s} .article-list a:hover{color:var(--purple);opacity:1} .article-list a::before{content:"→ ";color:var(--purple);opacity:0.5} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){.hero h1{font-size:1.5rem}.grid{grid-template-columns:1fr}.stats{gap:1.5rem}nav .right{display:none}footer{flex-direction:column;text-align:center}} </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
 </head>
 <body>
-<nav>
-  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
-  <div class="right">
-    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
-    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/speedfixer/">Speed</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
-  </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/speedfixer/">Speed</a><a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
 </nav>
 
-<div class="hero">
-  <h1>Fix it. <span>Don't just read about it.</span></h1>
-  <p>Exact copy-paste fixes for CORS errors, CSP violations, OAuth failures, and security header misconfigurations — for your specific stack. No generic advice.</p>
-  <div class="stats">
-    <div class="stat"><strong>61</strong><span>Articles</span></div>
-    <div class="stat"><strong>10</strong><span>Topics</span></div>
-    <div class="stat"><strong>6</strong><span>Live Tools</span></div>
-    <div class="stat"><strong>0</strong><span>Paywalls</span></div>
-  </div>
+<div class="hero"> <h1>Fix it. <span>Don't just read about it.</span></h1> <p>Exact copy-paste fixes for CORS errors, CSP violations, OAuth failures, and security header misconfigurations — for your specific stack. No generic advice.</p> <div class="stats"> <div class="stat"><strong>61</strong><span>Articles</span></div> <div class="stat"><strong>10</strong><span>Topics</span></div> <div class="stat"><strong>6</strong><span>Live Tools</span></div> <div class="stat"><strong>0</strong><span>Paywalls</span></div> </div>
 </div>
 
-<div class="grid">
-  
-<div class="cat-card">
-  <div class="cat-header">
-    <span class="cat-icon">⚡</span>
-    <div>
-      <a href="/blog/cors/" class="cat-title">CORS Fix Guides</a>
-      <span class="cat-count">8 articles</span>
-    </div>
-  </div>
-  <p class="cat-desc">Fix cross-origin request errors in Express, FastAPI, Nginx, Next.js, Vercel, Spring Boot, and more.</p>
-  <ul class="article-list">
-    <li><a href="/blog/cors/fix-cors-express/">Fix CORS Error in Express.js</a></li>
+<div class="grid"> <div class="cat-card"> <div class="cat-header"> <span class="cat-icon">⚡</span> <div> <a href="/blog/cors/" class="cat-title">CORS Fix Guides</a> <span class="cat-count">8 articles</span> </div> </div> <p class="cat-desc">Fix cross-origin request errors in Express, FastAPI, Nginx, Next.js, Vercel, Spring Boot, and more.</p> <ul class="article-list"> <li><a href="/blog/cors/fix-cors-express/">Fix CORS Error in Express.js</a></li>
 <li><a href="/blog/cors/fix-cors-fastapi/">Fix CORS Error in FastAPI</a></li>
 <li><a href="/blog/cors/fix-cors-nginx/">Fix CORS Error in Nginx</a></li>
 <li><a href="/blog/cors/fix-cors-nextjs/">Fix CORS Error in Next.js</a></li>
 <li><a href="/blog/cors/fix-cors-preflight-options/">CORS Preflight Failing — OPTIONS Returns 404 or 403</a></li>
 <li><a href="/blog/cors/fix-cors-credentials/">CORS Error With credentials: include</a></li>
 <li><a href="/blog/cors/fix-cors-vercel/">Fix CORS on Vercel Serverless Functions</a></li>
-<li><a href="/blog/cors/fix-cors-spring-boot/">Fix CORS Error in Spring Boot</a></li>
-
-  </ul>
+<li><a href="/blog/cors/fix-cors-spring-boot/">Fix CORS Error in Spring Boot</a></li> </ul>
 </div>
-<div class="cat-card">
-  <div class="cat-header">
-    <span class="cat-icon">🛡</span>
-    <div>
-      <a href="/blog/csp/" class="cat-title">CSP Fix Guides</a>
-      <span class="cat-count">6 articles</span>
-    </div>
-  </div>
-  <p class="cat-desc">Fix Content Security Policy violations. Generate working CSP headers without breaking your site.</p>
-  <ul class="article-list">
-    <li><a href="/blog/csp/fix-csp-nextjs/">Fix CSP Header in Next.js — Nonce-Based Approach</a></li>
+<div class="cat-card"> <div class="cat-header"> <span class="cat-icon">🛡</span> <div> <a href="/blog/csp/" class="cat-title">CSP Fix Guides</a> <span class="cat-count">6 articles</span> </div> </div> <p class="cat-desc">Fix Content Security Policy violations. Generate working CSP headers without breaking your site.</p> <ul class="article-list"> <li><a href="/blog/csp/fix-csp-nextjs/">Fix CSP Header in Next.js — Nonce-Based Approach</a></li>
 <li><a href="/blog/csp/csp-generator-vercel/">Content Security Policy for Vercel</a></li>
 <li><a href="/blog/csp/fix-csp-refused-to-load/">Fix Refused to Load Script CSP Error</a></li>
 <li><a href="/blog/csp/csp-google-analytics-hotjar/">CSP for Google Analytics, Hotjar and Third-Party Scripts</a></li>
 <li><a href="/blog/csp/csp-unsafe-inline-nonce-hash/">CSP unsafe-inline vs Nonce vs Hash</a></li>
-<li><a href="/blog/csp/csp-wordpress/">Content Security Policy for WordPress</a></li>
-
-  </ul>
+<li><a href="/blog/csp/csp-wordpress/">Content Security Policy for WordPress</a></li> </ul>
 </div>
-<div class="cat-card">
-  <div class="cat-header">
-    <span class="cat-icon">🔑</span>
-    <div>
-      <a href="/blog/oauth/" class="cat-title">OAuth Fix Guides</a>
-      <span class="cat-count">5 articles</span>
-    </div>
-  </div>
-  <p class="cat-desc">Debug OAuth 2.0 errors — invalid_grant, redirect_uri_mismatch, PKCE failures, and refresh token issues.</p>
-  <ul class="article-list">
-    <li><a href="/blog/oauth/fix-invalid-grant/">Fix OAuth invalid_grant Error</a></li>
+<div class="cat-card"> <div class="cat-header"> <span class="cat-icon">🔑</span> <div> <a href="/blog/oauth/" class="cat-title">OAuth Fix Guides</a> <span class="cat-count">5 articles</span> </div> </div> <p class="cat-desc">Debug OAuth 2.0 errors — invalid_grant, redirect_uri_mismatch, PKCE failures, and refresh token issues.</p> <ul class="article-list"> <li><a href="/blog/oauth/fix-invalid-grant/">Fix OAuth invalid_grant Error</a></li>
 <li><a href="/blog/oauth/fix-redirect-uri-mismatch/">Fix OAuth Redirect URI Mismatch</a></li>
 <li><a href="/blog/oauth/fix-refresh-token-expired/">OAuth Refresh Token Expired — How to Handle It</a></li>
 <li><a href="/blog/oauth/fix-google-oauth-invalid-grant/">Fix Google OAuth invalid_grant — Clock Skew</a></li>
-<li><a href="/blog/oauth/fix-pkce-errors/">OAuth PKCE Flow Errors — Fix code_challenge</a></li>
-
-  </ul>
+<li><a href="/blog/oauth/fix-pkce-errors/">OAuth PKCE Flow Errors — Fix code_challenge</a></li> </ul>
 </div>
-<div class="cat-card">
-  <div class="cat-header">
-    <span class="cat-icon">🔒</span>
-    <div>
-      <a href="/blog/headers/" class="cat-title">Security Headers</a>
-      <span class="cat-count">3 articles</span>
-    </div>
-  </div>
-  <p class="cat-desc">Add and fix HTTP security headers — HSTS, X-Frame-Options, CSP, Referrer-Policy, and more.</p>
-  <ul class="article-list">
-    <li><a href="/blog/headers/security-headers-checklist/">HTTP Security Headers Checklist</a></li>
+<div class="cat-card"> <div class="cat-header"> <span class="cat-icon">🔒</span> <div> <a href="/blog/headers/" class="cat-title">Security Headers</a> <span class="cat-count">3 articles</span> </div> </div> <p class="cat-desc">Add and fix HTTP security headers — HSTS, X-Frame-Options, CSP, Referrer-Policy, and more.</p> <ul class="article-list"> <li><a href="/blog/headers/security-headers-checklist/">HTTP Security Headers Checklist</a></li>
 <li><a href="/blog/headers/fix-x-frame-options/">Fix Missing X-Frame-Options — Clickjacking Protection</a></li>
-<li><a href="/blog/headers/fix-hsts/">HSTS Not Working — Fix Strict Transport Security</a></li>
-
-  </ul>
+<li><a href="/blog/headers/fix-hsts/">HSTS Not Working — Fix Strict Transport Security</a></li> </ul>
 </div>
-<div class="cat-card">
-  <div class="cat-header">
-    <span class="cat-icon">⚡</span>
-    <div>
-      <a href="/blog/performance/" class="cat-title">Performance Guides</a>
-      <span class="cat-count">3 articles</span>
-    </div>
-  </div>
-  <p class="cat-desc">Fix slow TTFB, misconfigured cache headers, mixed content, and PageSpeed issues.</p>
-  <ul class="article-list">
-    <li><a href="/blog/performance/fix-ttfb-vercel/">Fix Slow TTFB on Vercel — Edge vs Serverless</a></li>
+<div class="cat-card"> <div class="cat-header"> <span class="cat-icon">⚡</span> <div> <a href="/blog/performance/" class="cat-title">Performance Guides</a> <span class="cat-count">3 articles</span> </div> </div> <p class="cat-desc">Fix slow TTFB, misconfigured cache headers, mixed content, and PageSpeed issues.</p> <ul class="article-list"> <li><a href="/blog/performance/fix-ttfb-vercel/">Fix Slow TTFB on Vercel — Edge vs Serverless</a></li>
 <li><a href="/blog/performance/fix-cache-control-cdn/">Fix Cache-Control Headers — Why Your CDN Isn't Caching</a></li>
-<li><a href="/blog/performance/fix-mixed-content/">Fix Mixed Content Warnings on HTTPS Sites</a></li>
-
-  </ul>
+<li><a href="/blog/performance/fix-mixed-content/">Fix Mixed Content Warnings on HTTPS Sites</a></li> </ul>
 </div>
-<div class="cat-card">
-  <div class="cat-header">
-    <span class="cat-icon">📖</span>
-    <div>
-      <a href="/blog/explainers/" class="cat-title">Explainers</a>
-      <span class="cat-count">8 articles</span>
-    </div>
-  </div>
-  <p class="cat-desc">Plain-English explanations of CORS, CSP, OAuth, HSTS, preflight requests, and browser security.</p>
-  <ul class="article-list">
-    <li><a href="/blog/explainers/what-is-cors/">What is CORS?</a></li>
+<div class="cat-card"> <div class="cat-header"> <span class="cat-icon">📖</span> <div> <a href="/blog/explainers/" class="cat-title">Explainers</a> <span class="cat-count">8 articles</span> </div> </div> <p class="cat-desc">Plain-English explanations of CORS, CSP, OAuth, HSTS, preflight requests, and browser security.</p> <ul class="article-list"> <li><a href="/blog/explainers/what-is-cors/">What is CORS?</a></li>
 <li><a href="/blog/explainers/what-is-csp/">What is a Content Security Policy?</a></li>
 <li><a href="/blog/explainers/what-is-oauth/">What is OAuth 2.0?</a></li>
 <li><a href="/blog/explainers/what-is-preflight/">What is a Preflight Request?</a></li>
 <li><a href="/blog/explainers/what-are-security-headers/">What Are HTTP Security Headers?</a></li>
 <li><a href="/blog/explainers/what-is-hsts/">What is HSTS?</a></li>
 <li><a href="/blog/explainers/what-is-clickjacking/">What is Clickjacking?</a></li>
-<li><a href="/blog/explainers/what-is-https/">What is HTTPS and Why HTTP Isn't Enough</a></li>
-
-  </ul>
+<li><a href="/blog/explainers/what-is-https/">What is HTTPS and Why HTTP Isn't Enough</a></li> </ul>
 </div>
-<div class="cat-card">
-  <div class="cat-header">
-    <span class="cat-icon">⚖️</span>
-    <div>
-      <a href="/blog/compare/" class="cat-title">Comparisons</a>
-      <span class="cat-count">5 articles</span>
-    </div>
-  </div>
-  <p class="cat-desc">Side-by-side comparisons of security concepts — CORS vs CSRF, nonce vs hash, OAuth vs OIDC.</p>
-  <ul class="article-list">
-    <li><a href="/blog/compare/cors-vs-csrf/">CORS vs CSRF — What is the Difference?</a></li>
+<div class="cat-card"> <div class="cat-header"> <span class="cat-icon">⚖️</span> <div> <a href="/blog/compare/" class="cat-title">Comparisons</a> <span class="cat-count">5 articles</span> </div> </div> <p class="cat-desc">Side-by-side comparisons of security concepts — CORS vs CSRF, nonce vs hash, OAuth vs OIDC.</p> <ul class="article-list"> <li><a href="/blog/compare/cors-vs-csrf/">CORS vs CSRF — What is the Difference?</a></li>
 <li><a href="/blog/compare/csp-nonce-vs-hash/">CSP Nonce vs Hash vs unsafe-inline</a></li>
 <li><a href="/blog/compare/oauth-vs-oidc/">OAuth 2.0 vs OpenID Connect</a></li>
 <li><a href="/blog/compare/authorization-code-vs-client-credentials/">Authorization Code vs Client Credentials</a></li>
-<li><a href="/blog/compare/x-frame-options-vs-csp-frame-ancestors/">X-Frame-Options vs CSP frame-ancestors</a></li>
-
-  </ul>
+<li><a href="/blog/compare/x-frame-options-vs-csp-frame-ancestors/">X-Frame-Options vs CSP frame-ancestors</a></li> </ul>
 </div>
-<div class="cat-card">
-  <div class="cat-header">
-    <span class="cat-icon">📋</span>
-    <div>
-      <a href="/blog/reference/" class="cat-title">Reference</a>
-      <span class="cat-count">4 articles</span>
-    </div>
-  </div>
-  <p class="cat-desc">Quick-reference tables for security headers, CORS headers, OAuth error codes, and CSP directives.</p>
-  <ul class="article-list">
-    <li><a href="/blog/reference/http-security-headers-reference/">Complete HTTP Security Headers Reference</a></li>
+<div class="cat-card"> <div class="cat-header"> <span class="cat-icon">📋</span> <div> <a href="/blog/reference/" class="cat-title">Reference</a> <span class="cat-count">4 articles</span> </div> </div> <p class="cat-desc">Quick-reference tables for security headers, CORS headers, OAuth error codes, and CSP directives.</p> <ul class="article-list"> <li><a href="/blog/reference/http-security-headers-reference/">Complete HTTP Security Headers Reference</a></li>
 <li><a href="/blog/reference/cors-headers-cheat-sheet/">CORS Headers Cheat Sheet</a></li>
 <li><a href="/blog/reference/oauth-error-codes-reference/">OAuth 2.0 Error Codes Reference</a></li>
-<li><a href="/blog/reference/csp-third-party-services/">CSP Directives for Popular Third-Party Services</a></li>
-
-  </ul>
+<li><a href="/blog/reference/csp-third-party-services/">CSP Directives for Popular Third-Party Services</a></li> </ul>
 </div>
-<div class="cat-card">
-  <div class="cat-header">
-    <span class="cat-icon">☁️</span>
-    <div>
-      <a href="/blog/platform/" class="cat-title">Platform Guides</a>
-      <span class="cat-count">5 articles</span>
-    </div>
-  </div>
-  <p class="cat-desc">Stack-specific guides for AWS Lambda, Cloudflare Workers, Netlify, Docker, SPAs, and more.</p>
-  <ul class="article-list">
-    <li><a href="/blog/platform/cors-aws-lambda/">CORS on AWS Lambda — API Gateway</a></li>
+<div class="cat-card"> <div class="cat-header"> <span class="cat-icon">☁️</span> <div> <a href="/blog/platform/" class="cat-title">Platform Guides</a> <span class="cat-count">5 articles</span> </div> </div> <p class="cat-desc">Stack-specific guides for AWS Lambda, Cloudflare Workers, Netlify, Docker, SPAs, and more.</p> <ul class="article-list"> <li><a href="/blog/platform/cors-aws-lambda/">CORS on AWS Lambda — API Gateway</a></li>
 <li><a href="/blog/platform/cors-cloudflare-workers/">CORS on Cloudflare Workers</a></li>
 <li><a href="/blog/platform/security-headers-netlify/">Security Headers for Netlify</a></li>
 <li><a href="/blog/platform/csp-single-page-apps/">CSP for Single Page Apps — React, Vue, Angular</a></li>
-<li><a href="/blog/platform/cors-docker/">CORS in Docker — localhost vs Container</a></li>
-
-  </ul>
+<li><a href="/blog/platform/cors-docker/">CORS in Docker — localhost vs Container</a></li> </ul>
 </div>
-<div class="cat-card">
-  <div class="cat-header">
-    <span class="cat-icon">🔴</span>
-    <div>
-      <a href="/blog/errors/" class="cat-title">Error Pages</a>
-      <span class="cat-count">6 articles</span>
-    </div>
-  </div>
-  <p class="cat-desc">Exact fixes for specific browser console errors — copy the error, find the fix.</p>
-  <ul class="article-list">
-    <li><a href="/blog/errors/no-access-control-allow-origin/">No Access-Control-Allow-Origin header is present</a></li>
+<div class="cat-card"> <div class="cat-header"> <span class="cat-icon">🔴</span> <div> <a href="/blog/errors/" class="cat-title">Error Pages</a> <span class="cat-count">6 articles</span> </div> </div> <p class="cat-desc">Exact fixes for specific browser console errors — copy the error, find the fix.</p> <ul class="article-list"> <li><a href="/blog/errors/no-access-control-allow-origin/">No Access-Control-Allow-Origin header is present</a></li>
 <li><a href="/blog/errors/request-header-not-allowed/">Request header field not allowed by Access-Control-Allow-Headers</a></li>
 <li><a href="/blog/errors/refused-to-load-script-csp/">Refused to load the script — CSP violation</a></li>
 <li><a href="/blog/errors/preflight-failed/">Response to preflight request doesn't pass access control check</a></li>
 <li><a href="/blog/errors/pkce-required/">PKCE verification failed</a></li>
-<li><a href="/blog/errors/invalid-grant-error/">OAuth invalid_grant error</a></li>
-
-  </ul>
+<li><a href="/blog/errors/invalid-grant-error/">OAuth invalid_grant error</a></li> </ul>
 </div>
 </div>
 
-<footer>
-  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span>
-  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a></span>
-  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<footer> <span>HttpFixer by  · <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>
