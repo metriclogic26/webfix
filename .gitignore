@@ -5,3 +5,4 @@ generate_glossary.py
 # Content generation scripts — private
 *.py
 generate_*.py
+generators/security-headers/.DS_Store
