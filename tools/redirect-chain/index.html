@@ -428,15 +428,26 @@ function parseCurl() {
   });
   if (current.status) hops.push(current);
 
-  // Detect loop
+  // Detect loop — check if any location points to a previously seen URL
   var visited = {};
   var isLoop = false;
   var allStacks = {};
   hops.forEach(function(h) {
     detectStack(h.headers).forEach(function(s) { allStacks[s] = true; });
     if (h.url && h.url !== '?') {
-      if (visited[h.url]) isLoop = true;
       visited[h.url] = true;
+    }
+  });
+  // Check if any hop's location points back to a visited URL
+  hops.forEach(function(h) {
+    if (h.location && visited[h.location]) isLoop = true;
+  });
+  // Also check if same URL appears more than once as a hop destination
+  var destCount = {};
+  hops.forEach(function(h) {
+    if (h.location) {
+      destCount[h.location] = (destCount[h.location] || 0) + 1;
+      if (destCount[h.location] > 1) isLoop = true;
     }
   });
 
