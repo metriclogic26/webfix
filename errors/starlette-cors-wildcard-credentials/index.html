@@ -5,7 +5,16 @@
 <body>
 <nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/" style="color:var(--purple);opacity:1">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
 </nav>
-<main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/errors/">Errors</a> &rarr; Starlette CORS wildcard credentials</div> <div class="date">Updated April 2026</div> <h1>Starlette CORSMiddleware: allow_origins=['*'] Not Allowed with allow_credentials=True</h1> <div class="error-msg">ValueError: allow_origins=['*'] is not allowed when allow_credentials=True.
+<main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/errors/">Errors</a> &rarr; Starlette CORS wildcard credentials</div> <div class="date">Updated April 2026</div> <h1>Starlette CORSMiddleware: allow_origins=['*'] Not Allowed with allow_credentials=True</h1> <div class="error-msg" style="margin-bottom:1.5rem">
+<strong style="display:block;margin-bottom:0.5rem;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;opacity:0.7">All error variants — same fix</strong>
+<code>ValueError: allow_origins=['*'] is not allowed when allow_credentials=True.</code><br><br>
+<code>ValueError: allow_origins=["*"] is not allowed when allow_credentials=True</code><br><br>
+<code>allow_origins wildcard is not allowed when allow_credentials is set to True</code><br><br>
+<code>CORSMiddleware: allow_credentials=True requires explicit allow_origins</code><br><br>
+<span style="opacity:0.6;font-size:12px">FastAPI and Starlette both raise this. FastAPI uses Starlette's CORSMiddleware under the hood.</span>
+</div>
+
+<div class="error-msg">ValueError: allow_origins=['*'] is not allowed when allow_credentials=True.
 Starlette's CORSMiddleware will not allow combining allow_origins=['*'] with allow_credentials=True.</div> <div class="quick-fix"> <p><strong>The fix:</strong> Replace <code>allow_origins=['*']</code> with an explicit list of your allowed origins.</p> </div> <h2>Why this error happens</h2> <p>Browsers reject <code>Access-Control-Allow-Origin: *</code> when the request includes credentials — cookies, Authorization headers, or TLS client certificates. The wildcard and credentials combination is forbidden by the CORS spec.</p> <p>Starlette enforces this at the middleware level. It raises a <code>ValueError</code> on startup rather than sending an invalid response that browsers would silently reject.</p> <h2>The fix — FastAPI / Starlette</h2> <pre># Wrong — raises ValueError on startup
 app.add_middleware( CORSMiddleware, allow_origins=["*"], allow_credentials=True,  # ← conflict allow_methods=["*"], allow_headers=["*"],
 )

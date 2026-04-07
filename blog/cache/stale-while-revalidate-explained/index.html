@@ -46,6 +46,40 @@ proxy_cache_background_update on;</pre>
 <h2>Browser support</h2>
 <p>All modern browsers support <code>stale-while-revalidate</code> since Chrome 75 (2019) and Firefox 68 (2019). Safari added support in 2022. Browsers that do not recognise the directive silently ignore it and use <code>max-age</code> alone.</p>
 
+
+<h2>Safari support for stale-while-revalidate</h2>
+<p>Safari was the last major browser to add support. Safari 15.4 (March 2022) added full support. Before that, Safari silently ignored the directive and fell back to <code>max-age</code> alone — no errors, no broken pages. Safe to use for all browsers today.</p>
+<pre>/* Safe for all browsers including Safari &lt; 15.4 */
+Cache-Control: public, max-age=60, stale-while-revalidate=300
+
+/* Safari &lt; 15.4: ignores stale-while-revalidate, uses max-age only.
+   More revalidations, zero broken pages. */
+</pre>
+
+<h3>Browser support</h3>
+<table>
+  <thead><tr><th>Browser</th><th>Version</th><th>Date</th></tr></thead>
+  <tbody>
+    <tr><td>Chrome</td><td>75+</td><td>June 2019</td></tr>
+    <tr><td>Firefox</td><td>68+</td><td>July 2019</td></tr>
+    <tr><td>Safari</td><td>15.4+</td><td>March 2022 (iOS 15.4 / macOS Monterey)</td></tr>
+    <tr><td>Edge</td><td>79+</td><td>January 2020</td></tr>
+    <tr><td>Samsung Internet</td><td>12.0+</td><td>2020</td></tr>
+  </tbody>
+</table>
+
+<h3>CDN support</h3>
+<table>
+  <thead><tr><th>CDN</th><th>Support</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td>Cloudflare</td><td>Full</td><td>Asynchronous background revalidation at the edge</td></tr>
+    <tr><td>Vercel</td><td>Full</td><td>Honoured at CDN layer automatically</td></tr>
+    <tr><td>Fastly</td><td>Full</td><td>Use surrogate-control for finer control</td></tr>
+    <tr><td>Netlify</td><td>Full</td><td>Honoured at CDN layer</td></tr>
+    <tr><td>AWS CloudFront</td><td>Partial</td><td>Passes header through but no edge background refresh</td></tr>
+  </tbody>
+</table>
+
 <h2>When not to use it</h2>
 
 <h2>Does Safari support stale-while-revalidate?</h2>

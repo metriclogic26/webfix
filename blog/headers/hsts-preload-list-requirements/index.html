@@ -56,6 +56,60 @@ server { listen 80; return 301 https://$host$request_uri;  # Redirect HTTP to HT
 <div class="note"> <strong>Removal is slow:</strong> Once on the preload list, removal takes 6–12 months. Be certain all subdomains will support HTTPS permanently before submitting.
 </div>
 
+
+<h2>How to check if your domain is on the preload list</h2>
+<pre># Check status via hstspreload.org API
+curl "https://hstspreload.org/api/v2/status?domain=yourdomain.com"
+
+# Responses:
+# {"status": "preloaded"}   already on the list
+# {"status": "pending"}     submitted, waiting for Chrome release
+# {"status": "unknown"}     not submitted
+# {"status": "rejected", "message": "reason..."}
+</pre>
+
+<table>
+  <thead><tr><th>Status</th><th>Meaning</th><th>Action</th></tr></thead>
+  <tbody>
+    <tr><td><code>unknown</code></td><td>Not submitted</td><td>Fix all 5 requirements, then submit at hstspreload.org</td></tr>
+    <tr><td><code>pending</code></td><td>Queued</td><td>Wait 1-3 months for Chrome release cycle</td></tr>
+    <tr><td><code>preloaded</code></td><td>Active</td><td>No action needed</td></tr>
+    <tr><td><code>rejected</code></td><td>Failed a requirement</td><td>Fix the issue shown in the message field</td></tr>
+  </tbody>
+</table>
+
+<h2>Add the HSTS header — per stack</h2>
+
+<h3>Nginx</h3>
+<pre>add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;</pre>
+
+<h3>Cloudflare</h3>
+<pre># Dashboard &rarr; SSL/TLS &rarr; Edge Certificates &rarr; HSTS
+# Max Age: 12 months | Include Subdomains: ON | Preload: ON
+# Cloudflare sets the header automatically</pre>
+
+<h3>Vercel</h3>
+<pre>// vercel.json
+{ "headers": [{ "source": "/(.*)", "headers": [
+  { "key": "Strict-Transport-Security",
+    "value": "max-age=31536000; includeSubDomains; preload" }
+]}]}</pre>
+
+<h3>Apache</h3>
+<pre>Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"</pre>
+
+<h3>Netlify</h3>
+<pre>[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"</pre>
+
+<h2>How long does preloading take?</h2>
+<p>Chrome ships preload list updates roughly every 6-8 weeks. Expect 1-3 months from submission to active in Chrome. During the pending period, HSTS still works for returning visitors — the preload list only matters for first-time visitors who have never loaded your site.</p>
+
+<h2>Removal warning</h2>
+<p>Removal from the preload list takes 6-12 months to fully propagate. Before submitting, confirm that every subdomain serves valid HTTPS. If any subdomain is HTTP-only, <code>includeSubDomains; preload</code> will break it for Chrome users and cannot be quickly undone.</p>
+
 <div class="related">Related: <a href="/tools/hsts-preload/">HSTS Preload Checker</a> &nbsp;<a href="/blog/headers/how-to-check-hsts-preload-status/">How to check HSTS preload status</a> &nbsp;<a href="/blog/headers/fix-hsts/">Fix HSTS configuration</a> &nbsp;<a href="/glossary/hsts/">HSTS glossary</a></div>
 </main>
 <footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
