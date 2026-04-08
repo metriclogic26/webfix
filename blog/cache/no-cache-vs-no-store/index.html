@@ -61,6 +61,20 @@ Cache-Control: no-cache</pre>
 </div>
 
 <a href="/tools/cache-simulator/" class="tool-cta">Visualise Cache-Control behaviour → Cache-Control Simulator</a>
+
+<h2>The immutable directive</h2>
+<p><code>immutable</code> is a related directive that tells browsers not to revalidate on page refresh. Without it, pressing refresh sends a conditional request to the server even if <code>max-age</code> hasn't expired. With it, the browser skips the revalidation entirely during the max-age window.</p>
+<pre>Cache-Control: public, max-age=31536000, immutable
+
+# Browser behaviour without immutable:
+# User presses refresh → browser sends If-None-Match request → server returns 304
+# (wasted round trip even though cache is fresh)
+
+# Browser behaviour with immutable:
+# User presses refresh → browser serves from cache, no request sent
+# Only safe with hashed filenames — if the file changes, the URL must change</pre>
+<p>Use <code>immutable</code> only with fingerprinted filenames (e.g. <code>app.a3f9d2c.js</code>). Never de>no-cache</code> or <code>no-store</code> — it has no effect when combined with those directives.</p>
+
 <div class="related">Related: <a href="/blog/cache/cache-control-cheatsheet/">Cache-Control cheatsheet</a> &nbsp;<a href="/edge/">Audit live cache headers → EdgeFix</a> &nbsp;<a href="/generators/cache-control/">Cache-Control Generator</a></div>
 </main>
 <footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
