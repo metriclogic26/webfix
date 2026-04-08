@@ -47,7 +47,50 @@ Cross-Origin-Embedder-Policy: credentialless
 
 <h2>What to watch in 2026</h2>
 <ul> <li><strong>Fetch Metadata headers</strong> (<code>Sec-Fetch-*</code>) — browsers send these automatically, servers can use them for CSRF protection</li> <li><strong>Origin-Agent-Cluster</strong> — keyed origin isolation, improving on the COOP/COEP model</li> <li><strong>CSP Trusted Types</strong> — Firefox implementation progressing but still incomplete</li> <li><strong>Private Network Access</strong> — Chrome enforcing stricter controls on requests to private network addresses from public pages</li>
-</ul> <a href="/" class="tool-cta">Verify your config → HttpFixer Tools</a> <div class="related">Related: <a href="/blog/">Blog</a> <a href="/glossary/">Glossary</a></div>
+</ul> <a href="/" class="tool-cta">Verify your config → HttpFixer Tools</a> 
+<h2>Recommended security headers for 2026</h2>
+<p>Based on current browser support and OWASP guidelines, these are the headers every site should set in 2026:</p>
+<pre>Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Content-Security-Policy: default-src 'self'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Resource-Policy: same-origin</pre>
+
+<h2>Headers deprecated or changed in 2025-2026</h2>
+<table>
+  <thead><tr><th>Header</th><th>Status</th><th>Replacement</th></tr></thead>
+  <tbody>
+    <tr><td>X-XSS-Protection</td><td>Deprecated</td><td>CSP script-src — modern browsersemoved the XSS auditor</td></tr>
+    <tr><td>Expect-CT</td><td>Deprecated June 2021, removed 2023</td><td>Certificate Transparency is now enforced by browsers automatically</td></tr>
+    <tr><td>Feature-Policy</td><td>Renamed</td><td>Permissions-Policy — same functionality, new name</td></tr>
+    <tr><td>Public-Key-Pins (HPKP)</td><td>Removed</td><td>Never use — caused permanent site lockouts, removed from all browsers</td></tr>
+  </tbody>
+</table>
+
+<h2>Browser enforcement changes in 2025-2026</h2>
+<ul>
+  <li><strong>Chrome 120+</strong> — Partitioned cookies (CHIPS) now default. Third-party cookies in iframes require <code>Partitioned</code> attribute.</li>
+  <li><strong>Safari 17+</strong> — Stricter SameSite=None enforcement. Cookies without Secure flag rejected.</li>
+  <li><strong>Firefox 120+</strong> — Total Cookie Protection enabled by default. Cross-site cookies isolated per site.</li>
+  <li><strong>All browsers</strong> — <code>stale-while-revalidate</code> now universally supported (Saas the last holdout).</li>
+  <li><strong>Chrome 117+</strong> — Private Network Access headers required for requests from public to private networks.</li>
+</ul>
+
+<h2>New headers worth implementing in 2026</h2>
+<table>
+  <thead><tr><th>Header</th><th>What it does</th><th>Browser support</th></tr></thead>
+  <tbody>
+    <tr><td><code>Cross-Origin-Opener-Policy</code></td><td>Prevents cross-origin tab-napping via window.opener</td><td>Chrome 83+, Firefox 79+, Safari 15.2+</td></tr>
+    <tr><td><code>Cross-Origin-Resource-Policy</code></td><td>Prevents cross-origin reads of your resources</td><td>Chrome 73+, Firefox 74+, Safari 12+</td></tr>
+    <tr><td><code>Cross-Origin-Embedder-Policy</code></td><td>Required for SharedArrayBuffer and high-res timers</td><td>Chrome 83+, Firefox 79+, Safari 15.2+</td></tr>
+    <tr><td><code>Origin-Agent-Cluster</code></td><td>Requests process isolation from same-origin pages</td><td>Chrome 88+, Firefox 100+</td></tr>
+  </tbody>
+</table>
+
+<div class="related">Related: <a href="/blog/">Blog</a> <a href="/glossary/">Glossary</a></div>
 </main>
 <footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a> · <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
