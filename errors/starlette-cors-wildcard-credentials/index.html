@@ -31,7 +31,35 @@ origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
 
 app.add_middleware( CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], allow_headers=["Content-Type", "Authorization"],
 )</pre> <p>Set in your environment:</p> <pre>ALLOWED_ORIGINS=https://app.example.com,https://staging.example.com</pre> <h2>If you don't need credentials</h2> <p>If your API doesn't use cookies or Authorization headers, you can keep the wildcard and remove <code>allow_credentials</code>:</p> <pre>app.add_middleware( CORSMiddleware, allow_origins=["*"], # Fine without credentials allow_credentials=False, # Default — can omit entirely allow_methods=["*"], allow_headers=["*"],
-)</pre> <h2>Testing your fix</h2> <p>After updating, paste your API URL into CORSFixer to send a real OPTIONS preflight and confirm the CORS headers are correct:</p> <a href="/cors/" class="tool-cta">Test your FastAPI CORS config live — CORSFixer &rarr;</a> <div class="related">Related: <a href="/blog/cors/fix-cors-fastapi/">Fix CORS on FastAPI — full guide</a> <a href="/errors/blocked-by-cors-policy/">Blocked by CORS policy</a> <a href="/glossary/cors/">CORS glossary</a> <a href="/generators/cors/">CORS Generator</a> </div>
+)</pre> <h2>Testing your fix</h2> <p>After updating, paste your API URL into CORSFixer to send a real OPTIONS preflight and confirm the CORS headers are correct:</p> <a href="/cors/" class="tool-cta">Test your FastAPI CORS config live — CORSFixer &rarr;</a> 
+<h2>Localhost and Vite dev server (port 5173)</h2>
+<p>A common variant during local development — Vite runs on <code>localhost:5173</code> by default. The fix is the same: replace the wildcard with an explicit origin list that includes your dev and production origins.</p>
+<pre>app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",    # Vite dev server
+        "http://localhost:3000",    # React dev server
+        "https://app.example.com",  # Production
+    ],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
+)
+
+# Or read from environment to avoid hardcoding:
+import os
+origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ogins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
+)</pre>
+<p>In production, set <code>ALLOWED_ORIGINS=https://app.example.com</code> in your environment variables. In development, set <code>ALLOWED_ORIGINS=http://localhost:5173</code>.</p>
+
+<div class="related">Related: <a href="/blog/cors/fix-cors-fastapi/">Fix CORS on FastAPI — full guide</a> <a href="/errors/blocked-by-cors-policy/">Blocked by CORS policy</a> <a href="/glossary/cors/">CORS glossary</a> <a href="/generators/cors/">CORS Generator</a> </div>
 </main>
 <footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
