@@ -59,6 +59,26 @@ app.add_middleware(
 )</pre>
 <p>In production, set <code>ALLOWED_ORIGINS=https://app.example.com</code> in your environment variables. In development, set <code>ALLOWED_ORIGINS=http://localhost:5173</code>.</p>
 
+
+<h2>What happens with allow_origins=[]</h2>
+<p>Passing an empty list blocks all cross-origin requests — no origin is allowed. This is different from the wildcard error but equally broken in most cases.</p>
+<pre># allow_origins=[] blocks ALL cross-origin requests
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[],  # No origins allowed — all CORS requests blocked
+    allow_credentials=True,
+)
+
+# Fix: add at least one origin
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://app.example.com"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
+)</pre>
+<p>If you see CORS errors after setting up the middleware, check that <code>allow_origins</code> is not an empty list and that the origin exactly matches what the browser sendsncluding the protocol (<code>https://</code>) and no trailing slash.</p>
+
 <div class="related">Related: <a href="/blog/cors/fix-cors-fastapi/">Fix CORS on FastAPI — full guide</a> <a href="/errors/blocked-by-cors-policy/">Blocked by CORS policy</a> <a href="/glossary/cors/">CORS glossary</a> <a href="/generators/cors/">CORS Generator</a> </div>
 </main>
 <footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
