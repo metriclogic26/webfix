@@ -1,30 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>SameSite Cookie Attribute — HttpFixer Glossary</title> <meta name="description" content="SameSite controls when cookies are sent with cross-site requests. Strict, Lax, or None — affects CSRF protection and cross-origin authentication. Explained with examples and correct values."> <link rel="canonical" href="https://httpfixer.dev/glossary/samesite-cookie/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="SameSite Cookie Attribute — HttpFixer Glossary"> <meta property="og:description" content="SameSite controls when cookies are sent with cross-site requests. Strict, Lax, or None — affects CSRF protection and cross-origin authentication. Explained with examples and correct values."> <meta property="og:url" content="https://httpfixer.dev/glossary/samesite-cookie/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"SameSite Cookie Attribute","description":"SameSite controls when cookies are sent with cross-site requests. Strict, Lax, or None — affects CSRF protection and cross-origin authentication. Explained with examples and correct values.","url":"https://httpfixer.dev/glossary/samesite-cookie/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Glossary","item":"https://httpfixer.dev/glossary/"},{"@type":"ListItem","position":3,"name":"SameSite Cookie Attribute","item":"https://httpfixer.dev/glossary/samesite-cookie/"}]}]}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem;flex-wrap:wrap} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem} .quick-answer p{margin:0;opacity:1;font-size:14px;line-height:1.7} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} pre code{background:none;color:var(--text);padding:0} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SameSite Cookie Attribute — What It Is and How to Set It</title>
+  <meta name="description" content="SameSite is a cookie attribute that controls when cookies are sent with cross-site requests. Learn the difference between Strict, Lax, and None, and how to set SameSite correctly in Nginx, Express, FastAPI, and Django.">
+  <link rel="canonical" href="https://httpfixer.dev/glossary/samesite-cookie/">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
+  <meta property="og:title" content="SameSite Cookie Attribute — HttpFixer">
+  <meta property="og:description" content="SameSite controls when cookies are sent cross-site. Strict, Lax, None explained with exact server config.">
+  <meta property="og:url" content="https://httpfixer.dev/glossary/samesite-cookie/">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"SameSite Cookie Attribute — What It Is and How to Set It","description":"SameSite controls when cookies are sent with cross-site requests. Strict, Lax, and None explained.","url":"https://httpfixer.dev/glossary/samesite-cookie/","datePublished":"2026-04-08","dateModified":"2026-04-08","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the SameSite cookie attribute?","acceptedAnswer":{"@type":"Answer","text":"SameSite is a cookie attribute that controls whether a cookie is sent with cross-site requests. It has three values: Strict (never sent cross-site), Lax (sent on top-level navigation only), and None (always sent, requires Secure)."}},{"@type":"Question","name":"What is SameSite=Lax?","acceptedAnswer":{"@type":"Answer","text":"SameSite=Lax sends the cookie on same-site requests and on cross-site top-level navigation (clicking a link). It does not send the cookie on cross-site POST requests, iframes, or AJAX. It is the browser default since Chrome 80."}},{"@type":"Question","name":"What does SameSite=None mean?","acceptedAnswer":{"@type":"Answer","text":"SameSite=None sends the cookie on all requests, including cross-site. It must be combined with Secure — browsers reject SameSite=None without Secure. Use this for third-party cookies and cross-site authentication flows."}}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Glossary","item":"https://httpfixer.dev/glossary/"},{"@type":"ListItem","position":3,"name":"SameSite Cookie","item":"https://httpfixer.dev/glossary/samesite-cookie/"}]}]}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1rem;flex-wrap:wrap}
+    nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+    nav a:hover{color:var(--purple);opacity:1}
+    main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+    .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+    .breadcrumb a{color:var(--purple);text-decoration:none}
+    .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem}
+    h1{font-size:1.5rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem}
+    h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+    h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem}
+    p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+    .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem}
+    .quick-answer strong{font-size:11px;text-transform:uppercase;letter-spacing:0.05em;opacity:0.5;display:block;margin-bottom:0.5rem}
+    .quick-answer p{margin:0;opacity:1;font-size:13px}
+    pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+    code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+    th,td{padding:0.65rem 0.75rem;border:1px solid var(--border);text-align:left;line-height:1.5}
+    th{background:var(--surface);color:var(--purple);font-weight:600}
+    tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+    ul{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+    li{margin-bottom:0.4rem;line-height:1.7}
+    .warn{background:#100800;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+    .related{font-size:12px;opacity:0.6;margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border)}
+    .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.6}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem}
+    @media(max-width:600px){nav .right{display:none}}
+  </style>
 </head>
 <body>
-<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/">Errors</a><a href="/glossary/" style="color:var(--purple);opacity:1">Glossary</a><a href="/blog/">Blog</a> </div>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/csp/">CSP</a>
+    <a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
 </nav>
-<main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/glossary/">Glossary</a> &rarr; SameSite Cookie Attribute</div> <div class="date">Updated April 2026</div> <h1>SameSite Cookie Attribute</h1> <div class="quick-answer"><p>SameSite is a cookie attribute that controls whether the browser sends the cookie with cross-site requests. It is the primary defense against CSRF attacks. SameSite=Strict blocks all cross-site sending. SameSite=Lax blocks POST cross-site but allows GET. SameSite=None (with Secure) allows all cross-site requests.</p></div> <h2>The three values</h2>
-<table> <thead><tr><th>Value</th><th>Sent with cross-site GET</th><th>Sent with cross-site POST</th><th>Use for</th></tr></thead> <tbody> <tr><td><code>Strict</code></td><td>No</td><td>No</td><td>Highly sensitive cookies (admin sessions)</td></tr> <tr><td><code>Lax</code></td><td>Yes (top-level nav)</td><td>No</td><td>Most session cookies — browser default since 2020</td></tr> <tr><td><code>None; Secure</code></td><td>Yes</td><td>Yes</td><td>Cross-site embeds, OAuth, third-party integrations</td></tr> </tbody>
-</table>
 
-<h2>Setting SameSite in server config</h2>
-<pre># Express
-res.cookie('session', value, { sameSite: 'lax',  // or 'strict' or 'none' secure: true, // Required when sameSite='none' httpOnly: true // Always set — prevents XSS access
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/glossary/">Glossary</a> &rarr; SameSite Cookie</div>
+  <div class="date">Updated April 2026</div>
+  <h1>SameSite Cookie Attribute</h1>
+
+  <div class="quick-answer">
+    <strong>Quick Answer</strong>
+    <p><code>SameSite</code> controls when a cookie is sent with cross-site requests. <code>Strict</code> — never sent cross-site. <code>Lax</code> — sent on top-level navigation only (browser default since Chrome 80). <code>None</code> — always sent, requires <code>Secure</code>.</p>
+  </div>
+
+  <h2>What SameSite does</h2>
+  <p>Without SameSite, cookies are sent with every request to a domain — including requests initiated by other sites. This enables Cross-Site Request Forgery (CSRF) attacks. SameSite restricts when browsers include cookies in cross-site requests.</p>
+
+  <h2>The three values</h2>
+
+  <table>
+    <thead>
+      <tr><th>Value</th><th>When cookie is sent</th><th>Use case</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Strict</code></td><td>Same-site requests only. Never cross-site — even clicking a link from another site.</td><td>Session cookies for banking, admin panels. Highest protection.</td></tr>
+      <tr><td><code>Lax</code></td><td>Same-site requests + top-level cross-site navigation (GET only). Not sent on cross-site POST, iframes, AJAX.</td><td>Most web apps. Browser default since Chrome 80.</td></tr>
+      <tr><td><code>None</code></td><td>All requests, including cross-site. Requires <code>Secure</code> flag.</td><td>Third-party cookies, OAuth flows, embedded widgets, cross-site auth.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>SameSite=Lax — what actually gets blocked</h2>
+  <p>Lax blocks the cookie on cross-site:</p>
+  <ul>
+    <li>POST requests (form submissions from another site)</li>
+    <li>AJAX / fetch requests with credentials</li>
+    <li>Iframes loading your site inside another site</li>
+    <li>Images, scripts loading your endpoint</li>
+  </ul>
+  <p>Lax allows the cookie on cross-site:</p>
+  <ul>
+    <li>Clicking a link from another site to your site (top-level GET navigation)</li>
+    <li>Typing your URL directly</li>
+  </ul>
+
+  <h2>SameSite=None — requires Secure</h2>
+  <p>Browsers reject <code>SameSite=None</code> without <code>Secure</code>. The cookie must also be sent over HTTPS. Chrome enforces this since version 80.</p>
+  <pre>Set-Cookie: session=abc123; SameSite=None; Secure; HttpOnly</pre>
+
+  <div class="warn">If your app uses SameSite=None without Secure, browsers silently drop the cookie. This is a common cause of auth failures in cross-site OAuth flows.</div>
+
+  <h2>How to set SameSite in each stack</h2>
+
+  <h3>Nginx</h3>
+  <pre>add_header Set-Cookie "session=VALUE; SameSite=Lax; Secure; HttpOnly; Path=/" always;</pre>
+
+  <h3>Express</h3>
+  <pre>res.cookie('session', value, {
+  sameSite: 'lax',   // 'strict' | 'lax' | 'none'
+  secure: true,
+  httpOnly: true
 });</pre>
-<pre># Nginx (via proxy_cookie_flags or headers module)
-proxy_cookie_flags session samesite=lax secure httponly;</pre>
 
-<h2>Browser defaults (2024)</h2>
-<p>Chrome and Firefox default to <code>SameSite=Lax</code> when no SameSite attribute is specified. Cookies without SameSite are no longer sent cross-site on POST by default — this broke many legacy third-party integrations that relied on cross-site cookie sending.</p>
+  <h3>FastAPI / Starlette</h3>
+  <pre>response.set_cookie(
+    key="session",
+    value=value,
+    samesite="lax",   # "strict" | "lax" | "none"
+    secure=True,
+    httponly=True
+)</pre>
 
-<h2>SameSite=None gotcha</h2>
-<p><code>SameSite=None</code> requires <code>Secure</code> — the cookie must be set on HTTPS. Without Secure, browsers reject the SameSite=None cookie entirely.</p> <a href="/" class="tool-cta">Scan your security headers — HeadersFixer &rarr;</a> <div class="related">Related: <a href="/glossary/pkce/">PKCE</a> &nbsp;<a href="/glossary/xss/">XSS</a> &nbsp;<a href="/blog/headers/security-headers-checklist/">Security headers checklist</a></div>
+  <h3>Django</h3>
+  <pre># settings.py
+SESSION_COOKIE_SAMESITE = 'Lax'   # 'Strict' | 'Lax' | 'None'
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SECURE = True</pre>
+
+  <h3>Laravel</h3>
+  <pre># config/session.php
+'same_site' => 'lax',   // 'strict' | 'lax' | 'none'
+'secure' => true,</pre>
+
+  <h2>Browser default — SameSite=Lax</h2>
+  <p>Since Chrome 80 (February 2020), cookies without an explicit SameSite attribute are treated as <code>SameSite=Lax</code>. Firefox and Safari followed. If your app depended on cookies being sent cross-site without SameSite=None, it broke in 2020.</p>
+
+  <h2>SameSite vs CSRF tokens</h2>
+  <p>SameSite=Strict or Lax provides CSRF protection for most use cases. However it is not a complete replacement for CSRF tokens because: it does not protect against attacks from the same site, some older browsers do not support it, and Lax allows cross-site GET requests which can be exploited in some cases. Use both for defense in depth.</p>
+
+  <h2>Debugging SameSite issues</h2>
+  <p>Chrome DevTools &rarr; Application &rarr; Cookies shows the SameSite value for each cookie. The Network tab shows whether cookies were included in specific requests. Missing cookies on cross-site requests is almost always a SameSite or Secure flag issue.</p>
+
+  <div class="related">
+    Related:
+    <a href="/cors/">CORSFixer</a>
+    <a href="/blog/cors/fix-cors-fastapi/">Fix CORS in FastAPI</a>
+    <a href="/glossary/preflight-request/">Preflight request</a>
+    <a href="/blog/headers/security-headers-checklist/">Security headers checklist</a>
+  </div>
 </main>
-<footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+
+<div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center"><a href="/blog/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">&#128218; HttpFixer Blog &mdash; fix guides, explainers, and references &rarr;</a></div>
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/blog/">Blog</a> &middot; <a href="/glossary/">Glossary</a> &middot; <a href="/tools/">All Tools</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">Based on W3C cookie spec and MDN documentation. Always test in a staging environment. &copy; 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>
