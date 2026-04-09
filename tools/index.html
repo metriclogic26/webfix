@@ -19,15 +19,114 @@
   </div>
   <a href="/tools/pre-launch-checklist/" style="background:var(--purple);color:white;text-decoration:none;padding:0.65rem 1.5rem;font-family:'JetBrains Mono',monospace;font-size:13px;border-radius:6px;white-space:nowrap;flex-shrink:0;font-weight:500">Open checklist →</a>
 </div>
- <h1>All HttpFixer Tools</h1> <p class="subtitle">Free browser-based developer tools. No signup, no backend, nothing leaves your browser.</p> <div class="section-sep">Core tools &mdash; live URL scanning</div> <div class="grid"> <a href="/" class="tool-card"> <div class="tool-icon">🔒</div> <div class="tool-name">HeadersFixer</div> <div class="tool-desc">Scan any URL for missing or misconfigured HTTP security headers. Get exact Nginx, Vercel, Cloudflare, Express config.</div> <span class="tool-tag tag-core">Core</span> </a> <a href="/cors/" class="tool-card"> <div class="tool-icon">⚡</div> <div class="tool-name">CORSFixer</div> <div class="tool-desc">Send a real OPTIONS preflight to your API endpoint. See exactly what headers are missing and get the fix for your framework.</div> <span class="tool-tag tag-core">Core</span> </a> <a href="/oauth/" class="tool-card"> <div class="tool-icon">🔑</div> <div class="tool-name">OAuthFixer</div> <div class="tool-desc">Diagnose OAuth 2.0 errors — invalid_grant, redirect_uri_mismatch, PKCE failures. Provider-specific fixes for Auth0, Okta, Cognito, Google.</div> <span class="tool-tag tag-core">Core</span> </a> <a href="/csp/" class="tool-card"> <div class="tool-icon">🛡</div> <div class="tool-name">CSPFixer</div> <div class="tool-desc">Scan your live URL, find all blocked resources, and generate a working Content Security Policy. No unsafe-inline required.</div> <span class="tool-tag tag-core">Core</span> </a> <a href="/edge/" class="tool-card"> <div class="tool-icon">📦</div> <div class="tool-name">EdgeFix</div> <div class="tool-desc">Audit Cache-Control, Vary, Age, X-Cache, ETag headers. Find why your CDN is not caching and get the fix for your stack.</div> <span class="tool-tag tag-core">Core</span> </a> <a href="/speedfixer/" class="tool-card"> <div class="tool-icon">🚀</div> <div class="tool-name">SpeedFixer</div> <div class="tool-desc">Live PageSpeed Insights audit on your URL. Detects your stack and generates the exact Nginx/Vercel/Cloudflare config to fix each failing audit.</div> <span class="tool-tag tag-core">Core</span> </a> </div> <div class="section-sep">New tools &mdash; specialist utilities</div> <div class="grid"> <a href="/diff/" class="tool-card"> <div class="tool-icon">⚖️</div> <div class="tool-name">Header Diff</div> <div class="tool-desc">Compare HTTP headers between two URLs side by side. Find what is missing in production that staging has, or vice versa.</div> <span class="tool-tag tag-new">New</span> </a> <a href="/tools/cache-simulator/" class="tool-card"> <div class="tool-icon">📊</div> <div class="tool-name">Cache-Control Simulator</div> <div class="tool-desc">Paste any Cache-Control header value and see a visual timeline. Understand stale-while-revalidate, s-maxage, and stale-if-error instantly.</div> <span class="tool-tag tag-new">New</span> </a> <a href="/tools/hsts-preload/" class="tool-card"> <div class="tool-icon">🔐</div> <div class="tool-name">HSTS Preload Checker</div> <div class="tool-desc">Check if your domain is on the HSTS preload list built into browsers. See your HSTS header, requirements checklist, and how to get listed.</div> <span class="tool-tag tag-new">New</span> </a> </div> <div class="section-sep">Generators &mdash; build from scratch</div> <div class="grid"> <a href="/generators/csp/" class="tool-card"> <div class="tool-icon">🛡</div> <div class="tool-name">CSP Generator</div> <div class="tool-desc">Build a Content Security Policy by selecting your sources. Outputs header value and Nginx/Vercel config.</div> <span class="tool-tag tag-core">Generator</span> </a> <a href="/generators/cors/" class="tool-card"> <div class="tool-icon">⚡</div> <div class="tool-name">CORS Header Generator</div> <div class="tool-desc">Select origin, methods, and headers. Get Nginx, Express, and FastAPI CORS config in one click.</div> <span class="tool-tag tag-core">Generator</span> </a> <a href="/generators/security-headers/" class="tool-card"> <div class="tool-icon">🔒</div> <div class="tool-name">Security Headers Generator</div> <div class="tool-desc">Configure all 9 security headers. Outputs Nginx and Vercel config with safe defaults pre-selected.</div> <span class="tool-tag tag-core">Generator</span> </a> <a href="/generators/permissions-policy/" class="tool-card"> <div class="tool-icon">🎛</div> <div class="tool-name">Permissions-Policy Generator</div> <div class="tool-desc">Control camera, microphone, geolocation. Block unused browser features with copy-paste output.</div> <span class="tool-tag tag-core">Generator</span> </a> </div>
-<div style="margin-top:2rem;border-top:1px solid var(--border);padding-top:1.5rem"><p style="font-size:11px;opacity:0.4;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem">New tools</p><p style="margin:0.5rem 0"><a href="/tools/csp-validator/" style="color:var(--purple)">CSP Validator</a> — <span style="opacity:0.6;font-size:12px">Validate a CSP string against W3C spec. Flags unsafe-inline, missing directives, syntax errors.</span></p>
-<p style="margin:0.5rem 0"><a href="/tools/jwt/" style="color:var(--purple)">JWT Debugger</a> — <span style="opacity:0.6;font-size:12px">Decode and validate JWTs. Flags none algorithm, missing expiry, expired tokens. Client-side only.</span></p>
-<p style="margin:0.5rem 0"><a href="/tools/header-scorer/" style="color:var(--purple)">Security Headers Scorer</a> — <span style="opacity:0.6;font-size:12px">Score your security headers 0-100 with per-header breakdown and exact fix links.</span></p>
-<p style="margin:0.5rem 0"><a href="/tools/mixed-content/" style="color:var(--purple)">Mixed Content Fixer</a> — <span style="opacity:0.6;font-size:12px">Find HTTP resources on your HTTPS page. Generates upgrade-insecure-requests CSP and Nginx rewrite rules.</span></p>
-<p style="margin:0.5rem 0"><a href="/generators/cache-control/" style="color:var(--purple)">Cache-Control Generator</a> — <span style="opacity:0.6;font-size:12px">Generate Cache-Control headers for any asset type with stack-specific Nginx, Vercel, Cloudflare config.</span></p></div>
+ <h1>All HttpFixer Tools</h1>
+<p class="subtitle">Free browser-based developer tools. No signup, no backend, nothing leaves your browser.</p>
+
+<div style="margin-bottom:1.5rem;position:relative">
+  <input type="text" id="toolSearch" placeholder="Search tools... e.g. CORS, JWT, cache, headers"
+    style="width:100%;background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:0.75rem 1rem 0.75rem 2.5rem;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;box-sizing:border-box"
+    oninput="filterTools(this.value)" onfocus="this.style.borderColor='var(--purple)'" onblur="this.style.borderColor='var(--border)'">
+  <span style="position:absolute;left:0.85rem;top:50%;transform:translateY(-50%);opacity:0.35;font-size:14px;pointer-events:none">🔍</span>
+  <span id="searchCount" style="position:absolute;right:0.85rem;top:50%;transform:translateY(-50%);font-size:11px;opacity:0.4;display:none"></span>
+</div>
+<div id="noResults" style="display:none;text-align:center;padding:2rem;opacity:0.4;font-size:13px">No tools match — try "CORS", "cache", "JWT", or "headers"</div>
+
+<div class="section-sep">Core tools &mdash; live URL scanning</div> <div class="grid"> <a href="/" class="tool-card"> <div class="tool-icon">🔒</div> <div class="tool-name">HeadersFixer</div> <div class="tool-desc">Scan any URL for missing or misconfigured HTTP security headers. Get exact Nginx, Vercel, Cloudflare, Express config.</div> <span class="tool-tag tag-core">Core</span> </a> <a href="/cors/" class="tool-card"> <div class="tool-icon">⚡</div> <div class="tool-name">CORSFixer</div> <div class="tool-desc">Send a real OPTIONS preflight to your API endpoint. See exactly what headers are missing and get the fix for your framework.</div> <span class="tool-tag tag-core">Core</span> </a> <a href="/oauth/" class="tool-card"> <div class="tool-icon">🔑</div> <div class="tool-name">OAuthFixer</div> <div class="tool-desc">Diagnose OAuth 2.0 errors — invalid_grant, redirect_uri_mismatch, PKCE failures. Provider-specific fixes for Auth0, Okta, Cognito, Google.</div> <span class="tool-tag tag-core">Core</span> </a> <a href="/csp/" class="tool-card"> <div class="tool-icon">🛡</div> <div class="tool-name">CSPFixer</div> <div class="tool-desc">Scan your live URL, find all blocked resources, and generate a working Content Security Policy. No unsafe-inline required.</div> <span class="tool-tag tag-core">Core</span> </a> <a href="/edge/" class="tool-card"> <div class="tool-icon">📦</div> <div class="tool-name">EdgeFix</div> <div class="tool-desc">Audit Cache-Control, Vary, Age, X-Cache, ETag headers. Find why your CDN is not caching and get the fix for your stack.</div> <span class="tool-tag tag-core">Core</span> </a> <a href="/speedfixer/" class="tool-card"> <div class="tool-icon">🚀</div> <div class="tool-name">SpeedFixer</div> <div class="tool-desc">Live PageSpeed Insights audit on your URL. Detects your stack and generates the exact Nginx/Vercel/Cloudflare config to fix each failing audit.</div> <span class="tool-tag tag-core">Core</span> </a> </div> <div class="section-sep">New tools &mdash; specialist utilities</div> <div class="grid"> <a href="/diff/" class="tool-card"> <div class="tool-icon">⚖️</div> <div class="tool-name">Header Diff</div> <div class="tool-desc">Compare HTTP headers between two URLs side by side. Find what is missing in production that staging has, or vice versa.</div> <span class="tool-tag tag-new">New</span> </a> <a href="/tools/cache-simulator/" class="tool-card"> <div class="tool-icon">📊</div> <div class="tool-name">Cache-Control Simulator</div> <div class="tool-desc">Paste any Cache-Control header value and see a visual timeline. Understand stale-while-revalidate, s-maxage, and stale-if-error instantly.</div> <span class="tool-tag tag-new">New</span> </a> <a href="/tools/hsts-preload/" class="tool-card"> <div class="tool-icon">🔐</div> <div class="tool-name">HSTS Preload Checker</div> <div class="tool-desc">Check if your domain is on the HSTS preload list built into browsers. See your HSTS header, requirements checklist, and how to get listed.</div> <span class="tool-tag tag-new">New</span> </a> </div> <div class="section-sep">Generators &mdash; build from scratch</div> <div class="grid"> <a href="/generators/csp/" class="tool-card"> <div class="tool-icon">🛡</div> <div class="tool-name">CSP Generator</div> <div class="tool-desc">Build a Content Security Policy by selecting your sources. Outputs header value and Nginx/Vercel config.</div> <span class="tool-tag tag-core">Generator</span> </a> <a href="/generators/cors/" class="tool-card"> <div class="tool-icon">⚡</div> <div class="tool-name">CORS Header Generator</div> <div class="tool-desc">Select origin, methods, and headers. Get Nginx, Express, and FastAPI CORS config in one click.</div> <span class="tool-tag tag-core">Generator</span> </a> <a href="/generators/security-headers/" class="tool-card"> <div class="tool-icon">🔒</div> <div class="tool-name">Security Headers Generator</div> <div class="tool-desc">Configure all 9 security headers. Outputs Nginx and Vercel config with safe defaults pre-selected.</div> <span class="tool-tag tag-core">Generator</span> </a> <a href="/generators/permissions-policy/" class="tool-card"> <div class="tool-icon">🎛</div> <div class="tool-name">Permissions-Policy Generator</div> <div class="tool-desc">Control camera, microphone, geolocation. Block unused browser features with copy-paste output.</div> <span class="tool-tag tag-core">Generator</span> </a> </div>
+<div class="section-sep">More tools &mdash; validators &amp; debuggers</div>
+<div class="grid">
+<a href="/tools/csp-validator/" class="tool-card">
+  <div class="tool-icon">✅</div>
+  <div class="tool-name">CSP Validator</div>
+  <div class="tool-desc">Validate a CSP string against the W3C spec. Flags unsafe-inline, missing directives, and syntax errors.</div>
+  <span class="tool-tag tag-new">New</span>
+</a>
+<a href="/tools/jwt/" class="tool-card">
+  <div class="tool-icon">🔍</div>
+  <div class="tool-name">JWT Debugger</div>
+  <div class="tool-desc">Decode and validate JSON Web Tokens. Flags none algorithm, missing expiry, expired tokens. Client-side only.</div>
+  <span class="tool-tag tag-new">New</span>
+</a>
+<a href="/tools/header-scorer/" class="tool-card">
+  <div class="tool-icon">📊</div>
+  <div class="tool-name">Security Headers Scorer</div>
+  <div class="tool-desc">Score your security headers 0-100 with per-header breakdown and direct fix links for every issue.</div>
+  <span class="tool-tag tag-new">New</span>
+</a>
+<a href="/tools/mixed-content/" class="tool-card">
+  <div class="tool-icon">⚠️</div>
+  <div class="tool-name">Mixed Content Fixer</div>
+  <div class="tool-desc">Find HTTP resources on your HTTPS page. Generates upgrade-insecure-requests CSP and stack-specific fix.</div>
+  <span class="tool-tag tag-new">New</span>
+</a>
+<a href="/tools/redirect-chain/" class="tool-card">
+  <div class="tool-icon">🔗</div>
+  <div class="tool-name">Redirect Chain Fixer</div>
+  <div class="tool-desc">Follow every redirect hop in real time. Detects loops, identifies your stack, generates the ERR_TOO_MANY_REDIRECTS fix.</div>
+  <span class="tool-tag tag-new">New</span>
+</a>
+<a href="/generators/cache-control/" class="tool-card">
+  <div class="tool-icon">⚡</div>
+  <div class="tool-name">Cache-Control Generator</div>
+  <div class="tool-desc">Generate Cache-Control headers for any asset type with stack-specific Nginx, Vercel, Cloudflare, and Express config.</div>
+  <span class="tool-tag tag-new">New</span>
+</a>
+</div>
 </main>
 <footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/hsts-preload/">HSTS Checker</a> &middot; <a href="/diff/">Header Diff</a> &middot; <a href="/tools/cache-simulator/">Cache Simulator</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/about/">About</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
-<div style="border-top:1px solid #252836;padding:1rem 2rem 0.5rem;text-align:center;font-size:11px;opacity:0.4;margin-top:0.5rem"> MetricLogic network: <a href="https://configclarity.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">configclarity.dev</a> &middot; <a href="https://domainpreflight.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">domainpreflight.dev</a> &middot; <a href="https://httpfixer.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">httpfixer.dev</a></div>
+
+
+<script>
+function filterTools(q) {
+  q = q.toLowerCase().trim();
+  var cards = document.querySelectorAll('.tool-card');
+  var seps = document.querySelectorAll('.section-sep');
+  var visible = 0;
+
+  cards.forEach(function(card) {
+    var text = (card.textContent || '').toLowerCase();
+    var show = !q || text.indexOf(q) !== -1;
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+
+  // Hide section separators if all cards in their section are hidden
+  seps.forEach(function(sep) {
+    var next = sep.nextElementSibling;
+    var hasVisible = false;
+    if (next && next.classList.contains('grid')) {
+      var gridCards = next.querySelectorAll('.tool-card');
+      gridCards.forEach(function(c) { if (c.style.display !== 'none') hasVisible = true; });
+    }
+    sep.style.display = hasVisible ? '' : 'none';
+    if (next) next.style.display = hasVisible ? '' : 'none';
+  });
+
+  var countEl = document.getElementById('searchCount');
+  var noResults = document.getElementById('noResults');
+  if (q) {
+    countEl.style.display = '';
+    countEl.textContent = visible + ' tool' + (visible !== 1 ? 's' : '');
+    noResults.style.display = visible === 0 ? 'block' : 'none';
+  } else {
+    countEl.style.display = 'none';
+    noResults.style.display = 'none';
+    // Restore all section separators
+    seps.forEach(function(sep) {
+      sep.style.display = '';
+      var next = sep.nextElementSibling;
+      if (next) next.style.display = '';
+    });
+  }
+}
+
+// Keyboard shortcut — / focuses search
+document.addEventListener('keydown', function(e) {
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('toolSearch').focus();
+  }
+});
+</script>
 </body>
 </html>
