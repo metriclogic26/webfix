@@ -1,36 +1,346 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Pre-Launch Security Checklist — HttpFixer</title> <meta name="description" content="Interactive pre-launch checklist for HTTP security headers, CORS, CSP, HSTS, and caching. Check off each item, see your score, and link directly to the fixing tool."> <link rel="canonical" href="https://httpfixer.dev/tools/pre-launch-checklist/"> <meta name="robots" content="index, follow"> <meta property="og:title" content="Pre-Launch HTTP Security Checklist — HttpFixer"> <meta property="og:description" content="Interactive pre-launch checklist. Check off security headers, CORS, CSP, and caching items before deploying."> <meta property="og:url" content="https://httpfixer.dev/tools/pre-launch-checklist/"> <meta property="og:type" content="website"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Pre-Launch HTTP Security Checklist","applicationCategory":"DeveloperApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://httpfixer.dev/tools/pre-launch-checklist/","description":"Interactive pre-launch checklist for HTTP security headers, CORS, CSP, and caching."},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://httpfixer.dev/tools/"},{"@type":"ListItem","position":3,"name":"Pre-Launch Checklist","item":"https://httpfixer.dev/tools/pre-launch-checklist/"}]}]}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .right{display:flex;gap:1rem;flex-wrap:wrap} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} .lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} .tool-cta{display:inline-block;margin:1.5rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} .progress-bar{background:var(--border);border-radius:4px;height:6px;margin:1.5rem 0;overflow:hidden} .progress-fill{height:100%;background:var(--purple);border-radius:4px;transition:width 0.3s ease} .score{font-size:1.1rem;font-weight:600;margin-bottom:0.25rem} .score span{color:var(--purple)} .section{margin:2rem 0;padding:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:8px} .section h2{margin:0 0 1.25rem 0;font-size:0.95rem;opacity:0.7;text-transform:uppercase;letter-spacing:0.05em} .check-item{display:flex;align-items:flex-start;gap:0.75rem;padding:0.65rem 0;border-bottom:1px solid var(--border);cursor:pointer} .check-item:last-child{border-bottom:none;padding-bottom:0} .check-item input[type=checkbox]{margin-top:3px;accent-color:var(--purple);width:16px;height:16px;flex-shrink:0;cursor:pointer} .check-label{flex:1;line-height:1.5} .check-label strong{display:block;font-size:13px;margin-bottom:0.2rem} .check-label p{font-size:12px;opacity:0.65;margin:0} .check-link{font-size:11px;color:var(--purple);text-decoration:none;white-space:nowrap;padding-top:3px;flex-shrink:0} .check-link:hover{text-decoration:underline} .done .check-label{opacity:0.4} .done .check-label strong{text-decoration:line-through} .reset-btn{background:transparent;border:1px solid var(--border);color:var(--text);padding:0.5rem 1rem;font-family:"JetBrains Mono",monospace;font-size:12px;border-radius:4px;cursor:pointer;opacity:0.6;margin-top:2rem} .reset-btn:hover{opacity:1;border-color:var(--red);color:var(--red)} .congrats{display:none;background:rgba(34,197,94,0.1);border:1px solid var(--green);border-radius:8px;padding:1rem 1.5rem;margin:1.5rem 0;color:var(--green);font-size:13px} </style>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pre-Launch HTTP Checklist — HttpFixer</title>
+  <meta name="description" content="20 HTTP checks before you ship. Security headers, CSP, CORS, SSL, cache, redirects — every check with a direct link to the fix tool.">
+  <link rel="canonical" href="https://httpfixer.dev/tools/pre-launch-checklist/">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Pre-Launch HTTP Checklist — HttpFixer">
+  <meta property="og:description" content="20 HTTP checks before you ship. Tick off each item, fix what's missing.">
+  <meta property="og:url" content="https://httpfixer.dev/tools/pre-launch-checklist/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://httpfixer.dev/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"SoftwareApplication","name":"Pre-Launch HTTP Checklist","applicationCategory":"DeveloperApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://httpfixer.dev/tools/pre-launch-checklist/"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://httpfixer.dev/tools/"},{"@type":"ListItem","position":3,"name":"Pre-Launch Checklist","item":"https://httpfixer.dev/tools/pre-launch-checklist/"}]}]}</script>
+  <style>
+    :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0;--dim:#8B8FA8}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+    nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+    nav .brand{font-weight:600;color:var(--text);text-decoration:none;font-size:15px}
+    nav .brand span{color:var(--purple)}
+    nav .right{display:flex;gap:1.25rem}
+    nav a{color:var(--text);text-decoration:none;opacity:0.55;font-size:13px}
+    nav a:hover{opacity:1;color:var(--purple)}
+    .main{max-width:780px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+    h1{font-size:1.4rem;font-weight:600;margin-bottom:0.35rem}
+    .subtitle{font-size:13px;opacity:0.5;margin-bottom:1.5rem}
+
+    /* Progress */
+    .progress-wrap{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.1rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
+    .prog-num{font-size:1.75rem;font-weight:600;color:var(--purple);line-height:1;min-width:55px}
+    .prog-num.done{color:var(--green)}
+    .prog-sub{font-size:11px;opacity:0.4;margin-top:0.15rem;text-transform:uppercase;letter-spacing:0.05em}
+    .prog-bar{flex:1;min-width:100px;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+    .prog-fill{height:100%;background:var(--purple);border-radius:3px;transition:width 0.3s}
+    .prog-fill.done{background:var(--green)}
+    .reset-btn{background:transparent;border:1px solid var(--border);color:var(--dim);padding:0.3rem 0.65rem;font-family:"JetBrains Mono",monospace;font-size:11px;border-radius:4px;cursor:pointer}
+    .reset-btn:hover{border-color:var(--red);color:var(--red)}
+
+    /* Section tabs */
+    .sec-tabs{display:flex;gap:0;margin-bottom:1.5rem;overflow-x:auto;border:1px solid var(--border);border-radius:7px;background:var(--surface)}
+    .sec-tab{flex:1;min-width:0;background:transparent;border:none;color:var(--dim);padding:0.6rem 0.5rem;font-family:"JetBrains Mono",monospace;font-size:11px;cursor:pointer;border-right:1px solid var(--border);white-space:nowrap;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;gap:0.2rem}
+    .sec-tab:last-child{border-right:none}
+    .sec-tab.active{background:rgba(108,99,255,0.12);color:var(--purple)}
+    .sec-tab:hover:not(.active){color:var(--text)}
+    .sec-tab-icon{font-size:14px}
+    .sec-tab-label{font-size:10px;text-transform:uppercase;letter-spacing:0.05em}
+    .sec-tab-prog{font-size:10px;opacity:0.5}
+    .sec-tab.all-done .sec-tab-prog{color:var(--green);opacity:1}
+
+    /* Items */
+    .section-panel{display:none}
+    .section-panel.active{display:block}
+    .item{display:flex;align-items:flex-start;gap:0.85rem;padding:0.9rem 1rem;border:1px solid var(--border);border-radius:7px;margin-bottom:0.6rem;cursor:pointer;transition:border-color 0.15s;background:var(--surface)}
+    .item:hover{border-color:rgba(108,99,255,0.4)}
+    .item.checked{border-color:var(--green);background:rgba(34,197,94,0.03)}
+    .item.checked .item-name{opacity:0.45;text-decoration:line-through}
+    .item.checked .item-desc{opacity:0.25}
+    .cb{width:18px;height:18px;border:2px solid var(--border);border-radius:4px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+    .item.checked .cb{background:var(--green);border-color:var(--green)}
+    .ck{color:white;font-size:11px;font-weight:700;display:none}
+    .item.checked .ck{display:block}
+    .item-body{flex:1;min-width:0}
+    .item-name{font-size:13px;font-weight:600;margin-bottom:0.2rem;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap}
+    .item-desc{font-size:12px;opacity:0.55;line-height:1.55;margin-bottom:0.5rem}
+    .item-links{display:flex;gap:0.4rem;flex-wrap:wrap}
+    .tlink{display:inline-flex;align-items:center;font-size:11px;color:var(--purple);text-decoration:none;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.25);padding:0.2rem 0.55rem;border-radius:3px}
+    .tlink:hover{background:rgba(108,99,255,0.2)}
+    .tlink.doc{color:var(--dim);background:rgba(139,143,168,0.07);border-color:rgba(139,143,168,0.2)}
+    .tlink.doc:hover{color:var(--text)}
+    .badge-c{font-size:10px;font-weight:600;padding:0.1rem 0.4rem;border-radius:3px;background:rgba(239,68,68,0.18);color:var(--red)}
+    .badge-h{font-size:10px;font-weight:600;padding:0.1rem 0.4rem;border-radius:3px;background:rgba(249,115,22,0.18);color:var(--orange)}
+    .badge-m{font-size:10px;font-weight:600;padding:0.1rem 0.4rem;border-radius:3px;background:rgba(234,179,8,0.15);color:#EAB308}
+
+    /* Section done state */
+    .sec-done{background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:7px;padding:1rem 1.25rem;text-align:center;font-size:13px;color:var(--green);margin-bottom:0.75rem;display:none}
+
+    /* Nav between sections */
+    .sec-nav{display:flex;justify-content:space-between;margin-top:1rem;gap:0.5rem}
+    .sec-nav-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.5rem 1rem;font-family:"JetBrains Mono",monospace;font-size:12px;border-radius:5px;cursor:pointer}
+    .sec-nav-btn:hover{border-color:var(--purple);color:var(--purple)}
+    .sec-nav-btn:disabled{opacity:0.25;cursor:not-allowed}
+
+    /* All done */
+    .all-done-banner{background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.25);border-radius:10px;padding:1.75rem;text-align:center;margin-top:1.5rem;display:none}
+    .all-done-banner h2{color:var(--green);font-size:1.15rem;margin-bottom:0.4rem}
+    .all-done-banner p{font-size:12px;opacity:0.6;margin-bottom:1rem}
+    .share-row{display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap}
+    .share-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.5rem 1.1rem;font-family:"JetBrains Mono",monospace;font-size:12px;border-radius:5px;cursor:pointer;text-decoration:none;display:inline-block}
+    .share-btn:hover{border-color:var(--purple);color:var(--purple)}
+
+    footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-top:3rem}
+    footer a{color:var(--text);text-decoration:none;opacity:0.5}
+    .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.35;margin-top:0.5rem}
+    @media(max-width:600px){nav .right{display:none}.sec-tab-label{display:none}.sec-tab{padding:0.6rem 0.35rem}}
+  </style>
 </head>
 <body>
-<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Pre-Launch Checklist</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/tools/">All Tools</a>
+    <a href="/generators/">Generators</a><a href="/blog/">Blog</a>
+  </div>
 </nav>
-<main> <div style="font-size:12px;opacity:0.5;margin-bottom:1.5rem"><a href="/" style="color:var(--purple);text-decoration:none">HttpFixer</a> &rarr; <a href="/tools/" style="color:var(--purple);text-decoration:none">Tools</a> &rarr; Pre-Launch Checklist</div> <h1>Pre-Launch HTTP Security Checklist</h1> <p class="lead">Check off every item before deploying. Each item links directly to the fixing tool. Progress saves in your browser.</p> <div class="score">Score: <span id="score">0</span> / <span id="total">0</span> items</div> <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div> <div class="congrats" id="congrats">✓ All checks passed. Your site is ready to deploy.</div> <div class="section"> <h2>Security Headers</h2> <div class="check-item" data-id="hsts"> <input type="checkbox" id="hsts"> <label for="hsts" class="check-label"> <strong>Strict-Transport-Security set</strong> <p>max-age ≥ 31536000, includeSubDomains. Prevents HTTPS downgrade attacks.</p> </label> <a href="/" class="check-link">Fix →</a> </div> <div class="check-item" data-id="csp"> <input type="checkbox" id="csp"> <label for="csp" class="check-label"> <strong>Content-Security-Policy set</strong> <p>At minimum: default-src 'self'; frame-ancestors 'none'; object-src 'none'.</p> </label> <a href="/csp/" class="check-link">Fix →</a> </div> <div class="check-item" data-id="xfo"> <input type="checkbox" id="xfo"> <label for="xfo" class="check-label"> <strong>X-Frame-Options: SAMEORIGIN</strong> <p>Prevents clickjacking. Backup to CSP frame-ancestors for older browsers.</p> </label> <a href="/" class="check-link">Fix →</a> </div> <div class="check-item" data-id="xcto"> <input type="checkbox" id="xcto"> <label for="xcto" class="check-label"> <strong>X-Content-Type-Options: nosniff</strong> <p>Prevents MIME-type sniffing that can enable XSS via crafted files.</p> </label> <a href="/" class="check-link">Fix →</a> </div> <div class="check-item" data-id="rp"> <input type="checkbox" id="rp"> <label for="rp" class="check-label"> <strong>Referrer-Policy set</strong> <p>Recommended: strict-origin-when-cross-origin. Prevents referrer leaking.</p> </label> <a href="/" class="check-link">Fix →</a> </div> <div class="check-item" data-id="pp"> <input type="checkbox" id="pp"> <label for="pp" class="check-label"> <strong>Permissions-Policy set</strong> <p>Disable unused browser APIs: camera=(), microphone=(), geolocation=().</p> </label> <a href="/generators/permissions-policy/" class="check-link">Generate →</a> </div> </div> <div class="section"> <h2>CORS & API</h2> <div class="check-item" data-id="cors-origin"> <input type="checkbox" id="cors-origin"> <label for="cors-origin" class="check-label"> <strong>Access-Control-Allow-Origin not set to *</strong> <p>Wildcard is fine for fully public APIs. Never combine * with credentials: true.</p> </label> <a href="/cors/" class="check-link">Test →</a> </div> <div class="check-item" data-id="cors-options"> <input type="checkbox" id="cors-options"> <label for="cors-options" class="check-label"> <strong>OPTIONS preflight handler returns 204</strong> <p>All API endpoints that accept POST/PUT/DELETE with JSON need an OPTIONS handler.</p> </label> <a href="/cors/" class="check-link">Test →</a> </div> <div class="check-item" data-id="api-no-store"> <input type="checkbox" id="api-no-store"> <label for="api-no-store" class="check-label"> <strong>Authenticated API responses have Cache-Control: no-store</strong> <p>Prevents CDNs from caching user-specific responses and serving to other users.</p> </label> <a href="/edge/" class="check-link">Audit →</a> </div> </div> <div class="section"> <h2>HTTPS & Transport</h2> <div class="check-item" data-id="redirect"> <input type="checkbox" id="redirect"> <label for="redirect" class="check-label"> <strong>HTTP redirects to HTTPS (301)</strong> <p>All HTTP requests should redirect permanently. Use 301, not 302.</p> </label> <a href="/tools/hsts-preload/" class="check-link">Check →</a> </div> <div class="check-item" data-id="mixed"> <input type="checkbox" id="mixed"> <label for="mixed" class="check-label"> <strong>No mixed content (no HTTP assets on HTTPS pages)</strong> <p>All images, scripts, fonts, and stylesheets loaded via HTTPS.</p> </label> <a href="/errors/mixed-content-blocked/" class="check-link">Fix →</a> </div> <div class="check-item" data-id="cert"> <input type="checkbox" id="cert"> <label for="cert" class="check-label"> <strong>TLS certificate valid and not expiring within 30 days</strong> <p>Check expiry date and ensure auto-renewal is configured.</p> </label> <a href="/" class="check-link">Check →</a> </div> </div> <div class="section"> <h2>Caching</h2> <div class="check-item" data-id="immutable"> <input type="checkbox" id="immutable"> <label for="immutable" class="check-label"> <strong>Static assets have long cache (max-age=31536000, immutable)</strong> <p>JS, CSS, images with hashed filenames should cache for 1 year.</p> </label> <a href="/tools/cache-simulator/" class="check-link">Visualise →</a> </div> <div class="check-item" data-id="html-cache"> <input type="checkbox" id="html-cache"> <label for="html-cache" class="check-label"> <strong>HTML pages use Cache-Control: no-cache</strong> <p>HTML should always be revalidated so users get updated asset URLs.</p> </label> <a href="/edge/" class="check-link">Audit →</a> </div> <div class="check-item" data-id="vary"> <input type="checkbox" id="vary"> <label for="vary" class="check-label"> <strong>Vary: Accept-Encoding on compressed responses</strong> <p>Without this, CDNs may serve compressed content to clients that don't support it.</p> </label> <a href="/edge/" class="check-link">Audit →</a> </div> </div> <div class="section"> <h2>Final Checks</h2> <div class="check-item" data-id="scan-headers"> <input type="checkbox" id="scan-headers"> <label for="scan-headers" class="check-label"> <strong>HeadersFixer scan on production URL passes</strong> <p>Run HeadersFixer on the live URL after deploying to confirm all headers are present.</p> </label> <a href="/" class="check-link">Scan →</a> </div> <div class="check-item" data-id="staging-diff"> <input type="checkbox" id="staging-diff"> <label for="staging-diff" class="check-label"> <strong>Header Diff shows staging ≈ production</strong> <p>No security headers should disappear when moving from staging to production CDN.</p> </label> <a href="/diff/" class="check-link">Compare →</a> </div> <div class="check-item" data-id="server-tokens"> <input type="checkbox" id="server-tokens"> <label for="server-tokens" class="check-label"> <strong>Server header doesn't expose version (e.g. "nginx/1.24.0")</strong> <p>Use server_tokens off in Nginx. Hides exact version from attackers.</p> </label> <a href="/" class="check-link">Scan →</a> </div> </div> <button class="reset-btn" onclick="resetAll()">Reset all checks</button>
-</main>
-<footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+
+<div class="main">
+  <h1>Pre-Launch HTTP Checklist</h1>
+  <p class="subtitle">Work through each section before you ship. State saves in your browser.</p>
+
+  <div class="progress-wrap">
+    <div>
+      <div class="prog-num" id="progNum">0/20</div>
+      <div class="prog-sub">items complete</div>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+    <button class="reset-btn" onclick="resetAll()">Reset</button>
+  </div>
+
+  <div class="sec-tabs" id="secTabs"></div>
+  <div id="panels"></div>
+
+  <div class="all-done-banner" id="allDone">
+    <h2>✅ Ship it — all 20 checks passed</h2>
+    <p>Your HTTP layer is production-ready. Run this checklist again after every major deploy.</p>
+    <div class="share-row">
+      <button class="share-btn" onclick="copyLink()">Copy checklist link</button>
+      <a class="share-btn" href="/tools/">Explore all tools</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>HttpFixer by <a href="https://metriclogic.dev">MetricLogic</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/blog/">Blog</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">HTTP-layer checks only. Always test in a staging environment first. &copy; 2026 MetricLogic.</p>
 </footer>
+
 <script>
-const STORAGE_KEY = 'httpfixer_checklist_v1';
+var SECTIONS = [
+  {
+    id:'security', icon:'🔒', label:'Security',
+    items:[
+      {id:'hsts',name:'HSTS configured',p:'c',
+        desc:'Strict-Transport-Security with max-age ≥ 31536000. Prevents users being downgraded to HTTP.',
+        tools:[{l:'HeadersFixer →',u:'/'}],docs:[{l:'HSTS guide',u:'/blog/headers/how-to-set-hsts-header/'}]},
+      {id:'csp',name:'Content Security Policy set',p:'c',
+        desc:'Primary XSS defence. Generate from your live page — do not guess the sources.',
+        tools:[{l:'CSPFixer →',u:'/csp/'},{l:'CSP Validator →',u:'/tools/csp-validator/'}],docs:[{l:'CSP guide',u:'/blog/csp/how-to-generate-csp/'}]},
+      {id:'xframe',name:'X-Frame-Options or frame-ancestors set',p:'c',
+        desc:'Prevents clickjacking via iframes. Use frame-ancestors in CSP or X-Frame-Options: SAMEORIGIN.',
+        tools:[{l:'HeadersFixer →',u:'/'}],docs:[]},
+      {id:'xcto',name:'X-Content-Type-Options: nosniff',p:'h',
+        desc:'Prevents MIME-type sniffing. One line of config — add it now.',
+        tools:[{l:'HeadersFixer →',u:'/'}],docs:[]},
+      {id:'referrer',name:'Referrer-Policy configured',p:'h',
+        desc:'Controls URL info sent to third parties. Use strict-origin-when-cross-origin.',
+        tools:[{l:'HeadersFixer →',u:'/'}],docs:[]},
+      {id:'score',name:'Security headers score 75+',p:'h',
+        desc:'Run the scorer to confirm your full header set before launch.',
+        tools:[{l:'Header Scorer →',u:'/tools/header-scorer/'}],docs:[{l:'How to score',u:'/blog/headers/how-to-check-security-headers-score/'}]},
+    ]
+  },
+  {
+    id:'cors', icon:'🌐', label:'CORS & Auth',
+    items:[
+      {id:'cors',name:'CORS headers correct',p:'c',
+        desc:'Wrong CORS config blocks your frontend. Check wildcard + credentials conflict, preflight handling.',
+        tools:[{l:'CORSFixer →',u:'/cors/'}],docs:[{l:'CORS guide',u:'/blog/cors/how-to-fix-cors/'}]},
+      {id:'oauth',name:'OAuth / OIDC flow tested',p:'h',
+        desc:'PKCE enabled, redirect_uri exact match, token expiry handled. Test invalid_grant before launch.',
+        tools:[{l:'OAuthFixer →',u:'/oauth/'}],docs:[{l:'Fix invalid_grant',u:'/blog/oauth/fix-invalid-grant/'}]},
+      {id:'jwt',name:'JWT tokens validated',p:'h',
+        desc:'Check alg is not none, exp is set, iss matches your auth server.',
+        tools:[{l:'JWT Debugger →',u:'/tools/jwt/'}],docs:[{l:'JWT guide',u:'/blog/oauth/how-to-decode-validate-jwt/'}]},
+      {id:'cookies',name:'Cookie flags checked',p:'h',
+        desc:'Auth cookies need Secure, HttpOnly, and SameSite=Strict or Lax. Missing flags = session hijacking risk.',
+        tools:[{l:'HeadersFixer →',u:'/'}],docs:[]},
+    ]
+  },
+  {
+    id:'perf', icon:'⚡', label:'Performance',
+    items:[
+      {id:'cache',name:'Cache-Control headers correct',p:'c',
+        desc:'Static assets: public, max-age=31536000, immutable. HTML: no-cache. Auth API: no-store.',
+        tools:[{l:'Cache-Control Generator →',u:'/generators/cache-control/'},{l:'EdgeFix →',u:'/edge/'}],
+        docs:[{l:'Cache guide',u:'/blog/cache/how-to-generate-cache-control-headers/'}]},
+      {id:'mixed',name:'No mixed content warnings',p:'h',
+        desc:'HTTP resources on HTTPS page — browsers block scripts and stylesheets silently.',
+        tools:[{l:'Mixed Content Fixer →',u:'/tools/mixed-content/'}],docs:[]},
+      {id:'speed',name:'PageSpeed score 80+',p:'h',
+        desc:'Core Web Vitals — LCP, INP, CLS. Get stack-specific config to fix failing audits.',
+        tools:[{l:'SpeedFixer →',u:'/speedfixer/'}],docs:[]},
+      {id:'edge',name:'CDN cache validated — auth not cached',p:'h',
+        desc:'Confirm authenticated responses are not being cached at the CDN layer.',
+        tools:[{l:'EdgeFix →',u:'/edge/'}],docs:[]},
+      {id:'cache_sim',name:'Cache-Control behaviour verified',p:'m',
+        desc:'Simulate how browsers and CDNs interpret your Cache-Control values.',
+        tools:[{l:'Cache Simulator →',u:'/tools/cache-simulator/'}],docs:[]},
+    ]
+  },
+  {
+    id:'https', icon:'🔗', label:'HTTPS',
+    items:[
+      {id:'redirects',name:'No redirect loops or long chains',p:'c',
+        desc:'ERR_TOO_MANY_REDIRECTS kills the site. Confirm chain resolves in ≤ 2 hops.',
+        tools:[{l:'Redirect Chain Fixer →',u:'/tools/redirect-chain/'}],
+        docs:[{l:'Fix redirect loop',u:'/errors/err-too-many-redirects/'}]},
+      {id:'www',name:'www / non-www redirect consistent',p:'h',
+        desc:'Pick one canonical form. Both should 301 to the same — not redirect to each other.',
+        tools:[{l:'Redirect Chain Fixer →',u:'/tools/redirect-chain/'}],docs:[]},
+      {id:'hsts_preload',name:'HSTS preload eligibility checked',p:'m',
+        desc:'max-age ≥ 31536000, includeSubDomains, and preload directive all present.',
+        tools:[{l:'HSTS Preload Checker →',u:'/tools/hsts-preload/'}],
+        docs:[{l:'HSTS preload guide',u:'/blog/headers/hsts-preload-list-requirements/'}]},
+    ]
+  },
+  {
+    id:'staging', icon:'🔍', label:'Staging',
+    items:[
+      {id:'diff',name:'Staging vs production headers match',p:'h',
+        desc:'Headers that pass in staging often differ in production. Diff them before launch.',
+        tools:[{l:'Header Diff →',u:'/diff/'}],
+        docs:[{l:'Staging vs prod guide',u:'/blog/compare/staging-vs-production-headers/'}]},
+      {id:'csp_ro',name:'CSP tested in report-only mode first',p:'h',
+        desc:'Deploy as Content-Security-Policy-Report-Only. Watch console for violations for 48h before enforcing.',
+        tools:[{l:'CSP Validator →',u:'/tools/csp-validator/'}],
+        docs:[{l:'How to validate CSP',u:'/blog/csp/how-to-validate-csp-before-deploying/'}]},
+    ]
+  }
+];
 
-function saveState() { const state = {}; document.querySelectorAll('input[type=checkbox]').forEach(cb => { state[cb.id] = cb.checked; }); try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+var TOTAL = SECTIONS.reduce(function(a,s){return a+s.items.length;},0);
+var KEY = 'httpfixer_checklist_v2';
+var currentTab = 0;
+
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}');}catch(e){return {};}}
+function save(s){try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){}}
+
+function badge(p){
+  if(p==='c') return '<span class="badge-c">Critical</span>';
+  if(p==='h') return '<span class="badge-h">High</span>';
+  return '<span class="badge-m">Medium</span>';
 }
 
-function loadState() { try { const raw = localStorage.getItem(STORAGE_KEY); if (!raw) return; const state = JSON.parse(raw); document.querySelectorAll('input[type=checkbox]').forEach(cb => { if (state[cb.id]) { cb.checked = true; cb.closest('.check-item').classList.add('done'); } }); } catch(e) {}
+function buildUI(){
+  var state = load();
+  var checked = Object.values(state).filter(Boolean).length;
+  var pct = Math.round(checked/TOTAL*100);
+
+  // Progress
+  document.getElementById('progNum').textContent = checked+'/'+TOTAL;
+  document.getElementById('progNum').className = 'prog-num'+(checked===TOTAL?' done':'');
+  var f = document.getElementById('progFill');
+  f.style.width = pct+'%';
+  f.className = 'prog-fill'+(checked===TOTAL?' done':'');
+
+  // Tabs
+  var tabsHtml = '';
+  SECTIONS.forEach(function(sec,i){
+    var secChecked = sec.items.filter(function(it){return state[it.id];}).length;
+    var allDone = secChecked === sec.items.length;
+    tabsHtml += '<button class="sec-tab'+(i===currentTab?' active':'')+(allDone?' all-done':'')+'" onclick="switchTab('+i+')">';
+    tabsHtml += '<span class="sec-tab-icon">'+(allDone?'✅':sec.icon)+'</span>';
+    tabsHtml += '<span class="sec-tab-label">'+sec.label+'</span>';
+    tabsHtml += '<span class="sec-tab-prog">'+secChecked+'/'+sec.items.length+'</span>';
+    tabsHtml += '</button>';
+  });
+  document.getElementById('secTabs').innerHTML = tabsHtml;
+
+  // Panels
+  var panelsHtml = '';
+  SECTIONS.forEach(function(sec,si){
+    var secChecked = sec.items.filter(function(it){return state[it.id];}).length;
+    var allDone = secChecked === sec.items.length;
+    panelsHtml += '<div class="section-panel'+(si===currentTab?' active':'')+'" id="panel-'+si+'">';
+
+    if(allDone){
+      panelsHtml += '<div class="sec-done" style="display:block">✅ All '+sec.label+' checks done</div>';
+    }
+
+    sec.items.forEach(function(item){
+      var isChecked = !!state[item.id];
+      panelsHtml += '<div class="item'+(isChecked?' checked':'')+'" onclick="toggle(\''+item.id+'\')">';
+      panelsHtml += '<div class="cb"><span class="ck">✓</span></div>';
+      panelsHtml += '<div class="item-body">';
+      panelsHtml += '<div class="item-name">'+item.name+' '+badge(item.p)+'</div>';
+      panelsHtml += '<div class="item-desc">'+item.desc+'</div>';
+      panelsHtml += '<div class="item-links">';
+      item.tools.forEach(function(t){
+        panelsHtml += '<a class="tlink" href="'+t.u+'" onclick="event.stopPropagation()">'+t.l+'</a>';
+      });
+      item.docs.forEach(function(d){
+        panelsHtml += '<a class="tlink doc" href="'+d.u+'" onclick="event.stopPropagation()">'+d.l+'</a>';
+      });
+      panelsHtml += '</div></div></div>';
+    });
+
+    // Prev / Next nav
+    panelsHtml += '<div class="sec-nav">';
+    panelsHtml += '<button class="sec-nav-btn" onclick="switchTab('+(si-1)+')" '+(si===0?'disabled':'')+'>← Previous</button>';
+    if(si < SECTIONS.length-1){
+      panelsHtml += '<button class="sec-nav-btn" onclick="switchTab('+(si+1)+')">Next: '+SECTIONS[si+1].label+' →</button>';
+    } else {
+      panelsHtml += '<button class="sec-nav-btn" onclick="switchTab(0)">↑ Back to top</button>';
+    }
+    panelsHtml += '</div>';
+    panelsHtml += '</div>';
+  });
+  document.getElementById('panels').innerHTML = panelsHtml;
+
+  // All done banner
+  document.getElementById('allDone').style.display = (checked===TOTAL)?'block':'none';
 }
 
-function updateScore() { const all = document.querySelectorAll('input[type=checkbox]'); const checked = document.querySelectorAll('input[type=checkbox]:checked'); document.getElementById('total').textContent = all.length; document.getElementById('score').textContent = checked.length; const pct = all.length ? (checked.length / all.length * 100) : 0; document.getElementById('progress').style.width = pct + '%'; document.getElementById('congrats').style.display = (checked.length === all.length && all.length > 0) ? 'block' : 'none';
+function switchTab(i){
+  if(i<0||i>=SECTIONS.length) return;
+  currentTab = i;
+  buildUI();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-document.querySelectorAll('input[type=checkbox]').forEach(cb => { cb.addEventListener('change', () => { cb.closest('.check-item').classList.toggle('done', cb.checked); saveState(); updateScore(); });
-});
-
-function resetAll() { if (!confirm('Reset all checklist items?')) return; document.querySelectorAll('input[type=checkbox]').forEach(cb => { cb.checked = false; cb.closest('.check-item').classList.remove('done'); }); try { localStorage.removeItem(STORAGE_KEY); } catch(e) {} updateScore();
+function toggle(id){
+  var s = load();
+  s[id] = !s[id];
+  save(s);
+  buildUI();
 }
 
-loadState();
-updateScore();
+function resetAll(){
+  if(confirm('Reset all checklist items?')){save({});buildUI();}
+}
+
+function copyLink(){
+  navigator.clipboard.writeText('https://httpfixer.dev/tools/pre-launch-checklist/').then(function(){
+    alert('Link copied!');
+  });
+}
+
+buildUI();
 </script>
 </body>
 </html>
