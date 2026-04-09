@@ -721,6 +721,8 @@
     .raw-headers-list .raw-header-name { color: var(--purple); flex-shrink: 0; }
     .raw-headers-list .raw-header-value { color: var(--text); word-break: break-word; }
   </style>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="shortcut icon" href="/favicon.svg">
 </head>
 <body>
   <nav>
@@ -788,7 +790,15 @@ strict-transport-security: max-age=3600
 
   <footer>
     Fixes based on OWASP Secure Headers Project · RFC 6797 · Always test in staging · MetricLogic network: <a href="https://configclarity.dev" target="_blank" rel="noopener">configclarity.dev</a> · <a href="https://domainpreflight.dev" target="_blank" rel="noopener">domainpreflight.dev</a> · <a href="https://stackfix.dev" target="_blank" rel="noopener">stackfix.dev</a>
-  </footer>
+    <!-- Pre-launch checklist nudge -->
+  <div style="border-top:1px solid #252836;padding:1.25rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;background:#0B0D14">
+    <div>
+      <div style="font-size:12px;font-weight:600;margin-bottom:0.2rem;font-family:'JetBrains Mono',monospace;color:#E2E4F0">Done with this tool?</div>
+      <div style="font-size:12px;opacity:0.5;font-family:'JetBrains Mono',monospace;color:#E2E4F0">20 HTTP checks before you ship — security, CORS, cache, redirects, staging.</div>
+    </div>
+    <a href="/tools/pre-launch-checklist/" style="background:#6C63FF;color:white;text-decoration:none;padding:0.5rem 1.1rem;font-family:'JetBrains Mono',monospace;font-size:12px;border-radius:5px;white-space:nowrap;flex-shrink:0">Pre-Launch Checklist →</a>
+  </div>
+</footer>
 
   <script>
     // TODO: Replace with real CORS proxy when deployed
