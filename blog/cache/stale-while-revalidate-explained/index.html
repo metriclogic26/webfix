@@ -36,7 +36,13 @@
 
 # For proxy caches (Nginx as reverse proxy):
 proxy_cache_use_stale updating error timeout;
-proxy_cache_background_update on;</pre>
+proxy_cache_background_update on;
+# proxy_cache_background_update on — Nginx fetches a fresh copy in the background
+# while serving the stale cached response to the current request.
+# proxy_cache_use_stale updating — serves stale while a background update is in progress.
+# Together these replicate stale-while-revalidate behaviour at the proxy layer.
+# Requires proxy_cache_lock on; to prevent cache stampedes during revalidation.</pre>
+<p><code>proxy_cache_background_update</code> is Nginx's equivalent of <code>stale-while-revalidate</code> for reverse proxy caches. It requires <code>proxy_cache_usele updating</code> to be set — without it, Nginx will wait for the fresh response before serving. Add <code>proxy_cache_lock on;</code> to prevent multiple simultaneous revalidation requests hitting your origin.</p>
 
 <h2>Cloudflare</h2>
 <p>Cloudflare honours <code>stale-while-revalidate</code> from origin headers. As of 2024, revalidation is fully asynchronous — the first request after expiry immediately receives stale content while Cloudflare fetches fresh from origin.</p>
