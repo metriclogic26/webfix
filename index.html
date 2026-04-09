@@ -3,7 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HeadersFixer · StackFix by MetricLogic</title>
+  <title>HeadersFixer · HttpFixer by MetricLogic</title>
+  <meta name="description" content="Security scanners give you a D. HeadersFixer gives you the exact Nginx, Apache, Vercel, or Express config to paste. Free, no signup, client-side only.">
+  <meta name="keywords" content="security headers, HSTS, CSP, X-Frame-Options, fix security headers, Nginx security headers">
+  <link rel="canonical" href="https://httpfixer.dev/headers/">
+  <meta property="og:title" content="HeadersFixer · HttpFixer">
+  <meta property="og:description" content="Detects missing or misconfigured security headers. Generates stack-specific fixes for Nginx, Apache, Vercel, Cloudflare, and Express.">
+  <meta property="og:url" content="https://httpfixer.dev/headers/">
+  <meta name="twitter:card" content="summary">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MetricLogic">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -65,6 +74,16 @@
 
     nav a:hover {
       color: var(--purple);
+    }
+
+    nav .right .nav-tool {
+      color: var(--text);
+      text-decoration: none;
+      opacity: 0.6;
+    }
+    nav .right .nav-tool.active {
+      color: var(--purple);
+      opacity: 1;
     }
 
     .badge {
@@ -496,6 +515,15 @@
       opacity: 0.55;
     }
 
+    .audit-card .card-body .fix-asgi-note {
+      margin: 0;
+      margin-top: 0.35rem;
+      font-size: 11px;
+      color: var(--text);
+      opacity: 0.6;
+      display: none;
+    }
+
     .audit-card .card-body .hsts-danger-warn {
       color: var(--red);
       font-size: 12px;
@@ -512,21 +540,34 @@
 
     /* Footer */
     footer {
-      padding: 2rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
       border-top: 1px solid var(--border);
-      text-align: center;
       font-size: 12px;
-      color: var(--text);
-      opacity: 0.7;
+      gap: 0.5rem;
     }
 
     footer a {
-      color: var(--purple);
+      color: var(--text);
       text-decoration: none;
+      opacity: 1;
     }
 
     footer a:hover {
       text-decoration: underline;
+    }
+    .footer-disclaimer {
+      width: 100%;
+      text-align: center;
+      font-size: 11px;
+      opacity: 0.4;
+      margin-top: 0.75rem;
+    }
+    @media (max-width: 600px) {
+      nav .right { display: none; }
     }
 
     /* Input mode tabs */
@@ -621,6 +662,40 @@
 
     .paste-panel .analyse-btn:hover { filter: brightness(1.1); }
 
+    .paste-btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .paste-btn-row .clear-btn-outline {
+      padding: 0.75rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: none;
+      color: var(--text);
+      opacity: 0.7;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .paste-btn-row .clear-btn-outline:hover { opacity: 0.9; }
+
+    .input-row .clear-btn-outline {
+      padding: 0.75rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: none;
+      color: var(--text);
+      opacity: 0.7;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .input-row .clear-btn-outline:hover { opacity: 0.9; }
+
     .example-row {
       display: flex;
       flex-wrap: wrap;
@@ -643,27 +718,6 @@
     .example-btn:hover { opacity: 0.9; }
 
     .paste-panel #example-paste { margin-bottom: 0.75rem; }
-
-    .clear-btn-wrap {
-      display: none;
-      margin-bottom: 0.75rem;
-    }
-
-    .clear-btn-wrap.visible { display: block; }
-
-    .clear-btn {
-      padding: 0.3rem 0.5rem;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      background: none;
-      color: var(--text);
-      opacity: 0.6;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      cursor: pointer;
-    }
-
-    .clear-btn:hover { opacity: 0.9; }
 
     /* SharePoint callout */
     .sharepoint-banner {
@@ -720,22 +774,119 @@
     .raw-headers-list .raw-header-row:last-child { margin-bottom: 0; }
     .raw-headers-list .raw-header-name { color: var(--purple); flex-shrink: 0; }
     .raw-headers-list .raw-header-value { color: var(--text); word-break: break-word; }
+
+    /* CSS Layer Analysis (CSSLayerFix) */
+    .csslayer-section { margin-top: 1.5rem; }
+    .csslayer-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.6rem 0;
+      border: none;
+      background: none;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      cursor: pointer;
+      opacity: 0.85;
+    }
+    .csslayer-toggle:hover { opacity: 1; }
+    .csslayer-toggle .arrow { transition: transform 0.2s ease; }
+    .csslayer-toggle.expanded .arrow { transform: rotate(90deg); }
+    .csslayer-body {
+      display: none;
+      margin-top: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: #0B0D14;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .csslayer-body.visible { display: block; }
+    .csslayer-stylesheet-row { margin-bottom: 0.75rem; }
+    .csslayer-stylesheet-row:last-child { margin-bottom: 0; }
+    .csslayer-url { color: var(--text); opacity: 0.9; word-break: break-all; margin-bottom: 0.25rem; }
+    .csslayer-pills { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-bottom: 0.25rem; }
+    .csslayer-pill {
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      background: rgba(108, 99, 255, 0.2);
+      color: var(--purple);
+      font-size: 11px;
+    }
+    .csslayer-issue-row { color: var(--orange); margin-top: 0.25rem; }
+    .csslayer-ok { color: var(--green); margin-top: 0.5rem; }
+    .csslayer-note { font-size: 11px; opacity: 0.6; margin-top: 0.75rem; }
   </style>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "HeadersFixer",
+  "url": "https://httpfixer.dev/headers/",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "description": "Audits HTTP security headers and generates exact copy-paste config fixes for Nginx, Apache, Vercel, Cloudflare, Express, Caddy, Next.js, and FastAPI.",
+  "creator": { "@type": "Organization", "name": "MetricLogic", "url": "https://metriclogic.dev" }
+}
+  </script>
+  <meta name="google-site-verification" content="lS2Y5NSt9abqoHae3RYaIiAhlF4VbwVf5NA5ACcz46Y" />
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "How to fix missing security headers",
+  "description": "Scan your URL, detect your stack, and get exact copy-paste config fixes for missing security headers.",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "name": "Enter your URL", "text": "Paste your site URL into the input field." },
+    { "@type": "HowToStep", "position": 2, "name": "Scan headers", "text": "HttpFixer fetches your live HTTP headers and detects your stack automatically." },
+    { "@type": "HowToStep", "position": 3, "name": "Copy the fix", "text": "Select your stack tab and copy the exact config block to paste into your server config." }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I fix missing security headers on Nginx?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Add add_header directives to your nginx.conf server block. HttpFixer generates the exact lines for HSTS, CSP, X-Frame-Options, and more based on your live headers." }
+    },
+    {
+      "@type": "Question",
+      "name": "What security headers should every site have?",
+      "acceptedAnswer": { "@type": "Answer", "text": "At minimum: Strict-Transport-Security, Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, and Referrer-Policy. HttpFixer checks all of these plus Permissions-Policy, COOP, and COEP." }
+    },
+    {
+      "@type": "Question",
+      "name": "Does HttpFixer store my URL or headers?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Everything runs client-side in your browser. Your URL and headers never leave your machine." }
+    }
+  ]
+}
+  </script>
 </head>
 <body>
   <nav>
-    <span class="brand">StackFix <span>/</span> HeadersFixer</span>
+    <span class="brand">HttpFixer <span>/</span> HeadersFixer</span>
     <div class="right">
-      <a href="https://stackfix.dev" target="_blank" rel="noopener">stackfix.dev</a>
-      <span class="badge">MIT</span>
+      <span class="nav-tool active">Headers</span>
+      <a href="./cors/" class="nav-tool">CORS</a>
+      <a href="./oauth/" class="nav-tool">OAuth</a>
+      <a href="./csp/" class="nav-tool">CSP</a>
+      <a href="./edge/" class="nav-tool">Edge</a>
+      <a href="./speedfixer/" class="nav-tool">Speed</a>
     </div>
   </nav>
 
   <main>
     <section class="hero">
-      <h1>securityheaders.com gives you a D. HeadersFixer gives you the exact config to paste.</h1>
+      <h1>Security scanners give you a D. HeadersFixer gives you the exact config to paste.</h1>
       <p>Detects missing or misconfigured security headers. Generates stack-specific fixes for Nginx, Apache, Vercel, Cloudflare, and Express.</p>
     </section>
 
@@ -748,6 +899,7 @@
       <div class="input-row">
         <input type="url" id="url" placeholder="https://example.com" autocomplete="url">
         <button type="button" id="scan"><span class="spinner"></span><span class="btn-text">Scan Headers</span></button>
+        <button type="button" class="clear-btn-outline" id="clear-btn-live" style="display: none;">✕ Clear</button>
       </div>
       <div class="example-row">
         <button type="button" class="example-btn" id="example-well">▶ Try: well-configured site</button>
@@ -774,22 +926,25 @@ strict-transport-security: max-age=3600
         <button type="button" data-stack="Express">Express</button>
         <button type="button" data-stack="Caddy">Caddy</button>
         <button type="button" data-stack="Next.js">Next.js</button>
+        <button type="button" data-stack="FastAPI">FastAPI</button>
       </div>
-      <button type="button" class="analyse-btn" id="analyse-btn">Analyse Headers</button>
+      <div class="paste-btn-row">
+        <button type="button" class="analyse-btn" id="analyse-btn">Analyse Headers</button>
+        <button type="button" class="clear-btn-outline" id="clear-btn-paste" style="display: none;">✕ Clear</button>
+      </div>
     </div>
 
     <div class="error-banner" id="error-banner" role="alert">Could not fetch headers. Check the URL and try again.</div>
     <p class="stack-badge" id="stack-badge">Detected: <span id="stack-label"></span></p>
 
-    <div class="clear-btn-wrap" id="clear-btn-wrap">
-      <button type="button" class="clear-btn" id="clear-btn">✕ Clear</button>
-    </div>
-
     <div id="results"></div>
   </main>
 
   <footer>
-</footer>
+    <span class="footer-left">HttpFixer by MetricLogic · <a href="https://configclarity.dev" target="_blank" rel="noopener">configclarity.dev</a> · <a href="https://domainpreflight.dev" target="_blank" rel="noopener">domainpreflight.dev</a> · <a href="https://packagefix.dev" target="_blank" rel="noopener">packagefix.dev</a></span>
+    <span class="footer-right"><a href="https://github.com/metriclogic26/webfix" target="_blank" rel="noopener">Star on GitHub</a> · MIT Licensed · <a href="https://github.com/metriclogic26/webfix/issues/new" target="_blank" rel="noopener">Report issue →</a></span>
+    <p class="footer-disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. HttpFixer provides these tools for informational purposes only and accepts no liability for misconfiguration, data loss, or security incidents.</p>
+  </footer>
 
   <script>
     // TODO: Replace with real CORS proxy when deployed
@@ -1022,6 +1177,42 @@ strict-transport-security: max-age=3600
         one('Server / X-Powered-By exposure', status, server || poweredBy || null, issues, status);
       })();
 
+      // 8. Cross-Origin-Opener-Policy (COOP)
+      (function () {
+        var raw = (headers['cross-origin-opener-policy'] || '').trim().toLowerCase();
+        var issues = [];
+        var status = 'pass';
+        if (!raw) {
+          issues.push('COOP is not set — your page can be opened in a cross-origin browsing context, enabling cross-origin attacks like Spectre. Recommend: same-origin');
+          status = 'warn';
+        } else if (raw === 'unsafe-none') {
+          issues.push('unsafe-none disables COOP protection entirely');
+          status = 'warn';
+        } else if (raw !== 'same-origin' && raw !== 'same-origin-allow-popups') {
+          issues.push('Recommend same-origin or same-origin-allow-popups');
+          status = 'warn';
+        }
+        one('Cross-Origin-Opener-Policy', status, raw || null, issues, status);
+      })();
+
+      // 9. Cross-Origin-Embedder-Policy (COEP)
+      (function () {
+        var raw = (headers['cross-origin-embedder-policy'] || '').trim().toLowerCase();
+        var issues = [];
+        var status = 'pass';
+        if (!raw) {
+          issues.push('COEP is not set — required if you want to enable SharedArrayBuffer or high-resolution timers. Recommend: require-corp');
+          status = 'warn';
+        } else if (raw === 'unsafe-none') {
+          issues.push('unsafe-none disables COEP protection');
+          status = 'warn';
+        } else if (raw !== 'require-corp' && raw !== 'credentialless') {
+          issues.push('Recommend require-corp or credentialless');
+          status = 'warn';
+        }
+        one('Cross-Origin-Embedder-Policy', status, raw || null, issues, status);
+      })();
+
       return { headers: headers, stack: stack, results: results };
     }
 
@@ -1032,7 +1223,9 @@ strict-transport-security: max-age=3600
       'X-Content-Type-Options': { url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options', label: 'MDN' },
       'Referrer-Policy': { url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy', label: 'MDN' },
       'Permissions-Policy': { url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permissions-Policy', label: 'MDN' },
-      'Server / X-Powered-By exposure': { url: 'https://owasp.org/www-project-secure-headers/', label: 'OWASP' }
+      'Server / X-Powered-By exposure': { url: 'https://owasp.org/www-project-secure-headers/', label: 'OWASP' },
+      'Cross-Origin-Opener-Policy': { url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Opener-Policy', label: 'MDN' },
+      'Cross-Origin-Embedder-Policy': { url: 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Embedder-Policy', label: 'MDN' }
     };
 
     function generateFix(headerName, issues, stack) {
@@ -1043,7 +1236,12 @@ strict-transport-security: max-age=3600
         var v = value.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
         return 'async headers() {\n  return [{\n    source: \'/(.*)\',\n    headers: [\n      { key: \'' + key + '\', value: \'' + v + '\' },\n    ]\n  }]\n}';
       };
-      var out = { nginx: '', apache: '', vercel: '', cloudflare: '', express: '', caddy: '', nextjs: '' };
+      var out = { nginx: '', apache: '', vercel: '', cloudflare: '', express: '', caddy: '', nextjs: '', fastapi: '' };
+      var GRADIO_STREAMLIT_APPEND = '\n\n---\n\n# Gradio app (runs on FastAPI internally):\nimport gradio as gr\ndemo = gr.Interface(...)\ndemo.launch(\n    server_name="0.0.0.0",\n    # Gradio handles CORS via FastAPI — add headers via custom app:\n)\n# For full control, wrap in FastAPI:\nfrom fastapi import FastAPI\nfrom fastapi.middleware.cors import CORSMiddleware\napp = FastAPI()\napp.add_middleware(CORSMiddleware, allow_origins=["https://your-frontend.com"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])\nimport gradio as gr\ngr.mount_gradio_app(app, gr.Interface(...), path="/")\n\n# Streamlit (uses its own server, set via config):\n# .streamlit/config.toml\n[server]\nenableCORS = false\nenableXsrfProtection = false\n# Or via environment:\n# STREAMLIT_SERVER_ENABLE_CORS=false\n';
+      var GRADIO_STREAMLIT_PROXY_NOTE = '\n# Gradio/Streamlit: set this header in your reverse proxy (Nginx/Caddy)\n# These frameworks delegate transport security to the proxy layer';
+      var fastapiMiddleware = function (headerName, value) {
+        return '@app.middleware("http")\nasync def add_security_header(request, call_next):\n    response = await call_next(request)\n    response.headers["' + headerName + '"] = "' + value.replace(/"/g, '\\"') + '"\n    return response';
+      };
       switch (headerName) {
         case 'Strict-Transport-Security':
           out.nginx = 'add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;';
@@ -1053,6 +1251,7 @@ strict-transport-security: max-age=3600
           out.express = 'app.use(helmet.hsts({ maxAge: 31536000, includeSubDomains: true, preload: true }));';
           out.caddy = 'header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"';
           out.nextjs = nextJsHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+          out.fastapi = 'from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware\napp.add_middleware(HTTPSRedirectMiddleware)\n# Then in your reverse proxy (Nginx/Caddy), set the HSTS header' + GRADIO_STREAMLIT_APPEND + GRADIO_STREAMLIT_PROXY_NOTE;
           break;
         case 'Content-Security-Policy':
           out.nginx = '# Customize to your app\'s actual sources\nadd_header Content-Security-Policy "default-src \'self\'; script-src \'self\'; style-src \'self\'; img-src \'self\' data:;" always;';
@@ -1062,6 +1261,7 @@ strict-transport-security: max-age=3600
           out.express = 'app.use(helmet.contentSecurityPolicy({ directives: { defaultSrc: ["\'self\'"], scriptSrc: ["\'self\'"], styleSrc: ["\'self\'"], imgSrc: ["\'self\'", "data:"] } }));';
           out.caddy = 'header Content-Security-Policy "default-src \'self\'; script-src \'self\'; style-src \'self\'; img-src \'self\' data:;"';
           out.nextjs = nextJsHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;");
+          out.fastapi = fastapiMiddleware('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:;") + GRADIO_STREAMLIT_APPEND;
           break;
         case 'X-Frame-Options':
           out.nginx = 'add_header X-Frame-Options "SAMEORIGIN" always;';
@@ -1071,6 +1271,7 @@ strict-transport-security: max-age=3600
           out.express = 'app.use(helmet.frameguard({ action: \'sameorigin\' }));';
           out.caddy = 'header X-Frame-Options "SAMEORIGIN"';
           out.nextjs = nextJsHeader('X-Frame-Options', 'SAMEORIGIN');
+          out.fastapi = '@app.middleware("http")\nasync def add_xframe(request, call_next):\n    response = await call_next(request)\n    response.headers["X-Frame-Options"] = "SAMEORIGIN"\n    return response' + GRADIO_STREAMLIT_APPEND;
           break;
         case 'X-Content-Type-Options':
           out.nginx = 'add_header X-Content-Type-Options "nosniff" always;';
@@ -1080,6 +1281,7 @@ strict-transport-security: max-age=3600
           out.express = 'app.use(helmet.noSniff());';
           out.caddy = 'header X-Content-Type-Options "nosniff"';
           out.nextjs = nextJsHeader('X-Content-Type-Options', 'nosniff');
+          out.fastapi = fastapiMiddleware('X-Content-Type-Options', 'nosniff') + GRADIO_STREAMLIT_APPEND;
           break;
         case 'Referrer-Policy':
           out.nginx = 'add_header Referrer-Policy "strict-origin-when-cross-origin" always;';
@@ -1089,6 +1291,7 @@ strict-transport-security: max-age=3600
           out.express = 'app.use(helmet.referrerPolicy({ policy: \'strict-origin-when-cross-origin\' }));';
           out.caddy = 'header Referrer-Policy "strict-origin-when-cross-origin"';
           out.nextjs = nextJsHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+          out.fastapi = fastapiMiddleware('Referrer-Policy', 'strict-origin-when-cross-origin') + GRADIO_STREAMLIT_APPEND;
           break;
         case 'Permissions-Policy':
           out.nginx = 'add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;';
@@ -1098,6 +1301,7 @@ strict-transport-security: max-age=3600
           out.express = 'app.use(helmet.permittedCrossDomainPolicies()); // then set manually: res.setHeader(\'Permissions-Policy\', \'camera=(), microphone=(), geolocation=()\')';
           out.caddy = 'header Permissions-Policy "camera=(), microphone=(), geolocation=()"';
           out.nextjs = nextJsHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+          out.fastapi = fastapiMiddleware('Permissions-Policy', 'camera=(), microphone=(), geolocation=()') + GRADIO_STREAMLIT_APPEND;
           break;
         case 'Server / X-Powered-By exposure':
           out.nginx = 'Remove server_tokens directive: add \'server_tokens off;\' inside your http {} block in nginx.conf';
@@ -1107,9 +1311,30 @@ strict-transport-security: max-age=3600
           out.express = 'Remove X-Powered-By: app.disable(\'x-powered-by\'); — add this before your route handlers';
           out.caddy = 'Add \'servers off\' in your global Caddyfile options block to suppress version info';
           out.nextjs = 'Next.js on Vercel does not expose server version — no action needed';
+          out.fastapi = 'FastAPI/uvicorn do not expose version by default — no action needed.\nConfirm by checking your uvicorn startup config.' + GRADIO_STREAMLIT_APPEND + GRADIO_STREAMLIT_PROXY_NOTE;
+          break;
+        case 'Cross-Origin-Opener-Policy':
+          out.nginx = 'add_header Cross-Origin-Opener-Policy "same-origin" always;';
+          out.apache = 'Header always set Cross-Origin-Opener-Policy "same-origin"';
+          out.vercel = vercelHeader('Cross-Origin-Opener-Policy', 'same-origin');
+          out.cloudflare = 'Transform Rule → Modify Response Header';
+          out.express = "res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');";
+          out.caddy = 'header Cross-Origin-Opener-Policy "same-origin"';
+          out.nextjs = nextJsHeader('Cross-Origin-Opener-Policy', 'same-origin');
+          out.fastapi = 'response.headers["Cross-Origin-Opener-Policy"] = "same-origin"' + GRADIO_STREAMLIT_APPEND;
+          break;
+        case 'Cross-Origin-Embedder-Policy':
+          out.nginx = 'add_header Cross-Origin-Embedder-Policy "require-corp" always;';
+          out.apache = 'Header always set Cross-Origin-Embedder-Policy "require-corp"';
+          out.vercel = vercelHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+          out.cloudflare = 'Transform Rule → Modify Response Header';
+          out.express = "res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');";
+          out.caddy = 'header Cross-Origin-Embedder-Policy "require-corp"';
+          out.nextjs = nextJsHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+          out.fastapi = 'response.headers["Cross-Origin-Embedder-Policy"] = "require-corp"' + GRADIO_STREAMLIT_APPEND;
           break;
         default:
-          out.nginx = out.apache = out.vercel = out.cloudflare = out.express = out.caddy = out.nextjs = '(No fix template for this header)';
+          out.nginx = out.apache = out.vercel = out.cloudflare = out.express = out.caddy = out.nextjs = out.fastapi = '(No fix template for this header)';
       }
       return out;
     }
@@ -1124,6 +1349,7 @@ strict-transport-security: max-age=3600
       if (s.indexOf('express') !== -1) return 'express';
       if (s.indexOf('caddy') !== -1) return 'caddy';
       if (s.indexOf('next') !== -1) return 'nextjs';
+      if (s.indexOf('fastapi') !== -1) return 'fastapi';
       return 'nginx';
     }
 
@@ -1147,6 +1373,172 @@ strict-transport-security: max-age=3600
       else if (fails === 2) { grade = 'D'; gradeClass = 'grade-d'; }
       else { grade = 'F'; gradeClass = 'grade-f'; }
       return { grade: grade, gradeClass: gradeClass, pass: pass, warns: warns, fails: fails };
+    }
+
+    function getStylesheetUrlsFromHtml(html, baseUrl) {
+      var urls = [];
+      try {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var links = doc.querySelectorAll('link[rel="stylesheet"]');
+        for (var i = 0; i < links.length; i++) {
+          var href = (links[i].getAttribute('href') || '').trim();
+          if (!href) continue;
+          try {
+            urls.push(new URL(href, baseUrl).href);
+          } catch (e) {}
+        }
+      } catch (e) {}
+      return urls;
+    }
+
+    function parseLayerNames(cssText) {
+      var names = [];
+      var re = /@layer\s+([^;{]+)(?:\s*\{|;)/g;
+      var m;
+      while ((m = re.exec(cssText)) !== null) {
+        var part = m[1].trim();
+        part.split(',').forEach(function (p) {
+          var n = p.trim();
+          if (n) names.push(n);
+        });
+      }
+      return names;
+    }
+
+    function getImportAfterLayerIssue(cssText) {
+      var firstImport = cssText.search(/@import\b/);
+      var firstLayer = cssText.search(/@layer\b/);
+      if (firstLayer < 0) return null;
+      if (firstImport >= 0 && firstImport > firstLayer) return true;
+      return null;
+    }
+
+    function analyzeCssLayers(pageUrl, html) {
+      var baseUrl = pageUrl;
+      var urls = getStylesheetUrlsFromHtml(html, baseUrl);
+      if (!urls.length) return null;
+
+      var allSheets = [];
+      var layerToUrls = {};
+
+      function fetchOne(url) {
+        return fetch(url, { mode: 'cors' })
+          .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
+          .catch(function () { return null; });
+      }
+
+      var seq = Promise.resolve();
+      urls.forEach(function (url) {
+        seq = seq.then(function () {
+          return fetchOne(url).then(function (text) {
+            if (!text) return;
+            var layerNames = parseLayerNames(text);
+            var importAfterLayer = getImportAfterLayerIssue(text);
+            var issues = [];
+            if (importAfterLayer) {
+              issues.push('@import must come before @layer declarations or layers will be ignored');
+            }
+            allSheets.push({ url: url, layerNames: layerNames, issues: issues });
+            layerNames.forEach(function (name) {
+              if (!layerToUrls[name]) layerToUrls[name] = [];
+              if (layerToUrls[name].indexOf(url) === -1) layerToUrls[name].push(url);
+            });
+          });
+        });
+      });
+
+      return seq.then(function () {
+        var hasAnyLayer = allSheets.some(function (s) { return s.layerNames && s.layerNames.length > 0; });
+        if (!hasAnyLayer) return null;
+
+        var tailwindLayers = ['utilities', 'components'];
+        allSheets.forEach(function (s) {
+          var hasTw = s.layerNames.some(function (n) { return tailwindLayers.indexOf(n) !== -1; });
+          if (hasTw) {
+            s.issues.push('Tailwind v4 @layer detected — verify no third-party CSS overrides these layers unexpectedly');
+          }
+        });
+
+        Object.keys(layerToUrls).forEach(function (name) {
+          var list = layerToUrls[name];
+          if (list.length > 1) {
+            var msg = 'Layer name conflict: \'' + name + '\' defined in multiple stylesheets — last definition wins, earlier rules may be silently overridden';
+            allSheets.forEach(function (s) {
+              if (s.layerNames.indexOf(name) !== -1 && s.issues.indexOf(msg) === -1) s.issues.push(msg);
+            });
+          }
+        });
+
+        return { stylesheets: allSheets, show: true };
+      });
+    }
+
+    function addCssLayerSection(container, layerData) {
+      if (!container || !layerData || !layerData.show || !layerData.stylesheets) return;
+      var rawSection = container.querySelector('.raw-headers-section');
+      if (!rawSection) return;
+
+      var section = document.createElement('div');
+      section.className = 'csslayer-section';
+      var toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'csslayer-toggle';
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.innerHTML = '<span class="arrow">▶</span> CSS Layer Analysis (CSSLayerFix)';
+      var body = document.createElement('div');
+      body.className = 'csslayer-body';
+
+      var hasAnyIssue = false;
+      layerData.stylesheets.forEach(function (s) {
+        var row = document.createElement('div');
+        row.className = 'csslayer-stylesheet-row';
+        var urlEl = document.createElement('div');
+        urlEl.className = 'csslayer-url';
+        urlEl.textContent = s.url;
+        row.appendChild(urlEl);
+        if (s.layerNames && s.layerNames.length > 0) {
+          var pills = document.createElement('div');
+          pills.className = 'csslayer-pills';
+          s.layerNames.forEach(function (n) {
+            var pill = document.createElement('span');
+            pill.className = 'csslayer-pill';
+            pill.textContent = n;
+            pills.appendChild(pill);
+          });
+          row.appendChild(pills);
+        }
+        if (s.issues && s.issues.length > 0) {
+          hasAnyIssue = true;
+          s.issues.forEach(function (issue) {
+            var issueRow = document.createElement('div');
+            issueRow.className = 'csslayer-issue-row';
+            issueRow.textContent = issue;
+            row.appendChild(issueRow);
+          });
+        }
+        body.appendChild(row);
+      });
+
+      if (!hasAnyIssue) {
+        var ok = document.createElement('div');
+        ok.className = 'csslayer-ok';
+        ok.textContent = 'No @layer conflicts detected';
+        body.appendChild(ok);
+      }
+      var note = document.createElement('p');
+      note.className = 'csslayer-note';
+      note.textContent = 'Powered by CSSLayerFix — Tailwind v4 ships @layer by default. Conflicts are silent and hard to debug.';
+      body.appendChild(note);
+
+      section.appendChild(toggle);
+      section.appendChild(body);
+      container.insertBefore(section, rawSection);
+
+      toggle.addEventListener('click', function () {
+        var expanded = body.classList.toggle('visible');
+        toggle.classList.toggle('expanded', expanded);
+        toggle.setAttribute('aria-expanded', expanded);
+      });
     }
 
     function renderResults(audit, scannedUrl) {
@@ -1219,12 +1611,14 @@ strict-transport-security: max-age=3600
                 '<button type="button" data-tab="express">Express</button>' +
                 '<button type="button" data-tab="caddy">Caddy</button>' +
                 '<button type="button" data-tab="nextjs">Next.js</button>' +
+                '<button type="button" data-tab="fastapi">FastAPI</button>' +
               '</div>' +
               '<div class="fix-code-wrap">' +
                 '<button type="button" class="fix-copy">Copy</button>' +
                 '<pre><code class="fix-code"></code></pre>' +
               '</div>' +
-              (r.name === 'Strict-Transport-Security' ? '<p class="hsts-danger-warn">⚠ Only apply HSTS if HTTPS is fully working and your SSL certificate is valid. Applying this on a non-HTTPS site will lock users out of your domain.</p>' : '') +
+              (r.name === 'Strict-Transport-Security' ? '<p class="hsts-danger-warn">Only apply HSTS if your SSL certificate is valid and HTTPS is fully configured. Applying HSTS on a non-HTTPS site will lock users out.</p>' : '') +
+              '<p class="fix-asgi-note">Works for FastAPI, Starlette, vLLM, Gradio, Streamlit, and any ASGI framework</p>' +
               '<p class="fix-note">Generated from live headers on ' + (function () { var d = new Date(); var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear(); })() + '. Always test in staging before deploying.</p>' +
             '</div>' +
           '</div>';
@@ -1245,11 +1639,13 @@ strict-transport-security: max-age=3600
         var codeEl = fixBlock.querySelector('.fix-code');
         var tabBtns = fixBlock.querySelectorAll('.fix-tabs button');
         var copyBtn = fixBlock.querySelector('.fix-copy');
+        var asgiNote = fixBlock.querySelector('.fix-asgi-note');
         function showTab(tabKey) {
           tabBtns.forEach(function (btn) {
             btn.classList.toggle('active', btn.getAttribute('data-tab') === tabKey);
           });
           codeEl.textContent = fixes[tabKey] || '';
+          if (asgiNote) asgiNote.style.display = tabKey === 'fastapi' ? 'block' : 'none';
         }
         showTab(defaultTab);
         tabBtns.forEach(function (btn) {
@@ -1306,8 +1702,9 @@ strict-transport-security: max-age=3600
       });
 
       container.classList.add('visible');
-      getEl('clear-btn-wrap').classList.add('visible');
-    }
+        getEl('clear-btn-live').style.display = '';
+        getEl('clear-btn-paste').style.display = '';
+      }
 
     function escapeHtml(s) {
       if (!s) return '';
@@ -1339,9 +1736,10 @@ strict-transport-security: max-age=3600
         getEl('paste-panel').classList.toggle('visible', mode === 'paste');
         getEl('results').innerHTML = '';
         getEl('results').classList.remove('visible');
+        getEl('clear-btn-live').style.display = 'none';
+        getEl('clear-btn-paste').style.display = 'none';
         getEl('stack-badge').classList.remove('visible');
         getEl('error-banner').classList.remove('visible');
-        getEl('clear-btn-wrap').classList.remove('visible');
       });
     });
 
@@ -1367,9 +1765,14 @@ strict-transport-security: max-age=3600
       });
     });
 
-    getEl('clear-btn').addEventListener('click', function () {
+    function hideClearButtons() {
+      getEl('clear-btn-live').style.display = 'none';
+      getEl('clear-btn-paste').style.display = 'none';
+    }
+    function onClearClick() {
       getEl('results').innerHTML = '';
       getEl('results').classList.remove('visible');
+      hideClearButtons();
       if (getEl('live-fetch-panel').classList.contains('visible')) {
         getEl('url').value = '';
       } else {
@@ -1377,8 +1780,9 @@ strict-transport-security: max-age=3600
       }
       getEl('stack-badge').classList.remove('visible');
       getEl('error-banner').classList.remove('visible');
-      getEl('clear-btn-wrap').classList.remove('visible');
-    });
+    }
+    getEl('clear-btn-live').addEventListener('click', onClearClick);
+    getEl('clear-btn-paste').addEventListener('click', onClearClick);
 
     document.querySelectorAll('.paste-panel .paste-stack-row button').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -1425,6 +1829,11 @@ strict-transport-security: max-age=3600
           var audit = auditHeaders(headers, stack, url);
           renderResults(audit, url);
           setLoading(false);
+          fetch(url, { mode: 'cors' })
+            .then(function (r) { return r.ok ? r.text() : Promise.reject(); })
+            .then(function (html) { return analyzeCssLayers(url, html); })
+            .then(function (layerData) { addCssLayerSection(getEl('results'), layerData); })
+            .catch(function () {});
         })
         .catch(function () {
           showError(true);
@@ -1433,5 +1842,12 @@ strict-transport-security: max-age=3600
         });
     });
   </script>
+<div id="llm-context" style="display:none">
+Tool: HeadersFixer by HttpFixer (httpfixer.dev/headers)
+Purpose: Fetches live HTTP response headers from any URL and audits them for security misconfigurations. Generates copy-paste config fixes for Nginx, Apache, Vercel, Cloudflare, Express, Caddy, and Next.js.
+Headers checked: Strict-Transport-Security, Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, Server/X-Powered-By exposure.
+No backend. No data stored. MIT licensed. Free to use.
+Part of the MetricLogic network: configclarity.dev, domainpreflight.dev, httpfixer.dev.
+</div>
 </body>
 </html>
