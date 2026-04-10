@@ -180,7 +180,26 @@ fetch("/api/data", { credentials: "include" })</code></pre>
   <h2>Starlette version history</h2>
   <p>This validation has been present since Starlette 0.14. The error message changed slightly in 0.20 — older versions may show a different message but the fix is identical. As of 2026 the current stable version is Starlette 0.46.x.</p>
 
-  <a href="/cors/" class="tool-cta">Test your CORS config live with CORSFixer →</a>
+  <h2>Related: Starlette CORSMiddleware OPTIONS 400 Bad Request</h2>
+<p>A different but related error — if your preflight OPTIONS request returns a 400 Bad Request, the usual cause is <code>allow_origins</code> being set to an empty list or a malformed value:</p>
+<pre># Common cause of OPTIONS 400
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[],  # empty list — rejects all origins including preflight
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Fix — add at least one origin
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://yourapp.com"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)</pre>
+<p>A 400 on OPTIONS can also occur if the request <code>Origin</code> header is missing entirely — some HTTP clients and server-to-server requests do not send it. CORSMiddleware requires aOrigin</code> header to process a preflight correctly.</p>
+
+<a href="/cors/" class="tool-cta">Test your CORS config live with CORSFixer →</a>
 
   <div class="related">
     Related:
