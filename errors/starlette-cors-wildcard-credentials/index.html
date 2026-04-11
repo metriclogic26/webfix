@@ -165,7 +165,9 @@ async def cors_middleware(request: Request, call_next):
   </div>
 
   <h2>What does allow_credentials=True actually do?</h2>
-  <p>It adds <code>Access-Control-Allow-Credentials: true</code> to every response. This tells the browser it may include cookies, Authorization headers, and TLS client certificates in cross-origin requests. The browser will then reject any response that has <code>Access-Control-Allow-Origin: *</code> alongside this header — which is why Starlette prevents the combination at startup.</p>
+  <h2>allow_credentials defaults to False</h2>
+<p><code>allow_credentials</code> is <code>False</code> by default in CORSMiddleware. You only need to set it to <code>True</code> if your frontend sends cookies or Authorization headers with credentials. If you are using Bearer tokens in an Authorization header without <code>credentials: "include"</code> in your fetch call, you do not need <code>allow_credentials=True</code> and can safely use <code>allow_origins=["*"]</code>.</p>
+<p>It adds <code>Access-Control-Allow-Credentials: true</code> to every response. This tells the browser it may include cookies, Authorization headers, and TLS client certificates in cross-origin requests. The browser will then reject any response that has <code>Access-Control-Allow-Origin: *</code> alongside this header — which is why Starlette prevents the combination at startup.</p>
 
   <h2>Do I actually need allow_credentials=True?</h2>
   <p>Only if your frontend explicitly sets <code>credentials: "include"</code> in fetch calls, or <code>withCredentials: true</code> in XMLHttpRequest. If you are just sending JSON with an Authorization header (Bearer token), you do not need <code>allow_credentials=True</code> — Bearer tokens are not credentials in the CORS sense. You can use <code>allow_origins=["*"]</code> safely with Bearer token auth.</p>
@@ -181,7 +183,23 @@ fetch("/api/data", { credentials: "include" })</code></pre>
   <h2>Starlette version history</h2>
   <p>This validation has been present since Starlette 0.14. The error message changed slightly in 0.20 — older versions may show a different message but the fix is identical. As of 2026 the current stable version is Starlette 0.46.x.</p>
 
-  <h2>Related: Starlette CORSMiddleware OPTIONS 400 Bad Request</h2>
+  <h2>Connexion and other Starlette-based frameworks</h2>
+<p>The same error occurs in Connexion, Litestar, and any other framework built on Starlette. The fix is identical — replace <code>allow_origins=["*"]</code> with an explicit list when <code>allow_credentials=True</code>:</p>
+<pre># Connexion AsyncApp
+from connexion import AsyncApp
+from connexion.middleware import MiddlewarePosition
+from starlette.middleware.cors import CORSMiddleware
+
+app = AsyncApp(__name__)
+app.add_middleware(
+    CORSMiddleware,
+    position=MiddlewarePosition.BEFORE_EXCEPTION,
+    allow_origins=["https://yourapp.com"],  # not ["*"] with credentials
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)</pre>
+<h2>Related: Starlette CORSMiddleware OPTIONS 400 Bad Request</h2>
 <p>A different but related error — if your preflight OPTIONS request returns a 400 Bad Request, the usual cause is <code>allow_origins</code> being set to an empty list or a malformed value:</p>
 <pre># Common cause of OPTIONS 400
 app.add_middleware(
