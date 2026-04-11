@@ -24,6 +24,29 @@
   <div>
     <div style="border-top:1px solid #252836;padding:1.25rem 2rem;display:flex;flex-direction:column;align-items:center;text-align:center;gap:0.75rem;background:#0B0D14;font-family:'JetBrains Mono',monospace"><div><div style="font-size:12px;font-weight:600;margin-bottom:0.2rem;color:#E2E4F0">Done with this tool?</div><div style="font-size:12px;opacity:0.5;color:#E2E4F0">20 HTTP checks before you ship — security, CORS, cache, redirects, staging.</div></div><a href="/tools/pre-launch-checklist/" style="background:#6C63FF;color:white;text-decoration:none;padding:0.5rem 1.1rem;font-family:'JetBrains Mono',monospace;font-size:12px;border-radius:5px;white-space:nowrap;flex-shrink:0">Pre-Launch Checklist →</a></div>
 <div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center"><a href="/blog/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">📖 HttpFixer Blog — fix guides, explainers, and references →</a></div>
+
+<section style="max-width:720px;margin:3rem auto 0;padding:0 1.5rem">
+  <h2 style="font-size:1rem;font-weight:600;margin-bottom:1.5rem;opacity:0.9">About Redirect Chain Fixer</h2>
+  <div style="display:flex;flex-direction:column;gap:1.25rem">
+    <div>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:0.35rem">What does Redirect Chain Fixer check?</h3>
+      <p style="font-size:13px;opacity:0.7;line-height:1.75;margin:0">Redirect Chain Fixer follows HTTP redirects from your URL in real time, recording each hop — status code, location header, and response time. It flags redirect loops, chains longer than 3 hops, and mixed HTTP/HTTPS redirects.</p>
+    </div>
+    <div>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:0.35rem">What causes ERR_TOO_MANY_REDIRECTS?</h3>
+      <p yle="font-size:13px;opacity:0.7;line-height:1.75;margin:0">ERR_TOO_MANY_REDIRECTS occurs when the browser follows more redirects than its limit without reaching a final destination. Common causes include misconfigured Cloudflare SSL settings, conflicting redirect rules in Nginx and a CDN, or a redirect loop between www and non-www versions.</p>
+    </div>
+    <div>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:0.35rem">How many redirects are too many?</h3>
+      <p style="font-size:13px;opacity:0.7;line-height:1.75;margin:0">More than 3 hops is worth investigating. Each redirect adds a round-trip latency penalty. Browsers typically abort after 20 consecutive redirects. The ideal chain is a single 301 from HTTP to HTTPS with no further hops.</p>
+    </div>
+    <div>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:0.35rem">Is my URL stored or logged?</h3>
+      <p style="font-size:13px;opacity:0.7;line-height:1.75;margin:0">No. The redirect chain is followed via a stateless Cloudflare Worker. Your URL is not stored or associated with any account.</p>
+    </div>
+  </div>
+</section>
+
 <footer> <span>HttpFixer by MetricLogic &middot; <a href="/tools/">All Tools</a> &middot; <a href="/errors/err-too-many-redirects/">ERR_TOO_MANY_REDIRECTS guide</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/about/">About</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
 </footer>
 
