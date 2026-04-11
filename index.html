@@ -943,6 +943,28 @@ strict-transport-security: max-age=3600
   <div style="display:flex;flex-direction:column;gap:1.25rem">
     <div>
       <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:0.35rem">What does HeadersFixer check?</h3>
+      <p style="font-size:13px;opacity:0.7;line-height:1.75;margin:0">HeadersFixer fetches live HTTP response headers from your URL and checks for missing or misconfigured security headers including Strict-Transport-Security, Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, and Permissions-Policy.</p>
+    </div>
+    <div>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:0.35rem">How does stack detection work?</h3>
+      <p style="font-size:13px;opacity:0.7;line-height:1.75;margin:0">The tool reads the Server response header and proxy-specific headers (Cf-Ray for Cloudflare, X-Vercel-ID for Vercel, X-NF-Request-ID for Netlify) to identify your stack. Config output is then tailored to that stack — Nginx, Apache, Cloudflare, Vercel, Express, or Caddy.</p>
+    </div>
+    <div>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:0.35rem">Is my URL stored or logged?</h3>
+      <p style="font-size:13px;opacity:0.7;line-height:1.75;margin:0">No. The fetch happens client-side in your browser via a stateless Cloudflare Worker proxy. Your URL is not stored, logged, or associated with any account.</p>
+    </div>
+    <div>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:0.35rem">Which security headers matter most?</h3>
+      <p style="font-size:13px;opacity:0.7;line-height:1.75;margin:0">Strict-Transport-Security prevents downgrade attacks. Content-Security-Policy reduces XSS risk. X-Frame-Options blocks clickjacking. X-Content-Type-Options prevents MI sniffing. These four cover the most common vulnerabilities addressed by HTTP headers.</p>
+    </div>
+  </div>
+</section>
+
+<section style="max-width:720px;margin:3rem auto 0;padding:0 1.5rem">
+  <h2 style="font-size:1rem;font-weight:600;margin-bottom:1.5rem;opacity:0.9">About HeadersFixer</h2>
+  <div style="display:flex;flex-direction:column;gap:1.25rem">
+    <div>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:0.35rem">What does HeadersFixer check?</h3>
       <p style="font-size:13px;opacity:0.7;line-height:1.75;margin:0">HeadersFixer fetches live HTTP response headers from your URL and checks for missing or misconfigured security headers — including Strict-Transport-Security, Content-Security-Policy, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, and Permissions-Policy.</p>
     </div>
     <div>

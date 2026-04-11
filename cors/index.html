@@ -733,6 +733,28 @@ access-control-allow-credentials: true
     <p class="stack-badge" id="stack-badge">Detected framework: <span id="stack-label"></span></p>
 
     <div id="results"></div>
+<section style="max-width:720px;margin:3rem auto 0;padding:0 1.5rem">
+  <h2 style="font-size:1rem;font-weight:600;margin-bottom:1.5rem;opacity:0.9">About CORSFixer</h2>
+  <div style="display:flex;flex-direction:column;gap:1.25rem">
+    <div>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:0.35rem">What does CORSFixer check?</h3>
+      <p style="font-size:13px;opacity:0.7;line-height:1.75;margin:0">CORSFixer sends a live OPTIONS preflight request from your browser to your API endpoint and reads the real CORS response headers. It checks for missing Access-Control-Allow-Origin, incorrect wildcard usage with credentials, missing preflight handlers, and misconfigured Access-Control-Allow-Methods and Access-Control-Allow-Headers.</p>
+    </div>
+    <div>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:0.35rem">Why does CORS fail with credentials?</h3>
+      <p style="font-size:13px;opacity:0.7;line-height:1.75;margin:0">When a request includes credentials (cookies or Authorization headers), browsers reject responses with Access-Control-Allow-Origin: *. You must specify the exact origin. This is the most common CORS misconfiguration in FastAPI, Express, Django, and Nginx setups.</p>
+    </div>
+    <div>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:0.35rem">Which frameworks does CORSFixer generate fixes for?</h3>
+      <p style="font-size:13px;opacity:0.7;line-height:1.75;margin:0">CORSFixer generates middleware config for Express, Nginx, FastAPI, Django, Laravel, and Cloudflare Workers. The fix is tailored to the framework you select — not a generic header snippet.</p>
+    </div>
+    <div>
+      <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:0.35rem">What is a CORS preflight request?</h3>
+      <p style="font-size:13px;opacity:0.7;line-height:1.75;margin:0">A preflight is an OPTIONrequest the browser sends before the actual request to check whether the server allows the cross-origin call. If the server does not respond correctly to the OPTIONS request, the browser blocks the main request before it is sent.</p>
+    </div>
+  </div>
+</section>
+
   </main>
 
 <!-- You might also need -->
