@@ -1860,6 +1860,16 @@ No backend. No data stored. MIT licensed. Free to use.
 Part of the MetricLogic network: configclarity.dev, domainpreflight.dev, httpfixer.dev.
 </div>
 
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var u = params.get('url');
+  if (u) {
+    var el = document.getElementById('url');
+    if (el) { el.value = u; }
+  }
+})();
+</script>
 <!-- Nav Tools Dropdown -->
 <style>
 .nav-dropdown-wrap{position:relative;display:inline-flex;align-items:center}
