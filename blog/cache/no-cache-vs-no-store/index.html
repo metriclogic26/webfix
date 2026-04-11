@@ -57,6 +57,9 @@ Cache-Control: no-store
 # Public page — store everywhere but always revalidate
 Cache-Control: no-cache</pre>
 
+<h2>no-store and the Back-Forward Cache (BFCache)</h2>
+<p>In most browsers, <code>no-store</code> disables the Back-Forward Cache (BFCache). BFCache is a browser optimization that keeps a full snapshot of a page in memory so hitting the back or forward button restores it instantly. Because BFCache requires storing a copy of the page state, <code>no-store</code> instructs browsers to skip it.</p>
+<p>Practical effect: on pages with <code>no-store</code>, pressing the back button triggers a full page reload rather than an instant restore. This is correct behaviour for sensitive pages like checkout or account dashboards where stale state would be a security risk. For pages where back-forward speed matters, use <code>no-cache</code> instead of <code>no-store</code> — the page state can be restored from BFCache while still revalidating content.</p>
 <h2>Combining directives</h2>
 <p>You will often see combinations like <code>no-cache, no-store, must-revalidate</code>. This is redundant but not harmful — it was historically used for maximum compatibility with HTTP/1.0 caches that did not understand all directives. For modern infrastructure, <code>no-store</code> alone is sufficient.</p>
 
