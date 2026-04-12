@@ -1,41 +1,125 @@
-<!DOCTYPE html>
-<html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>CSP: Refused to Connect — HttpFixer</title> <meta name="description" content="Fix "Refused to connect" CSP violations. fetch() or XHR blocked because the API domain is missing from connect-src. Exact fix with the right CSP directive to add."> <link rel="canonical" href="https://httpfixer.dev/errors/csp-refused-to-connect/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="CSP: Refused to Connect"> <meta property="og:description" content="Fix "Refused to connect" CSP violations. fetch() or XHR blocked because the API domain is missing from connect-src. Exact fix with the right CSP directive to add."> <meta property="og:url" content="https://httpfixer.dev/errors/csp-refused-to-connect/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "CSP: Refused to Connect", "description": "Fix ", "url": "https://httpfixer.dev/errors/csp-refused-to-connect/", "datePublished": "2026-04-04", "dateModified": "2026-04-04", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev"}]}]}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem;flex-wrap:wrap} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .error-msg{background:#100a0a;border:1px solid var(--red);border-left:3px solid var(--red);border-radius:6px;padding:1rem 1.25rem;margin-bottom:2rem;font-size:13px;color:#f87171;line-height:1.6} .quick-fix{background:var(--surface);border:1px solid var(--green);border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0} .quick-fix p{margin:0;opacity:1;font-size:13px;line-height:1.7} h1{font-size:1.5rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} pre code{background:none;color:var(--text);padding:0} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
-</head>
-<body>
-<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/" style="color:var(--purple);opacity:1">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSP Refused to Connect — connect-src Directive Fix · HttpFixer</title>
+<meta name="description" content="Fix "Refused to connect because it violates Content Security Policy directive: connect-src". Add the blocked URL to your connect-src directive.">
+<link rel="canonical" href="https://httpfixer.dev/errors/csp-refused-to-connect/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="CSP Refused to Connect — connect-src Directive Fix · HttpFixer">
+<meta property="og:description" content="Fix "Refused to connect because it violates Content Security Policy directive: connect-src". Add the blocked URL to your connect-src directive.">
+<meta property="og:url" content="https://httpfixer.dev/errors/csp-refused-to-connect/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"CSP Refused to Connect","url":"https://httpfixer.dev/errors/csp-refused-to-connect/","datePublished":"2026-04-06","dateModified":"2026-04-12","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What does connect-src control?","acceptedAnswer":{"@type":"Answer","text":"connect-src controls which URLs your page can make network requests to using fetch, XHR, WebSocket, and EventSource. If an API call or WebSocket connection is blocked by CSP, connect-src is the directive to update."}},{"@type":"Question","name":"Why does my API call work in development but fail in production?","acceptedAnswer":{"@type":"Answer","text":"Your development environment may not have a CSP header, or may have a more permissive one. Production CSP is often stricter. Check the browser console for the exact blocked URL and add it to connect-src."}}]}]}</script>
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--purple);text-decoration:none}
+h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;line-height:1.6}
+.error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.15);color:var(--red)}
+.tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+.tool-cta:hover{filter:brightness(1.1)}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1rem 0;font-size:13px;color:#fba44a;line-height:1.6}
+.related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head><body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Errors</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/errors/">Errors</a><a href="/blog/">Blog</a>
+  </div>
 </nav>
-<main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/errors/">Errors</a> &rarr; CSP: Refused to Connect</div> <div class="date">Updated April 2026</div> <h1>CSP: Refused to Connect</h1> <div class="error-msg">Refused to connect to 'https://api.example.com' because it violates the following Content Security Policy directive: "connect-src 'self'".</div> <h2>What this error means</h2>
-<p>Your page has a Content Security Policy with a <code>connect-src</code> directive that doesn't include the domain your JavaScript is trying to fetch from. The browser blocked the request before it was sent.</p>
-<p>This affects: <code>fetch()</code>, <code>XMLHttpRequest</code>, WebSocket connections, and <code>EventSource</code>.</p>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/errors/">Errors</a> → CSP Refused to Connect</div>
+  <span class="tag">CSP Error</span>
+  <h1>CSP: Refused to Connect</h1>
+<p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
+  <div class="error-box">
+    <div class="error-label">Browser Console Error</div>
+    Refused to connect to 'https://api.yoursite.com/data' because it violates
+    the following Content Security Policy directive: "connect-src 'self'".
+  </div>
 
-<h2>The fix — add the domain to connect-src</h2>
-<pre># Current (too restrictive)
-Content-Security-Policy: default-src 'self'; connect-src 'self';
+  <p>Your Content Security Policy's <code>connect-src</code> directive is blocking a network request. This affects <code>fetch()</code>, <code>XMLHttpRequest</code>, <code>WebSocket</code>, <code>EventSource</code>, and <code>navigator.sendBeacon()</code> calls.</p>
 
-# Fixed — add the API domain
-Content-Security-Policy: default-src 'self'; connect-src 'self' https://api.example.com;
+  <a href="/csp/" class="tool-cta">Scan your live CSP →</a>
 
-# For Google Analytics
-Content-Security-Policy: connect-src 'self' https://www.google-analytics.com https://analytics.google.com;
+  <h2>Fix — add the API URL to connect-src</h2>
+<pre># Before
+Content-Security-Policy: default-src 'self'
 
-# For Stripe
-Content-Security-Policy: connect-src 'self' https://api.stripe.com;</pre>
+# After — add your API domain
+Content-Security-Policy: default-src 'self'; connect-src 'self' https://api.yoursite.com</pre>
 
-<h2>Common APIs and their connect-src values</h2>
-<ul> <li><strong>Google Analytics 4:</strong> <code>https://www.google-analytics.com https://analytics.google.com</code></li> <li><strong>Stripe:</strong> <code>https://api.stripe.com</code></li> <li><strong>Intercom:</strong> <code>https://api.intercom.io wss://nexus-websocket-a.intercom.io</code></li> <li><strong>Hotjar:</strong> <code>https://*.hotjar.com https://*.hotjar.io wss://*.hotjar.com</code></li> <li><strong>Sentry:</strong> <code>https://o{id}.ingest.sentry.io</code></li>
-</ul>
+  <h2>Common connect-src fixes</h2>
+  <p><strong>External API calls</strong></p>
+<pre>connect-src 'self' https://api.yoursite.com https://api.stripe.com;</pre>
 
-<h2>WebSocket connections</h2>
-<p>WebSocket URLs use <code>ws://</code> and <code>wss://</code> schemes and must also be in <code>connect-src</code>:</p>
-<pre>connect-src 'self' wss://realtime.example.com;</pre>
+  <p><strong>WebSocket connections</strong></p>
+<pre># Use wss:// for secure WebSocket (not https://)
+connect-src 'self' wss://ws.yoursite.com;</pre>
 
-<h2>Fallback from default-src</h2>
-<p>If you don't have an explicit <code>connect-src</code>, it falls back to <code>default-src</code>. Adding <code>connect-src 'self'</code> overrides this and blocks everything not listed — that's why adding a single domain breaks all other fetch calls if they're not also listed.</p> <a href="/csp/" class="tool-cta">Scan your CSP for blocked resources — CSPFixer &rarr;</a> <div class="related">Related: <a href="/blog/reference/csp-directives-cheatsheet/">CSP directives reference</a> &nbsp;<a href="/blog/csp/how-to-generate-csp/">How to generate CSP</a> &nbsp;<a href="/glossary/csp/">CSP glossary</a></div>
+  <p><strong>Google Analytics and Tag Manager</strong></p>
+<pre>connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com;</pre>
+
+  <p><strong>Sentry error reporting</strong></p>
+<pre>connect-src 'self' https://*.sentry.io;</pre>
+
+  <p><strong>Hotjar / analytics tools</strong></p>
+<pre>connect-src 'self' https://*.hotjar.com wss://*.hotjar.com;</pre>
+
+  <h2>Wildcard subdomains</h2>
+<pre># Allow all subdomains of yoursite.com
+connect-src 'self' https://*.yoursite.com;
+
+# Note: wildcards only match one level
+# https://*.yoursite.com matches api.yoursite.com
+# but NOT api.v2.yoursite.com</pre>
+
+  <h2>Development vs production</h2>
+<pre># Development — allow localhost
+connect-src 'self' http://localhost:8000 ws://localhost:8000;
+
+# Production
+connect-src 'self' https://api.yoursite.com wss://ws.yoursite.com;</pre>
+
+  <div class="related">
+    Related: <a href="/csp/">CSPFixer — scan your live CSP</a>
+    <a href="/errors/csp-directive-violated/">CSP directive violated</a>
+    <a href="/fix/csp/nginx/">CSP on Nginx</a>
+    <a href="/fix/csp/vercel/">CSP on Vercel</a>
+  </div>
 </main>
-<footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/about/">About</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center">
+  <a href="/blog/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">&#128218; HttpFixer Blog — fix guides, explainers, and references →</a>
+</div>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="/errors/">All Errors</a> · <a href="/tools/">Tools</a> · <a href="/blog/">Blog</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/about/">About</a> · <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">For informational purposes only. Always test in staging before production. © 2026 MetricLogic.</p>
 </footer>
-</body>
-</html>
+</body></html>

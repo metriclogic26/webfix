@@ -1,43 +1,123 @@
-<!DOCTYPE html>
-<html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>ERR_BLOCKED_BY_RESPONSE — HttpFixer</title> <meta name="description" content="Fix ERR_BLOCKED_BY_RESPONSE. Usually caused by Cross-Origin Resource Policy (CORP) or X-Frame-Options blocking cross-origin resource loading. Exact headers to add."> <link rel="canonical" href="https://httpfixer.dev/errors/err-blocked-by-response/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="ERR_BLOCKED_BY_RESPONSE"> <meta property="og:description" content="Fix ERR_BLOCKED_BY_RESPONSE. Usually caused by Cross-Origin Resource Policy (CORP) or X-Frame-Options blocking cross-origin resource loading. Exact headers to add."> <meta property="og:url" content="https://httpfixer.dev/errors/err-blocked-by-response/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"ERR_BLOCKED_BY_RESPONSE","description":"Fix ERR_BLOCKED_BY_RESPONSE. Usually caused by Cross-Origin Resource Policy (CORP) or X-Frame-Options blocking cross-origin resource loading. Exact headers to add.","url":"https://httpfixer.dev/errors/err-blocked-by-response/","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Errors","item":"https://httpfixer.dev/errors/"},{"@type":"ListItem","position":3,"name":"ERR_BLOCKED_BY_RESPONSE","item":"https://httpfixer.dev/errors/err-blocked-by-response/"}]}]}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem;flex-wrap:wrap} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .error-msg{background:#100a0a;border:1px solid var(--red);border-left:3px solid var(--red);border-radius:6px;padding:1rem 1.25rem;margin-bottom:2rem;font-size:13px;color:#f87171;line-height:1.6} .quick-fix{background:var(--surface);border:1px solid var(--green);border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0} .quick-fix p{margin:0;opacity:1;font-size:13px;line-height:1.7} h1{font-size:1.5rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} pre code{background:none;color:var(--text);padding:0} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
-</head>
-<body>
-<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/" style="color:var(--purple);opacity:1">Errors</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a> </div>
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ERR_BLOCKED_BY_RESPONSE — What It Means and How to Fix It · HttpFixer</title>
+<meta name="description" content="Fix ERR_BLOCKED_BY_RESPONSE in Chrome. Caused by Cross-Origin-Opener-Policy, Cross-Origin-Embedder-Policy, or X-Frame-Options blocking a resource.">
+<link rel="canonical" href="https://httpfixer.dev/errors/err-blocked-by-response/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="ERR_BLOCKED_BY_RESPONSE — What It Means and How to Fix It · HttpFixer">
+<meta property="og:description" content="Fix ERR_BLOCKED_BY_RESPONSE in Chrome. Caused by Cross-Origin-Opener-Policy, Cross-Origin-Embedder-Policy, or X-Frame-Options blocking a resource.">
+<meta property="og:url" content="https://httpfixer.dev/errors/err-blocked-by-response/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"ERR_BLOCKED_BY_RESPONSE","url":"https://httpfixer.dev/errors/err-blocked-by-response/","datePublished":"2026-04-06","dateModified":"2026-04-12","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What causes ERR_BLOCKED_BY_RESPONSE?","acceptedAnswer":{"@type":"Answer","text":"ERR_BLOCKED_BY_RESPONSE is caused by security headers blocking a cross-origin resource. The most common causes are Cross-Origin-Opener-Policy (COOP), Cross-Origin-Embedder-Policy (COEP), or X-Frame-Options preventing a page from being embedded."}},{"@type":"Question","name":"How is ERR_BLOCKED_BY_RESPONSE different from a CORS error?","acceptedAnswer":{"@type":"Answer","text":"CORS errors block fetch/XHR requests. ERR_BLOCKED_BY_RESPONSE blocks page navigation, iframe loading, or cross-origin resource access due to COOP/COEP/X-Frame-Options headers, not CORS headers."}}]}]}</script>
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--purple);text-decoration:none}
+h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;line-height:1.6}
+.error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.15);color:var(--red)}
+.tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+.tool-cta:hover{filter:brightness(1.1)}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1rem 0;font-size:13px;color:#fba44a;line-height:1.6}
+.related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head><body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Errors</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/errors/">Errors</a><a href="/blog/">Blog</a>
+  </div>
 </nav>
-<main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/errors/">Errors</a> &rarr; ERR_BLOCKED_BY_RESPONSE</div> <div class="date">Updated April 2026</div> <h1>ERR_BLOCKED_BY_RESPONSE</h1> <div class="error-msg">Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE — The resource was blocked because of Cross-Origin Resource Policy (CORP).</div> <h2>What causes this error</h2>
-<p>The server returned a <code>Cross-Origin-Resource-Policy</code> header that prevents cross-origin access, or the response includes headers that block embedding. This is a server-enforced security policy, not a browser bug.</p>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/errors/">Errors</a> → ERR_BLOCKED_BY_RESPONSE</div>
+  <span class="tag">Browser Error</span>
+  <h1>ERR_BLOCKED_BY_RESPONSE</h1>
+<p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
+  <div class="error-box">
+    <div class="error-label">Chrome Error</div>
+    ERR_BLOCKED_BY_RESPONSE
+    This page was blocked because of its Cross-Origin-Opener-Policy header.
+  </div>
 
-<h2>Cross-Origin-Resource-Policy (CORP)</h2>
-<p>CORP tells browsers which origins can load a resource:</p>
-<pre>Cross-Origin-Resource-Policy: same-origin # Only same origin (default for some browsers)
-Cross-Origin-Resource-Policy: same-site # Same site (including subdomains)
-Cross-Origin-Resource-Policy: cross-origin  # Any origin (equivalent to no restriction)</pre>
+  <p><code>ERR_BLOCKED_BY_RESPONSE</code> means a security header on the server is blocking the browser from loading or embedding the resource. It is not a CORS error. Check the browser Network tab to see which header caused the block.</p>
 
-<p>If your font, image, or asset server returns <code>same-origin</code> or <code>same-site</code>, cross-origin pages can't load it.</p>
+  <a href="/" class="tool-cta">Scan your security headers →</a>
 
-<h2>Fix 1 — Add CORP: cross-origin to your asset server</h2>
-<p>If your assets need to be accessible from other origins (CDN, fonts, media):</p>
-<pre># Nginx — on your CDN or asset server
-add_header Cross-Origin-Resource-Policy "cross-origin" always;</pre>
-
-<h2>Fix 2 — When embedding in an iframe</h2>
-<p>If the error happens when embedding in an iframe, the parent page may have <code>Cross-Origin-Embedder-Policy: require-corp</code> set. This requires every embedded resource to explicitly opt in with CORP: cross-origin.</p>
-<pre># If you're the page doing the embedding and need SharedArrayBuffer
-Cross-Origin-Embedder-Policy: require-corp
+  <h2>Cause 1 — Cross-Origin-Opener-Policy (COOP)</h2>
+  <p>COOP isolates your browsing context. When set to <code>same-origin</code>, cross-origin popups and windows cannot communicate with your page. This blocks OAuth popup flows and payment windows that rely on <code>window.opener</code>.</p>
+<pre># Current header causing the block
 Cross-Origin-Opener-Policy: same-origin
 
-# Resources you embed must then have
+# Fix — allow same-origin-allow-popups for OAuth flows
+Cross-Origin-Opener-Policy: same-origin-allow-popups
+
+# Or remove COOP if not using SharedArrayBuffer
+# (remove the header entirely)</pre>
+
+  <h2>Cause 2 — Cross-Origin-Embedder-Policy (COEP)</h2>
+  <p>COEP requires all subresources to opt in to cross-origin loading. If any resource (image, script, iframe) does not send <code>Cross-Origin-Resource-Policy</code>, it gets blocked.</p>
+<pre># Current header causing the block
+Cross-Origin-Embedder-Policy: require-corp
+
+# Fix — either remove COEP
+# or add Cross-Origin-Resource-Policy to the blocked resource:
 Cross-Origin-Resource-Policy: cross-origin</pre>
 
-<h2>Fix 3 — X-Frame-Options blocking iframes</h2>
-<p>If the blocked resource is an iframe, X-Frame-Options on the embedded page may be denying it:</p>
-<pre># On the page being embedded — allow specific parent origin
-Content-Security-Policy: frame-ancestors https://your-parent-site.com;</pre> <a href="/" class="tool-cta">Scan your security headers — HeadersFixer &rarr;</a> <div class="related">Related: <a href="/glossary/clickjacking/">Clickjacking protection</a> &nbsp;<a href="/glossary/csp/">CSP</a> &nbsp;<a href="/blog/headers/security-headers-checklist/">Security headers checklist</a> &nbsp;<a href="/glossary/rate-limiting/">Rate limiting glossary</a></div>
+  <h2>Cause 3 — X-Frame-Options blocking iframe</h2>
+  <p>If you are trying to embed a page in an iframe and seeing ERR_BLOCKED_BY_RESPONSE, the target page has <code>X-Frame-Options: DENY</code> or <code>SAMEORIGIN</code>.</p>
+<pre># Target page has this header
+X-Frame-Options: DENY
+
+# Fix on the target server — allow specific origins to embed it
+# Replace X-Frame-Options with CSP frame-ancestors:
+Content-Security-Policy: frame-ancestors 'self' https://yourapp.com</pre>
+
+  <h2>How to diagnose</h2>
+<pre># 1. Open DevTools → Network tab
+# 2. Find the blocked request
+# 3. Click it → Headers tab → look at Response Headers
+# 4. The blocking header will be visible
+
+# Also check the Console tab for a more specific error message</pre>
+
+  <div class="related">
+    Related: <a href="/">Scan your security headers</a>
+    <a href="/errors/blocked-by-cors-policy/">Blocked by CORS policy</a>
+    <a href="/fix/headers/nginx/">Security headers on Nginx</a>
+    <a href="/glossary/cors/">What is CORS?</a>
+  </div>
 </main>
-<footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/about/">About</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center">
+  <a href="/blog/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">&#128218; HttpFixer Blog — fix guides, explainers, and references →</a>
+</div>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="/errors/">All Errors</a> · <a href="/tools/">Tools</a> · <a href="/blog/">Blog</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/about/">About</a> · <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">For informational purposes only. Always test in staging before production. © 2026 MetricLogic.</p>
 </footer>
-</body>
-</html>
+</body></html>
