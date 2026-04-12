@@ -1,20 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>What is X-Frame-Options? — HttpFixer Glossary</title> <meta name="description" content="Controls iframe embedding; still widely used alongside CSP frame-ancestors."> <link rel="canonical" href="https://httpfixer.dev/glossary/x-frame-options/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="What is X-Frame-Options? — HttpFixer Glossary"> <meta property="og:description" content="Controls iframe embedding; still widely used alongside CSP frame-ancestors."> <meta property="og:url" content="https://httpfixer.dev/glossary/x-frame-options/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "X-Frame-Options", "description": "A header that controls whether your page can be embedded in an iframe.", "url": "https://httpfixer.dev/glossary/x-frame-options/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "HttpFixer Security Glossary", "url": "https://httpfixer.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://httpfixer.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "X-Frame-Options"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "X-Frame-Options or frame-ancestors?", "acceptedAnswer": {"@type": "Answer", "text": "Use frame-ancestors in CSP for fine-grained control. Keep XFO for defense in depth and older user agents that ignore CSP framing rules."}}, {"@type": "Question", "name": "Can I allow one partner to iframe my site?", "acceptedAnswer": {"@type": "Answer", "text": "XFO cannot express allowlists. Use CSP: frame-ancestors https://partner.example."}}]}]}</script> <style> :root { --bg: #0B0D14; --surface: #12151F; --border: #252836; --purple: #6C63FF; --green: #22C55E; --orange: #F97316; --red: #EF4444; --text: #E2E4F0; } * { box-sizing: border-box; margin: 0; padding: 0; } body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; } nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); } nav .brand { font-weight: 600; color: var(--text); text-decoration: none; } nav .brand span { color: var(--purple); } nav .right { display: flex; gap: 1rem; align-items: center; } nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; } nav a:hover { color: var(--purple); opacity: 1; } main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; } main.wide { max-width: 1000px; } .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; } .breadcrumb a { color: var(--purple); text-decoration: none; } h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; } h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); } p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; } .lead { font-size: 1.05rem; opacity: 0.95; margin-bottom: 1.25rem; } .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; } .tool-cta:hover { filter: brightness(1.1); } .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre-wrap; word-break: break-word; } footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; } footer a { color: var(--text); text-decoration: none; } .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem; } .glossary-grid a { display: block; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); text-decoration: none; } .glossary-grid a:hover { border-color: var(--purple); } .glossary-grid .term-title { color: var(--purple); font-weight: 600; font-size: 13px; margin-bottom: 0.4rem; } .glossary-grid .term-d { font-size: 12px; opacity: 0.8; line-height: 1.5; } article a { color: var(--purple); } .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; } .related-links a { color: var(--purple); text-decoration: none; } @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } } </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
-</head>
-<body> <nav> <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a> <div class="right"> <a href="/headers/">Headers</a> <a href="/cors/">CORS</a> <a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a> <a href="/edge/">Edge</a> <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a> </div> </nav> <main class=""> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → X-Frame-Options</div> <h1>X-Frame-Options</h1> <p class="lead">A header that controls whether your page can be embedded in an iframe.</p>
-<p><code>X-Frame-Options</code> is an older response header with three effective values: <code>DENY</code> (no framing), <code>SAMEORIGIN</code> (only same site), or <code>ALLOW-FROM uri</code> (legacy, poor support). Modern guidance prefers CSP’s <code>frame-ancestors</code>, which is more expressive, but many scanners still look for XFO first.</p>
-<h2>Why developers care</h2>
-<p>Without it (and without a restrictive <code>frame-ancestors</code>), an attacker can load your logged-in app in a hidden iframe and trick users into clicking actions they cannot see—classic clickjacking. Banking and admin UIs treat this as mandatory. Setting <code>DENY</code> or <code>SAMEORIGIN</code> is usually a one-line change at the reverse proxy.</p>
-<h2>Example</h2>
-<div class="code-block">X-Frame-Options: SAMEORIGIN
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-Frame-Options Header — What It Does and When to Use It · HttpFixer</title>
+<meta name="description" content="X-Frame-Options prevents your page from being embedded in iframes on other sites. Use DENY or SAMEORIGIN to protect against clickjacking attacks.">
+<link rel="canonical" href="https://httpfixer.dev/glossary/x-frame-options/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="X-Frame-Options Header — What It Does and When to Use It · HttpFixer">
+<meta property="og:description" content="X-Frame-Options prevents your page from being embedded in iframes on other sites. Use DENY or SAMEORIGIN to protect against clickjacking attacks.">
+<meta property="og:url" content="https://httpfixer.dev/glossary/x-frame-options/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"X-Frame-Options","url":"https://httpfixer.dev/glossary/x-frame-options/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What does X-Frame-Options do?","acceptedAnswer":{"@type":"Answer","text":"X-Frame-Options tells browsers whether your page can be embedded in an iframe, frame, or object on other sites. It prevents clickjacking attacks where attackers overlay your UI with invisible iframes."}},{"@type":"Question","name":"Should I use X-Frame-Options or CSP frame-ancestors?","acceptedAnswer":{"@type":"Answer","text":"Prefer CSP frame-ancestors. It supports more granular control (specific allowed origins) and is the modern replacement. X-Frame-Options is kept for legacy browser compatibility."}}]}]}</script>
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--purple);text-decoration:none}
+h1{font-size:1.75rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.15);color:var(--purple)}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1rem 0;font-size:13px;color:#fba44a;line-height:1.6}
+.related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head><body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → X-Frame-Options</div>
+  <span class="tag">Security Header</span>
+  <h1>X-Frame-Options</h1>
+<p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
+  <p>X-Frame-Options controls whether your page can be embedded in an iframe on other sites. It prevents clickjacking attacks where attackers place invisible iframes over your UI to trick users into clicking things.</p>
 
-# Modern complement:
-Content-Security-Policy: frame-ancestors 'self'</div>
-<h2>Spec</h2>
-<p><a href="https://tools.ietf.org/html/rfc7034">RFC 7034</a></p> <div class="related-links"><span>Related:</span> <a href="/fix/headers/nginx/">Fix headers (Nginx)</a> · <a href="/error/x-frame-options-missing/">X-Frame-Options missing</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div> <a href="/headers/" class="tool-cta">Check headers with HeadersFixer →</a> </main> <footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span>MIT · <a href="https://github.com/metriclogic26/httpfixer">GitHub →</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+  <h2>Values</h2>
+<pre>X-Frame-Options: DENY        # block all framing
+X-Frame-Options: SAMEORIGIN  # allow same-origin framing only</pre>
+  <p><code>DENY</code> is the most secure. Use <code>SAMEORIGIN</code> if your own site embeds the page in an iframe.</p>
+
+  <h2>Set in Nginx</h2>
+<pre>add_header X-Frame-Options "SAMEORIGIN" always;</pre>
+
+  <h2>Modern alternative — CSP frame-ancestors</h2>
+  <p>CSP frame-ancestors supports specific allowed origins and overrides X-Frame-Options in modern browsers. Use both for maximum compatibility:</p>
+<pre># Block all framing
+add_header X-Frame-Options "DENY" always;
+add_header Content-Security-Policy "frame-ancestors 'none'" always;
+
+# Allow specific origin
+add_header Content-Security-Policy "frame-ancestors 'self' https://trusted.com" always;</pre>
+
+  <h2>Verify</h2>
+<pre>curl -sI https://yoursite.com | grep -i x-frame</pre>
+
+  <div class="related">
+    Related: <a href="/">Scan your headers live</a>
+    <a href="/glossary/content-security-policy/">Content Security Policy</a>
+    <a href="/fix/headers/nginx/">Security headers on Nginx</a>
+  </div>
+</main>
+<div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center">
+  <a href="/glossary/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">&#128218; HttpFixer Glossary — all terms →</a>
+</div>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="/glossary/">Glossary</a> · <a href="/tools/">Tools</a> · <a href="/blog/">Blog</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/about/">About</a> · <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">For informational purposes only. © 2026 MetricLogic.</p>
 </footer>
-</body>
-</html>
+</body></html>

@@ -1,20 +1,113 @@
-<!DOCTYPE html>
-<html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>What is a CSP nonce? — HttpFixer Glossary</title> <meta name="description" content="A one-time token lets one inline script run under a strict script-src without unsafe-inline."> <link rel="canonical" href="https://httpfixer.dev/glossary/csp-nonce/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="What is a CSP nonce? — HttpFixer Glossary"> <meta property="og:description" content="A one-time token lets one inline script run under a strict script-src without unsafe-inline."> <meta property="og:url" content="https://httpfixer.dev/glossary/csp-nonce/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "CSP Nonce", "description": "A random value that allows a specific inline script to run despite a strict CSP.", "url": "https://httpfixer.dev/glossary/csp-nonce/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "HttpFixer Security Glossary", "url": "https://httpfixer.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://httpfixer.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "CSP Nonce"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can I reuse the same nonce on every page?", "acceptedAnswer": {"@type": "Answer", "text": "You can, but a fresh nonce per response is stronger: it narrows the window if markup leaks and matches how most modern stacks implement CSP."}}, {"@type": "Question", "name": "Do third-party scripts support nonces?", "acceptedAnswer": {"@type": "Answer", "text": "Only if you inject their script tag with the nonce attribute from your template. Async third-party loaders that inject their own scripts need different patterns (proxy, hash allowlists, or separate isolated origins)."}}]}]}</script> <style> :root { --bg: #0B0D14; --surface: #12151F; --border: #252836; --purple: #6C63FF; --green: #22C55E; --orange: #F97316; --red: #EF4444; --text: #E2E4F0; } * { box-sizing: border-box; margin: 0; padding: 0; } body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; } nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); } nav .brand { font-weight: 600; color: var(--text); text-decoration: none; } nav .brand span { color: var(--purple); } nav .right { display: flex; gap: 1rem; align-items: center; } nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; } nav a:hover { color: var(--purple); opacity: 1; } main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; } main.wide { max-width: 1000px; } .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; } .breadcrumb a { color: var(--purple); text-decoration: none; } h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; } h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); } p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; } .lead { font-size: 1.05rem; opacity: 0.95; margin-bottom: 1.25rem; } .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; } .tool-cta:hover { filter: brightness(1.1); } .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre-wrap; word-break: break-word; } footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; } footer a { color: var(--text); text-decoration: none; } .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem; } .glossary-grid a { display: block; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); text-decoration: none; } .glossary-grid a:hover { border-color: var(--purple); } .glossary-grid .term-title { color: var(--purple); font-weight: 600; font-size: 13px; margin-bottom: 0.4rem; } .glossary-grid .term-d { font-size: 12px; opacity: 0.8; line-height: 1.5; } article a { color: var(--purple); } .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; } .related-links a { color: var(--purple); text-decoration: none; } @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } } </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
-</head>
-<body> <nav> <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a> <div class="right"> <a href="/headers/">Headers</a> <a href="/cors/">CORS</a> <a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a> <a href="/edge/">Edge</a> <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a> </div> </nav> <main class=""> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → CSP Nonce</div> <h1>CSP Nonce</h1> <p class="lead">A random value that allows a specific inline script to run despite a strict CSP.</p>
-<p>A nonce (“number used once”) is generated per response on the server, embedded in the <code>Content-Security-Policy</code> header as <code>script-src 'nonce-…'</code>, and repeated on the matching <code>&lt;script&gt;</code> tag as <code>nonce="…"</code>. Only scripts carrying that nonce may execute as inline script. Dynamic frameworks (Next.js middleware, SSR templates) can rotate the value every request so leaked nonces from old pages expire quickly.</p>
-<h2>Why developers care</h2>
-<p>Strict <code>script-src</code> without <code>'unsafe-inline'</code> blocks legacy analytics snippets and framework hydration unless you use nonces or hashes. Nonces are the practical path when inline script content changes per user or request. Hashes work for byte-stable inline blocks only.</p>
-<h2>Example</h2>
-<div class="code-block">Content-Security-Policy: script-src 'self' 'nonce-rAnDm8xK9pQ2'
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSP Nonce — What It Is and How to Implement It · HttpFixer</title>
+<meta name="description" content="A CSP nonce is a random value added to inline scripts to allow them under a strict Content Security Policy. Each request generates a new nonce to prevent replay attacks.">
+<link rel="canonical" href="https://httpfixer.dev/glossary/csp-nonce/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="CSP Nonce — What It Is and How to Implement It · HttpFixer">
+<meta property="og:description" content="A CSP nonce is a random value added to inline scripts to allow them under a strict Content Security Policy. Each request generates a new nonce to prevent replay attacks.">
+<meta property="og:url" content="https://httpfixer.dev/glossary/csp-nonce/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"CSP Nonce","url":"https://httpfixer.dev/glossary/csp-nonce/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a CSP nonce?","acceptedAnswer":{"@type":"Answer","text":"A nonce (number used once) is a cryptographically random base64 value added to both the CSP header and inline script tags. The browser only executes inline scripts whose nonce matches the one in the CSP header."}},{"@type":"Question","name":"Why must the nonce be different on every request?","acceptedAnswer":{"@type":"Answer","text":"If the nonce were static, an attacker who learned the nonce value could inject it into malicious scripts. A new random nonce on every response means a captured nonce is useless for future requests."}}]}]}</script>
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--purple);text-decoration:none}
+h1{font-size:1.75rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.15);color:var(--purple)}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1rem 0;font-size:13px;color:#fba44a;line-height:1.6}
+.related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head><body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → CSP Nonce</div>
+  <span class="tag">Security</span>
+  <h1>CSP Nonce</h1>
+<p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
+  <p>A CSP nonce is a random cryptographic value that allows specific inline scripts to execute under a strict Content Security Policy. Each page response generates a new nonce, which is included in the CSP header and the script tag.</p>
 
-&lt;script nonce="rAnDm8xK9pQ2"&gt; console.log('This inline script is allowed.');
-&lt;/script&gt;</div>
-<h2>Spec</h2>
-<p><a href="https://www.w3.org/TR/CSP3/#framework-directive-source-list">CSP3 — source lists (nonce)</a></p> <div class="related-links"><span>Related:</span> <a href="/fix/csp/vercel/">Fix CSP (Vercel)</a> · <a href="/fix/csp/nginx/">Fix CSP (Nginx)</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div> <a href="/csp/" class="tool-cta">Build CSP with CSPFixer →</a> </main> <footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span>MIT · <a href="https://github.com/metriclogic26/httpfixer">GitHub →</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+  <h2>How it works</h2>
+<pre># 1. Server generates a random nonce per request
+nonce = base64(crypto.random(16))
+
+# 2. Server sets the CSP header with the nonce
+Content-Security-Policy: script-src 'self' 'nonce-RANDOM_VALUE'
+
+# 3. Server adds the nonce to allowed inline script tags
+&lt;script nonce="RANDOM_VALUE"&gt;
+  // This inline script is allowed
+  console.log('allowed');
+&lt;/script&gt;
+
+# Scripts without the nonce attribute are blocked
+&lt;script&gt;console.log('blocked');&lt;/script&gt;</pre>
+
+  <h2>Next.js implementation</h2>
+<pre>// middleware.ts
+import { NextRequest, NextResponse } from 'next/server';
+
+export function middleware(req: NextRequest) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
+  const csp = `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'; object-src 'none'`;
+  const res = NextResponse.next({
+    request: { headers: new Headers({ ...Object.fromEntries(req.headers), 'x-nonce': nonce }) },
+  });
+  res.headers.set('Content-Security-Policy', csp);
+  return res;
+}</pre>
+
+  <h2>Express implementation</h2>
+<pre>const crypto = require('crypto');
+
+app.use((req, res, next) => {
+  res.locals.nonce = crypto.randomBytes(16).toString('base64');
+  res.setHeader('Content-Security-Policy',
+    `script-src 'self' 'nonce-${res.locals.nonce}'; object-src 'none'`);
+  next();
+});</pre>
+
+  <div class="related">
+    Related: <a href="/glossary/content-security-policy/">Content Security Policy</a>
+    <a href="/errors/csp-directive-violated/">CSP directive violated</a>
+    <a href="/csp/">CSPFixer</a>
+  </div>
+</main>
+<div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center">
+  <a href="/glossary/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">&#128218; HttpFixer Glossary — all terms →</a>
+</div>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="/glossary/">Glossary</a> · <a href="/tools/">Tools</a> · <a href="/blog/">Blog</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/about/">About</a> · <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">For informational purposes only. © 2026 MetricLogic.</p>
 </footer>
-</body>
-</html>
+</body></html>

@@ -1,27 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Same-Origin Policy — HttpFixer Glossary</title> <meta name="description" content="The Same-Origin Policy is a browser security rule that prevents scripts on one origin from accessing resources on a different origin. CORS is the mechanism that creates controlled exceptions."> <link rel="canonical" href="https://httpfixer.dev/glossary/same-origin-policy/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="Same-Origin Policy — HttpFixer Glossary"> <meta property="og:description" content="The Same-Origin Policy is a browser security rule that prevents scripts on one origin from accessing resources on a different origin. CORS is the mechanism that creates controlled exceptions."> <meta property="og:url" content="https://httpfixer.dev/glossary/same-origin-policy/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"Same-Origin Policy","description":"The Same-Origin Policy is a browser security rule that prevents scripts on one origin from accessing resources on a different origin. CORS is the mechanism that creates controlled exceptions.","url":"https://httpfixer.dev/glossary/same-origin-policy/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Glossary","item":"https://httpfixer.dev/glossary/"},{"@type":"ListItem","position":3,"name":"Same-Origin Policy","item":"https://httpfixer.dev/glossary/same-origin-policy/"}]}]}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem;flex-wrap:wrap} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem} .quick-answer p{margin:0;opacity:1;font-size:14px;line-height:1.7} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} pre code{background:none;color:var(--text);padding:0} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
-</head>
-<body>
-<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/">Errors</a><a href="/glossary/" style="color:var(--purple);opacity:1">Glossary</a><a href="/blog/">Blog</a> </div>
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Same-Origin Policy — What It Is and How It Relates to CORS · HttpFixer</title>
+<meta name="description" content="The Same-Origin Policy prevents JavaScript from reading responses from different origins. CORS is the mechanism that relaxes this restriction in a controlled way.">
+<link rel="canonical" href="https://httpfixer.dev/glossary/same-origin-policy/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="Same-Origin Policy — What It Is and How It Relates to CORS · HttpFixer">
+<meta property="og:description" content="The Same-Origin Policy prevents JavaScript from reading responses from different origins. CORS is the mechanism that relaxes this restriction in a controlled way.">
+<meta property="og:url" content="https://httpfixer.dev/glossary/same-origin-policy/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"Same-Origin Policy","url":"https://httpfixer.dev/glossary/same-origin-policy/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the Same-Origin Policy?","acceptedAnswer":{"@type":"Answer","text":"The Same-Origin Policy is a browser security rule that prevents JavaScript on one origin from reading responses from a different origin. Two URLs have the same origin if they share the same protocol, domain, and port."}},{"@type":"Question","name":"How does CORS relate to Same-Origin Policy?","acceptedAnswer":{"@type":"Answer","text":"CORS (Cross-Origin Resource Sharing) is the mechanism that allows servers to opt in to cross-origin requests. By adding CORS headers, a server tells the browser it is safe to expose the response to JavaScript from specific origins."}}]}]}</script>
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--purple);text-decoration:none}
+h1{font-size:1.75rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.15);color:var(--purple)}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1rem 0;font-size:13px;color:#fba44a;line-height:1.6}
+.related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head><body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
 </nav>
-<main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/glossary/">Glossary</a> &rarr; Same-Origin Policy</div> <div class="date">Updated April 2026</div> <h1>Same-Origin Policy</h1> <div class="quick-answer"><p>The Same-Origin Policy is a fundamental browser security rule: scripts running on origin A cannot read responses from origin B. Two URLs share an origin if they have the same protocol, domain, and port. CORS creates controlled, server-approved exceptions to this rule.</p></div> <h2>What makes two URLs the same origin</h2>
-<table> <thead><tr><th>URL A</th><th>URL B</th><th>Same origin?</th><th>Reason</th></tr></thead> <tbody> <tr><td>https://example.com/page</td><td>https://example.com/api</td><td>Yes</td><td>Same protocol, domain, port</td></tr> <tr><td>https://example.com</td><td>http://example.com</td><td>No</td><td>Different protocol</td></tr> <tr><td>https://example.com</td><td>https://api.example.com</td><td>No</td><td>Different subdomain</td></tr> <tr><td>https://example.com</td><td>https://example.com:3000</td><td>No</td><td>Different port</td></tr> </tbody>
-</table>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → Same-Origin Policy</div>
+  <span class="tag">Security</span>
+  <h1>Same-Origin Policy</h1>
+<p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
+  <p>The Same-Origin Policy is a browser security rule that prevents JavaScript from reading responses from a different origin. It is the reason CORS errors exist — CORS is the controlled way to relax this restriction.</p>
 
-<h2>What it blocks</h2>
-<ul> <li>Reading responses from <code>fetch()</code> or <code>XMLHttpRequest</code> to a different origin</li> <li>Accessing <code>window</code>, <code>document</code>, or cookies of a cross-origin frame</li> <li>Reading localStorage or sessionStorage across origins</li>
-</ul>
+  <h2>What is an origin</h2>
+<pre># An origin = protocol + domain + port
+https://yourapp.com       # origin: https://yourapp.com
+https://yourapp.com:443   # same origin (443 is default for HTTPS)
+http://yourapp.com        # different origin (http vs https)
+https://api.yourapp.com   # different origin (subdomain)
+https://yourapp.com:8080  # different origin (different port)</pre>
 
-<h2>What it does NOT block</h2>
-<p>The SOP blocks reading cross-origin responses, not all cross-origin requests. Browsers will send the request — they just won't give the response to your script. This distinction matters for CSRF attacks, which exploit the fact that requests are sent even when responses are blocked.</p>
+  <h2>What SOP blocks</h2>
+  <p>SOP blocks JavaScript from reading the response body, headers, and cookies from cross-origin requests. It does not block the request itself from being sent — it blocks JavaScript from accessing the response.</p>
 
-<h2>CORS — the controlled exception</h2>
-<p>CORS lets servers explicitly authorize cross-origin access. The server returns <code>Access-Control-Allow-Origin</code> with the allowed origin, and the browser then allows the response to reach your script.</p> <a href="/cors/" class="tool-cta">Test cross-origin access — CORSFixer &rarr;</a> <div class="related">Related: <a href="/glossary/cors/">CORS</a> &nbsp;<a href="/glossary/preflight-request/">Preflight Request</a> &nbsp;<a href="/errors/cors-error-messages/">Fix CORS errors</a></div>
+  <h2>What SOP allows</h2>
+  <p>Simple GET requests can be sent cross-origin. Embedding images, scripts, and stylesheets from other origins is allowed. Forms can submit cross-origin. SOP only blocks JavaScript from reading cross-origin responses.</p>
+
+  <h2>CORS relaxes SOP</h2>
+<pre># Server opts in by adding CORS headers
+Access-Control-Allow-Origin: https://yourapp.com
+
+# Browser then allows JavaScript to read the response</pre>
+
+  <div class="related">
+    Related: <a href="/cors/">CORSFixer — test CORS live</a>
+    <a href="/errors/blocked-by-cors-policy/">Blocked by CORS policy error</a>
+    <a href="/glossary/cors/">What is CORS?</a>
+  </div>
 </main>
-<footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/about/">About</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center">
+  <a href="/glossary/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">&#128218; HttpFixer Glossary — all terms →</a>
+</div>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="/glossary/">Glossary</a> · <a href="/tools/">Tools</a> · <a href="/blog/">Blog</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/about/">About</a> · <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">For informational purposes only. © 2026 MetricLogic.</p>
 </footer>
-</body>
-</html>
+</body></html>

@@ -1,20 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>What is Referrer-Policy? — HttpFixer Glossary</title> <meta name="description" content="Controls how much URL leaks when users follow links or load subresources."> <link rel="canonical" href="https://httpfixer.dev/glossary/referrer-policy/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="What is Referrer-Policy? — HttpFixer Glossary"> <meta property="og:description" content="Controls how much URL leaks when users follow links or load subresources."> <meta property="og:url" content="https://httpfixer.dev/glossary/referrer-policy/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "Referrer-Policy", "description": "Controls how much URL information is sent in the Referer header to other sites.", "url": "https://httpfixer.dev/glossary/referrer-policy/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "HttpFixer Security Glossary", "url": "https://httpfixer.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://httpfixer.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "Referrer-Policy"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does Referrer-Policy break OAuth redirects?", "acceptedAnswer": {"@type": "Answer", "text": "Rarely. OAuth flows rely on explicit redirect_uri parameters, not Referer. If you strip everything with no-referrer, debug third-party integrations case by case."}}, {"@type": "Question", "name": "meta referrer vs header?", "acceptedAnswer": {"@type": "Answer", "text": "Prefer the HTTP header for the whole origin. HTML meta tags are per-document fallbacks."}}]}]}</script> <style> :root { --bg: #0B0D14; --surface: #12151F; --border: #252836; --purple: #6C63FF; --green: #22C55E; --orange: #F97316; --red: #EF4444; --text: #E2E4F0; } * { box-sizing: border-box; margin: 0; padding: 0; } body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; } nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); } nav .brand { font-weight: 600; color: var(--text); text-decoration: none; } nav .brand span { color: var(--purple); } nav .right { display: flex; gap: 1rem; align-items: center; } nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; } nav a:hover { color: var(--purple); opacity: 1; } main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; } main.wide { max-width: 1000px; } .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; } .breadcrumb a { color: var(--purple); text-decoration: none; } h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; } h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); } p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; } .lead { font-size: 1.05rem; opacity: 0.95; margin-bottom: 1.25rem; } .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; } .tool-cta:hover { filter: brightness(1.1); } .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre-wrap; word-break: break-word; } footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; } footer a { color: var(--text); text-decoration: none; } .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem; } .glossary-grid a { display: block; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); text-decoration: none; } .glossary-grid a:hover { border-color: var(--purple); } .glossary-grid .term-title { color: var(--purple); font-weight: 600; font-size: 13px; margin-bottom: 0.4rem; } .glossary-grid .term-d { font-size: 12px; opacity: 0.8; line-height: 1.5; } article a { color: var(--purple); } .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; } .related-links a { color: var(--purple); text-decoration: none; } @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } } </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
-</head>
-<body> <nav> <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a> <div class="right"> <a href="/headers/">Headers</a> <a href="/cors/">CORS</a> <a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a> <a href="/edge/">Edge</a> <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a> </div> </nav> <main class=""> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → Referrer-Policy</div> <h1>Referrer-Policy</h1> <p class="lead">Controls how much URL information is sent in the <code>Referer</code> header to other sites.</p>
-<p>When your page loads third-party analytics, fonts, or users click outbound links, the browser may send a <code>Referer</code> showing the full path and query string of the page they came from. <code>Referrer-Policy</code> (note the historic spelling) shrinks or removes that signal—per document, or inherited by subresources depending on policy.</p>
-<h2>Why developers care</h2>
-<p>Internal URLs, reset tokens in query strings, and PII in paths routinely leak to vendors you did not mean to trust with that detail. Compliance teams care; so should you. A sane default like <code>strict-origin-when-cross-origin</code> keeps same-origin diagnostics while stripping paths on cross-origin requests.</p>
-<h2>Example</h2>
-<div class="code-block">Referrer-Policy: strict-origin-when-cross-origin
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Referrer-Policy Header — What It Controls and How to Set It · HttpFixer</title>
+<meta name="description" content="Referrer-Policy controls how much referrer information is sent with requests. Use strict-origin-when-cross-origin to protect URL parameters while keeping analytics working.">
+<link rel="canonical" href="https://httpfixer.dev/glossary/referrer-policy/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="Referrer-Policy Header — What It Controls and How to Set It · HttpFixer">
+<meta property="og:description" content="Referrer-Policy controls how much referrer information is sent with requests. Use strict-origin-when-cross-origin to protect URL parameters while keeping analytics working.">
+<meta property="og:url" content="https://httpfixer.dev/glossary/referrer-policy/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"Referrer-Policy","url":"https://httpfixer.dev/glossary/referrer-policy/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What does Referrer-Policy control?","acceptedAnswer":{"@type":"Answer","text":"Referrer-Policy controls what URL is sent in the Referer request header when a user navigates from your page to another site. It prevents sensitive URL parameters (tokens, session IDs) from leaking to third parties."}},{"@type":"Question","name":"What is the best Referrer-Policy value?","acceptedAnswer":{"@type":"Answer","text":"strict-origin-when-cross-origin is the recommended default. It sends the full URL for same-origin requests (useful for analytics) but only the origin for cross-origin requests (prevents leaking paths and parameters)."}}]}]}</script>
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--purple);text-decoration:none}
+h1{font-size:1.75rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.15);color:var(--purple)}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1rem 0;font-size:13px;color:#fba44a;line-height:1.6}
+.related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head><body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → Referrer-Policy</div>
+  <span class="tag">Security Header</span>
+  <h1>Referrer-Policy</h1>
+<p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
+  <p>Referrer-Policy controls what information is sent in the <code>Referer</code> request header when users navigate from your page. Without it, the browser may send full URLs including sensitive query parameters to third-party sites.</p>
 
-# Stricter — no referrer on downgrades:
-Referrer-Policy: no-referrer-when-downgrade</div>
-<h2>Spec</h2>
-<p><a href="https://www.w3.org/TR/referrer-policy/">W3C Referrer Policy</a></p> <div class="related-links"><span>Related:</span> <a href="/fix/headers/nginx/">Fix headers (Nginx)</a> · <a href="/fix/headers/apache/">Fix headers (Apache)</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div> <a href="/headers/" class="tool-cta">Audit headers with HeadersFixer →</a> </main> <footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span>MIT · <a href="https://github.com/metriclogic26/httpfixer">GitHub →</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+  <h2>Recommended value</h2>
+<pre>Referrer-Policy: strict-origin-when-cross-origin</pre>
+  <p>Sends the full URL for same-origin requests. Sends only the origin (no path or query) for cross-origin requests. This is the browser default since Chrome 85.</p>
+
+  <h2>All policy values</h2>
+<pre>no-referrer              # never send Referer header
+no-referrer-when-downgrade  # don't send on HTTPS->HTTP (old default)
+origin                   # send only the origin (https://yoursite.com)
+origin-when-cross-origin # full URL same-origin, origin-only cross-origin
+same-origin              # only send for same-origin requests
+strict-origin            # origin only, never on HTTP
+strict-origin-when-cross-origin  # recommended
+unsafe-url               # always send full URL (insecure)</pre>
+
+  <h2>Set in Nginx</h2>
+<pre>add_header Referrer-Policy "strict-origin-when-cross-origin" always;</pre>
+
+  <h2>Set per link in HTML</h2>
+<pre>&lt;a href="https://example.com" referrerpolicy="no-referrer"&gt;Link&lt;/a&gt;</pre>
+
+  <div class="related">
+    Related: <a href="/">Scan your headers live</a>
+    <a href="/fix/headers/nginx/">Security headers on Nginx</a>
+    <a href="/fix/headers/vercel/">Security headers on Vercel</a>
+  </div>
+</main>
+<div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center">
+  <a href="/glossary/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">&#128218; HttpFixer Glossary — all terms →</a>
+</div>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="/glossary/">Glossary</a> · <a href="/tools/">Tools</a> · <a href="/blog/">Blog</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/about/">About</a> · <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">For informational purposes only. © 2026 MetricLogic.</p>
 </footer>
-</body>
-</html>
+</body></html>

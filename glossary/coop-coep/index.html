@@ -1,18 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>What are COOP and COEP? — HttpFixer Glossary</title> <meta name="description" content="Cross-origin isolation headers gate powerful APIs and mitigate some side-channel risk."> <link rel="canonical" href="https://httpfixer.dev/glossary/coop-coep/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="What are COOP and COEP? — HttpFixer Glossary"> <meta property="og:description" content="Cross-origin isolation headers gate powerful APIs and mitigate some side-channel risk."> <meta property="og:url" content="https://httpfixer.dev/glossary/coop-coep/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "COOP and COEP", "description": "Two headers that enable cross-origin isolation, required for SharedArrayBuffer and high-resolution timers.", "url": "https://httpfixer.dev/glossary/coop-coep/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "HttpFixer Security Glossary", "url": "https://httpfixer.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://httpfixer.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "COOP and COEP"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Will COEP break my analytics iframe?", "acceptedAnswer": {"@type": "Answer", "text": "Probably, unless the vendor sends CORP or you proxy assets same-origin. Audit every subresource."}}, {"@type": "Question", "name": "Credentialless alternative?", "acceptedAnswer": {"@type": "Answer", "text": "COEP: credentialless (where supported) relaxes some embed rules—check current browser tables before relying on it."}}]}]}</script> <style> :root { --bg: #0B0D14; --surface: #12151F; --border: #252836; --purple: #6C63FF; --green: #22C55E; --orange: #F97316; --red: #EF4444; --text: #E2E4F0; } * { box-sizing: border-box; margin: 0; padding: 0; } body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; } nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); } nav .brand { font-weight: 600; color: var(--text); text-decoration: none; } nav .brand span { color: var(--purple); } nav .right { display: flex; gap: 1rem; align-items: center; } nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; } nav a:hover { color: var(--purple); opacity: 1; } main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; } main.wide { max-width: 1000px; } .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; } .breadcrumb a { color: var(--purple); text-decoration: none; } h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; } h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); } p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; } .lead { font-size: 1.05rem; opacity: 0.95; margin-bottom: 1.25rem; } .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; } .tool-cta:hover { filter: brightness(1.1); } .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre-wrap; word-break: break-word; } footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; } footer a { color: var(--text); text-decoration: none; } .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem; } .glossary-grid a { display: block; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); text-decoration: none; } .glossary-grid a:hover { border-color: var(--purple); } .glossary-grid .term-title { color: var(--purple); font-weight: 600; font-size: 13px; margin-bottom: 0.4rem; } .glossary-grid .term-d { font-size: 12px; opacity: 0.8; line-height: 1.5; } article a { color: var(--purple); } .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; } .related-links a { color: var(--purple); text-decoration: none; } @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } } </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
-</head>
-<body> <nav> <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a> <div class="right"> <a href="/headers/">Headers</a> <a href="/cors/">CORS</a> <a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a> <a href="/edge/">Edge</a> <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a> </div> </nav> <main class=""> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → COOP and COEP</div> <h1>COOP and COEP (Cross-Origin Isolation)</h1> <p class="lead">Two headers that enable cross-origin isolation, required for <code>SharedArrayBuffer</code> and high-resolution timers.</p>
-<p><code>Cross-Origin-Opener-Policy</code> (COOP) defines whether your document shares a browsing context group with cross-origin windows—<code>same-origin</code> isolates you from foreign <code>window</code> references. <code>Cross-Origin-Embedder-Policy</code> (COEP) requires cross-origin resources to explicitly opt in (<code>Cross-Origin-Resource-Policy</code> or CORS) before they load in an isolated page. Together they put the page in a mode where the platform exposes sharper timing and shared memory—power users only.</p>
-<h2>Why developers care</h2>
-<p>Without isolation, <code>SharedArrayBuffer</code> stays disabled in many browsers, and WebAssembly pthreads or certain media pipelines stall. Isolation also moves the security posture closer to Spectre mitigations at the cost of breaking naïve third-party embeds that lack CORP headers. You enable these only when you need the APIs or explicit isolation guarantees.</p>
-<h2>Example</h2>
-<div class="code-block">Cross-Origin-Opener-Policy: same-origin
-Cross-Origin-Embedder-Policy: require-corp</div>
-<h2>Spec</h2>
-<p><a href="https://html.spec.whatwg.org/multipage/origin.html#cross-origin-opener-policy">HTML — COOP</a> · <a href="https://html.spec.whatwg.org/multipage/origin.html#coep">HTML — COEP</a></p> <div class="related-links"><span>Related:</span> <a href="/fix/headers/nginx/">Fix headers (Nginx)</a> · <a href="/fix/headers/express/">Fix headers (Express)</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div> <a href="/headers/" class="tool-cta">Audit headers with HeadersFixer →</a> </main> <footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span>MIT · <a href="https://github.com/metriclogic26/httpfixer">GitHub →</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COOP and COEP — Cross-Origin Isolation Explained · HttpFixer</title>
+<meta name="description" content="COOP (Cross-Origin-Opener-Policy) and COEP (Cross-Origin-Embedder-Policy) enable cross-origin isolation, required for SharedArrayBuffer and high-resolution timers.">
+<link rel="canonical" href="https://httpfixer.dev/glossary/coop-coep/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="COOP and COEP — Cross-Origin Isolation Explained · HttpFixer">
+<meta property="og:description" content="COOP (Cross-Origin-Opener-Policy) and COEP (Cross-Origin-Embedder-Policy) enable cross-origin isolation, required for SharedArrayBuffer and high-resolution timers.">
+<meta property="og:url" content="https://httpfixer.dev/glossary/coop-coep/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"COOP and COEP","url":"https://httpfixer.dev/glossary/coop-coep/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is cross-origin isolation?","acceptedAnswer":{"@type":"Answer","text":"Cross-origin isolation is a browser security mode enabled by setting both COOP: same-origin and COEP: require-corp. It enables access to SharedArrayBuffer and high-resolution timers, which were disabled after Spectre attacks."}},{"@type":"Question","name":"Will COOP break my OAuth popup flow?","acceptedAnswer":{"@type":"Answer","text":"Yes, COOP: same-origin blocks window.opener communication between cross-origin windows. OAuth flows that use popups will break. Use COOP: same-origin-allow-popups instead, or switch to redirect-based OAuth flows."}}]}]}</script>
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--purple);text-decoration:none}
+h1{font-size:1.75rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.15);color:var(--purple)}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1rem 0;font-size:13px;color:#fba44a;line-height:1.6}
+.related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head><body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → COOP / COEP</div>
+  <span class="tag">Security Header</span>
+  <h1>COOP and COEP — Cross-Origin Isolation</h1>
+<p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
+  <p>COOP (Cross-Origin-Opener-Policy) and COEP (Cross-Origin-Embedder-Policy) are HTTP headers that enable cross-origin isolation — a browser security mode required for <code>SharedArrayBuffer</code> and high-resolution performance timers.</p>
+
+  <h2>Cross-Origin-Opener-Policy (COOP)</h2>
+  <p>Controls whether your page shares a browsing context group with cross-origin pages. This affects whether popups can use <code>window.opener</code> to communicate with your page.</p>
+<pre># Isolates your page from cross-origin windows (most secure)
+Cross-Origin-Opener-Policy: same-origin
+
+# Allows popups but isolates opener references (good for OAuth)
+Cross-Origin-Opener-Policy: same-origin-allow-popups
+
+# No isolation (default browser behaviour)
+Cross-Origin-Opener-Policy: unsafe-none</pre>
+
+  <h2>Cross-Origin-Embedder-Policy (COEP)</h2>
+  <p>Requires all subresources to opt in to cross-origin loading via <code>Cross-Origin-Resource-Policy</code> or CORS.</p>
+<pre># Require all subresources to opt in
+Cross-Origin-Embedder-Policy: require-corp
+
+# Credentialless — loads cross-origin resources without cookies
+Cross-Origin-Embedder-Policy: credentialless</pre>
+
+  <h2>Enable cross-origin isolation (SharedArrayBuffer)</h2>
+<pre># Both headers required together
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Embedder-Policy: require-corp
+
+# Check if cross-origin isolated in JS:
+console.log(self.crossOriginIsolated); // true if both headers set</pre>
+
+  <h2>Fix COOP breaking OAuth popups</h2>
+<pre># Use same-origin-allow-popups instead of same-origin
+Cross-Origin-Opener-Policy: same-origin-allow-popups</pre>
+
+  <div class="related">
+    Related: <a href="/errors/err-blocked-by-response/">ERR_BLOCKED_BY_RESPONSE</a>
+    <a href="/fix/headers/nginx/">Security headers on Nginx</a>
+    <a href="/oauth/">OAuthFixer</a>
+  </div>
+</main>
+<div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center">
+  <a href="/glossary/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">&#128218; HttpFixer Glossary — all terms →</a>
+</div>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="/glossary/">Glossary</a> · <a href="/tools/">Tools</a> · <a href="/blog/">Blog</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/about/">About</a> · <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">For informational purposes only. © 2026 MetricLogic.</p>
 </footer>
-</body>
-</html>
+</body></html>

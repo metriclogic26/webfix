@@ -1,28 +1,115 @@
-<!DOCTYPE html>
-<html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>PKCE (Proof Key for Code Exchange) — HttpFixer Glossary</title> <meta name="description" content="PKCE is an OAuth 2.0 extension that prevents authorization code interception attacks. Required for public clients like SPAs and mobile apps. Explained with what it does and how to enable it."> <link rel="canonical" href="https://httpfixer.dev/glossary/pkce/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="PKCE (Proof Key for Code Exchange) — HttpFixer Glossary"> <meta property="og:description" content="PKCE is an OAuth 2.0 extension that prevents authorization code interception attacks. Required for public clients like SPAs and mobile apps. Explained with what it does and how to enable it."> <meta property="og:url" content="https://httpfixer.dev/glossary/pkce/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"PKCE (Proof Key for Code Exchange)","description":"PKCE is an OAuth 2.0 extension that prevents authorization code interception attacks. Required for public clients like SPAs and mobile apps. Explained with what it does and how to enable it.","url":"https://httpfixer.dev/glossary/pkce/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Glossary","item":"https://httpfixer.dev/glossary/"},{"@type":"ListItem","position":3,"name":"PKCE (Proof Key for Code Exchange)","item":"https://httpfixer.dev/glossary/pkce/"}]}]}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem;flex-wrap:wrap} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem} .quick-answer p{margin:0;opacity:1;font-size:14px;line-height:1.7} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} pre code{background:none;color:var(--text);padding:0} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
-</head>
-<body>
-<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/">Errors</a><a href="/glossary/" style="color:var(--purple);opacity:1">Glossary</a><a href="/blog/">Blog</a> </div>
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PKCE — Proof Key for Code Exchange Explained · HttpFixer</title>
+<meta name="description" content="PKCE (Proof Key for Code Exchange) prevents authorization code interception in OAuth flows. Required for public clients (SPAs, mobile apps) and recommended for all OAuth 2.1 flows.">
+<link rel="canonical" href="https://httpfixer.dev/glossary/pkce/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="PKCE — Proof Key for Code Exchange Explained · HttpFixer">
+<meta property="og:description" content="PKCE (Proof Key for Code Exchange) prevents authorization code interception in OAuth flows. Required for public clients (SPAs, mobile apps) and recommended for all OAuth 2.1 flows.">
+<meta property="og:url" content="https://httpfixer.dev/glossary/pkce/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"PKCE","url":"https://httpfixer.dev/glossary/pkce/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What does PKCE prevent?","acceptedAnswer":{"@type":"Answer","text":"PKCE prevents authorization code interception attacks. Without PKCE, a malicious app on the same device could intercept the authorization code from the redirect URI and exchange it for a token. PKCE binds the code to the specific app that started the flow."}},{"@type":"Question","name":"Is PKCE required?","acceptedAnswer":{"@type":"Answer","text":"PKCE is required for public clients (SPAs, mobile apps without a client secret). OAuth 2.1 requires PKCE for all authorization code flows. Most identity providers (Auth0, Okta, Cognito, Google) support and recommend PKCE."}}]}]}</script>
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--purple);text-decoration:none}
+h1{font-size:1.75rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.15);color:var(--purple)}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1rem 0;font-size:13px;color:#fba44a;line-height:1.6}
+.related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head><body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
 </nav>
-<main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/glossary/">Glossary</a> &rarr; PKCE (Proof Key for Code Exchange)</div> <div class="date">Updated April 2026</div> <h1>PKCE (Proof Key for Code Exchange)</h1> <div class="quick-answer"><p>PKCE (Proof Key for Code Exchange, pronounced "pixy") is an OAuth 2.0 extension that prevents authorization code interception attacks. A client generates a random code verifier and sends its hash (code challenge) with the auth request. Only the original client can exchange the code because only it knows the verifier.</p></div> <h2>The attack PKCE prevents</h2>
-<p>Without PKCE, a malicious app on the same device can intercept the authorization code from the redirect URL (especially on mobile via custom URL schemes). It then exchanges the code for tokens before the legitimate app can.</p>
-<p>PKCE makes stolen codes useless — the attacker doesn't have the code verifier needed to exchange them.</p>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → PKCE</div>
+  <span class="tag">OAuth</span>
+  <h1>PKCE — Proof Key for Code Exchange</h1>
+<p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
+  <p>PKCE (pronounced "pixie") is an OAuth 2.0 extension that prevents authorization code interception attacks. It is required for public clients (SPAs and mobile apps) and recommended for all OAuth flows in OAuth 2.1.</p>
 
-<h2>How PKCE works</h2>
-<ol> <li>Client generates random <code>code_verifier</code> (43-128 chars)</li> <li>Client hashes it: <code>code_challenge = BASE64URL(SHA256(code_verifier))</code></li> <li>Sends <code>code_challenge</code> and <code>code_challenge_method=S256</code> with auth request</li> <li>After redirect, sends original <code>code_verifier</code> with token exchange request</li> <li>Server verifies: <code>SHA256(code_verifier)</code> must match stored challenge</li>
-</ol>
+  <h2>How PKCE works</h2>
+<pre># 1. App generates a random code_verifier
+code_verifier = base64url(random(32 bytes))
+# Example: dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
 
-<h2>Provider configuration</h2>
-<table> <thead><tr><th>Provider</th><th>Where to enable</th></tr></thead> <tbody> <tr><td>Auth0</td><td>Applications &rarr; Settings &rarr; Advanced &rarr; Grant Types: enable Authorization Code with PKCE</td></tr> <tr><td>Okta</td><td>Applications &rarr; Sign-On Policy &rarr; require PKCE</td></tr> <tr><td>Cognito</td><td>App client &rarr; Enable PKCE-only auth flows</td></tr> <tr><td>Google</td><td>Supported by default for installed app clients</td></tr> </tbody>
-</table>
+# 2. App creates code_challenge from verifier
+code_challenge = base64url(sha256(code_verifier))
+# Example: E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
 
-<h2>When to use PKCE</h2>
-<p>PKCE is required for all public clients — single-page apps, mobile apps, and desktop apps that cannot store a client secret. As of OAuth 2.1 (draft), PKCE is required for all authorization code flows, including confidential clients.</p> <a href="/oauth/" class="tool-cta">Diagnose OAuth errors — OAuthFixer &rarr;</a> <div class="related">Related: <a href="/errors/pkce-required/">Fix PKCE required error</a> &nbsp;<a href="/errors/invalid-grant-error/">invalid_grant error</a> &nbsp;<a href="/blog/compare/oauth-vs-oidc/">OAuth vs OIDC</a> &nbsp;<a href="/glossary/samesite-cookie/">SameSite cookie</a> &nbsp;<a href="/errors/redirect-uri-mismatch/">redirect_uri mismatch error</a> &nbsp;<a href="/tools/jwt/">JWT Debugger</a></div>
+# 3. App sends code_challenge to authorization endpoint
+GET /authorize
+  ?code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
+  &code_challenge_method=S256
+  &...
+
+# 4. Server stores code_challenge with the auth code
+
+# 5. App sends code_verifier when exchanging code for token
+POST /token
+  code=AUTH_CODE
+  &code_verifier=dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+  &...
+
+# 6. Server verifies: sha256(code_verifier) == stored code_challenge</pre>
+
+  <h2>Enable PKCE in common providers</h2>
+  <p><strong>Auth0:</strong> Application Settings → Grant Types → enable Authorization Code (PKCE). Use auth0-react or auth0-spa-js SDK.</p>
+  <p><strong>Okta:</strong> Application → Sign-On Policy → enable PKCE. Set <code>pkce: true</code> in OktaAuth config.</p>
+  <p><strong>Cognito:</strong> App client → Auth flows → enable PKCE. Set in Amplify config.</p>
+
+  <h2>JavaScript implementation</h2>
+<pre>async function generatePKCE() {
+  const verifier = crypto.getRandomValues(new Uint8Array(32));
+  const challenge = await crypto.subtle.digest('SHA-256', verifier);
+  return {
+    code_verifier: btoa(String.fromCharCode(...verifier))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, ''),
+    code_challenge: btoa(String.fromCharCode(...new Uint8Array(challenge)))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, ''),
+  };
+}</pre>
+
+  <div class="related">
+    Related: <a href="/oauth/">OAuthFixer</a>
+    <a href="/glossary/oauth-grant-types/">OAuth grant types</a>
+    <a href="/errors/redirect-uri-mismatch/">redirect_uri_mismatch error</a>
+  </div>
 </main>
-<footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/about/">About</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center">
+  <a href="/glossary/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">&#128218; HttpFixer Glossary — all terms →</a>
+</div>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="/glossary/">Glossary</a> · <a href="/tools/">Tools</a> · <a href="/blog/">Blog</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/about/">About</a> · <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">For informational purposes only. © 2026 MetricLogic.</p>
 </footer>
-</body>
-</html>
+</body></html>

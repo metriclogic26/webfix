@@ -1,18 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>What is LCP? — HttpFixer Glossary</title> <meta name="description" content="LCP tracks when the main visible content element finishes loading across navigations."> <link rel="canonical" href="https://httpfixer.dev/glossary/largest-contentful-paint/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="What is LCP? — HttpFixer Glossary"> <meta property="og:description" content="LCP tracks when the main visible content element finishes loading across navigations."> <meta property="og:url" content="https://httpfixer.dev/glossary/largest-contentful-paint/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "Largest Contentful Paint (LCP)", "description": "How long it takes for the largest visible element to load.", "url": "https://httpfixer.dev/glossary/largest-contentful-paint/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "HttpFixer Security Glossary", "url": "https://httpfixer.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://httpfixer.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "Largest Contentful Paint (LCP)"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Does lazy-loading the LCP image hurt?", "acceptedAnswer": {"@type": "Answer", "text": "Yes—never lazy-load your LCP candidate. Exclude it from lazy attributes and prioritize its download."}}, {"@type": "Question", "name": "Can fonts be LCP?", "acceptedAnswer": {"@type": "Answer", "text": "Text can be the LCP element; font swap and subsetting affect when text paints acceptably."}}]}]}</script> <style> :root { --bg: #0B0D14; --surface: #12151F; --border: #252836; --purple: #6C63FF; --green: #22C55E; --orange: #F97316; --red: #EF4444; --text: #E2E4F0; } * { box-sizing: border-box; margin: 0; padding: 0; } body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; } nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); } nav .brand { font-weight: 600; color: var(--text); text-decoration: none; } nav .brand span { color: var(--purple); } nav .right { display: flex; gap: 1rem; align-items: center; } nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; } nav a:hover { color: var(--purple); opacity: 1; } main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; } main.wide { max-width: 1000px; } .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; } .breadcrumb a { color: var(--purple); text-decoration: none; } h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; } h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); } p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; } .lead { font-size: 1.05rem; opacity: 0.95; margin-bottom: 1.25rem; } .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; } .tool-cta:hover { filter: brightness(1.1); } .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre-wrap; word-break: break-word; } footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; } footer a { color: var(--text); text-decoration: none; } .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem; } .glossary-grid a { display: block; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); text-decoration: none; } .glossary-grid a:hover { border-color: var(--purple); } .glossary-grid .term-title { color: var(--purple); font-weight: 600; font-size: 13px; margin-bottom: 0.4rem; } .glossary-grid .term-d { font-size: 12px; opacity: 0.8; line-height: 1.5; } article a { color: var(--purple); } .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; } .related-links a { color: var(--purple); text-decoration: none; } @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } } </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
-</head>
-<body> <nav> <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a> <div class="right"> <a href="/headers/">Headers</a> <a href="/cors/">CORS</a> <a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a> <a href="/edge/">Edge</a> <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a> </div> </nav> <main class=""> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → Largest Contentful Paint (LCP)</div> <h1>Largest Contentful Paint (LCP)</h1> <p class="lead">How long it takes for the largest visible element to load.</p>
-<p>LCP measures the render time of the largest image, video poster, or text block in the viewport during page load. It stops when that element is painted and stable enough to count. Slow LCP usually means late discovery (HTML depth), slow server TTFB, unoptimized hero media, or render-blocking CSS/JS in front of the hero.</p>
-<h2>Why developers care</h2>
-<p>LCP is the most actionable Core Web Vital for many marketing and app shells: you can often win hundreds of milliseconds with <code>fetchpriority=&quot;high&quot;</code> on the hero, preloading the LCP image, shrinking image bytes, or moving blocking scripts. SpeedFixer ties failing Lighthouse audits to nginx or CDN snippets so you do not guess.</p>
-<h2>Example</h2>
-<div class="code-block">&lt;link rel="preload" as="image" href="/hero.webp" type="image/webp"&gt;
-&lt;img src="/hero.webp" alt="..." width="1200" height="630" fetchpriority="high"&gt;</div>
-<h2>Spec</h2>
-<p><a href="https://w3c.github.io/largest-contentful-paint/">Largest Contentful Paint</a></p> <div class="related-links"><span>Related:</span> <a href="/fix/pagespeed/nginx/">Fix PageSpeed (Nginx)</a> · <a href="/error/pagespeed-render-blocking/">Render-blocking error</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div> <a href="/speedfixer/" class="tool-cta">Improve LCP with SpeedFixer →</a> </main> <footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span>MIT · <a href="https://github.com/metriclogic26/httpfixer">GitHub →</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Largest Contentful Paint (LCP) — What It Is and How to Improve It · HttpFixer</title>
+<meta name="description" content="LCP measures how long the largest visible element takes to render. Target is under 2.5 seconds. Fix with image preloading, CDN, and server response time improvements.">
+<link rel="canonical" href="https://httpfixer.dev/glossary/largest-contentful-paint/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="Largest Contentful Paint (LCP) — What It Is and How to Improve It · HttpFixer">
+<meta property="og:description" content="LCP measures how long the largest visible element takes to render. Target is under 2.5 seconds. Fix with image preloading, CDN, and server response time improvements.">
+<meta property="og:url" content="https://httpfixer.dev/glossary/largest-contentful-paint/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"Largest Contentful Paint","url":"https://httpfixer.dev/glossary/largest-contentful-paint/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What counts as the LCP element?","acceptedAnswer":{"@type":"Answer","text":"The LCP element is the largest image, video poster, or block of text visible in the viewport on initial load. This is usually a hero image, H1 heading, or above-the-fold banner."}},{"@type":"Question","name":"What is a good LCP score?","acceptedAnswer":{"@type":"Answer","text":"Under 2.5 seconds is good. Between 2.5s and 4s needs improvement. Over 4s is poor. These thresholds are for the 75th percentile of page loads."}}]}]}</script>
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--purple);text-decoration:none}
+h1{font-size:1.75rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.15);color:var(--purple)}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1rem 0;font-size:13px;color:#fba44a;line-height:1.6}
+.related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head><body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → Largest Contentful Paint</div>
+  <span class="tag">Performance</span>
+  <h1>Largest Contentful Paint (LCP)</h1>
+<p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
+  <p>LCP measures how long it takes for the largest visible element in the viewport to render. It is one of Google's Core Web Vitals and a direct search ranking signal. Target: under 2.5 seconds.</p>
+
+  <h2>What counts as the LCP element</h2>
+  <p>The browser tracks the largest element visible in the viewport: images, video poster images, background images loaded via CSS, and large blocks of text. Usually the hero image or main heading.</p>
+
+  <h2>Fix 1 — preload the LCP image</h2>
+<pre>&lt;link rel="preload" as="image" href="/hero.webp"
+  fetchpriority="high" type="image/webp"&gt;</pre>
+
+  <h2>Fix 2 — add fetchpriority to the image tag</h2>
+<pre>&lt;img src="/hero.webp" fetchpriority="high"
+  width="1200" height="600" alt="Hero image"&gt;</pre>
+
+  <h2>Fix 3 — serve images from a CDN with long cache</h2>
+<pre># Nginx: cache images at CDN edge
+location ~* \.(jpg|webp|png|avif)$ {
+    expires 30d;
+    add_header Cache-Control "public, max-age=2592000" always;
+}</pre>
+
+  <h2>Fix 4 — use Cloudflare Early Hints</h2>
+<pre># Cloudflare automatically sends Early Hints for preloaded resources
+# Enable: Cloudflare Dashboard -> Speed -> Optimization -> Early Hints</pre>
+
+  <h2>Fix 5 — reduce server response time (TTFB)</h2>
+  <p>LCP cannot start until the browser receives the HTML. Reduce TTFB with caching, CDN, and faster server-side rendering.</p>
+
+  <div class="related">
+    Related: <a href="/glossary/core-web-vitals/">Core Web Vitals overview</a>
+    <a href="/glossary/time-to-first-byte/">TTFB explained</a>
+    <a href="/speedfixer/">SpeedFixer</a>
+  </div>
+</main>
+<div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center">
+  <a href="/glossary/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">&#128218; HttpFixer Glossary — all terms →</a>
+</div>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="/glossary/">Glossary</a> · <a href="/tools/">Tools</a> · <a href="/blog/">Blog</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/about/">About</a> · <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">For informational purposes only. © 2026 MetricLogic.</p>
 </footer>
-</body>
-</html>
+</body></html>

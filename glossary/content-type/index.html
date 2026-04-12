@@ -1,28 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Content-Type Header — HttpFixer Glossary</title> <meta name="description" content="The Content-Type header declares the media type of request and response bodies. Wrong Content-Type causes JSON parse errors, CORS preflight triggers, and security issues. Explained with examples."> <link rel="canonical" href="https://httpfixer.dev/glossary/content-type/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="Content-Type Header — HttpFixer Glossary"> <meta property="og:description" content="The Content-Type header declares the media type of request and response bodies. Wrong Content-Type causes JSON parse errors, CORS preflight triggers, and security issues. Explained with examples."> <meta property="og:url" content="https://httpfixer.dev/glossary/content-type/"> <meta property="og:type" content="article"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"Content-Type Header","description":"The Content-Type header declares the media type of request and response bodies. Wrong Content-Type causes JSON parse errors, CORS preflight triggers, and security issues. Explained with examples.","url":"https://httpfixer.dev/glossary/content-type/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Glossary","item":"https://httpfixer.dev/glossary/"},{"@type":"ListItem","position":3,"name":"Content-Type Header","item":"https://httpfixer.dev/glossary/content-type/"}]}]}</script> <style> :root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0} *{box-sizing:border-box;margin:0;padding:0} body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh} nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)} nav .brand{font-weight:600;color:var(--text);text-decoration:none} nav .brand span{color:var(--purple)} nav .right{display:flex;gap:1rem;flex-wrap:wrap} nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px} nav a:hover{color:var(--purple);opacity:1} main{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem 4rem} .breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem} .breadcrumb a{color:var(--purple);text-decoration:none} .quick-answer{background:var(--surface);border:1px solid var(--purple);border-radius:8px;padding:1.25rem 1.5rem;margin-bottom:2rem} .quick-answer p{margin:0;opacity:1;font-size:14px;line-height:1.7} h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:0.75rem} h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem} p{margin-bottom:1rem;opacity:0.9;line-height:1.75} pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6} code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px} pre code{background:none;color:var(--text);padding:0} table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px} th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left} th{background:var(--surface);color:var(--purple);font-weight:600} tr:nth-child(even) td{background:rgba(255,255,255,0.02)} ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9} li{margin-bottom:0.4rem;line-height:1.7} .tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px} .tool-cta:hover{filter:brightness(1.1)} .related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)} .related a{color:var(--purple);text-decoration:none;margin-right:0.75rem} .date{font-size:11px;opacity:0.4;margin-bottom:0.5rem} footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem} footer a{color:var(--text);text-decoration:none;opacity:0.6} .disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6} @media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}} </style>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
-</head>
-<body>
-<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/">Errors</a><a href="/glossary/" style="color:var(--purple);opacity:1">Glossary</a><a href="/blog/">Blog</a> </div>
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content-Type Header — What It Does and Common Values · HttpFixer</title>
+<meta name="description" content="Content-Type tells the browser what kind of data is in the response. Wrong Content-Type causes CORS errors, JSON parse failures, and security issues.">
+<link rel="canonical" href="https://httpfixer.dev/glossary/content-type/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="Content-Type Header — What It Does and Common Values · HttpFixer">
+<meta property="og:description" content="Content-Type tells the browser what kind of data is in the response. Wrong Content-Type causes CORS errors, JSON parse failures, and security issues.">
+<meta property="og:url" content="https://httpfixer.dev/glossary/content-type/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"Content-Type","url":"https://httpfixer.dev/glossary/content-type/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What happens if Content-Type is wrong?","acceptedAnswer":{"@type":"Answer","text":"A wrong Content-Type can cause browsers to misparse responses, trigger MIME sniffing (which X-Content-Type-Options: nosniff prevents), cause fetch() to fail JSON parsing, or trigger CORS preflight failures when the wrong type is sent in a request."}},{"@type":"Question","name":"Why does my fetch() fail with a CORS error when sending JSON?","acceptedAnswer":{"@type":"Answer","text":"Sending JSON (Content-Type: application/json) in a fetch request triggers a CORS preflight OPTIONS request. If your server does not handle OPTIONS, the preflight fails and you see a CORS error. The fix is adding CORS middleware that handles OPTIONS."}}]}]}</script>
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--purple);text-decoration:none}
+h1{font-size:1.75rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.15);color:var(--purple)}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1rem 0;font-size:13px;color:#fba44a;line-height:1.6}
+.related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head><body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
 </nav>
-<main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/glossary/">Glossary</a> &rarr; Content-Type Header</div> <div class="date">Updated April 2026</div> <h1>Content-Type Header</h1> <div class="quick-answer"><p>The Content-Type header declares the format of the request or response body. For responses, it tells the browser how to parse the body. For requests, it tells the server what format the body is in. Getting it wrong causes parse errors and can trigger CORS preflights unexpectedly.</p></div> <h2>Common Content-Type values</h2>
-<table> <thead><tr><th>Value</th><th>Used for</th></tr></thead> <tbody> <tr><td><code>application/json</code></td><td>JSON API requests and responses</td></tr> <tr><td><code>text/html; charset=utf-8</code></td><td>HTML pages</td></tr> <tr><td><code>application/x-www-form-urlencoded</code></td><td>HTML form submissions</td></tr> <tr><td><code>multipart/form-data</code></td><td>File uploads</td></tr> <tr><td><code>text/plain</code></td><td>Plain text</td></tr> <tr><td><code>application/octet-stream</code></td><td>Binary file downloads</td></tr> </tbody>
-</table>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → Content-Type</div>
+  <span class="tag">HTTP Header</span>
+  <h1>Content-Type</h1>
+<p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
+  <p><code>Content-Type</code> tells the browser (and server) what type of data is in the request or response body. Sending the wrong Content-Type causes parse failures, CORS preflights, and security issues.</p>
 
-<h2>Why it triggers CORS preflight</h2>
-<p>Browsers only skip the CORS preflight for POST requests with "simple" Content-Type values: application/x-www-form-urlencoded, multipart/form-data, or text/plain.</p>
-<p>Any POST with <code>Content-Type: application/json</code> triggers a preflight. This is why JSON APIs require explicit CORS preflight handling even for POST.</p>
+  <h2>Common response Content-Types</h2>
+<pre>Content-Type: application/json              # JSON API response
+Content-Type: text/html; charset=utf-8      # HTML page
+Content-Type: text/plain; charset=utf-8     # plain text
+Content-Type: application/javascript        # JavaScript file
+Content-Type: text/css                      # CSS file
+Content-Type: image/webp                    # WebP image
+Content-Type: multipart/form-data           # file upload form</pre>
 
-<h2>Security: X-Content-Type-Options: nosniff</h2>
-<p>Without this header, browsers "sniff" the content type by looking at the actual content, ignoring what Content-Type says. This can cause security issues — an image file could be interpreted as JavaScript. Always set:</p>
+  <h2>Content-Type triggers CORS preflight</h2>
+  <p>Fetch requests with <code>Content-Type: application/json</code> are not "simple requests" and trigger a preflight OPTIONS request. If your server does not respond to OPTIONS, you see a CORS error.</p>
+<pre># This triggers preflight:
+fetch('/api/data', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(data),
+});</pre>
+
+  <h2>X-Content-Type-Options: nosniff</h2>
+  <p>Without this header, browsers may ignore Content-Type and guess the type (MIME sniffing). This can cause security issues if an attacker uploads an HTML file served as text/plain.</p>
 <pre>X-Content-Type-Options: nosniff</pre>
 
-<h2>Common mistake</h2>
-<p>Returning JSON without setting Content-Type to application/json — some clients handle this, but some JavaScript fetch clients and all strictly typed parsers will reject it.</p> <a href="/" class="tool-cta">Scan your response headers — HeadersFixer &rarr;</a> <div class="related">Related: <a href="/glossary/cors/">CORS</a> &nbsp;<a href="/glossary/preflight-request/">Preflight Request</a> &nbsp;<a href="/blog/headers/security-headers-checklist/">Security Headers Checklist</a></div>
+  <h2>Set in Nginx</h2>
+<pre>location /api/ {
+    add_header Content-Type "application/json" always;
+    add_header X-Content-Type-Options "nosniff" always;
+}</pre>
+
+  <div class="related">
+    Related: <a href="/cors/">CORSFixer — test CORS live</a>
+    <a href="/errors/blocked-by-cors-policy/">Blocked by CORS policy</a>
+    <a href="/fix/headers/nginx/">Security headers on Nginx</a>
+  </div>
 </main>
-<footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/tools/">All Tools</a> &middot; <a href="/generators/">Generators</a></span> <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="/about/">About</a> &middot; <a href="/privacy/">Privacy</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center">
+  <a href="/glossary/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">&#128218; HttpFixer Glossary — all terms →</a>
+</div>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="/glossary/">Glossary</a> · <a href="/tools/">Tools</a> · <a href="/blog/">Blog</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/about/">About</a> · <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">For informational purposes only. © 2026 MetricLogic.</p>
 </footer>
-</body>
-</html>
+</body></html>

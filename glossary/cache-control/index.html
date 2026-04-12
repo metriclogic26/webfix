@@ -1,21 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>What is the Cache-Control header? — HttpFixer Glossary</title> <meta name="description" content="Controls freshness and privacy of cached HTTP responses across browsers and CDNs."> <link rel="canonical" href="https://httpfixer.dev/glossary/cache-control/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="What is the Cache-Control header? — HttpFixer Glossary"> <meta property="og:description" content="Controls freshness and privacy of cached HTTP responses across browsers and CDNs."> <meta property="og:url" content="https://httpfixer.dev/glossary/cache-control/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "Cache-Control", "description": "An HTTP header that tells browsers and CDNs how long to cache a response.", "url": "https://httpfixer.dev/glossary/cache-control/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "HttpFixer Security Glossary", "url": "https://httpfixer.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://httpfixer.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "Cache-Control"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the difference between private and no-store?", "acceptedAnswer": {"@type": "Answer", "text": "private allows the end-user’s browser to cache but not shared proxies; no-store asks for no caching anywhere."}}, {"@type": "Question", "name": "Does immutable mean forever?", "acceptedAnswer": {"@type": "Answer", "text": "It is a hint: if the URL never changes content, validators are unnecessary. You still change URLs when content changes."}}]}]}</script> <style> :root { --bg: #0B0D14; --surface: #12151F; --border: #252836; --purple: #6C63FF; --green: #22C55E; --orange: #F97316; --red: #EF4444; --text: #E2E4F0; } * { box-sizing: border-box; margin: 0; padding: 0; } body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; } nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); } nav .brand { font-weight: 600; color: var(--text); text-decoration: none; } nav .brand span { color: var(--purple); } nav .right { display: flex; gap: 1rem; align-items: center; } nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; } nav a:hover { color: var(--purple); opacity: 1; } main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; } main.wide { max-width: 1000px; } .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; } .breadcrumb a { color: var(--purple); text-decoration: none; } h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; } h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); } p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; } .lead { font-size: 1.05rem; opacity: 0.95; margin-bottom: 1.25rem; } .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; } .tool-cta:hover { filter: brightness(1.1); } .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre-wrap; word-break: break-word; } footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; } footer a { color: var(--text); text-decoration: none; } .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem; } .glossary-grid a { display: block; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); text-decoration: none; } .glossary-grid a:hover { border-color: var(--purple); } .glossary-grid .term-title { color: var(--purple); font-weight: 600; font-size: 13px; margin-bottom: 0.4rem; } .glossary-grid .term-d { font-size: 12px; opacity: 0.8; line-height: 1.5; } article a { color: var(--purple); } .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; } .related-links a { color: var(--purple); text-decoration: none; } @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } } </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
-</head>
-<body> <nav> <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a> <div class="right"> <a href="/headers/">Headers</a> <a href="/cors/">CORS</a> <a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a> <a href="/edge/">Edge</a> <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a> </div> </nav> <main class=""> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → Cache-Control</div> <h1>Cache-Control</h1> <p class="lead">An HTTP header that tells browsers and CDNs how long to cache a response.</p>
-<p><code>Cache-Control</code> combines directives: <code>max-age</code>, <code>s-maxage</code> (shared caches), <code>private</code>, <code>no-store</code>, <code>immutable</code>, <code>stale-while-revalidate</code>, and more. Browsers and CDNs each interpret the tuple; middleware that strips or overrides it changes production behavior even when origin looks correct.</p>
-<h2>Why developers care</h2>
-<p>Wrong caching means either angry users on stale dashboards or serious bugs where a CDN serves one user’s HTML to another after a <code>private</code> miss. APIs that return JSON with auth cookies must usually send <code>no-store</code> or <code>private</code> explicitly. Static hashed assets want long <code>max-age</code> with <code>immutable</code> so PSI and real users stop revalidating bytes that never change.</p>
-<h2>Example</h2>
-<div class="code-block"># Fingerprinted build asset:
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cache-Control Header — Directives, Examples, and Best Practices · HttpFixer</title>
+<meta name="description" content="Cache-Control is an HTTP header that controls how browsers and CDNs cache responses. Key directives: max-age, no-cache, no-store, private, public, immutable.">
+<link rel="canonical" href="https://httpfixer.dev/glossary/cache-control/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="Cache-Control Header — Directives, Examples, and Best Practices · HttpFixer">
+<meta property="og:description" content="Cache-Control is an HTTP header that controls how browsers and CDNs cache responses. Key directives: max-age, no-cache, no-store, private, public, immutable.">
+<meta property="og:url" content="https://httpfixer.dev/glossary/cache-control/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"Cache-Control","url":"https://httpfixer.dev/glossary/cache-control/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the difference between no-cache and no-store?","acceptedAnswer":{"@type":"Answer","text":"no-cache stores the response in cache but requires revalidation before every use. no-store prevents storage entirely. Use no-store for sensitive data (payment pages, private user data). Use no-cache for pages that change frequently but can benefit from conditional requests."}},{"@type":"Question","name":"What does immutable mean in Cache-Control?","acceptedAnswer":{"@type":"Answer","text":"immutable tells the browser the resource will never change during its max-age window. The browser skips revalidation requests even on page reload. Use it for fingerprinted assets like main.abc123.js."}}]}]}</script>
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--purple);text-decoration:none}
+h1{font-size:1.75rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.15);color:var(--purple)}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1rem 0;font-size:13px;color:#fba44a;line-height:1.6}
+.related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head><body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → Cache-Control</div>
+  <span class="tag">HTTP Header</span>
+  <h1>Cache-Control</h1>
+<p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
+  <p>Cache-Control is an HTTP response header that controls how browsers, CDNs, and proxies cache responses. Without it, caches apply unpredictable defaults.</p>
+
+  <h2>Common directives</h2>
+<pre>public                  # cacheable by browsers and CDNs
+private                 # cacheable by browser only (not CDNs)
+no-cache                # cache but revalidate before every use
+no-store                # do not cache anywhere
+max-age=N               # fresh for N seconds
+s-maxage=N              # CDN TTL (overrides max-age for shared caches)
+immutable               # resource never changes during max-age window
+stale-while-revalidate=N # serve stale while revalidating in background
+must-revalidate         # must revalidate once stale, no serving stale</pre>
+
+  <h2>Recommended values by resource type</h2>
+<pre># Fingerprinted static assets (JS, CSS with hash in filename)
 Cache-Control: public, max-age=31536000, immutable
 
-# Authenticated API:
-Cache-Control: private, no-store</div>
-<h2>Spec</h2>
-<p><a href="https://www.rfc-editor.org/rfc/rfc7234">RFC 7234</a></p> <div class="related-links"><span>Related:</span> <a href="/fix/cache/nginx/">Fix cache (Nginx)</a> · <a href="/error/cache-authenticated-response/">Auth response cached</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div> <a href="/edge/" class="tool-cta">Audit caching with EdgeFix →</a> </main> <footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span>MIT · <a href="https://github.com/metriclogic26/httpfixer">GitHub →</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+# Images
+Cache-Control: public, max-age=2592000
+
+# HTML pages
+Cache-Control: no-cache
+
+# API responses (private data)
+Cache-Control: no-store
+
+# API responses (public, can be stale briefly)
+Cache-Control: public, max-age=60, stale-while-revalidate=300</pre>
+
+  <div class="related">
+    Related: <a href="/blog/cache/no-cache-vs-no-store/">no-cache vs no-store</a>
+    <a href="/blog/cache/stale-while-revalidate-explained/">stale-while-revalidate</a>
+    <a href="/edge/">EdgeFix — audit cache headers</a>
+    <a href="/glossary/vary-header/">Vary header</a>
+  </div>
+</main>
+<div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center">
+  <a href="/glossary/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">&#128218; HttpFixer Glossary — all terms →</a>
+</div>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="/glossary/">Glossary</a> · <a href="/tools/">Tools</a> · <a href="/blog/">Blog</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/about/">About</a> · <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">For informational purposes only. © 2026 MetricLogic.</p>
 </footer>
-</body>
-</html>
+</body></html>

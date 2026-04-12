@@ -1,17 +1,97 @@
-<!DOCTYPE html>
-<html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>What is Permissions-Policy? — HttpFixer Glossary</title> <meta name="description" content="Feature policy successor—deny camera, mic, geolocation by default for embeds."> <link rel="canonical" href="https://httpfixer.dev/glossary/permissions-policy/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="What is Permissions-Policy? — HttpFixer Glossary"> <meta property="og:description" content="Feature policy successor—deny camera, mic, geolocation by default for embeds."> <meta property="og:url" content="https://httpfixer.dev/glossary/permissions-policy/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "Permissions-Policy", "description": "Restricts which browser features (camera, microphone, geolocation) a page can use.", "url": "https://httpfixer.dev/glossary/permissions-policy/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "HttpFixer Security Glossary", "url": "https://httpfixer.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://httpfixer.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "Permissions-Policy"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Will Permissions-Policy break Google Maps embeds?", "acceptedAnswer": {"@type": "Answer", "text": "If you deny geolocation or fullscreen globally, embedded maps may lose features. Scope allowlists to paths or origins that need them."}}, {"@type": "Question", "name": "Difference from Prompt API consent?", "acceptedAnswer": {"@type": "Answer", "text": "The policy is a hard gate: disallowed features throw or fail silently before user prompts. It is defense in depth, not a replacement for UX permission prompts."}}]}]}</script> <style> :root { --bg: #0B0D14; --surface: #12151F; --border: #252836; --purple: #6C63FF; --green: #22C55E; --orange: #F97316; --red: #EF4444; --text: #E2E4F0; } * { box-sizing: border-box; margin: 0; padding: 0; } body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; } nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); } nav .brand { font-weight: 600; color: var(--text); text-decoration: none; } nav .brand span { color: var(--purple); } nav .right { display: flex; gap: 1rem; align-items: center; } nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; } nav a:hover { color: var(--purple); opacity: 1; } main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; } main.wide { max-width: 1000px; } .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; } .breadcrumb a { color: var(--purple); text-decoration: none; } h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; } h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); } p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; } .lead { font-size: 1.05rem; opacity: 0.95; margin-bottom: 1.25rem; } .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; } .tool-cta:hover { filter: brightness(1.1); } .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre-wrap; word-break: break-word; } footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; } footer a { color: var(--text); text-decoration: none; } .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem; } .glossary-grid a { display: block; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); text-decoration: none; } .glossary-grid a:hover { border-color: var(--purple); } .glossary-grid .term-title { color: var(--purple); font-weight: 600; font-size: 13px; margin-bottom: 0.4rem; } .glossary-grid .term-d { font-size: 12px; opacity: 0.8; line-height: 1.5; } article a { color: var(--purple); } .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; } .related-links a { color: var(--purple); text-decoration: none; } @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } } </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
-</head>
-<body> <nav> <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a> <div class="right"> <a href="/headers/">Headers</a> <a href="/cors/">CORS</a> <a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a> <a href="/edge/">Edge</a> <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a> </div> </nav> <main class=""> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → Permissions-Policy</div> <h1>Permissions-Policy</h1> <p class="lead">Restricts which browser features (camera, microphone, geolocation) a page can use.</p>
-<p>Formerly called Feature Policy, <code>Permissions-Policy</code> declares which powerful APIs (camera, microphone, geolocation, payment, fullscreen, etc.) are available to your document and to cross-origin iframes you embed. Denying by default and allowlisting only what you need shrinks the blast radius when a third-party script goes rogue.</p>
-<h2>Why developers care</h2>
-<p>Marketing tags and support widgets often request capabilities you never intended to grant globally. A tight policy surfaces misuse early and satisfies security questionnaires that ask for “least privilege” on browser features. You set it once at the edge like any other security header.</p>
-<h2>Example</h2>
-<div class="code-block">Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(self)</div>
-<h2>Spec</h2>
-<p><a href="https://www.w3.org/TR/permissions-policy-1/">W3C Permissions Policy</a></p> <div class="related-links"><span>Related:</span> <a href="/fix/headers/nginx/">Fix headers (Nginx)</a> · <a href="/fix/headers/express/">Fix headers (Express)</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div> <a href="/headers/" class="tool-cta">Audit headers with HeadersFixer →</a> </main> <footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span>MIT · <a href="https://github.com/metriclogic26/httpfixer">GitHub →</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Permissions-Policy Header — What It Is and How to Set It · HttpFixer</title>
+<meta name="description" content="Permissions-Policy controls which browser features your page can use. Disable unused APIs like camera, microphone, and geolocation to reduce attack surface.">
+<link rel="canonical" href="https://httpfixer.dev/glossary/permissions-policy/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="Permissions-Policy Header — What It Is and How to Set It · HttpFixer">
+<meta property="og:description" content="Permissions-Policy controls which browser features your page can use. Disable unused APIs like camera, microphone, and geolocation to reduce attack surface.">
+<meta property="og:url" content="https://httpfixer.dev/glossary/permissions-policy/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"Permissions-Policy","url":"https://httpfixer.dev/glossary/permissions-policy/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What does Permissions-Policy do?","acceptedAnswer":{"@type":"Answer","text":"Permissions-Policy lets you control which browser features and APIs your page and embedded iframes can use. You can disable features like camera, microphone, geolocation, and payment to reduce attack surface."}},{"@type":"Question","name":"What replaced Feature-Policy?","acceptedAnswer":{"@type":"Answer","text":"Permissions-Policy replaced the older Feature-Policy header in 2020. The syntax changed from allowlist to a structured syntax. Some browsers still support Feature-Policy but Permissions-Policy is the current standard."}}]}]}</script>
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--purple);text-decoration:none}
+h1{font-size:1.75rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.15);color:var(--purple)}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1rem 0;font-size:13px;color:#fba44a;line-height:1.6}
+.related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head><body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → Permissions-Policy</div>
+  <span class="tag">Security Header</span>
+  <h1>Permissions-Policy</h1>
+<p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
+  <p>Permissions-Policy is an HTTP response header that controls which browser features and APIs your page and embedded iframes can access. Disabling unused features reduces your attack surface.</p>
+
+  <h2>Example header</h2>
+<pre>Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()</pre>
+  <p>Empty parentheses <code>()</code> means the feature is disabled for all origins including your own page.</p>
+
+  <h2>Allow specific origins</h2>
+<pre># Allow geolocation for your own page only
+Permissions-Policy: geolocation=(self)
+
+# Allow camera for your page and a specific iframe origin
+Permissions-Policy: camera=(self "https://video.yourapp.com")
+
+# Allow payment for all origins (not recommended)
+Permissions-Policy: payment=(*)</pre>
+
+  <h2>Recommended baseline</h2>
+<pre>Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()</pre>
+
+  <h2>Set in Nginx</h2>
+<pre>add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;</pre>
+
+  <h2>Set in vercel.json</h2>
+<pre>{ "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }</pre>
+
+  <div class="related">
+    Related: <a href="/">Scan your headers live</a>
+    <a href="/fix/headers/nginx/">Security headers on Nginx</a>
+    <a href="/fix/headers/vercel/">Security headers on Vercel</a>
+    <a href="/glossary/content-security-policy/">Content Security Policy</a>
+  </div>
+</main>
+<div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center">
+  <a href="/glossary/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">&#128218; HttpFixer Glossary — all terms →</a>
+</div>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="/glossary/">Glossary</a> · <a href="/tools/">Tools</a> · <a href="/blog/">Blog</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/about/">About</a> · <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">For informational purposes only. © 2026 MetricLogic.</p>
 </footer>
-</body>
-</html>
+</body></html>

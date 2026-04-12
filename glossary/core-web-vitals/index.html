@@ -1,17 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>What are Core Web Vitals? — HttpFixer Glossary</title> <meta name="description" content="LCP, INP, and CLS—Google’s field metrics for UX and ranking signals."> <link rel="canonical" href="https://httpfixer.dev/glossary/core-web-vitals/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="What are Core Web Vitals? — HttpFixer Glossary"> <meta property="og:description" content="LCP, INP, and CLS—Google’s field metrics for UX and ranking signals."> <meta property="og:url" content="https://httpfixer.dev/glossary/core-web-vitals/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "DefinedTerm", "name": "Core Web Vitals", "description": "Google's three user-experience metrics: LCP, INP, and CLS.", "url": "https://httpfixer.dev/glossary/core-web-vitals/", "inDefinedTermSet": {"@type": "DefinedTermSet", "name": "HttpFixer Security Glossary", "url": "https://httpfixer.dev/glossary/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Glossary", "item": "https://httpfixer.dev/glossary/"}, {"@type": "ListItem", "position": 3, "name": "Core Web Vitals"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Lab vs field for Core Web Vitals?", "acceptedAnswer": {"@type": "Answer", "text": "Field (CrUX) is what search uses for URL-level signals; lab Lighthouse helps debug but may differ from real users."}}, {"@type": "Question", "name": "Do other search engines use CWV?", "acceptedAnswer": {"@type": "Answer", "text": "Signals differ by engine; CWV remain the clearest documented UX bar for Google."}}]}]}</script> <style> :root { --bg: #0B0D14; --surface: #12151F; --border: #252836; --purple: #6C63FF; --green: #22C55E; --orange: #F97316; --red: #EF4444; --text: #E2E4F0; } * { box-sizing: border-box; margin: 0; padding: 0; } body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; } nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); } nav .brand { font-weight: 600; color: var(--text); text-decoration: none; } nav .brand span { color: var(--purple); } nav .right { display: flex; gap: 1rem; align-items: center; } nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; } nav a:hover { color: var(--purple); opacity: 1; } main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; } main.wide { max-width: 1000px; } .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; } .breadcrumb a { color: var(--purple); text-decoration: none; } h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; } h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); } p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; } .lead { font-size: 1.05rem; opacity: 0.95; margin-bottom: 1.25rem; } .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; } .tool-cta:hover { filter: brightness(1.1); } .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre-wrap; word-break: break-word; } footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; } footer a { color: var(--text); text-decoration: none; } .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 1.5rem; } .glossary-grid a { display: block; padding: 1rem 1.1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text); text-decoration: none; } .glossary-grid a:hover { border-color: var(--purple); } .glossary-grid .term-title { color: var(--purple); font-weight: 600; font-size: 13px; margin-bottom: 0.4rem; } .glossary-grid .term-d { font-size: 12px; opacity: 0.8; line-height: 1.5; } article a { color: var(--purple); } .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; } .related-links a { color: var(--purple); text-decoration: none; } @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } } </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
-</head>
-<body> <nav> <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a> <div class="right"> <a href="/headers/">Headers</a> <a href="/cors/">CORS</a> <a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a> <a href="/edge/">Edge</a> <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a> </div> </nav> <main class=""> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → Core Web Vitals</div> <h1>Core Web Vitals</h1> <p class="lead">Google’s three user-experience metrics: LCP, INP, and CLS.</p>
-<p>Core Web Vitals summarize real-user experience: loading (Largest Contentful Paint), interactivity (Interaction to Next Paint), and visual stability (Cumulative Layout Shift). They are measured from the Chrome User Experience Report field data, not just lab Lighthouse runs, though lab tools approximate them.</p>
-<h2>Why developers care</h2>
-<p>Google has confirmed Core Web Vitals as ranking factors alongside page experience signals. Poor scores correlate with higher bounce and lower conversion even without SEO. The upside: many fixes are server and asset configuration—compression, cache lifetimes, image dimensions—not months of React refactor.</p>
-<h2>Example</h2>
-<div class="code-block">Good targets (field data, mobile): LCP  &lt; 2.5 s INP  &lt; 200 ms CLS  &lt; 0.1</div>
-<h2>Spec</h2>
-<p><a href="https://web.dev/articles/vitals">web.dev — Core Web Vitals</a></p> <div class="related-links"><span>Related:</span> <a href="/fix/pagespeed/nginx/">Fix PageSpeed (Nginx)</a> · <a href="/error/pagespeed-cache-policy/">Cache policy error</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div> <a href="/speedfixer/" class="tool-cta">Measure with SpeedFixer →</a> </main> <footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span>MIT · <a href="https://github.com/metriclogic26/httpfixer">GitHub →</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Core Web Vitals — LCP, INP, and CLS Explained · HttpFixer</title>
+<meta name="description" content="Core Web Vitals are Google's three key performance metrics: LCP (loading), INP (interactivity), and CLS (visual stability). They directly affect Google search rankings.">
+<link rel="canonical" href="https://httpfixer.dev/glossary/core-web-vitals/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="Core Web Vitals — LCP, INP, and CLS Explained · HttpFixer">
+<meta property="og:description" content="Core Web Vitals are Google's three key performance metrics: LCP (loading), INP (interactivity), and CLS (visual stability). They directly affect Google search rankings.">
+<meta property="og:url" content="https://httpfixer.dev/glossary/core-web-vitals/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"DefinedTerm","name":"Core Web Vitals","url":"https://httpfixer.dev/glossary/core-web-vitals/","inDefinedTermSet":"https://httpfixer.dev/glossary/"},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What are Core Web Vitals?","acceptedAnswer":{"@type":"Answer","text":"Core Web Vitals are three user experience metrics Google uses as ranking signals: LCP (how fast the main content loads), INP (how fast the page responds to interactions), and CLS (how much the layout shifts during loading)."}},{"@type":"Question","name":"Do Core Web Vitals affect SEO?","acceptedAnswer":{"@type":"Answer","text":"Yes. Google uses Core Web Vitals as a ranking signal via the Page Experience update. Poor scores can lower your search rankings relative to competitors with better scores on the same queries."}}]}]}</script>
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--purple);text-decoration:none}
+h1{font-size:1.75rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.15);color:var(--purple)}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1rem 0;font-size:13px;color:#fba44a;line-height:1.6}
+.related{font-size:12px;opacity:0.6;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+</head><body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Glossary</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/glossary/">Glossary</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/glossary/">Glossary</a> → Core Web Vitals</div>
+  <span class="tag">Performance</span>
+  <h1>Core Web Vitals</h1>
+<p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
+  <p>Core Web Vitals are three user-experience metrics Google uses as search ranking signals. They measure loading speed, interactivity, and visual stability. Poor scores can hurt search rankings.</p>
+
+  <h2>The three metrics</h2>
+  <p><strong>LCP — Largest Contentful Paint</strong> measures how long it takes for the largest visible element (hero image, heading) to render. Target: under 2.5 seconds.</p>
+  <p><strong>INP — Interaction to Next Paint</strong> measures how quickly the page responds to user interactions (clicks, taps, key presses). Replaced FID in March 2024. Target: under 200ms.</p>
+  <p><strong>CLS — Cumulative Layout Shift</strong> measures how much the page layout shifts unexpectedly during loading. Target: under 0.1.</p>
+
+  <h2>Thresholds</h2>
+<pre>Metric   Good          Needs Improvement   Poor
+LCP      &lt; 2.5s        2.5s - 4.0s         &gt; 4.0s
+INP      &lt; 200ms       200ms - 500ms       &gt; 500ms
+CLS      &lt; 0.1         0.1 - 0.25          &gt; 0.25</pre>
+
+  <h2>Common LCP fixes</h2>
+<pre>&lt;!-- Preload the LCP image --&gt;
+&lt;link rel="preload" as="image" href="/hero.webp" fetchpriority="high"&gt;
+
+# Nginx: add Cache-Control for images
+location ~* \.(jpg|webp|png)$ {
+    add_header Cache-Control "public, max-age=2592000" always;
+}</pre>
+
+  <h2>Common CLS fixes</h2>
+<pre>&lt;!-- Always set width and height on images --&gt;
+&lt;img src="hero.webp" width="1200" height="600" alt="Hero"&gt;
+
+&lt;!-- Reserve space for ads and embeds --&gt;
+&lt;div style="min-height: 250px"&gt;[ad slot]&lt;/div&gt;</pre>
+
+  <div class="related">
+    Related: <a href="/glossary/largest-contentful-paint/">LCP explained</a>
+    <a href="/glossary/interaction-to-next-paint/">INP explained</a>
+    <a href="/glossary/cumulative-layout-shift/">CLS explained</a>
+    <a href="/speedfixer/">SpeedFixer — fix Core Web Vitals</a>
+  </div>
+</main>
+<div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center">
+  <a href="/glossary/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">&#128218; HttpFixer Glossary — all terms →</a>
+</div>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="/glossary/">Glossary</a> · <a href="/tools/">Tools</a> · <a href="/blog/">Blog</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/about/">About</a> · <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">For informational purposes only. © 2026 MetricLogic.</p>
 </footer>
-</body>
-</html>
+</body></html>
