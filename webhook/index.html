@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebhookFix · HttpFixer</title>
+<meta name="description" content="Stripe webhook returning 401? WebhookFix generates the complete handler for your framework — including the three places auth middleware silently blocks it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0B0D14;
+  --surface: #12151F;
+  --surface2: #181C28;
+  --border: #252836;
+  --purple: #6C63FF;
+  --purple-dim: rgba(108,99,255,0.12);
+  --green: #22C55E;
+  --orange: #F97316;
+  --red: #EF4444;
+  --yellow: #FACC15;
+  --text: #E2E4F0;
+  --text-dim: #8B8FA8;
+  --radius: 6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* NAV */
+nav {
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 44px;
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-brand {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 12px;
+  margin-right: 20px;
+  white-space: nowrap;
+}
+.nav-brand span { color: var(--text); }
+.nav-links {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 12px;
+  padding: 0 14px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a.active {
+  color: var(--purple);
+  border-bottom-color: var(--purple);
+}
+
+/* HERO */
+.hero {
+  padding: 48px 24px 36px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.tool-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--purple-dim);
+  border: 1px solid rgba(108,99,255,0.3);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 11px;
+  color: var(--purple);
+  margin-bottom: 16px;
+}
+h1 {
+  font-size: clamp(18px, 3vw, 26px);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 12px;
+}
+h1 .hl { color: var(--purple); }
+.hero-sub {
+  color: var(--text-dim);
+  font-size: 13px;
+  max-width: 620px;
+  line-height: 1.7;
+}
+
+/* THREE-FIX BANNER */
+.three-fix {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--orange);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin: 24px auto;
+  max-width: 860px;
+  font-size: 12px;
+}
+.three-fix-title {
+  color: var(--orange);
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.three-fix-items {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.three-fix-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--text-dim);
+}
+.three-fix-item .num {
+  color: var(--orange);
+  font-weight: 700;
+  min-width: 16px;
+}
+.three-fix-item .label { color: var(--text); }
+
+/* MAIN TOOL AREA */
+.tool-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* SELECTOR GRID */
+.selector-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+@media (max-width: 600px) {
+  .selector-grid { grid-template-columns: 1fr; }
+}
+
+.selector-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.selector-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+/* PILL SELECTORS */
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pill {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.pill:hover {
+  border-color: var(--purple);
+  color: var(--text);
+}
+.pill.active {
+  background: var(--purple-dim);
+  border-color: var(--purple);
+  color: var(--purple);
+  font-weight: 600;
+}
+
+/* TOGGLES */
+.toggle-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.toggle-row:hover { border-color: var(--purple); }
+.toggle-info { flex: 1; }
+.toggle-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.toggle-desc {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.toggle-switch {
+  width: 36px;
+  height: 20px;
+  background: var(--border);
+  border-radius: 10px;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: var(--text-dim);
+  border-radius: 50%;
+  top: 3px;
+  left: 3px;
+  transition: all 0.2s;
+}
+.toggle-row.on .toggle-switch { background: var(--purple); }
+.toggle-row.on .toggle-switch::after {
+  left: 19px;
+  background: white;
+}
+
+/* GENERATE BUTTON */
+.btn-generate {
+  width: 100%;
+  background: var(--purple);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  padding: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  margin: 16px 0;
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s;
+}
+.btn-generate:hover { opacity: 0.88; }
+
+/* OUTPUT */
+.output-section {
+  display: none;
+}
+.output-section.visible { display: block; }
+
+.output-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.output-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+.output-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.fix-badge {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.fix-badge.fix1 { background: rgba(239,68,68,0.15); color: var(--red); }
+.fix-badge.fix2 { background: rgba(249,115,22,0.15); color: var(--orange); }
+.fix-badge.fix3 { background: rgba(250,204,21,0.15); color: var(--yellow); }
+.fix-badge.green { background: rgba(34,197,94,0.15); color: var(--green); }
+
+.btn-copy {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-copy:hover { border-color: var(--purple); color: var(--purple); }
+.btn-copy.copied { border-color: var(--green); color: var(--green); }
+
+pre {
+  padding: 16px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--text);
+  tab-size: 2;
+}
+.output-note {
+  padding: 10px 14px;
+  font-size: 11px;
+  color: var(--text-dim);
+  border-top: 1px solid var(--border);
+  background: var(--surface2);
+  line-height: 1.6;
+}
+
+/* DIFF HIGHLIGHT */
+.hl-add { color: var(--green); }
+.hl-comment { color: #5A6080; }
+.hl-key { color: #79B8FF; }
+.hl-str { color: #F1A97C; }
+.hl-fn { color: var(--purple); }
+.hl-warn { color: var(--red); }
+
+/* WHY SECTION */
+.why-section {
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+.section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.why-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.why-card-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.why-card-body {
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.65;
+}
+.why-card-body code {
+  color: var(--orange);
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(249,115,22,0.1);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.faq-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.faq-q {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.faq-a {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+.faq-a code {
+  color: var(--orange);
+  font-family: 'JetBrains Mono', monospace;
+  background: rgba(249,115,22,0.1);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* COMP TABLE */
+.comp-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 16px 0 32px; }
+.comp-table th, .comp-table td {
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  text-align: left;
+}
+.comp-table th {
+  background: var(--surface2);
+  color: var(--text-dim);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.comp-table td { background: var(--surface); color: var(--text-dim); }
+.comp-table td:first-child { color: var(--text); font-weight: 600; }
+.yes { color: var(--green) !important; }
+.no { color: var(--red) !important; }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 20px 24px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+footer a { color: var(--text-dim); text-decoration: none; }
+footer a:hover { color: var(--text); }
+.disclaimer {
+  max-width: 680px;
+  margin: 0 auto 10px;
+  font-size: 10px;
+  color: #5A6080;
+  line-height: 1.7;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="https://httpfixer.dev">HttpFixer /</a>
+  <div class="nav-links">
+    <a href="https://httpfixer.dev/">Headers</a>
+    <a href="https://httpfixer.dev/cors/">CORS</a>
+    <a href="https://httpfixer.dev/oauth/">OAuth</a>
+    <a href="https://httpfixer.dev/csp/">CSP</a>
+    <a href="https://httpfixer.dev/edge/">Edge</a>
+    <a href="https://httpfixer.dev/speedfixer/">Speed</a>
+    <a href="/webhook/" class="active">Webhook</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="tool-badge">⚡ WebhookFix</div>
+  <h1>Stripe gave you a <span class="hl">401</span>.<br>Get the complete handler — not just a hint.</h1>
+  <p class="hero-sub">
+    Select your provider and framework. WebhookFix generates the full handler — raw body method, middleware exclusion, and edge runtime variant — the three places every tutorial skips.
+  </p>
+</div>
+
+<div class="three-fix">
+  <div class="three-fix-title">⚠ The three places webhook handlers silently fail</div>
+  <div class="three-fix-items">
+    <div class="three-fix-item">
+      <span class="num">1</span>
+      <span><span class="label">Raw body consumed before verification</span> — framework parses JSON first, bytes mutate, signature fails</span>
+    </div>
+    <div class="three-fix-item">
+      <span class="num">2</span>
+      <span><span class="label">bodyParser not disabled correctly</span> — deprecated config in App Router, different pattern per framework</span>
+    </div>
+    <div class="three-fix-item">
+      <span class="num">3</span>
+      <span><span class="label">Auth middleware blocks the route</span> — Clerk/NextAuth returns 401 before your handler runs. Silent. No log.</span>
+    </div>
+  </div>
+</div>
+
+<div class="tool-wrap">
+
+  <!-- STEP 1: Provider -->
+  <div class="selector-grid">
+    <div class="selector-card">
+      <div class="selector-label">Provider</div>
+      <div class="pill-group" id="provider-group">
+        <button class="pill active" data-val="stripe">Stripe</button>
+        <button class="pill" data-val="github">GitHub</button>
+        <button class="pill" data-val="shopify">Shopify</button>
+        <button class="pill" data-val="twilio">Twilio</button>
+        <button class="pill" data-val="sendgrid">SendGrid</button>
+      </div>
+    </div>
+
+    <div class="selector-card">
+      <div class="selector-label">Framework</div>
+      <div class="pill-group" id="framework-group">
+        <button class="pill active" data-val="nextjs-app">Next.js App Router</button>
+        <button class="pill" data-val="nextjs-pages">Next.js Pages Router</button>
+        <button class="pill" data-val="express">Express</button>
+        <button class="pill" data-val="fastify">Fastify</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOGGLES -->
+  <div class="toggle-row" id="toggle-auth" onclick="toggleOption('auth')">
+    <div class="toggle-info">
+      <div class="toggle-title">Auth middleware installed? (Clerk / NextAuth / Better Auth)</div>
+      <div class="toggle-desc">Adds middleware exclusion config — the silent 401 source most tutorials miss</div>
+    </div>
+    <div class="toggle-switch"></div>
+  </div>
+
+  <div class="toggle-row" id="toggle-edge" onclick="toggleOption('edge')">
+    <div class="toggle-info">
+      <div class="toggle-title">Vercel Edge Runtime / Cloudflare Workers</div>
+      <div class="toggle-desc">Replaces <code>Buffer</code> with <code>TextEncoder</code> — Buffer doesn't exist on Edge</div>
+    </div>
+    <div class="toggle-switch"></div>
+  </div>
+
+  <button class="btn-generate" onclick="generate()">Generate Handler →</button>
+
+  <!-- OUTPUT -->
+  <div class="output-section" id="output">
+    <!-- blocks inserted by JS -->
+  </div>
+
+  <!-- WHY SECTION -->
+  <div class="why-section">
+    <div class="section-title">Why webhook handlers fail</div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-card-title">The raw body problem</div>
+        <div class="why-card-body">
+          Stripe, GitHub, and Shopify verify signatures against the exact bytes they sent. Your framework parses the body to JSON before you touch it. The re-serialized output differs in whitespace or key ordering. Signature fails — not because of a secret mismatch, but because the bytes changed.
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-card-title">App Router vs Pages Router</div>
+        <div class="why-card-body">
+          Pages Router: export <code>config = {api: {bodyParser: false}}</code>. App Router: that config is deprecated and silently ignored. Use <code>request.text()</code> — but call it before any other body read, or the stream is consumed.
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-card-title">The silent auth 401</div>
+        <div class="why-card-body">
+          Clerk and NextAuth run on every route by default. Stripe is not an authenticated user. The middleware intercepts your webhook route and returns 401 before your handler executes. Stripe retries. Your logs show nothing. The fix: exclude <code>/api/webhooks</code> from the matcher.
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-card-title">Edge Runtime: no Buffer</div>
+        <div class="why-card-body">
+          <code>Buffer.from()</code> doesn't exist on Vercel Edge Runtime or Cloudflare Workers. Use <code>TextEncoder</code> and the Web Crypto API instead. The HMAC algorithm is identical — only the API changes.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+      <div class="faq-item">
+        <div class="faq-q">I'm using Next.js App Router — why does <code>bodyParser: false</code> not work?</div>
+        <div class="faq-a">That config is for Pages Router only. App Router uses the Web Fetch API. Call <code>await request.text()</code> first, verify the signature against that string, then parse to JSON yourself with <code>JSON.parse(body)</code>. Never call <code>request.json()</code> before signature verification.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Stripe vs CLI signing secrets — which do I use?</div>
+        <div class="faq-a">They are different. Dashboard-created endpoints have a secret starting <code>whsec_</code>. The Stripe CLI generates a different secret when you run <code>stripe listen</code>. Using the wrong one causes every verification to fail even though your code is correct.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Does this work on Vercel Edge Runtime?</div>
+        <div class="faq-a">Yes — enable the Edge toggle above. <code>Buffer</code> doesn't exist on Edge. The generated handler uses the Web Crypto API (<code>TextEncoder</code> + <code>crypto.subtle</code>) which is available everywhere. Add <code>export const runtime = 'edge'</code> to your route file.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">GitHub webhook vs Stripe — same pattern?</div>
+        <div class="faq-a">Same raw body requirement, different header and algorithm. GitHub uses <code>X-Hub-Signature-256</code> with HMAC-SHA256. Stripe uses <code>Stripe-Signature</code> with a timestamp-prefixed payload. The framework-level fix (raw body, middleware exclusion) is identical.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- You might also need -->
+  <div class="why-section">
+    <div class="section-title">You might also need</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:24px">
+      <a href="https://httpfixer.dev/cors/" style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px;text-decoration:none;color:var(--text);font-size:12px;display:block;transition:border-color 0.15s" onmouseover="this.style.borderColor='var(--purple)'" onmouseout="this.style.borderColor='var(--border)'">🔀 <strong>CORSFixer</strong><br><span style="color:var(--text-dim);font-size:11px;line-height:1.5;display:block;margin-top:3px">Fix wildcard, preflight, and credentials misconfig</span></a>
+      <a href="https://httpfixer.dev/oauth/" style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px;text-decoration:none;color:var(--text);font-size:12px;display:block;transition:border-color 0.15s" onmouseover="this.style.borderColor='var(--purple)'" onmouseout="this.style.borderColor='var(--border)'">🔑 <strong>OAuthFixer</strong><br><span style="color:var(--text-dim);font-size:11px;line-height:1.5;display:block;margin-top:3px">Diagnose invalid_grant, redirect_uri mismatch</span></a>
+      <a href="https://httpfixer.dev/tools/pre-launch-checklist/" style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 14px;text-decoration:none;color:var(--text);font-size:12px;display:block;transition:border-color 0.15s" onmouseover="this.style.borderColor='var(--purple)'" onmouseout="this.style.borderColor='var(--border)'">📋 <strong>Pre-Launch Checklist</strong><br><span style="color:var(--text-dim);font-size:11px;line-height:1.5;display:block;margin-top:3px">20 HTTP checks before you ship</span></a>
+    </div>
+  </div>
+
+  <!-- Done CTA -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:20px;text-align:center;margin-bottom:32px">
+    <p style="font-size:12px;color:var(--text-dim);margin-bottom:4px">Done with this tool?</p>
+    <p style="font-size:11px;color:var(--text-dim);margin-bottom:12px">20 HTTP checks before you ship — security, CORS, cache, redirects, staging.</p>
+    <a href="https://httpfixer.dev/tools/pre-launch-checklist/" style="color:var(--purple);font-size:12px;font-weight:700;text-decoration:none">Pre-Launch Checklist →</a>
+  </div>
+
+</div>
+
+<!-- Blog link -->
+<div style="text-align:center;padding:16px 24px 0;font-size:12px">
+  <a href="https://httpfixer.dev/blog/" style="color:var(--text-dim);text-decoration:none;font-family:'JetBrains Mono',monospace">📖 HttpFixer Blog — fix guides, explainers, and references →</a>
+</div>
+
+<footer>
+  <div class="disclaimer">
+    Configurations are based on open standards (OWASP, RFC, provider documentation). Always test in a staging environment before deploying to production. HttpFixer provides these tools for informational purposes only and accepts no liability for misconfiguration, data loss, or security incidents.
+  </div>
+  HttpFixer by MetricLogic ·
+  <a href="https://configclarity.dev">configclarity.dev</a> ·
+  <a href="https://domainpreflight.dev">domainpreflight.dev</a> ·
+  <a href="https://packagefix.dev">packagefix.dev</a><br>
+  <a href="https://github.com/metriclogic26/webfix">★ Star on GitHub</a> · MIT Licensed · <a href="https://github.com/metriclogic26/webfix/issues/new">Report issue →</a>
+</footer>
+
+<script>
+// State
+const state = {
+  provider: 'stripe',
+  framework: 'nextjs-app',
+  authMiddleware: false,
+  edgeRuntime: false,
+};
+
+// Pill group selection
+document.querySelectorAll('.pill-group').forEach(group => {
+  group.addEventListener('click', e => {
+    const pill = e.target.closest('.pill');
+    if (!pill) return;
+    group.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    const key = group.id === 'provider-group' ? 'provider' : 'framework';
+    state[key] = pill.dataset.val;
+  });
+});
+
+function toggleOption(key) {
+  state[key === 'auth' ? 'authMiddleware' : 'edgeRuntime'] = !state[key === 'auth' ? 'authMiddleware' : 'edgeRuntime'];
+  document.getElementById('toggle-' + key).classList.toggle('on');
+}
+
+// Provider metadata
+const PROVIDERS = {
+  stripe: {
+    provider: 'stripe',
+    name: 'Stripe',
+    header: 'stripe-signature',
+    secret: 'STRIPE_WEBHOOK_SECRET',
+    secretPrefix: 'whsec_',
+    algorithm: 'HMAC-SHA256 (timestamp-prefixed payload)',
+    install: 'npm install stripe',
+    importLine: `import Stripe from 'stripe';`,
+  },
+  github: {
+    provider: 'github',
+    name: 'GitHub',
+    header: 'x-hub-signature-256',
+    secret: 'GITHUB_WEBHOOK_SECRET',
+    secretPrefix: 'plain string',
+    algorithm: 'HMAC-SHA256',
+    install: null,
+    importLine: `import { createHmac } from 'crypto';`,
+  },
+  shopify: {
+    provider: 'shopify',
+    name: 'Shopify',
+    header: 'x-shopify-hmac-sha256',
+    secret: 'SHOPIFY_WEBHOOK_SECRET',
+    secretPrefix: 'plain string',
+    algorithm: 'HMAC-SHA256 (Base64-encoded)',
+    install: null,
+    importLine: `import { createHmac, timingSafeEqual } from 'crypto';`,
+  },
+  twilio: {
+    provider: 'twilio',
+    name: 'Twilio',
+    header: 'x-twilio-signature',
+    secret: 'TWILIO_AUTH_TOKEN',
+    secretPrefix: 'plain string',
+    algorithm: 'HMAC-SHA1 (URL + sorted params)',
+    install: 'npm install twilio',
+    importLine: `import twilio from 'twilio';`,
+  },
+  sendgrid: {
+    provider: 'sendgrid',
+    name: 'SendGrid',
+    header: 'x-twilio-email-event-webhook-signature',
+    secret: 'SENDGRID_WEBHOOK_PUBLIC_KEY',
+    secretPrefix: 'ECDSA public key',
+    algorithm: 'ECDSA P-256',
+    install: 'npm install @sendgrid/eventwebhook',
+    importLine: `import { EventWebhook } from '@sendgrid/eventwebhook';`,
+  },
+};
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function syntaxHL(code) {
+  // Single-pass tokenizer — avoids regex chains matching inside their own span tags
+  const KEYWORDS = new Set([
+    'import','from','export','const','let','async','await',
+    'return','if','try','catch','throw','new','default','function','switch','case','break'
+  ]);
+
+  let out = '';
+  let i = 0;
+  const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  while (i < code.length) {
+    // Single-line comment
+    if (code[i] === '/' && code[i+1] === '/') {
+      const end = code.indexOf('\n', i);
+      const slice = end === -1 ? code.slice(i) : code.slice(i, end);
+      out += `<span class="hl-comment">${esc(slice)}</span>`;
+      i += slice.length;
+      continue;
+    }
+    // Template literal
+    if (code[i] === '`') {
+      let j = i + 1;
+      while (j < code.length && code[j] !== '`') {
+        if (code[j] === '\\') j++;
+        j++;
+      }
+      out += `<span class="hl-str">${esc(code.slice(i, j+1))}</span>`;
+      i = j + 1;
+      continue;
+    }
+    // Single-quoted string
+    if (code[i] === "'") {
+      let j = i + 1;
+      while (j < code.length && code[j] !== "'" && code[j] !== '\n') {
+        if (code[j] === '\\') j++;
+        j++;
+      }
+      out += `<span class="hl-str">${esc(code.slice(i, j+1))}</span>`;
+      i = j + 1;
+      continue;
+    }
+    // Double-quoted string
+    if (code[i] === '"') {
+      let j = i + 1;
+      while (j < code.length && code[j] !== '"' && code[j] !== '\n') {
+        if (code[j] === '\\') j++;
+        j++;
+      }
+      out += `<span class="hl-str">${esc(code.slice(i, j+1))}</span>`;
+      i = j + 1;
+      continue;
+    }
+    // Word — check if keyword
+    if (/[a-zA-Z_$]/.test(code[i])) {
+      let j = i;
+      while (j < code.length && /[\w$]/.test(code[j])) j++;
+      const word = code.slice(i, j);
+      out += KEYWORDS.has(word)
+        ? `<span class="hl-key">${esc(word)}</span>`
+        : esc(word);
+      i = j;
+      continue;
+    }
+    // Default: escape and output
+    out += esc(code[i]);
+    i++;
+  }
+  return out;
+}
+
+function makeBlock(title, badge, badgeClass, code, note) {
+  const id = 'block-' + Math.random().toString(36).slice(2);
+  return `
+    <div class="output-block">
+      <div class="output-header">
+        <div class="output-title">
+          <span>${title}</span>
+          ${badge ? `<span class="fix-badge ${badgeClass}">${badge}</span>` : ''}
+        </div>
+        <button class="btn-copy" onclick="copyBlock('${id}', this)">Copy</button>
+      </div>
+      <pre id="${id}" data-raw="${code.replace(/"/g, '&quot;')}">${syntaxHL(code)}</pre>
+      ${note ? `<div class="output-note">${note}</div>` : ''}
+    </div>`;
+}
+
+function copyBlock(id, btn) {
+  const el = document.getElementById(id);
+  const text = el.dataset.raw || el.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// --- CODE GENERATORS ---
+
+function genNextjsApp(p, authMw, edge) {
+  const blocks = [];
+
+  // Fix 1: The handler
+  if (p.provider === 'stripe') {
+    const handlerCode = edge ? `
+// app/api/webhooks/stripe/route.ts
+// export const runtime = 'edge'; // uncomment if using Edge Runtime
+
+import { NextResponse } from 'next/server';
+
+const secret = process.env.STRIPE_WEBHOOK_SECRET!;
+
+// FIX 1: Use request.text() FIRST — before any other body read
+export async function POST(request: Request) {
+  const body = await request.text();
+  const sig  = request.headers.get('stripe-signature');
+
+  if (!sig) {
+    return NextResponse.json({ error: 'Missing stripe-signature header' }, { status: 400 });
+  }
+
+  // FIX 3 (Edge): No Buffer on Edge Runtime — use TextEncoder + Web Crypto
+  let event: any;
+  try {
+    const parts     = sig.split(',');
+    const timestamp = parts.find(p => p.startsWith('t='))?.slice(2);
+    const v1        = parts.find(p => p.startsWith('v1='))?.slice(3);
+
+    const key = await crypto.subtle.importKey(
+      'raw',
+      new TextEncoder().encode(secret),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['verify']
+    );
+
+    const signed  = new TextEncoder().encode(\`\${timestamp}.\${body}\`);
+    const sigBytes = Uint8Array.from(v1!, c => parseInt(c, 16));
+    const valid   = await crypto.subtle.verify('HMAC', key, sigBytes, signed);
+
+    if (!valid) throw new Error('Signature mismatch');
+    event = JSON.parse(body);
+  } catch (err: any) {
+    return NextResponse.json({ error: \`Webhook Error: \${err.message}\` }, { status: 400 });
+  }
+
+  // Handle event types
+  switch (event.type) {
+    case 'checkout.session.completed':
+      // fulfill order
+      break;
+    case 'customer.subscription.deleted':
+      // cancel subscription
+      break;
+  }
+
+  return NextResponse.json({ received: true });
+}`.trim() : `
+// app/api/webhooks/stripe/route.ts
+import Stripe from 'stripe';
+import { NextResponse } from 'next/server';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+const secret = process.env.STRIPE_WEBHOOK_SECRET!;
+
+// FIX 1: Use request.text() FIRST — bodyParser: false is deprecated in App Router
+export async function POST(request: Request) {
+  const body = await request.text();
+  const sig  = request.headers.get('stripe-signature');
+
+  if (!sig) {
+    return NextResponse.json({ error: 'Missing stripe-signature header' }, { status: 400 });
+  }
+
+  let event: Stripe.Event;
+  try {
+    // FIX 2: Pass raw text string — never request.json()
+    event = stripe.webhooks.constructEvent(body, sig, secret);
+  } catch (err: any) {
+    return NextResponse.json({ error: \`Webhook Error: \${err.message}\` }, { status: 400 });
+  }
+
+  switch (event.type) {
+    case 'checkout.session.completed':
+      // fulfill order
+      break;
+    case 'customer.subscription.deleted':
+      // cancel subscription
+      break;
+  }
+
+  return NextResponse.json({ received: true });
+}`.trim();
+
+    blocks.push(makeBlock(
+      'app/api/webhooks/stripe/route.ts',
+      'FIX 1 + 2 — Raw body',
+      'fix1',
+      handlerCode,
+      'Never call <code>request.json()</code> before signature verification. The stream is consumed and the bytes mutate.'
+    ));
+  } else {
+    // Generic provider for App Router
+    const handlerCode = genGenericAppRouter(p);
+    blocks.push(makeBlock(
+      `app/api/webhooks/${p.provider}/route.ts`,
+      'FIX 1 — Raw body',
+      'fix1',
+      handlerCode,
+      'Always call request.text() before any other body method.'
+    ));
+  }
+
+  // Fix 3: Auth middleware
+  if (authMw) {
+    const mwCode = `
+// middleware.ts — FIX 3: Exclude webhook routes from auth middleware
+// Clerk example — same pattern applies to NextAuth / Better Auth
+
+import { clerkMiddleware } from '@clerk/nextjs/server';
+
+export default clerkMiddleware();
+
+export const config = {
+  matcher: [
+    // Skip webhook routes, static files, and Next.js internals
+    '/((?!api/webhooks|_next/static|_next/image|favicon.ico).*)',
+    '/(api|trpc)(.*)',
+  ],
+};
+
+// NextAuth / Better Auth equivalent:
+// export const config = {
+//   matcher: ['/((?!api/webhooks|_next|[^?]*\\.(?:html?|css|js)).*)',],
+// };`.trim();
+
+    blocks.push(makeBlock(
+      'middleware.ts',
+      'FIX 3 — Auth middleware exclusion',
+      'fix3',
+      mwCode,
+      '⚠ This is the silent 401. Stripe is not an authenticated user. Without this exclusion, your middleware returns 401 before your handler executes — no error in your logs.'
+    ));
+  }
+
+  return blocks;
+}
+
+function genGenericAppRouter(p) {
+  if (p.provider === 'github') {
+    return `
+// app/api/webhooks/github/route.ts
+import { createHmac, timingSafeEqual } from 'crypto';
+import { NextResponse } from 'next/server';
+
+const secret = process.env.GITHUB_WEBHOOK_SECRET!;
+
+export async function POST(request: Request) {
+  const body = await request.text();
+  const sig  = request.headers.get('x-hub-signature-256');
+
+  if (!sig) {
+    return NextResponse.json({ error: 'Missing X-Hub-Signature-256' }, { status: 400 });
+  }
+
+  const expected = 'sha256=' + createHmac('sha256', secret).update(body).digest('hex');
+  const sigBuf   = Buffer.from(sig);
+  const expBuf   = Buffer.from(expected);
+
+  if (sigBuf.length !== expBuf.length || !timingSafeEqual(sigBuf, expBuf)) {
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+  }
+
+  const payload = JSON.parse(body);
+  const event   = request.headers.get('x-github-event');
+
+  switch (event) {
+    case 'push':
+      // handle push
+      break;
+    case 'pull_request':
+      // handle PR
+      break;
+  }
+
+  return NextResponse.json({ received: true });
+}`.trim();
+  }
+  if (p.provider === 'shopify') {
+    return `
+// app/api/webhooks/shopify/route.ts
+import { createHmac, timingSafeEqual } from 'crypto';
+import { NextResponse } from 'next/server';
+
+const secret = process.env.SHOPIFY_WEBHOOK_SECRET!;
+
+export async function POST(request: Request) {
+  const body = await request.text();
+  const sig  = request.headers.get('x-shopify-hmac-sha256');
+
+  if (!sig) {
+    return NextResponse.json({ error: 'Missing X-Shopify-Hmac-Sha256' }, { status: 400 });
+  }
+
+  const computed = createHmac('sha256', secret).update(body, 'utf8').digest('base64');
+  const sigBuf   = Buffer.from(sig);
+  const compBuf  = Buffer.from(computed);
+
+  if (sigBuf.length !== compBuf.length || !timingSafeEqual(sigBuf, compBuf)) {
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+  }
+
+  const payload = JSON.parse(body);
+  const topic   = request.headers.get('x-shopify-topic');
+
+  switch (topic) {
+    case 'orders/create':
+      // handle new order
+      break;
+    case 'orders/cancelled':
+      // handle cancelled order
+      break;
+  }
+
+  return NextResponse.json({ received: true });
+}`.trim();
+  }
+  if (p.provider === 'twilio') {
+    return `
+// app/api/webhooks/twilio/route.ts
+import { NextResponse } from 'next/server';
+import twilio from 'twilio';
+
+const authToken = process.env.TWILIO_AUTH_TOKEN!;
+
+export async function POST(request: Request) {
+  const body     = await request.text();
+  const sig      = request.headers.get('x-twilio-signature');
+  const url      = process.env.TWILIO_WEBHOOK_URL!; // your full public webhook URL
+
+  if (!sig) {
+    return NextResponse.json({ error: 'Missing X-Twilio-Signature' }, { status: 400 });
+  }
+
+  // Parse URL-encoded body for Twilio param sorting
+  const params = Object.fromEntries(new URLSearchParams(body));
+  const valid  = twilio.validateRequest(authToken, sig, url, params);
+
+  if (!valid) {
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+  }
+
+  // Handle Twilio event
+  return new Response('<?xml version="1.0" encoding="UTF-8"?><Response></Response>', {
+    headers: { 'Content-Type': 'text/xml' },
+  });
+}`.trim();
+  }
+  if (p.provider === 'sendgrid') {
+    return `
+// app/api/webhooks/sendgrid/route.ts
+import { EventWebhook, EventWebhookHeader } from '@sendgrid/eventwebhook';
+import { NextResponse } from 'next/server';
+
+const publicKey = process.env.SENDGRID_WEBHOOK_PUBLIC_KEY!;
+
+export async function POST(request: Request) {
+  const body      = await request.text();
+  const signature = request.headers.get(EventWebhookHeader.SIGNATURE()) ?? '';
+  const timestamp = request.headers.get(EventWebhookHeader.TIMESTAMP()) ?? '';
+
+  const ew = new EventWebhook();
+  const ec = ew.convertPublicKeyToECDH(publicKey);
+
+  const valid = ew.verifySignature(ec, body, signature, timestamp);
+  if (!valid) {
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+  }
+
+  const events = JSON.parse(body);
+  for (const event of events) {
+    switch (event.event) {
+      case 'delivered':
+        // handle delivery
+        break;
+      case 'bounce':
+        // handle bounce
+        break;
+    }
+  }
+
+  return NextResponse.json({ received: true });
+}`.trim();
+  }
+  return '';
+}
+
+function genNextjsPages(p, authMw) {
+  const blocks = [];
+
+  let handlerCode = '';
+  if (p.provider === 'stripe') {
+    handlerCode = `
+// pages/api/webhooks/stripe.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { buffer } from 'micro';
+import Stripe from 'stripe';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+const secret = process.env.STRIPE_WEBHOOK_SECRET!;
+
+// FIX 2: Disable bodyParser — MUST export this config
+export const config = {
+  api: { bodyParser: false },
+};
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).end('Method Not Allowed');
+  }
+
+  // FIX 1: Get raw body via micro buffer BEFORE any parsing
+  const rawBody = (await buffer(req)).toString('utf8');
+  const sig     = req.headers['stripe-signature'] as string;
+
+  if (!sig) {
+    return res.status(400).json({ error: 'Missing stripe-signature header' });
+  }
+
+  let event: Stripe.Event;
+  try {
+    event = stripe.webhooks.constructEvent(rawBody, sig, secret);
+  } catch (err: any) {
+    return res.status(400).json({ error: \`Webhook Error: \${err.message}\` });
+  }
+
+  switch (event.type) {
+    case 'checkout.session.completed':
+      // fulfill order
+      break;
+    case 'customer.subscription.deleted':
+      // cancel subscription
+      break;
+  }
+
+  res.json({ received: true });
+}`.trim();
+  } else if (p.provider === 'github') {
+    handlerCode = `
+// pages/api/webhooks/github.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { buffer } from 'micro';
+import { createHmac, timingSafeEqual } from 'crypto';
+
+const secret = process.env.GITHUB_WEBHOOK_SECRET!;
+
+export const config = {
+  api: { bodyParser: false },
+};
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  const rawBody = (await buffer(req)).toString('utf8');
+  const sig     = req.headers['x-hub-signature-256'] as string;
+
+  if (!sig) return res.status(400).json({ error: 'Missing signature' });
+
+  const expected = 'sha256=' + createHmac('sha256', secret).update(rawBody).digest('hex');
+  const sigBuf   = Buffer.from(sig);
+  const expBuf   = Buffer.from(expected);
+
+  if (sigBuf.length !== expBuf.length || !timingSafeEqual(sigBuf, expBuf)) {
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  const event   = req.headers['x-github-event'];
+  const payload = JSON.parse(rawBody);
+
+  switch (event) {
+    case 'push': break;
+    case 'pull_request': break;
+  }
+
+  res.json({ received: true });
+}`.trim();
+  } else {
+    handlerCode = `// pages/api/webhooks/${p.provider}.ts\n// Install: ${p.install || 'no extra package'}\n// Signature header: ${p.header}\n// See App Router tab for full implementation — Pages Router pattern is identical\n// but wraps the handler with: export const config = { api: { bodyParser: false } }\n// and uses buffer(req) from 'micro' instead of request.text()`;
+  }
+
+  blocks.push(makeBlock(
+    `pages/api/webhooks/${p.provider}.ts`,
+    'FIX 1 + 2 — buffer(req) + bodyParser: false',
+    'fix1',
+    handlerCode,
+    'Install micro: <code>npm install micro</code>. The config export disables body parsing for this route only.'
+  ));
+
+  if (authMw) {
+    const mwCode = `
+// middleware.ts — Pages Router auth middleware exclusion
+// Same pattern — exclude webhook routes from matcher
+
+export const config = {
+  matcher: [
+    // Skip /api/webhooks/* and static assets
+    '/((?!api/webhooks|_next/static|_next/image|favicon.ico).*)',
+  ],
+};`.trim();
+    blocks.push(makeBlock('middleware.ts', 'FIX 3 — Auth middleware exclusion', 'fix3', mwCode,
+      'Works with Clerk, NextAuth, and Better Auth. The negative lookahead skips all /api/webhooks/* routes.'));
+  }
+
+  return blocks;
+}
+
+function genExpress(p, authMw) {
+  const blocks = [];
+  let handlerCode = '';
+
+  if (p.provider === 'stripe') {
+    handlerCode = `
+// routes/webhooks.js
+import express from 'express';
+import Stripe from 'stripe';
+
+const router  = express.Router();
+const stripe  = new Stripe(process.env.STRIPE_SECRET_KEY);
+const secret  = process.env.STRIPE_WEBHOOK_SECRET;
+
+// FIX 2: express.raw() BEFORE express.json() — middleware order matters
+// In your main app.js:
+// app.use('/api/webhooks', express.raw({ type: 'application/json' }));
+// app.use(express.json()); // this must come AFTER webhook routes
+
+router.post('/stripe', express.raw({ type: 'application/json' }), (req, res) => {
+  const sig = req.headers['stripe-signature'];
+
+  if (!sig) {
+    return res.status(400).json({ error: 'Missing stripe-signature header' });
+  }
+
+  let event;
+  try {
+    // FIX 1: req.body is already a Buffer when using express.raw()
+    event = stripe.webhooks.constructEvent(req.body, sig, secret);
+  } catch (err) {
+    return res.status(400).json({ error: \`Webhook Error: \${err.message}\` });
+  }
+
+  switch (event.type) {
+    case 'checkout.session.completed':
+      // fulfill order
+      break;
+    case 'customer.subscription.deleted':
+      // cancel subscription
+      break;
+  }
+
+  res.json({ received: true });
+});
+
+export default router;`.trim();
+  } else if (p.provider === 'github') {
+    handlerCode = `
+// routes/webhooks.js
+import express from 'express';
+import { createHmac, timingSafeEqual } from 'crypto';
+
+const router = express.Router();
+const secret = process.env.GITHUB_WEBHOOK_SECRET;
+
+router.post('/github', express.raw({ type: 'application/json' }), (req, res) => {
+  const sig      = req.headers['x-hub-signature-256'];
+  const rawBody  = req.body.toString('utf8');
+  const expected = 'sha256=' + createHmac('sha256', secret).update(rawBody).digest('hex');
+
+  if (!timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) {
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  const event   = req.headers['x-github-event'];
+  const payload = JSON.parse(rawBody);
+
+  switch (event) {
+    case 'push': break;
+    case 'pull_request': break;
+  }
+
+  res.json({ received: true });
+});
+
+export default router;`.trim();
+  } else if (p.provider === 'shopify') {
+    handlerCode = `
+// routes/webhooks.js
+import express from 'express';
+import { createHmac, timingSafeEqual } from 'crypto';
+
+const router = express.Router();
+const secret = process.env.SHOPIFY_WEBHOOK_SECRET;
+
+router.post('/shopify', express.raw({ type: 'application/json' }), (req, res) => {
+  const sig      = req.headers['x-shopify-hmac-sha256'];
+  const rawBody  = req.body.toString('utf8');
+  const computed = createHmac('sha256', secret).update(rawBody, 'utf8').digest('base64');
+
+  if (!timingSafeEqual(Buffer.from(sig), Buffer.from(computed))) {
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  const topic   = req.headers['x-shopify-topic'];
+  const payload = JSON.parse(rawBody);
+
+  switch (topic) {
+    case 'orders/create': break;
+    case 'orders/cancelled': break;
+  }
+
+  res.json({ received: true });
+});
+
+export default router;`.trim();
+  } else {
+    handlerCode = `// Express webhook handler for ${p.name}\n// Pattern: express.raw({ type: 'application/json' }) before express.json()\n// Middleware order is the most common Express webhook failure\n// Signature header: ${p.header}\n// Algorithm: ${p.algorithm}`;
+  }
+
+  blocks.push(makeBlock(
+    'routes/webhooks.js',
+    'FIX 1 + 2 — express.raw() + middleware order',
+    'fix2',
+    handlerCode,
+    'Key: <code>express.raw()</code> must be on the webhook route specifically. If <code>express.json()</code> runs first globally, the raw body is gone.'
+  ));
+
+  if (authMw) {
+    const mwNote = `
+// app.js — if using passport.js or JWT middleware globally:
+// Make sure webhook routes are registered BEFORE global auth middleware
+
+// ✓ Webhook routes — no auth check
+app.use('/api/webhooks', webhookRouter);
+
+// ✗ Auth middleware — applied AFTER webhooks
+app.use('/api', authMiddleware);
+app.use('/api', protectedRouter);`.trim();
+    blocks.push(makeBlock('app.js — middleware order', 'FIX 3 — Auth before webhooks', 'fix3', mwNote,
+      'In Express, route registration order controls middleware application. Webhook routes must be registered before any global auth middleware.'));
+  }
+
+  return blocks;
+}
+
+function genFastify(p, authMw) {
+  const blocks = [];
+  let handlerCode = '';
+
+  if (p.provider === 'stripe') {
+    handlerCode = `
+// plugins/webhooks.js
+import Fastify from 'fastify';
+import Stripe from 'stripe';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const secret = process.env.STRIPE_WEBHOOK_SECRET;
+
+// FIX: addContentTypeParser BEFORE default JSON parser for webhook route
+async function webhookPlugin(fastify) {
+  fastify.addContentTypeParser(
+    'application/json',
+    { parseAs: 'buffer' },
+    (req, body, done) => done(null, body)
+  );
+
+  fastify.post('/api/webhooks/stripe', async (request, reply) => {
+    const sig = request.headers['stripe-signature'];
+
+    if (!sig) {
+      return reply.code(400).send({ error: 'Missing stripe-signature header' });
+    }
+
+    let event;
+    try {
+      // FIX 1: request.body is a Buffer from parseAs: 'buffer'
+      event = stripe.webhooks.constructEvent(request.body, sig, secret);
+    } catch (err) {
+      return reply.code(400).send({ error: \`Webhook Error: \${err.message}\` });
+    }
+
+    switch (event.type) {
+      case 'checkout.session.completed':
+        // fulfill order
+        break;
+    }
+
+    return { received: true };
+  });
+}
+
+export default webhookPlugin;
+
+// In your main server file:
+// fastify.register(webhookPlugin);
+// fastify.register(import('./routes/other'), { prefix: '/api' }); // after`.trim();
+  } else {
+    handlerCode = `
+// plugins/webhooks.js — Fastify webhook handler for ${p.name}
+// Fastify parses JSON by default — use parseAs: 'buffer' to get raw body
+
+async function webhookPlugin(fastify) {
+  fastify.addContentTypeParser(
+    'application/json',
+    { parseAs: 'buffer' },
+    (req, body, done) => done(null, body)
+  );
+
+  fastify.post('/api/webhooks/${p.provider}', async (request, reply) => {
+    const rawBody = request.body.toString('utf8');
+    const sig     = request.headers['${p.header}'];
+
+    // Verify signature here — see App Router handler for full crypto logic
+    // Algorithm: ${p.algorithm}
+
+    const payload = JSON.parse(rawBody);
+    return { received: true };
+  });
+}
+
+export default webhookPlugin;`.trim();
+  }
+
+  blocks.push(makeBlock(
+    'plugins/webhooks.js',
+    'FIX 1 + 2 — parseAs: buffer',
+    'fix2',
+    handlerCode,
+    'Fastify\'s <code>addContentTypeParser</code> with <code>parseAs: \'buffer\'</code> gives you raw bytes before any JSON parsing. Register this plugin before other JSON-consuming routes.'
+  ));
+
+  return blocks;
+}
+
+function generate() {
+  const p = PROVIDERS[state.provider];
+  const { framework, authMiddleware, edgeRuntime } = state;
+
+  let blocks = [];
+
+  if (framework === 'nextjs-app') {
+    blocks = genNextjsApp(p, authMiddleware, edgeRuntime);
+  } else if (framework === 'nextjs-pages') {
+    blocks = genNextjsPages(p, authMiddleware);
+  } else if (framework === 'express') {
+    blocks = genExpress(p, authMiddleware);
+  } else if (framework === 'fastify') {
+    blocks = genFastify(p, authMiddleware);
+  }
+
+  // Add install note if needed
+  let installBlock = '';
+  if (p.install) {
+    installBlock = makeBlock(
+      'Install dependency',
+      'Required',
+      'green',
+      p.install,
+      null
+    );
+  }
+
+  const output = document.getElementById('output');
+  output.innerHTML = installBlock + blocks.join('');
+  output.classList.add('visible');
+  output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>
