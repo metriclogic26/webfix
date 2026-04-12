@@ -1,10 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Fix Missing Security Headers on Nginx — HttpFixer</title> <meta name="description" content="Add HSTS, CSP, X-Frame-Options, and related headers in nginx.conf server blocks with add_header directives."> <link rel="canonical" href="https://httpfixer.dev/fix/headers/nginx/"> <meta name="robots" content="index, follow"> <meta name="author" content="MetricLogic"> <meta property="og:title" content="Fix Missing Security Headers on Nginx — HttpFixer"> <meta property="og:description" content="Add HSTS, CSP, X-Frame-Options, and related headers in nginx.conf server blocks with add_header directives."> <meta property="og:url" content="https://httpfixer.dev/fix/headers/nginx/"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"> <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "TechArticle", "headline": "Fix Missing Security Headers on Nginx", "description": "Add HSTS, CSP, X-Frame-Options, and related headers in nginx.conf server blocks with add_header directives.", "url": "https://httpfixer.dev/fix/headers/nginx/", "datePublished": "2026-03-31", "author": {"@type": "Organization", "name": "MetricLogic"}, "publisher": {"@type": "Organization", "name": "MetricLogic", "url": "https://"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev/"}, {"@type": "ListItem", "position": 2, "name": "Fix guides", "item": "https://httpfixer.dev/fix/"}, {"@type": "ListItem", "position": 3, "name": "Headers", "item": "https://httpfixer.dev/fix/headers/"}, {"@type": "ListItem", "position": 4, "name": "Nginx"}]}]}</script> <style> :root { --bg: #0B0D14; --surface: #12151F; --border: #252836; --purple: #6C63FF; --green: #22C55E; --orange: #F97316; --red: #EF4444; --text: #E2E4F0; } * { box-sizing: border-box; margin: 0; padding: 0; } body { background: var(--bg); color: var(--text); font-family: "JetBrains Mono", monospace; font-size: 14px; line-height: 1.6; min-height: 100vh; } nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); background: var(--surface); } nav .brand { font-weight: 600; color: var(--text); text-decoration: none; } nav .brand span { color: var(--purple); } nav .right { display: flex; gap: 1rem; align-items: center; } nav a { color: var(--text); text-decoration: none; opacity: 0.6; font-size: 13px; } nav a:hover { color: var(--purple); opacity: 1; } main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; } .breadcrumb { font-size: 12px; color: var(--text); opacity: 0.5; margin-bottom: 1.5rem; } .breadcrumb a { color: var(--purple); text-decoration: none; } h1 { font-size: 1.75rem; font-weight: 600; line-height: 1.3; margin-bottom: 1rem; } h2 { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 0.75rem; color: var(--text); } p { margin-bottom: 1rem; opacity: 0.9; line-height: 1.7; } .tool-cta { display: inline-block; margin: 1.5rem 0; padding: 0.75rem 1.25rem; background: var(--purple); color: white; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; } .tool-cta:hover { filter: brightness(1.1); } .code-block { background: #080a0f; border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-size: 12px; margin: 1rem 0; overflow-x: auto; white-space: pre; } .tag { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 0.5rem; } .tag-fix { background: rgba(34,197,94,0.15); color: var(--green); } .tag-error { background: rgba(239,68,68,0.15); color: var(--red); } .tag-provider { background: rgba(108,99,255,0.15); color: var(--purple); } .index-list { list-style: none; margin: 1rem 0; } .index-list li { margin-bottom: 0.65rem; } .index-list a { color: var(--purple); text-decoration: none; } .index-list a:hover { text-decoration: underline; } .related-links { font-size: 12px; opacity: 0.7; margin: 1.5rem 0; } .related-links a { color: var(--purple); text-decoration: none; } footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; opacity: 0.6; } footer a { color: var(--text); text-decoration: none; } @media (max-width: 600px) { nav .right { display: none; } footer { flex-direction: column; text-align: center; } } </style> <meta property="og:type" content="website"> <meta property="og:site_name" content="HttpFixer"> <meta property="og:image" content="https://httpfixer.dev/og-image.png"> <meta property="og:image:width" content="1200"> <meta property="og:image:height" content="630"> <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:site" content="@metriclogic"> <meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="shortcut icon" href="/favicon.svg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fix Missing Security Headers on Nginx — HSTS, CSP, X-Frame-Options · HttpFixer</title>
+<meta name="description" content="Add HSTS, CSP, X-Frame-Options, X-Content-Type-Options, and Referrer-Policy to Nginx. Exact add_header config blocks ready to paste into nginx.conf.">
+<link rel="canonical" href="https://httpfixer.dev/fix/headers/nginx/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="Fix Missing Security Headers on Nginx">
+<meta property="og:description" content="Add HSTS, CSP, X-Frame-Options, and other security headers to Nginx. Copy-paste add_header blocks for nginx.conf.">
+<meta property="og:url" content="https://httpfixer.dev/fix/headers/nginx/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Fix Missing Security Headers on Nginx","url":"https://httpfixer.dev/fix/headers/nginx/","datePublished":"2026-03-31","dateModified":"2026-04-12","author":{"@type":"Organization","name":"MetricLogic"},"publisher":{"@type":"Organization","name":"MetricLogic","url":"https://metriclogic.dev"}},{"@type":"HowTo","name":"Add Security Headers to Nginx","step":[{"@type":"HowToStep","position":1,"name":"Add headers to your server block","text":"Add add_header directives to your nginx.conf server or location block."},{"@type":"HowToStep","position":2,"name":"Test and reload","text":"Run nginx -t to validate, then nginx -s reload to apply without downtime."},{"@type":"HowToStep","position":3,"name":"Verify with HeadersFixer","text":"Scan your URL to confirm all headers are present on live responses."}]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"HttpFixer","item":"https://httpfixer.dev"},{"@type":"ListItem","position":2,"name":"Fix","item":"https://httpfixer.dev/fix/"},{"@type":"ListItem","position":3,"name":"Headers","item":"https://httpfixer.dev/fix/headers/"},{"@type":"ListItem","position":4,"name":"Nginx","item":"https://httpfixer.dev/fix/headers/nginx/"}]}]}</script>
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.6;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.breadcrumb{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--purple);text-decoration:none}
+h1{font-size:1.75rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.1rem;font-weight:600;margin:2rem 0 0.75rem}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.7}
+.error-box{background:#1a0a0a;border:1px solid var(--red);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#ff6b6b;line-height:1.6}
+.error-label{font-size:10px;text-transform:uppercase;opacity:0.6;margin-bottom:0.5rem;letter-spacing:0.05em}
+.tool-cta{display:inline-block;margin:1.5rem 0;padding:0.75rem 1.25rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+.tool-cta:hover{filter:brightness(1.1)}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1rem 0;font-size:13px;color:#fba44a;line-height:1.6}
+.related-links{font-size:12px;opacity:0.7;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related-links a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+footer{border-top:1px solid var(--border);padding:2rem 1.5rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;opacity:0.6}
+footer a{color:var(--text);text-decoration:none}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}}
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 </head>
-<body> <nav> <a href="/" class="brand">HttpFixer <span>/</span> Fix</a> <div class="right"> <a href="/headers/">Headers</a> <a href="/cors/">CORS</a> <a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a> <a href="/edge/">Edge</a> <a href="/speedfixer/">Speed</a><a href="/blog/">Blog</a> </div> </nav> <main> <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/fix/">Fix</a> → <a href="/fix/headers/">Headers</a> → Fix Missing Security Headers on Nginx</div> <h1>Fix Missing Security Headers on Nginx</h1> <p>Nginx does not ship secure defaults for <code>HSTS</code>, <code>Content-Security-Policy</code>, or <code>X-Frame-Options</code>. Most breaches start with a missing or weak header set, so production <code>server { }</code> blocks should declare explicit policies instead of relying on application code.</p><p>Use <code>add_header</code> (and <code>always</code> where you need headers on error responses) for strict transport, framing, referrer, and permissions. Place policies once per server name, then reload with <code>nginx -t</code> before <code>systemctl reload nginx</code>.</p><p><a href="/fix/headers/apache/">Apache</a> and <a href="/fix/headers/cloudflare/">Cloudflare</a> guides cover the same controls on other stacks. HeadersFixer scans your live URL and outputs copy-paste snippets matched to what your site actually needs.</p> <div class="related-links"><span>Related:</span> <a href="/glossary/hsts/">HSTS (glossary)</a> · <a href="/glossary/content-security-policy/">CSP (glossary)</a> · <a href="/vs/httpfixer-vs-securityheaders/">HttpFixer vs security header checkers</a></div> <a href="/headers/" class="tool-cta">Open HeadersFixer →</a> </main> <footer> <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> · <a href="/generators/">Generators</a> · <a href="/changelog/">Changelog</a></span> <span>MIT · <a href="https://github.com/metriclogic26/httpfixer">GitHub →</a></span> <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Fix</a>
+  <div class="right">
+    <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="breadcrumb"><a href="/">HttpFixer</a> → <a href="/fix/">Fix</a> → <a href="/fix/headers/">Headers</a> → Nginx</div>
+  <h1>Fix Missing Security Headers on Nginx</h1>
+  <p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
+
+  <p>Add these <code>add_header</code> directives to your Nginx <code>server</code> block. Use <code>always</code> to ensure headers are sent on error responses as well as successful ones.</p>
+
+  <a href="/" class="tool-cta">Scan your Nginx site for missing headers →</a>
+
+  <h2>Full security headers block — paste into your server block</h2>
+<pre>server {
+    listen 443 ssl;
+    server_name yoursite.com;
+
+    # HSTS — start with short max-age, increase after testing
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+    # Clickjacking protection
+    add_header X-Frame-Options "SAMEORIGIN" always;
+
+    # MIME sniffing protection
+    add_header X-Content-Type-Options "nosniff" always;
+
+    # Referrer policy
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    # Permissions policy — disable unused browser features
+    add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
+
+    # Content Security Policy — adjust sources to match your site
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; frame-ancestors 'none'; object-src 'none'" always;
+}</pre>
+
+  <h2>HSTS — ramp up safely</h2>
+  <p>Start with a short <code>max-age</code> to verify HTTPS works on all routes before committing to a long duration:</p>
+<pre># Step 1 — test with 5 minutes
+add_header Strict-Transport-Security "max-age=300" always;
+
+# Step 2 — after confirming HTTPS works, increase to 1 year
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+# Step 3 — add preload only after all subdomains support HTTPS
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;</pre>
+
+  <h2>X-Frame-Options</h2>
+<pre># Block all framing (recommended for login pages)
+add_header X-Frame-Options "DENY" always;
+
+# Allow same-origin framing only
+add_header X-Frame-Options "SAMEORIGIN" always;</pre>
+
+  <h2>Content Security Policy — common patterns</h2>
+<pre># Strict — no inline scripts (most secure)
+add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; object-src 'none'" always;
+
+# With Google Fonts
+add_header Content-Security-Policy "default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-ancestors 'none'; object-src 'none'" always;
+
+# With inline styles (less secure but common)
+add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; object-src 'none'" always;</pre>
+
+  <h2>Apply headers to a specific location only</h2>
+<pre>location /api/ {
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "DENY" always;
+    proxy_pass http://backend;
+}</pre>
+
+  <div class="warn">⚠ <code>add_header</code> directives in a child block (like <code>location</code>) override all <code>add_header</code> directives in the parent block. If you add headers in both <code>server</code> and <code>location</code>, repeat all headers in the <code>location</code> block.</div>
+
+  <h2>Validate and reload</h2>
+<pre># Validate config syntax
+nginx -t
+
+# Reload without downtime
+nginx -s reload
+
+# Verify headers on your live URL
+curl -sI https://yoursite.com | grep -iE "strict|x-frame|x-content|referrer|permissions|content-security"</pre>
+
+  <div class="related-links">
+    Related:
+    <a href="/blog/platform/security-headers-vercel/">Security headers on Vercel</a>
+    <a href="/fix/cors/nginx/">CORS on Nginx</a>
+    <a href="/fix/hsts/cloudflare/">HSTS on Cloudflare</a>
+    <a href="/">Scan your headers live →</a>
+  </div>
+</main>
+<div style="border-top:1px solid #252836;padding:1rem 1.5rem;background:#0B0D14;font-family:'JetBrains Mono',monospace;text-align:center">
+  <a href="/blog/" style="color:#6C63FF;text-decoration:none;font-size:13px;opacity:0.8">&#128218; HttpFixer Blog — fix guides, explainers, and references →</a>
+</div>
+<footer>
+  <span>HttpFixer by MetricLogic · <a href="/blog/">Blog</a> · <a href="/tools/">All Tools</a> · <a href="/fix/">Fix Guides</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT · GitHub →</a> · <a href="/about/">About</a> · <a href="/privacy/">Privacy</a></span>
+  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. © 2026 MetricLogic.</p>
 </footer>
 </body>
 </html>
