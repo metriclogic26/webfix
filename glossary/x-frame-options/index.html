@@ -1,12 +1,12 @@
 <!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>X-Frame-Options Header — What It Does and When to Use It · HttpFixer</title>
-<meta name="description" content="X-Frame-Options prevents your page from being embedded in iframes on other sites. Use DENY or SAMEORIGIN to help protect against clickjacking.">
+<meta name="description" content="X-Frame-Options prevents your page from being embedded in iframes on other sites. Use DENY or SAMEORIGIN to configure browser-level framing controls.">
 <link rel="canonical" href="https://httpfixer.dev/glossary/x-frame-options/">
 <meta name="robots" content="index, follow">
 <meta name="author" content="MetricLogic">
 <meta property="og:title" content="X-Frame-Options Header — What It Does and When to Use It · HttpFixer">
-<meta property="og:description" content="X-Frame-Options prevents your page from being embedded in iframes on other sites. Use DENY or SAMEORIGIN to help protect against clickjacking.">
+<meta property="og:description" content="X-Frame-Options prevents your page from being embedded in iframes on other sites. Use DENY or SAMEORIGIN to configure browser-level framing controls.">
 <meta property="og:url" content="https://httpfixer.dev/glossary/x-frame-options/">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://httpfixer.dev/og-image.png">
@@ -54,7 +54,7 @@ footer a{color:var(--text);text-decoration:none;opacity:0.6}
   <span class="tag">Security Header</span>
   <h1>X-Frame-Options</h1>
 <p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
-  <p>X-Frame-Options controls whether your page can be embedded in an iframe on other sites. It helps protect against clickjacking attacks where attackers place invisible iframes over your UI to trick users into clicking things.</p>
+  <p>X-Frame-Options controls whether your page can be embedded in an iframe on other sites. It adds browser-level controls that limit how your page can be framed — a common vector in clickjacking attacks.</p>
 
   <h2>Values</h2>
 <pre>X-Frame-Options: DENY        # block all framing
