@@ -1,12 +1,12 @@
 <!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Content Security Policy (CSP) — What It Is and How to Set It · HttpFixer</title>
-<meta name="description" content="Content Security Policy (CSP) is an HTTP header that controls which resources a browser can load. It prevents XSS by whitelisting trusted sources for scripts, styles, and images.">
+<meta name="description" content="Content Security Policy (CSP) is an HTTP header that controls which resources a browser can load. It helps reduce XSS risk by whitelisting trusted sources for scripts, styles, and images.">
 <link rel="canonical" href="https://httpfixer.dev/glossary/content-security-policy/">
 <meta name="robots" content="index, follow">
 <meta name="author" content="MetricLogic">
 <meta property="og:title" content="Content Security Policy (CSP) — What It Is and How to Set It · HttpFixer">
-<meta property="og:description" content="Content Security Policy (CSP) is an HTTP header that controls which resources a browser can load. It prevents XSS by whitelisting trusted sources for scripts, styles, and images.">
+<meta property="og:description" content="Content Security Policy (CSP) is an HTTP header that controls which resources a browser can load. It helps reduce XSS risk by whitelisting trusted sources for scripts, styles, and images.">
 <meta property="og:url" content="https://httpfixer.dev/glossary/content-security-policy/">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://httpfixer.dev/og-image.png">
@@ -54,7 +54,7 @@ footer a{color:var(--text);text-decoration:none;opacity:0.6}
   <span class="tag">Security Header</span>
   <h1>Content Security Policy (CSP)</h1>
 <p style="font-size:11px;opacity:0.45;margin-bottom:1.5rem">Last updated: April 2026</p>
-  <p>Content Security Policy is an HTTP response header that tells browsers which sources are trusted for loading scripts, styles, images, fonts, and other resources. It is the primary defence against cross-site scripting (XSS) attacks.</p>
+  <p>Content Security Policy is an HTTP response header that tells browsers which sources are trusted for loading scripts, styles, images, fonts, and other resources. It is the primary browser-level control for reducing cross-site scripting (XSS) risk.</p>
 
   <h2>Basic CSP header</h2>
 <pre>Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.example.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; frame-ancestors 'none'; object-src 'none'</pre>
