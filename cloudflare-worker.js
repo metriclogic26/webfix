@@ -21,6 +21,12 @@ export default {
 
       const headers = {};
       resp.headers.forEach((v, k) => { headers[k] = v; });
+      // Set-Cookie has multiple values — forEach only returns the last one
+      // Use getAll() to capture all Set-Cookie headers as an array
+      const setCookieAll = resp.headers.getAll('set-cookie');
+      if (setCookieAll && setCookieAll.length > 0) {
+        headers['set-cookie'] = setCookieAll;
+      }
 
       const result = {
         status: resp.status,
