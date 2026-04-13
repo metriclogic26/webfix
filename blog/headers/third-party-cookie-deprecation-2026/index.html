@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google's Third-Party Cookie U-Turn: What Developers Need to Know in 2026 &middot; HttpFixer</title>
+<meta name="description" content="Google cancelled third-party cookie deprecation in July 2024. But Safari and Firefox still block them. Here's what actually changed, what didn't, and what developers need to do.">
+<link rel="canonical" href="https://httpfixer.dev/blog/headers/third-party-cookie-deprecation-2026/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="Google's Third-Party Cookie U-Turn: What Developers Need to Know in 2026">
+<meta property="og:description" content="Google cancelled third-party cookie deprecation in July 2024. But Safari and Firefox still block them. Here's what actually changed, what didn't, and what developers need to do.">
+<meta property="og:url" content="https://httpfixer.dev/blog/headers/third-party-cookie-deprecation-2026/">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "Google's Third-Party Cookie U-Turn: What Developers Need to Know in 2026",
+      "description": "Google cancelled third-party cookie deprecation in July 2024. But Safari and Firefox still block them. Here's what actually changed, what didn't, and what developers need to do.",
+      "url": "https://httpfixer.dev/blog/headers/third-party-cookie-deprecation-2026/",
+      "datePublished": "2026-04-13",
+      "dateModified": "2026-04-13",
+      "author": { "@type": "Organization", "name": "MetricLogic" },
+      "publisher": { "@type": "Organization", "name": "MetricLogic", "url": "https://httpfixer.dev" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Did Google deprecate third-party cookies?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Google reversed its plan in July 2024. Instead of deprecating third-party cookies in Chrome, Google introduced a user-choice model where people can decide their tracking preferences. Third-party cookies still work in Chrome as of 2026."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I still need to worry about third-party cookies?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Safari has blocked third-party cookies since 2017, and Firefox blocks them by default since 2022. If your site uses cross-site cookies, they are already broken for Safari and Firefox users. Chrome's reversal only applies to Chrome."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is CHIPS and do I still need it?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "CHIPS (Cookies Having Independent Partitioned State) allows cookies to work in third-party context when scoped to the top-level site. You still need it for Safari and Firefox compatibility, and Chrome 118+ requires it for SameSite=None cookies in third-party context."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "HttpFixer", "item": "https://httpfixer.dev" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://httpfixer.dev/blog/" },
+        { "@type": "ListItem", "position": 3, "name": "Headers", "item": "https://httpfixer.dev/blog/headers/" },
+        { "@type": "ListItem", "position": 4, "name": "Google's Third-Party Cookie U-Turn: What Developers Need to Know in 2026", "item": "https://httpfixer.dev/blog/headers/third-party-cookie-deprecation-2026/" }
+      ]
+    }
+  ]
+}</script>
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.bc{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.bc a{color:var(--purple);text-decoration:none}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(108,99,255,0.2);color:var(--purple)}
+h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.inline-cta{background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+.inline-cta span{font-size:12px;opacity:0.7}
+.inline-cta a{padding:0.4rem 0.9rem;background:var(--purple);color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap}
+.tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+.tool-cta:hover{filter:brightness(1.1)}
+.related{font-size:12px;opacity:0.7;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+th{background:var(--surface);color:var(--purple);font-weight:600}
+tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+li{margin-bottom:0.4rem;line-height:1.7}
+.note{background:#0d1117;border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:13px;opacity:0.85}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+.green-box{background:#051a0a;border:1px solid var(--green);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#6ee79a;line-height:1.6}
+.xlink{display:inline-block;margin:0.25rem 0.25rem 0.25rem 0;padding:0.25rem 0.6rem;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);border-radius:4px;font-size:12px;color:var(--purple);text-decoration:none}
+.xlink:hover{background:rgba(108,99,255,0.2)}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}h1{font-size:1.3rem}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Blog</a>
+  <div class="right">
+    <a href="/">Headers</a>
+    <a href="/cors/">CORS</a>
+    <a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a>
+    <a href="/edge/">Edge</a>
+    <a href="/speedfixer/">Speed</a>
+    <a href="/webhook/">Webhook</a>
+    <a href="/cookies/">Cookies</a>
+    <a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="bc">
+    <a href="/">HttpFixer</a> &rarr;
+    <a href="/blog/">Blog</a> &rarr;
+    <a href="/blog/headers/">Headers</a> &rarr;
+    Third-Party Cookie Deprecation 2026
+  </div>
+  <span class="tag">Cookies</span>
+  <h1>Google's Third-Party Cookie U-Turn: What Developers Need to Know in 2026</h1>
+  <p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
+
+  <div class="inline-cta">
+    <span>Audit your Set-Cookie headers for CHIPS compliance.</span>
+    <a href="/cookies/">Cookie Partitioning Auditor &rarr;</a>
+  </div>
+
+  <p class="lead">Google cancelled third-party cookie deprecation in July 2024. If you stopped preparing, you stopped too early. Safari has blocked third-party cookies since 2017. Firefox blocks them by default since 2022. The problem didn't go away &mdash; Chrome just didn't join yet.</p>
+
+  <h2>What actually happened</h2>
+
+  <table>
+    <thead><tr><th>Date</th><th>Event</th></tr></thead>
+    <tbody>
+      <tr><td>Jan 2020</td><td>Google announces Chrome will deprecate third-party cookies by 2022</td></tr>
+      <tr><td>Jun 2021</td><td>Deadline moved to late 2023</td></tr>
+      <tr><td>Jul 2022</td><td>Deadline moved to H2 2024</td></tr>
+      <tr><td>Jan 2024</td><td>Chrome restricts third-party cookies for 1% of users for testing</td></tr>
+      <tr><td>Apr 2024</td><td>Full deprecation delayed again — CMA regulatory concerns</td></tr>
+      <tr><td><strong>Jul 22, 2024</strong></td><td><strong>Google reverses course entirely — no deprecation. User-choice model instead.</strong></td></tr>
+      <tr><td>2026</td><td>Third-party cookies still work in Chrome. Safari + Firefox still block them.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="green-box">
+    <strong>Chrome status (2026):</strong> Third-party cookies are NOT deprecated in Chrome. Google introduced a user-choice model &mdash; users can opt in or out of cross-site tracking. Most users have not changed the default, so third-party cookies still work for most Chrome users.
+  </div>
+
+  <h2>What didn't change &mdash; Safari and Firefox</h2>
+
+  <table>
+    <thead><tr><th>Browser</th><th>Third-party cookie status</th><th>Since</th></tr></thead>
+    <tbody>
+      <tr><td>Safari</td><td>Blocked by default (ITP)</td><td>Safari 13.1 &mdash; March 2020</td></tr>
+      <tr><td>Firefox</td><td>Blocked by default (Total Cookie Protection)</td><td>Firefox 86 &mdash; February 2021</td></tr>
+      <tr><td>Chrome</td><td>Still works (user-choice model)</td><td>Reversed July 2024</td></tr>
+      <tr><td>Edge</td><td>Still works (follows Chrome)</td><td>&mdash;</td></tr>
+    </tbody>
+  </table>
+
+  <p>Safari has ~19% global browser market share. Firefox has ~4%. That's roughly 1 in 4 users where your cross-site cookies are already failing &mdash; silently, with no error in your logs.</p>
+
+  <div class="warn">
+    <strong>The quiet problem:</strong> Cross-site cookie failures don't show up in your server logs. The request is made, but the cookie isn't sent. Users see broken embeds, failed auth flows, or missing preferences with no visible error. You only find out when a user reports it.
+  </div>
+
+  <h2>What Chrome 118+ changed (regardless of deprecation)</h2>
+
+  <p>Even though Google didn't deprecate third-party cookies, Chrome 118 (October 2023) still enforced a change: <code>SameSite=None</code> cookies in third-party context now require the <code>Partitioned</code> attribute to work reliably.</p>
+
+  <pre># Before Chrome 118 — worked in third-party context
+Set-Cookie: session=abc; SameSite=None; Secure
+
+# After Chrome 118 — requires Partitioned for reliable third-party access
+Set-Cookie: session=abc; SameSite=None; Secure; Partitioned</pre>
+
+  <p>This is CHIPS &mdash; Cookies Having Independent Partitioned State. It's separate from deprecation. It's about how cookies are scoped when shared cross-site.</p>
+
+  <h2>What developers actually need to do in 2026</h2>
+
+  <h3>1. Audit your cross-site cookies</h3>
+  <p>Find every <code>Set-Cookie</code> header on your responses that uses <code>SameSite=None</code>. These are the cookies that need to work in third-party context.</p>
+  <pre># Check your Set-Cookie headers
+curl -sI https://your-domain.com | grep -i "set-cookie"
+
+# Or use the Cookie Partitioning Auditor:
+# httpfixer.dev/cookies/</pre>
+
+  <h3>2. Add Partitioned to SameSite=None cookies</h3>
+  <pre># Before — blocked in Safari, Firefox, and potentially Chrome
+Set-Cookie: embed_session=abc; SameSite=None; Secure; Path=/
+
+# After — works in all browsers that support CHIPS
+Set-Cookie: embed_session=abc; SameSite=None; Secure; Partitioned; Path=/</pre>
+
+  <h3>3. Separate first-party from third-party cookies</h3>
+  <p>Not all cookies need <code>Partitioned</code>. Only cookies that need to work when your domain is embedded in another site's context. First-party cookies (your own domain, your own users) are unaffected.</p>
+
+  <table>
+    <thead><tr><th>Cookie type</th><th>Action needed</th></tr></thead>
+    <tbody>
+      <tr><td>Session cookie on your own domain</td><td>None &mdash; first-party, unaffected</td></tr>
+      <tr><td>Cookie set by embedded widget</td><td>Add Partitioned</td></tr>
+      <tr><td>Cross-site auth cookie (SSO)</td><td>Add Partitioned or use Storage Access API</td></tr>
+      <tr><td>Analytics/tracking cookie</td><td>Add Partitioned &mdash; or reconsider if needed</td></tr>
+      <tr><td>Preference cookie (same domain)</td><td>None &mdash; first-party, unaffected</td></tr>
+    </tbody>
+  </table>
+
+  <h2>The Storage Access API &mdash; for Safari</h2>
+
+  <p>For embedded iframes that need access to first-party cookies (not just partitioned cross-site cookies), the Storage Access API lets you request user permission:</p>
+
+  <pre>// Inside your iframe &mdash; request storage access
+// Required for Safari ITP compatibility in some embed scenarios
+async function requestCookieAccess() {
+  try {
+    await document.requestStorageAccess();
+    // Access granted &mdash; cookies now sent with requests
+    console.log('Storage access granted');
+  } catch (err) {
+    // Denied or not supported &mdash; fall back to postMessage
+    console.log('Storage access denied:', err);
+  }
+}
+
+// Check if access is already granted (Safari 16.1+)
+const hasAccess = await document.hasStorageAccess();
+if (!hasAccess) {
+  await requestCookieAccess();
+}</pre>
+
+  <h2>What the Privacy Sandbox means for developers</h2>
+
+  <p>Google's Privacy Sandbox APIs (Topics, Protected Audience, Attribution Reporting) are still available and being developed. They're primarily relevant for advertising use cases, not session management or auth.</p>
+
+  <p>For most web developers &mdash; not ad-tech &mdash; the Privacy Sandbox APIs are not relevant. The relevant changes are:</p>
+
+  <ul>
+    <li>CHIPS (Partitioned cookies) &mdash; for any cross-site cookie</li>
+    <li>Storage Access API &mdash; for embedded iframes needing first-party cookie access</li>
+    <li>Related Website Sets &mdash; for closely related domains sharing cookies</li>
+  </ul>
+
+  <h2>Quick checklist &mdash; 2026 cookie audit</h2>
+
+  <pre># 1. Find SameSite=None cookies without Partitioned
+curl -sI https://your-domain.com | grep -i "samesite=none" | grep -iv "partitioned"
+
+# 2. Test in Safari (use Safari or WebKit simulator)
+# Cross-site cookie failures are silent &mdash; check Application tab in DevTools
+
+# 3. Check for missing Secure flag (required with SameSite=None)
+# SameSite=None without Secure is rejected by all modern browsers
+
+# 4. Automated audit:
+# httpfixer.dev/cookies/ &mdash; paste your URL, get flagged cookies + fix per stack</pre>
+
+  <a href="/cookies/" class="tool-cta">Audit your cookies &rarr; Cookie Partitioning Auditor</a>
+
+  <div class="related">
+    <strong>Related:</strong>
+    <a class="xlink" href="/fix/cookies/samesite-none-partitioned/">SameSite=None without Partitioned &mdash; fix</a>
+    <a class="xlink" href="/fix/cookies/safari-blocking-cookies/">Safari ITP fix</a>
+    <a class="xlink" href="/fix/cookies/chrome-blocking-cookies/">Chrome cookie fix</a>
+    <a class="xlink" href="/blog/headers/chips-partitioned-cookies/">CHIPS complete guide</a>
+    <a class="xlink" href="/blog/headers/samesite-cookies-iframes/">SameSite in iframes</a>
+    <a class="xlink" href="/cookies/">Cookie Partitioning Auditor</a>
+  </div>
+
+  <div style="margin-top:2rem;padding:1rem;background:#12151F;border:1px solid #252836;border-radius:8px;font-size:13px">
+    <a href="/cookies/" style="color:#6C63FF;text-decoration:none;font-weight:500">Audit your Set-Cookie headers for CHIPS compliance &rarr; Cookie Partitioning Auditor</a>
+  </div>
+</main>
+<footer>
+  <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/generators/">Generators</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue &rarr;</a></span>
+  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

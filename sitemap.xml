@@ -330,4 +330,5 @@
   <url><loc>https://httpfixer.dev/vs/httpfixer-vs-securityheaders/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/vs/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://httpfixer.dev/blog/cache/http-redirect-chains/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://httpfixer.dev/blog/headers/third-party-cookie-deprecation-2026/</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>
