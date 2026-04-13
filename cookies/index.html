@@ -517,7 +517,7 @@ function generateFix(cookie, stack) {
     express: `// Express / Node.js — res.cookie() with correct options
 res.cookie('${cookie.name}', value, {
   path: '${cookie.path || '/'}',
-  sameSite: '${needsSameSite ? 'lax' : 'none'}',
+  sameSite: '${needsSameSite ? 'lax' : (cookie.sameSite || 'lax').toLowerCase()}',
   secure: true,${needsPartitioned ? "\n  partitioned: true,  // CHIPS — required for Chrome 118+" : ''}
   httpOnly: ${cookie.httpOnly ? 'true' : 'false'},
 });
@@ -530,7 +530,7 @@ import { cookies } from 'next/headers';
 
 cookies().set('${cookie.name}', value, {
   path: '${cookie.path || '/'}',
-  sameSite: '${needsSameSite ? 'lax' : 'none'}',
+  sameSite: '${needsSameSite ? 'lax' : (cookie.sameSite || 'lax').toLowerCase()}',
   secure: true,${needsPartitioned ? "\n  // Partitioned not yet in Next.js cookies() — use header:" : ''}
 });
 
@@ -565,7 +565,7 @@ import { NextResponse } from 'next/server';
 export function middleware(request) {
   const response = NextResponse.next();
   response.cookies.set('${cookie.name}', value, {
-    sameSite: '${needsSameSite ? 'lax' : 'none'}',
+    sameSite: '${needsSameSite ? 'lax' : (cookie.sameSite || 'lax').toLowerCase()}',
     secure: true,
     path: '${cookie.path || '/'}',
   });
@@ -582,7 +582,7 @@ response.set_cookie(
     path='${cookie.path || '/'}',
     secure=True,
     httponly=${cookie.httpOnly ? 'True' : 'False'},
-    samesite='${needsSameSite ? 'Lax' : 'None'}',
+    samesite='${needsSameSite ? 'Lax' : (cookie.sameSite || 'Lax')}',
 )
 # Django does not yet support Partitioned natively — set header directly:
 ${needsPartitioned ? `response['Set-Cookie'] += '; Partitioned'` : '# No Partitioned needed'}`,
@@ -598,7 +598,7 @@ def endpoint(response: Response):
         path="${cookie.path || '/'}",
         secure=True,
         httponly=${cookie.httpOnly ? 'True' : 'False'},
-        samesite="${needsSameSite ? 'lax' : 'none'}",
+        samesite="${needsSameSite ? 'lax' : (cookie.sameSite || 'lax').toLowerCase()}",
     )
     # Add Partitioned via header append:
     ${needsPartitioned ? `response.headers.append("Set-Cookie", "${fixedAttrs}")` : '# No Partitioned needed'}
