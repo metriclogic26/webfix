@@ -670,10 +670,7 @@ async function runScan() {
   results.classList.remove('visible');
 
   try {
-    const resp = await fetch(PROXY + encodeURIComponent(url), {
-      method: 'GET',
-      headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    });
+    const resp = await fetch(PROXY + encodeURIComponent(url));
 
     if (!resp.ok) throw new Error(`Proxy returned ${resp.status}`);
 
