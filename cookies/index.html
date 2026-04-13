@@ -199,44 +199,6 @@ footer a:hover { color: var(--text); }
     <a href="https://httpfixer.dev/webhook/">Webhook</a>
     <a href="https://httpfixer.dev/cookies/" class="active">Cookies</a>
   </div>
-<div style="position:relative;flex-shrink:0;margin-left:4px" id="tools-menu">
-  <button onclick="toggleToolsDD(event)" style="background:none;border:none;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px;padding:0 10px;height:44px;white-space:nowrap">Tools <span style="font-size:9px">▼</span></button>
-  <div id="tools-dropdown" style="display:none;position:absolute;top:44px;right:0;background:#12151F;border:1px solid #252836;border-radius:8px;min-width:220px;padding:4px 0;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.4)"> <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.07em;opacity:0.35;padding:8px 16px 4px;font-family:'JetBrains Mono',monospace">Core Tools</div>
-    <a href="https://httpfixer.dev/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">🔒 HeadersFixer</a>
-    <a href="https://httpfixer.dev/cors/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">⚡ CORSFixer</a>
-    <a href="https://httpfixer.dev/oauth/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">🔑 OAuthFixer</a>
-    <a https://httpfixer.dev/csp/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">🛡 CSPFixer</a>
-    <a href="https://httpfixer.dev/edge/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">📦 EdgeFix</a>
-    <a href="https://httpfixer.dev/speedfixer/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">🚀 SpeedFixer</a>
-    <a href="https://httpfixer.dev/webhook/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-famitBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">⚡ WebhookFix</a>
-    <a href="https://httpfixer.dev/cookies/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#6C63FF;font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:600;transition:background 0.1s,opacity 0.1s">🍪 CookieFix</a>
-    <a href="https://httpfixer.dev/diff/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">⚖️ Header Diff</a>
-    <div style="height:1px;background:#252836;margin:4px 0"></div>
-    <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.07em;opacity:0.35;padding:6px 16px 4px;font-family:'JetBrains Mono',monospace">More Tools</div>
-    <a href="https://httpfixer.dev/tools/jwt/" class="dd-item" style="display:flex;align-items:center;gap:8px;pad 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">🔍 JWT Debugger</a>
-    <a href="https://httpfixer.dev/tools/csp-validator/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">✅ CSP Validator</a>
-    <a href="https://httpfixer.dev/tools/header-scorer/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">📊 Header Scorer</a>
-    <a href="https://httpfixer.dev/tools/mixed-content/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:ound 0.1s,opacity 0.1s">⚠️ Mixed Content Fixer</a>
-    <a href="https://httpfixer.dev/tools/redirect-chain/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">🔗 Redirect Chain</a>
-    <a href="https://httpfixer.dev/generators/cache-control/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">⚡ Cache-Control Generator</a>
-    <a href="https://httpfixer.dev/tools/" style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;text-decoration:none;color:#6C63FF;font-size:12px;font-family:'JetBrains Mono',monospace;border-top:1px solid #252836;margin-top:4px">View all tools →</a>
-  </div>
-</div>
-</nav>
-<script>
-function toggleToolsDD(e) {
- Default();
-  e.stopPropagation();
-  const d = document.getElementById('tools-dropdown');
-  d.style.display = d.style.display === 'none' ? 'block' : 'none';
-}
-document.addEventListener('click', function(e) {
-  const menu = document.getElementById('tools-menu');
-  if (menu && !menu.contains(e.target)) {
-    document.getElementById('tools-dropdown').style.display = 'none';
-  }
-});
-</script>
 
 <div class="hero">
   <div class="tool-badge">🍪 Cookie Partitioning Auditor</div>
@@ -273,9 +235,9 @@ document.addEventListener('click', function(e) {
       <input type="text" class="url-input" id="url-input" placeholder="https://your-domain.com" autocomplete="off" spellcheck="false">
       <button class="btn-scan" id="scan-btn" onclick="runScan()">Audit Cookies</button>
     </div>
-    <div class="input-note">Live fetch of your Set-Cookie response headers — your URL is never stored</div>
+    <div c<div class="input-note">Fetches Set-Cookie headers from your URL's direct response. Works best with login endpoints, API routes, and pages that set cookies — not redirect-based cookie setters.</div>
     <div class="try-links">
-      <a href="#" onclick="tryExample('https://httpbin.org/cookies/set?session=abc123&tracking=xyz456'); return false;">▶ Try: example with cookies</a>
+      <a href="#" onclick="tryExample('https://httpbin.org/cookies/set?session=abc123&tracking=xyz456'); return false;">▶ Try: SameSite=None example (Critical)</a>
     </div>
   </div>
 
