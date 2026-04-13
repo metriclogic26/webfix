@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cookie Partitioning Auditor · HttpFixer</title>
+<meta name="description" content="Paste your URL. Cookie Partitioning Auditor fetches your live Set-Cookie headers and flags cookies that will be blocked in Chrome, Safari, and Firefox — then generates the CHIPS-compliant fix.">
+<link rel="canonical" href="https://httpfixer.dev/cookies/">
+<meta property="og:title" content="Cookie Partitioning Auditor · HttpFixer">
+<meta property="og:description" content="Flags Set-Cookie headers missing the Partitioned attribute. Generates CHIPS-compliant fixes for Nginx, Express, Next.js, Cloudflare, and Vercel.">
+<meta property="og:url" content="https://httpfixer.dev/cookies/">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Cookie Partitioning Auditor",
+  "url": "https://httpfixer.dev/cookies/",
+  "description": "Audits Set-Cookie headers for CHIPS compliance. Flags cookies missing the Partitioned attribute that will be blocked in Chrome, Safari, and Firefox.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}</script>
+<style>
+:root {
+  --bg: #0B0D14;
+  --surface: #12151F;
+  --surface2: #181C28;
+  --border: #252836;
+  --purple: #6C63FF;
+  --purple-dim: rgba(108,99,255,0.12);
+  --green: #22C55E;
+  --orange: #F97316;
+  --red: #EF4444;
+  --yellow: #FACC15;
+  --text: #E2E4F0;
+  --text-dim: #8B8FA8;
+  --radius: 6px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; min-height: 100vh; }
+
+/* NAV */
+nav { border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; height: 44px; background: var(--surface); position: sticky; top: 0; z-index: 100; overflow: visible; }
+.nav-brand { color: var(--text-dim); text-decoration: none; font-size: 12px; margin-right: 20px; white-space: nowrap; font-family: 'JetBrains Mono', monospace; }
+.nav-brand span { color: var(--text); }
+.nav-links { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; margin-left: auto; }
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-links a { color: var(--text-dim); text-decoration: none; font-size: 12px; padding: 0 14px; height: 44px; display: flex; align-items: center; border-bottom: 2px solid transparent; white-space: nowrap; transition: color 0.15s; }
+.nav-links a:hover { color: var(--text); }
+.nav-links a.active { color: var(--purple); border-bottom-color: var(--purple); }
+
+/* HERO */
+.hero { padding: 48px 24px 32px; max-width: 860px; margin: 0 auto; }
+.tool-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--purple-dim); border: 1px solid rgba(108,99,255,0.3); border-radius: 20px; padding: 3px 10px; font-size: 11px; color: var(--purple); margin-bottom: 16px; }
+h1 { font-size: clamp(18px, 3vw, 26px); font-weight: 700; line-height: 1.3; margin-bottom: 12px; }
+h1 .hl { color: var(--purple); }
+.hero-sub { color: var(--text-dim); font-size: 13px; max-width: 620px; line-height: 1.7; }
+
+/* CHIPS BANNER */
+.chips-banner { background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--red); border-radius: var(--radius); padding: 14px 18px; margin: 0 24px 24px; max-width: 812px; font-size: 12px; }
+.chips-item code { color: var(--orange); background: rgba(249,115,22,0.1); padding: 1px 4px; border-radius: 3px; font-size: 11px; }
+.chips-banner-title { color: var(--red); font-weight: 700; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; }
+.chips-items { display: flex; flex-direction: column; gap: 5px; }
+.chips-item { display: flex; align-items: flex-start; gap: 10px; color: var(--text-dim); }
+.chips-item .browser { color: var(--red); font-weight: 700; min-width: 80px; }
+
+/* TOOL WRAP */
+.tool-wrap { max-width: 860px; margin: 0 auto; padding: 0 24px 80px; }
+
+/* INPUT */
+.input-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+.input-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; font-weight: 600; }
+.url-row { display: flex; gap: 8px; }
+.url-input { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text); outline: none; transition: border-color 0.15s; }
+.url-input:focus { border-color: var(--purple); }
+.url-input::placeholder { color: var(--text-dim); }
+.btn-scan { background: var(--purple); color: white; border: none; border-radius: var(--radius); padding: 10px 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: opacity 0.15s; }
+.btn-scan:hover { opacity: 0.88; }
+.btn-scan:disabled { opacity: 0.5; cursor: not-allowed; }
+.input-note { font-size: 11px; color: var(--text-dim); margin-top: 8px; }
+.try-links { margin-top: 6px; }
+.try-links a { font-size: 11px; color: var(--text-dim); text-decoration: none; margin-right: 12px; }
+.try-links a:hover { color: var(--purple); }
+
+/* STATUS */
+.status-bar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 12px; font-size: 12px; color: var(--text-dim); display: none; }
+.status-bar.visible { display: block; }
+
+/* RESULTS */
+.results { display: none; }
+.results.visible { display: block; }
+
+.summary-bar { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.summary-pill { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 6px 14px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+.summary-pill .count { font-weight: 700; }
+.summary-pill.critical { border-color: var(--red); color: var(--red); }
+.summary-pill.warning { border-color: var(--orange); color: var(--orange); }
+.summary-pill.pass { border-color: var(--green); color: var(--green); }
+.summary-pill.info { border-color: var(--text-dim); color: var(--text-dim); }
+
+/* COOKIE CARD */
+.cookie-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+.cookie-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+.cookie-name { font-weight: 700; font-size: 13px; color: var(--text); }
+.severity-badge { font-size: 10px; padding: 2px 8px; border-radius: 3px; font-weight: 700; letter-spacing: 0.05em; }
+.severity-badge.critical { background: rgba(239,68,68,0.15); color: var(--red); }
+.severity-badge.warning { background: rgba(249,115,22,0.15); color: var(--orange); }
+.severity-badge.pass { background: rgba(34,197,94,0.15); color: var(--green); }
+
+.cookie-body { padding: 14px 16px; }
+.cookie-current { font-size: 11px; color: var(--text-dim); margin-bottom: 10px; word-break: break-all; }
+.cookie-current code { color: var(--orange); font-family: 'JetBrains Mono', monospace; }
+.issue-list { margin-bottom: 12px; }
+.issue-item { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
+.issue-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.issue-dot.critical { background: var(--red); }
+.issue-dot.warning { background: var(--orange); }
+
+/* FIX OUTPUT */
+.fix-section { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-top: 10px; }
+.fix-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; border-bottom: 1px solid var(--border); background: var(--surface); font-size: 11px; }
+.fix-title { color: var(--green); font-weight: 700; }
+.btn-copy { background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 3px 8px; cursor: pointer; transition: all 0.15s; }
+.btn-copy:hover { border-color: var(--purple); color: var(--purple); }
+.btn-copy.copied { border-color: var(--green); color: var(--green); }
+pre.fix-code { padding: 14px 16px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.65; color: var(--text); overflow-x: auto; white-space: pre; }
+
+/* STACK SELECTOR */
+.stack-selector { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.stack-pill { background: transparent; border: 1px solid var(--border); border-radius: 20px; padding: 5px 12px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); cursor: pointer; transition: all 0.15s; }
+.stack-pill:hover { border-color: var(--purple); color: var(--text); }
+.stack-pill.active { background: var(--purple-dim); border-color: var(--purple); color: var(--purple); font-weight: 600; }
+
+/* PASS CARD */
+.pass-card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--green); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 12px; }
+.pass-title { color: var(--green); font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+.pass-body { font-size: 12px; color: var(--text-dim); }
+
+/* WHY SECTION */
+.why-section { margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--border); }
+.section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); margin-bottom: 16px; font-weight: 700; }
+.why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.why-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; }
+.why-card-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.why-card-body { font-size: 11px; color: var(--text-dim); line-height: 1.65; }
+.why-card-body code { color: var(--orange); font-family: 'JetBrains Mono', monospace; background: rgba(249,115,22,0.1); padding: 1px 4px; border-radius: 3px; }
+
+/* FAQ */
+.faq-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.faq-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
+.faq-q { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.faq-a { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+.faq-a code { color: var(--orange); font-family: 'JetBrains Mono', monospace; background: rgba(249,115,22,0.1); padding: 1px 4px; border-radius: 3px; }
+
+/* ALSO NEED */
+.also-need { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--border); }
+.also-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 24px; }
+.also-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; text-decoration: none; color: var(--text); font-size: 12px; display: block; transition: border-color 0.15s; }
+.also-card:hover { border-color: var(--purple); }
+.also-card span { color: var(--text-dim); font-size: 11px; line-height: 1.5; display: block; margin-top: 3px; }
+
+/* DONE CTA */
+.done-cta { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; margin-bottom: 32px; }
+.done-cta p { font-size: 12px; color: var(--text-dim); margin-bottom: 4px; }
+.done-cta p:last-of-type { margin-bottom: 12px; }
+.done-cta a { color: var(--purple); font-size: 12px; font-weight: 700; text-decoration: none; }
+
+/* FOOTER */
+footer { border-top: 1px solid var(--border); padding: 20px 24px; text-align: center; font-size: 11px; color: var(--text-dim); line-height: 1.8; font-family: 'JetBrains Mono', monospace; }
+footer a { color: var(--text-dim); text-decoration: none; }
+footer a:hover { color: var(--text); }
+.disclaimer { max-width: 680px; margin: 0 auto 10px; font-size: 10px; color: #5A6080; line-height: 1.7; }
+
+/* ERROR */
+.error-bar { background: rgba(239,68,68,0.08); border: 1px solid var(--red); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 12px; font-size: 12px; color: var(--red); display: none; }
+.error-bar.visible { display: block; }
+
+@media (max-width: 600px) {
+  .url-row { flex-direction: column; }
+  .btn-scan { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="https://httpfixer.dev">HttpFixer /</a>
+  <div class="nav-links">
+    <a href="https://httpfixer.dev/">Headers</a>
+    <a href="https://httpfixer.dev/cors/">CORS</a>
+    <a href="https://httpfixer.dev/oauth/">OAuth</a>
+    <a href="https://httpfixer.dev/csp/">CSP</a>
+    <a href="https://httpfixer.dev/edge/">Edge</a>
+    <a href="https://httpfixer.dev/speedfixer/">Speed</a>
+    <a href="https://httpfixer.dev/webhook/">Webhook</a>
+    <a href="https://httpfixer.dev/cookies/" class="active">Cookies</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="tool-badge">🍪 Cookie Partitioning Auditor</div>
+  <h1>Your cookies are being <span class="hl">silently blocked</span>.<br>Find out which ones and fix them.</h1>
+  <p class="hero-sub">
+    Chrome, Safari, and Firefox now block unpartitioned cross-site cookies. Paste your URL — Cookie Partitioning Auditor fetches your live Set-Cookie headers and generates the CHIPS-compliant fix for each one.
+  </p>
+</div>
+
+<div class="chips-banner" style="margin:0 24px 24px;max-width:812px;margin-left:auto;margin-right:auto;">
+  <div class="chips-banner-title">🚫 Browser enforcement is active</div>
+  <div class="chips-items">
+    <div class="chips-item">
+      <span class="browser">Chrome 118+</span>
+      <span>Blocks <code>SameSite=None</code> cookies without <code>Partitioned</code> in third-party context</span>
+    </div>
+    <div class="chips-item">
+      <span class="browser">Safari ITP</span>
+      <span>Has blocked unpartitioned third-party cookies since 2017 — Intelligent Tracking Prevention</span>
+    </div>
+    <div class="chips-item">
+      <span class="browser">Firefox</span>
+      <span>Total Cookie Protection partitions all third-party cookies by default since Firefox 86</span>
+    </div>
+  </div>
+</div>
+
+<div class="tool-wrap">
+
+  <!-- URL INPUT -->
+  <div class="input-card">
+    <div class="input-label">URL to audit</div>
+    <div class="url-row">
+      <input type="text" class="url-input" id="url-input" placeholder="https://your-domain.com" autocomplete="off" spellcheck="false">
+      <button class="btn-scan" id="scan-btn" onclick="runScan()">Audit Cookies</button>
+    </div>
+    <div class="input-note">Live fetch of your Set-Cookie response headers — your URL is never stored</div>
+    <div class="try-links">
+      <a href="#" onclick="tryExample('https://httpbin.org/cookies/set?session=abc123&tracking=xyz456'); return false;">▶ Try: example with cookies</a>
+    </div>
+  </div>
+
+  <div class="error-bar" id="error-bar"></div>
+  <div class="status-bar" id="status-bar">Fetching headers...</div>
+
+  <!-- RESULTS -->
+  <div class="results" id="results">
+
+    <!-- STACK SELECTOR -->
+    <div class="section-title" style="margin-bottom:10px">Fix output for stack</div>
+    <div class="stack-selector" id="stack-selector">
+      <button class="stack-pill active" data-stack="express">Express / Node.js</button>
+      <button class="stack-pill" data-stack="nextjs">Next.js</button>
+      <button class="stack-pill" data-stack="nginx">Nginx</button>
+      <button class="stack-pill" data-stack="cloudflare">Cloudflare Workers</button>
+      <button class="stack-pill" data-stack="vercel">Vercel</button>
+      <button class="stack-pill" data-stack="django">Django</button>
+      <button class="stack-pill" data-stack="fastapi">FastAPI</button>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="summary-bar" id="summary-bar"></div>
+
+    <!-- COOKIE CARDS -->
+    <div id="cookie-cards"></div>
+
+    <!-- ALL PASS -->
+    <div id="all-pass" style="display:none">
+      <div class="pass-card">
+        <div class="pass-title">✓ No CHIPS violations detected</div>
+        <div class="pass-body">All Set-Cookie headers on this URL are either first-party context, already have the <code>Partitioned</code> attribute, or do not use <code>SameSite=None</code>. No changes needed for CHIPS compliance.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- WHY SECTION -->
+  <div class="why-section">
+    <div class="section-title">What CHIPS compliance means</div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-card-title">What is CHIPS?</div>
+        <div class="why-card-body">
+          Cookies Having Independent Partitioned State. A browser standard that allows cross-site cookies to exist but scopes them to the top-level site. A cookie set by <code>widget.com</code> on <code>site-a.com</code> is separate from the same cookie set on <code>site-b.com</code>.
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-card-title">Which cookies are affected?</div>
+        <div class="why-card-body">
+          Only cookies accessed in a <strong>third-party context</strong> — when your domain is embedded in an iframe, loaded as a resource, or called via fetch from another site. First-party cookies (same site) are not affected.
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-card-title">The fix</div>
+        <div class="why-card-body">
+          Add the <code>Partitioned</code> attribute to any <code>SameSite=None; Secure</code> cookie that needs to work in third-party context. Without it, Chrome 118+ silently drops the cookie. The user sees no error.
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="why-card-title">Why it's hard to detect</div>
+        <div class="why-card-body">
+          The cookie is set successfully in first-party context. The failure only happens when your site is embedded elsewhere. No console error on your own domain — only on the embedding site. This tool surfaces the risk before it bites.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="why-section">
+    <div class="section-title">Common questions</div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">Do I need to add Partitioned to all my cookies?</div>
+        <div class="faq-a">No — only cookies that need to work in a third-party context. If your site is never embedded in iframes and never called cross-site, your existing cookies work fine. Add <code>Partitioned</code> only to cookies set by embeds, widgets, or APIs called from other origins.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What's the difference between SameSite=None and Partitioned?</div>
+        <div class="faq-a"><code>SameSite=None</code> allows the cookie to be sent in cross-site requests. <code>Partitioned</code> scopes the cookie storage to the top-level site — so the cookie from site-a.com and site-b.com are stored separately. Without <code>Partitioned</code>, <code>SameSite=None</code> cookies are blocked in Chrome 118+ in third-party context.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Does adding Partitioned break anything?</div>
+        <div class="faq-a">It changes the cookie scope — if you rely on a single shared cookie value across multiple embedding sites (cross-site tracking), <code>Partitioned</code> breaks that by design. For legitimate use cases (session state in an embedded widget), it works correctly.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Why does this tool only audit response cookies, not third-party context?</div>
+        <div class="faq-a">This tool fetches your URL directly and reads the Set-Cookie headers. It can flag cookies with <code>SameSite=None</code> missing <code>Partitioned</code> — the pattern that causes failures. To test actual third-party cookie blocking, embed your URL in an iframe on a different domain and check the Application tab in DevTools.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- YOU MIGHT ALSO NEED -->
+  <div class="also-need">
+    <div class="section-title">You might also need</div>
+    <div class="also-grid">
+      <a href="https://httpfixer.dev/" class="also-card">🔒 <strong>HeadersFixer</strong><span>Audit all security headers including SameSite enforcement</span></a>
+      <a href="https://httpfixer.dev/cors/" class="also-card">🔀 <strong>CORSFixer</strong><span>Fix CORS errors that often accompany cross-site cookie issues</span></a>
+      <a href="https://httpfixer.dev/tools/pre-launch-checklist/" class="also-card">📋 <strong>Pre-Launch Checklist</strong><span>20 HTTP checks before you ship</span></a>
+    </div>
+  </div>
+
+  <!-- DONE CTA -->
+  <div class="done-cta">
+    <p>Done with this tool?</p>
+    <p>20 HTTP checks before you ship — security, CORS, cache, redirects, staging.</p>
+    <a href="https://httpfixer.dev/tools/pre-launch-checklist/">Pre-Launch Checklist →</a>
+  </div>
+
+</div>
+
+<!-- BLOG LINK -->
+<div style="text-align:center;padding:16px 24px 0;font-size:12px">
+  <a href="https://httpfixer.dev/blog/headers/chips-partitioned-cookies/" style="color:var(--text-dim);text-decoration:none;font-family:'JetBrains Mono',monospace">📖 CHIPS: The Complete Guide to Partitioned Cookies →</a>
+</div>
+
+<footer>
+  <div class="disclaimer">
+    Configurations are based on open standards (RFC 6265bis, CHIPS specification). Always test in a staging environment before deploying to production. HttpFixer provides these tools for informational purposes only and accepts no liability for misconfiguration, data loss, or security incidents.
+  </div>
+  HttpFixer by MetricLogic ·
+  <a href="https://configclarity.dev">configclarity.dev</a> ·
+  <a href="https://domainpreflight.dev">domainpreflight.dev</a> ·
+  <a href="https://packagefix.dev">packagefix.dev</a><br>
+  <a href="https://github.com/metriclogic26/httpfixer">★ Star on GitHub</a> · MIT Licensed · <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue →</a>
+</footer>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────
+let currentStack = 'express';
+let auditResults = [];
+
+// ── STACK SELECTOR ─────────────────────────────────────────────────────────
+document.querySelectorAll('.stack-pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    document.querySelectorAll('.stack-pill').forEach(p => p.classList.remove('active'));
+    pill.classList.add('active');
+    currentStack = pill.dataset.stack;
+    if (auditResults.length > 0) renderCards(auditResults);
+  });
+});
+
+// ── PROXY ──────────────────────────────────────────────────────────────────
+const PROXY = 'https://headers-proxy.metriclogicllc.workers.dev/?url=';
+
+// ── COOKIE PARSER ──────────────────────────────────────────────────────────
+function parseCookieHeader(header) {
+  const parts = header.split(';').map(p => p.trim());
+  const nameVal = parts[0] || '';
+  const [name, ...valParts] = nameVal.split('=');
+  const value = valParts.join('=');
+
+  const attrs = {};
+  for (let i = 1; i < parts.length; i++) {
+    const [k, ...v] = parts[i].split('=');
+    attrs[k.toLowerCase().trim()] = v.join('=').trim() || true;
+  }
+
+  return {
+    name: name.trim(),
+    value: value,
+    raw: header,
+    sameSite: attrs['samesite'] || null,
+    secure: 'secure' in attrs,
+    httpOnly: 'httponly' in attrs,
+    partitioned: 'partitioned' in attrs,
+    domain: attrs['domain'] || null,
+    path: attrs['path'] || '/',
+    maxAge: attrs['max-age'] || null,
+    expires: attrs['expires'] || null,
+  };
+}
+
+// ── AUDIT COOKIE ───────────────────────────────────────────────────────────
+function auditCookie(cookie) {
+  const issues = [];
+  let severity = 'pass';
+
+  // SameSite=None without Partitioned — blocked in Chrome 118+
+  if (cookie.sameSite && cookie.sameSite.toLowerCase() === 'none') {
+    if (!cookie.partitioned) {
+      issues.push({
+        type: 'critical',
+        msg: 'SameSite=None without Partitioned — blocked by Chrome 118+, Firefox, and Safari ITP in third-party context'
+      });
+      severity = 'critical';
+    }
+    // SameSite=None must be Secure
+    if (!cookie.secure) {
+      issues.push({
+        type: 'critical',
+        msg: 'SameSite=None requires Secure attribute — browsers reject this combination'
+      });
+      severity = 'critical';
+    }
+  }
+
+  // No SameSite — defaults to Lax, may break cross-site POST
+  if (!cookie.sameSite) {
+    issues.push({
+      type: 'warning',
+      msg: 'No SameSite attribute — defaults to Lax in modern browsers. Cross-site POST requests will not send this cookie.'
+    });
+    if (severity === 'pass') severity = 'warning';
+  }
+
+  // HttpOnly missing on session-like cookies
+  if (!cookie.httpOnly && (cookie.name.toLowerCase().includes('session') || cookie.name.toLowerCase().includes('auth') || cookie.name.toLowerCase().includes('token'))) {
+    issues.push({
+      type: 'warning',
+      msg: 'Cookie name suggests session/auth data but HttpOnly is missing — accessible to JavaScript'
+    });
+    if (severity === 'pass') severity = 'warning';
+  }
+
+  return { ...cookie, issues, severity };
+}
+
+// ── FIX GENERATOR ──────────────────────────────────────────────────────────
+function generateFix(cookie, stack) {
+  const needsPartitioned = cookie.sameSite && cookie.sameSite.toLowerCase() === 'none' && !cookie.partitioned;
+  const needsSecure = cookie.sameSite && cookie.sameSite.toLowerCase() === 'none' && !cookie.secure;
+  const needsSameSite = !cookie.sameSite;
+
+  if (cookie.severity === 'pass') return null;
+
+  const fixedAttrs = [
+    `${cookie.name}=${cookie.value}`,
+    cookie.path ? `Path=${cookie.path}` : 'Path=/',
+    cookie.domain ? `Domain=${cookie.domain}` : null,
+    cookie.maxAge ? `Max-Age=${cookie.maxAge}` : null,
+    cookie.expires ? `Expires=${cookie.expires}` : null,
+    needsSameSite ? 'SameSite=Lax' : `SameSite=${cookie.sameSite || 'Lax'}`,
+    (cookie.secure || needsSecure) ? 'Secure' : null,
+    cookie.httpOnly ? 'HttpOnly' : null,
+    needsPartitioned ? 'Partitioned' : (cookie.partitioned ? 'Partitioned' : null),
+  ].filter(Boolean).join('; ');
+
+  const fixes = {
+    express: `// Express / Node.js — res.cookie() with correct options
+res.cookie('${cookie.name}', value, {
+  path: '${cookie.path || '/'}',
+  sameSite: '${needsSameSite ? 'lax' : 'none'}',
+  secure: true,${needsPartitioned ? "\n  partitioned: true,  // CHIPS — required for Chrome 118+" : ''}
+  httpOnly: ${cookie.httpOnly ? 'true' : 'false'},
+});
+
+// Or set header directly:
+res.setHeader('Set-Cookie', '${fixedAttrs}');`,
+
+    nextjs: `// Next.js App Router — cookies().set()
+import { cookies } from 'next/headers';
+
+cookies().set('${cookie.name}', value, {
+  path: '${cookie.path || '/'}',
+  sameSite: '${needsSameSite ? 'lax' : 'none'}',
+  secure: true,${needsPartitioned ? "\n  // Partitioned not yet in Next.js cookies() — use header:" : ''}
+});
+
+// For Partitioned attribute (use response header):
+// response.headers.append('Set-Cookie', '${fixedAttrs}');`,
+
+    nginx: `# Nginx — add_header Set-Cookie
+# In your server or location block:
+add_header Set-Cookie "${fixedAttrs}" always;
+
+# Note: Nginx add_header does not merge with existing Set-Cookie headers.
+# Use proxy_cookie_flags if proxying to an upstream:
+proxy_cookie_flags ${cookie.name} secure${needsPartitioned ? ' partitioned' : ''};`,
+
+    cloudflare: `// Cloudflare Workers — set cookie on response
+export default {
+  async fetch(request, env) {
+    const response = await fetch(request);
+    const newResponse = new Response(response.body, response);
+    newResponse.headers.append(
+      'Set-Cookie',
+      '${fixedAttrs}'
+    );
+    return newResponse;
+  }
+};`,
+
+    vercel: `// Vercel — set via Edge Middleware or API Route
+
+// Edge Middleware (middleware.ts):
+import { NextResponse } from 'next/server';
+export function middleware(request) {
+  const response = NextResponse.next();
+  response.cookies.set('${cookie.name}', value, {
+    sameSite: '${needsSameSite ? 'lax' : 'none'}',
+    secure: true,
+    path: '${cookie.path || '/'}',
+  });
+  // Add Partitioned via raw header (not yet in cookies API):
+  ${needsPartitioned ? `response.headers.append('Set-Cookie', '${fixedAttrs}');` : '// No Partitioned needed'}
+  return response;
+}`,
+
+    django: `# Django — set cookie on HttpResponse
+response = HttpResponse(content)
+response.set_cookie(
+    '${cookie.name}',
+    value,
+    path='${cookie.path || '/'}',
+    secure=True,
+    httponly=${cookie.httpOnly ? 'True' : 'False'},
+    samesite='${needsSameSite ? 'Lax' : 'None'}',
+)
+# Django does not yet support Partitioned natively — set header directly:
+${needsPartitioned ? `response['Set-Cookie'] += '; Partitioned'` : '# No Partitioned needed'}`,
+
+    fastapi: `# FastAPI — set cookie on Response
+from fastapi import Response
+
+@app.get("/")
+def endpoint(response: Response):
+    response.set_cookie(
+        key="${cookie.name}",
+        value=value,
+        path="${cookie.path || '/'}",
+        secure=True,
+        httponly=${cookie.httpOnly ? 'True' : 'False'},
+        samesite="${needsSameSite ? 'lax' : 'none'}",
+    )
+    # Add Partitioned via header append:
+    ${needsPartitioned ? `response.headers.append("Set-Cookie", "${fixedAttrs}")` : '# No Partitioned needed'}
+    return {"status": "ok"}`,
+  };
+
+  return fixes[stack] || fixes.express;
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────
+function renderCards(results) {
+  auditResults = results;
+  const container = document.getElementById('cookie-cards');
+  const allPass = document.getElementById('all-pass');
+  const summaryBar = document.getElementById('summary-bar');
+
+  const critical = results.filter(r => r.severity === 'critical').length;
+  const warnings = results.filter(r => r.severity === 'warning').length;
+  const passes = results.filter(r => r.severity === 'pass').length;
+
+  summaryBar.innerHTML = `
+    <div class="summary-pill info"><span class="count">${results.length}</span> cookies found</div>
+    ${critical ? `<div class="summary-pill critical"><span class="count">${critical}</span> critical</div>` : ''}
+    ${warnings ? `<div class="summary-pill warning"><span class="count">${warnings}</span> warning</div>` : ''}
+    ${passes ? `<div class="summary-pill pass"><span class="count">${passes}</span> pass</div>` : ''}
+  `;
+
+  if (results.every(r => r.severity === 'pass')) {
+    allPass.style.display = 'block';
+    container.innerHTML = '';
+    return;
+  }
+  allPass.style.display = 'none';
+
+  container.innerHTML = results.map(cookie => {
+    if (cookie.severity === 'pass') {
+      return `<div class="cookie-card">
+        <div class="cookie-header">
+          <div class="cookie-name">${escHtml(cookie.name)}</div>
+          <span class="severity-badge pass">✓ Pass</span>
+        </div>
+        <div class="cookie-body">
+          <div class="cookie-current">Current: <code>${escHtml(cookie.raw)}</code></div>
+          <div style="font-size:12px;color:var(--green)">No CHIPS issues detected on this cookie.</div>
+        </div>
+      </div>`;
+    }
+
+    const fix = generateFix(cookie, currentStack);
+    const fixId = 'fix-' + cookie.name.replace(/[^a-z0-9]/gi, '-') + '-' + Math.random().toString(36).slice(2, 6);
+
+    return `<div class="cookie-card">
+      <div class="cookie-header">
+        <div class="cookie-name">${escHtml(cookie.name)}</div>
+        <span class="severity-badge ${cookie.severity}">${cookie.severity === 'critical' ? '✕ Critical' : '⚠ Warning'}</span>
+      </div>
+      <div class="cookie-body">
+        <div class="cookie-current">Current: <code>${escHtml(cookie.raw)}</code></div>
+        <div class="issue-list">
+          ${cookie.issues.map(issue => `
+            <div class="issue-item">
+              <div class="issue-dot ${issue.type}"></div>
+              <span>${escHtml(issue.msg)}</span>
+            </div>`).join('')}
+        </div>
+        ${fix ? `<div class="fix-section">
+          <div class="fix-header">
+            <span class="fix-title">✓ Fix — ${currentStack}</span>
+            <button class="btn-copy" onclick="copyFix('${fixId}', this)">Copy</button>
+          </div>
+          <pre class="fix-code" id="${fixId}">${escHtml(fix)}</pre>
+        </div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function copyFix(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied ✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── SCAN ───────────────────────────────────────────────────────────────────
+async function runScan() {
+  let url = document.getElementById('url-input').value.trim();
+  if (!url) return;
+  if (!url.startsWith('http')) url = 'https://' + url;
+
+  const btn = document.getElementById('scan-btn');
+  const status = document.getElementById('status-bar');
+  const errorBar = document.getElementById('error-bar');
+  const results = document.getElementById('results');
+
+  btn.disabled = true;
+  btn.textContent = 'Fetching...';
+  status.textContent = 'Fetching live headers from ' + url;
+  status.classList.add('visible');
+  errorBar.classList.remove('visible');
+  results.classList.remove('visible');
+
+  try {
+    const resp = await fetch(PROXY + encodeURIComponent(url), {
+      method: 'GET',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    });
+
+    if (!resp.ok) throw new Error(`Proxy returned ${resp.status}`);
+
+    const data = await resp.json();
+    const headers = data.headers || {};
+
+    // Collect all Set-Cookie headers
+    const cookieHeaders = [];
+    for (const [key, val] of Object.entries(headers)) {
+      if (key.toLowerCase() === 'set-cookie') {
+        if (Array.isArray(val)) cookieHeaders.push(...val);
+        else cookieHeaders.push(val);
+      }
+    }
+
+    if (cookieHeaders.length === 0) {
+      status.textContent = `No Set-Cookie headers found on ${url}. This URL does not set cookies in its response.`;
+      btn.disabled = false;
+      btn.textContent = 'Audit Cookies';
+      return;
+    }
+
+    const audited = cookieHeaders.map(h => auditCookie(parseCookieHeader(h)));
+    status.classList.remove('visible');
+    results.classList.add('visible');
+    renderCards(audited);
+
+  } catch (err) {
+    status.classList.remove('visible');
+    errorBar.textContent = `Could not fetch headers: ${err.message}. Check the URL is publicly accessible.`;
+    errorBar.classList.add('visible');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Audit Cookies';
+}
+
+function tryExample(url) {
+  document.getElementById('url-input').value = url;
+  runScan();
+}
+
+// Enter key
+document.getElementById('url-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') runScan();
+});
+</script>
+</body>
+</html>
