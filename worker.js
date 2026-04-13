@@ -17,6 +17,11 @@ function headersToObject(headers) {
   headers.forEach((value, key) => {
     out[key.toLowerCase()] = value;
   });
+  // Set-Cookie can have multiple values — forEach only captures the last
+  const setCookieAll = headers.getAll('set-cookie');
+  if (setCookieAll && setCookieAll.length > 0) {
+    out['set-cookie'] = setCookieAll;
+  }
   return out;
 }
 
