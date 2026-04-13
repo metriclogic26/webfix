@@ -47,6 +47,7 @@ nav {
   position: sticky;
   top: 0;
   z-index: 100;
+  overflow: visible;
 }
 .nav-brand {
   color: var(--text-dim);
@@ -471,6 +472,7 @@ footer a:hover { color: var(--text); }
   color: #5A6080;
   line-height: 1.7;
 }
+.dd-item:hover { background: rgba(108,99,255,0.1) !important; opacity: 1 !important; color: #6C63FF !important; }
 </style>
 </head>
 <body>
@@ -485,28 +487,40 @@ footer a:hover { color: var(--text); }
     <a href="https://httpfixer.dev/edge/">Edge</a>
     <a href="https://httpfixer.dev/speedfixer/">Speed</a>
     <a href="/webhook/" class="active">Webhook</a>
-    <div style="position:relative;display:inline-block" id="tools-menu">
-      <a href="#" style="color:var(--text-dim);text-decoration:none;font-size:12px;padding:0 14px;height:44px;display:flex;align-items:center;gap:4px;border-bottom:2px solid transparent;white-space:nowrap;transition:color 0.15s" onclick="toggleTools(event)">Tools ▾</a>
-      <div id="tools-dropdown" style="display:none;position:absolute;top:44px;right:0;background:var(--surface);border:1px solid var(--border);border-radius:6px;min-width:180px;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,0.4)">
-        <a href="https://httpfixer.dev/tools/pre-launch-checklist/" style="display:block;padding:8px 14px;color:var(--text-dim);text-decoration:none;font-size:12px;white-space:nowrap;transition:color 0.15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">📋 Pre-Launch Checklist</a>
-        <a href="https://httpfixer.dev/tools/header-scorer/" style="display:block;padding:8px 14px;color:var(--text-dim);text-decoration:none;font-size:12px;white-space:nowrap;transition:color 0.15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">📊 Header Scorer</a>
-        <a href="https://httpfixer.dev/tools/csp-validator/" style="display:block;padding:8px 14px;color:var(--text-dim);text-decoration:none;font-size:12px;white-space:nowrap;transition:color 0.15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">✅ CSP Validator</a>
-        <a href="https://httpfixer.dev/tools/ssl-chain/" style="display:block;padding:8px 14px;color:var(--text-dim);text-decoration:none;font-size:12px;white-space:nowrap;transition:color 0.15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">🔒 SSL Chain</a>
-        <a href="https://httpfixer.dev/tools/redirect-chain/" style="display:block;padding:8px 14px;color:var(--text-dim);text-decoration:none;font-size:12px;white-space:nowrap;transition:color 0.15s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">↪ Redirect Chain</a>
-        <div style="border-top:1px solid var(--border);margin:4px 0"></div>
-        <a href="https://httpfixer.dev/webhook/" style="display:block;padding:8px 14px;color:var(--purple);text-decoration:none;font-size:12px;white-space:nowrap;font-weight:600">⚡ WebhookFix</a>
+  </div>
+    <div style="position:relative;flex-shrink:0;margin-left:4px" id="tools-menu">
+      <button class="nav-dropdown-btn" onclick="toggleToolsDD(event)" style="background:none;border:none;color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px;padding:0 10px;height:44px;white-space:nowrap">Tools <span style="font-size:9px">▼</span></button>
+      <div id="tools-dropdown" style="display:none;position:absolute;top:44px;right:0;background:#12151F;border:1px solid #252836;border-radius:8px;min-width:220px;padding:4px 0;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.4)">
+        <div class="dd-section" style="font-size:10px;text-transform:uppercase;letter-spacing:0.07em;opacity:0.35;padding:8px 16px 4px;font-family:'JetBrains Mono',monospace">Core Tools</div>
+        <a href="https://httpfixer.dev/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">🔒 HeadersFixer</a>
+        <a href="https://httpfixer.dev/cors/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">⚡ CORSFixer</a>
+        <a href="https://httpfixer.dev/oauth/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">🔑 OAuthFixer</a>
+        <a href="https://httpfixer.dev/csp/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">🛡 CSPFixer</a>
+        <a href="https://httpfixer.dev/edge/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">📦 EdgeFix</a>
+        <a href="https://httpfixer.dev/speedfixer/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">🚀 SpeedFixer</a>
+        <a href="https://httpfixer.dev/webhook/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#6C63FF;font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:600;transition:background 0.1s,opacity 0.1s">⚡ WebhookFix</a>
+        <a href="https://httpfixer.dev/diff/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">⚖️ Header Diff</a>
+        <div style="height:1px;background:#252836;margin:4px 0"></div>
+        <div class="dd-section" style="font-size:10px;text-transform:uppercase;letter-spacing:0.07em;opacity:0.35;padding:6px 16px 4px;font-family:'JetBrains Mono',monospace">More Tools</div>
+        <a href="https://httpfixer.dev/tools/jwt/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">🔍 JWT Debugger</a>
+        <a href="https://httpfixer.dev/tools/csp-validator/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">✅ CSP Validator</a>
+        <a href="https://httpfixer.dev/tools/header-scorer/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">📊 Header Scorer</a>
+        <a href="https://httpfixer.dev/tools/mixed-content/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">⚠️ Mixed Content Fixer</a>
+        <a href="https://httpfixer.dev/tools/redirect-chain/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">🔗 Redirect Chain</a>
+        <a href="https://httpfixer.dev/generators/cache-control/" class="dd-item" style="display:flex;align-items:center;gap:8px;padding:7px 16px;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:'JetBrains Mono',monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s">⚡ Cache-Control Generator</a>
+        <a href="https://httpfixer.dev/tools/" style="display:flex;align-items:center;justify-content:space-between;padding:8px 16px;text-decoration:none;color:#6C63FF;font-size:12px;font-family:'JetBrains Mono',monospace;border-top:1px solid #252836;margin-top:4px">View all tools →</a>
       </div>
     </div>
-  </div>
-</nav>
-<script>
-function toggleTools(e) {
+</nav><script>
+function toggleToolsDD(e) {
   e.preventDefault();
+  e.stopPropagation();
   const d = document.getElementById('tools-dropdown');
   d.style.display = d.style.display === 'none' ? 'block' : 'none';
 }
 document.addEventListener('click', function(e) {
-  if (!document.getElementById('tools-menu').contains(e.target)) {
+  const menu = document.getElementById('tools-menu');
+  if (menu && !menu.contains(e.target)) {
     document.getElementById('tools-dropdown').style.display = 'none';
   }
 });
