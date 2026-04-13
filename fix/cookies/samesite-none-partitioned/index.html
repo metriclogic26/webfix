@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fix SameSite=None Without Partitioned &mdash; HttpFixer</title>
+<meta name="description" content="Chrome 118+ blocks SameSite=None cookies without the Partitioned attribute in third-party context. Here's the fix for Express, Next.js, Nginx, and Cloudflare Workers.">
+<link rel="canonical" href="https://httpfixer.dev/fix/cookies/samesite-none-partitioned/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="Fix SameSite=None Without Partitioned">
+<meta property="og:description" content="Chrome 118+ blocks SameSite=None cookies without the Partitioned attribute in third-party context. Here's the fix for Express, Next.js, Nginx, and Cloudflare Workers.">
+<meta property="og:url" content="https://httpfixer.dev/fix/cookies/samesite-none-partitioned/">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.bc{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.bc a{color:var(--purple);text-decoration:none}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.2);color:var(--red)}
+.tag.orange{background:rgba(249,115,22,0.2);color:var(--orange)}
+h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.inline-cta{background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+.inline-cta span{font-size:12px;opacity:0.7}
+.inline-cta a{padding:0.4rem 0.9rem;background:var(--purple);color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap}
+.tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+.tool-cta:hover{filter:brightness(1.1)}
+.related{font-size:12px;opacity:0.7;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+th{background:var(--surface);color:var(--purple);font-weight:600}
+tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+li{margin-bottom:0.4rem;line-height:1.7}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+.xlink{display:inline-block;margin:0.25rem 0.25rem 0.25rem 0;padding:0.25rem 0.6rem;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);border-radius:4px;font-size:12px;color:var(--purple);text-decoration:none}
+.xlink:hover{background:rgba(108,99,255,0.2)}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}h1{font-size:1.3rem}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Fix</a>
+  <div class="right">
+    <a href="/">Headers</a>
+    <a href="/cors/">CORS</a>
+    <a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a>
+    <a href="/edge/">Edge</a>
+    <a href="/speedfixer/">Speed</a>
+    <a href="/webhook/">Webhook</a>
+    <a href="/cookies/">Cookies</a>
+    <a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="bc"><a href="/">HttpFixer</a> &rarr; <a href="/fix/">Fix</a> &rarr; <a href="/fix/cookies/">Cookies</a> &rarr; SameSite=None without Partitioned</div>
+  <span class="tag ">Critical</span>
+  <h1>Fix: SameSite=None Cookie Blocked Without Partitioned</h1>
+  <p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
+  <div class="inline-cta">
+    <span>Audit your cookies automatically.</span>
+    <a href="/cookies/">Cookie Partitioning Auditor &rarr;</a>
+  </div>
+
+  <p class="lead">Chrome 118+ silently blocks <code>SameSite=None</code> cookies that don't include the <code>Partitioned</code> attribute in third-party context. No error in your console. The cookie just disappears.</p>
+
+  <h2>What's happening</h2>
+  <p>Your Set-Cookie header looks like this:</p>
+  <pre>Set-Cookie: session=abc; SameSite=None; Secure</pre>
+  <p>Chrome 118+ requires the <code>Partitioned</code> attribute on any cookie that needs to work when your site is embedded in another site's context:</p>
+  <pre>Set-Cookie: session=abc; SameSite=None; Secure; Partitioned</pre>
+
+  <div class="warn"><strong>Why it's silent:</strong> Chrome doesn't show an error. The cookie is set successfully in first-party context (your own domain). The failure only happens when your page is loaded inside an iframe or fetched cross-site. You won't see it until a user reports a broken embed.</div>
+
+  <h2>Fix by framework</h2>
+
+  <h3>Express / Node.js</h3>
+  <pre>res.cookie('session', value, {
+  sameSite: 'none',
+  secure: true,
+  partitioned: true,  // adds Partitioned attribute
+  httpOnly: true,
+  path: '/',
+});
+
+// Or via raw header:
+res.setHeader('Set-Cookie',
+  'session=abc; SameSite=None; Secure; Partitioned; HttpOnly; Path=/'
+);</pre>
+
+  <h3>Next.js App Router</h3>
+  <pre>// app/api/route.ts
+// cookies().set() doesn't support Partitioned yet — use raw header:
+import { NextResponse } from 'next/server';
+
+const response = NextResponse.next();
+response.headers.append(
+  'Set-Cookie',
+  'session=abc; SameSite=None; Secure; Partitioned; HttpOnly; Path=/'
+);
+return response;</pre>
+
+  <h3>Nginx</h3>
+  <pre># In your server or location block:
+add_header Set-Cookie "session=abc; SameSite=None; Secure; Partitioned; HttpOnly; Path=/" always;
+
+# Or if proxying upstream, use proxy_cookie_flags:
+proxy_cookie_flags session secure samesite=none partitioned;</pre>
+
+  <h3>Cloudflare Workers</h3>
+  <pre>const response = await fetch(request);
+const newResponse = new Response(response.body, response);
+newResponse.headers.append(
+  'Set-Cookie',
+  'session=abc; SameSite=None; Secure; Partitioned; HttpOnly; Path=/'
+);
+return newResponse;</pre>
+
+  <h2>Which cookies need Partitioned?</h2>
+  <table>
+    <thead><tr><th>Use case</th><th>Needs Partitioned?</th></tr></thead>
+    <tbody>
+      <tr><td>Session cookie on your own domain</td><td>No — first-party, not affected</td></tr>
+      <tr><td>Cookie set by an embedded widget</td><td>Yes — third-party context</td></tr>
+      <tr><td>Auth cookie for an API called cross-site</td><td>Yes — cross-site request</td></tr>
+      <tr><td>Preference cookie on your own domain</td><td>No — first-party</td></tr>
+    </tbody>
+  </table>
+
+  <div class="related">
+    <strong>Related:</strong>
+    <a class="xlink" href="/fix/cookies/chrome-blocking-cookies/">Chrome blocking third-party cookies</a>
+    <a class="xlink" href="/fix/cookies/samesite-none-secure/">SameSite=None requires Secure</a>
+    <a class="xlink" href="/fix/cookies/express-set-cookie-partitioned/">Express Partitioned cookie</a>
+    <a class="xlink" href="/blog/headers/chips-partitioned-cookies/">CHIPS guide</a>
+    <a class="xlink" href="/cookies/">Cookie Partitioning Auditor</a>
+  </div>
+  <a href="/cookies/" class="tool-cta">Audit your cookies &rarr; Cookie Partitioning Auditor</a>
+</main>
+<footer>
+  <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/generators/">Generators</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue &rarr;</a></span>
+  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>

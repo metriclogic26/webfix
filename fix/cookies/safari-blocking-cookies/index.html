@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fix Safari Blocking Third-Party Cookies (ITP) &mdash; HttpFixer</title>
+<meta name="description" content="Safari's Intelligent Tracking Prevention blocks third-party cookies by default since Safari 13.1. Here's how ITP works and how to fix it with CHIPS or first-party alternatives.">
+<link rel="canonical" href="https://httpfixer.dev/fix/cookies/safari-blocking-cookies/">
+<meta name="robots" content="index, follow">
+<meta name="author" content="MetricLogic">
+<meta property="og:title" content="Fix Safari Blocking Third-Party Cookies (ITP)">
+<meta property="og:description" content="Safari's Intelligent Tracking Prevention blocks third-party cookies by default since Safari 13.1. Here's how ITP works and how to fix it with CHIPS or first-party alternatives.">
+<meta property="og:url" content="https://httpfixer.dev/fix/cookies/safari-blocking-cookies/">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://httpfixer.dev/og-image.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0D14;--surface:#12151F;--border:#252836;--purple:#6C63FF;--green:#22C55E;--orange:#F97316;--red:#EF4444;--text:#E2E4F0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"JetBrains Mono",monospace;font-size:14px;line-height:1.7;min-height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+nav .brand{font-weight:600;color:var(--text);text-decoration:none}
+nav .brand span{color:var(--purple)}
+nav .right{display:flex;gap:1rem}
+nav a{color:var(--text);text-decoration:none;opacity:0.6;font-size:13px}
+nav a:hover{color:var(--purple);opacity:1}
+main{max-width:760px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.bc{font-size:12px;opacity:0.5;margin-bottom:1.5rem}
+.bc a{color:var(--purple);text-decoration:none}
+.tag{display:inline-block;padding:0.2rem 0.6rem;border-radius:4px;font-size:11px;font-weight:600;margin-bottom:1rem;background:rgba(239,68,68,0.2);color:var(--red)}
+.tag.orange{background:rgba(249,115,22,0.2);color:var(--orange)}
+h1{font-size:1.6rem;font-weight:600;line-height:1.3;margin-bottom:1rem}
+h2{font-size:1.05rem;font-weight:600;margin:2rem 0 0.75rem}
+h3{font-size:0.95rem;font-weight:600;margin:1.5rem 0 0.5rem;opacity:0.85}
+p{margin-bottom:1rem;opacity:0.9;line-height:1.75}
+.lead{font-size:15px;opacity:0.95;margin-bottom:1.5rem;line-height:1.85}
+pre{background:#080a0f;border:1px solid var(--border);border-radius:6px;padding:1rem;font-size:12px;margin:1rem 0;overflow-x:auto;white-space:pre;line-height:1.6}
+p code,li code{background:rgba(108,99,255,0.15);color:var(--purple);padding:0.1rem 0.3rem;border-radius:3px;font-size:12px}
+.inline-cta{background:rgba(108,99,255,0.06);border:1px solid rgba(108,99,255,0.2);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+.inline-cta span{font-size:12px;opacity:0.7}
+.inline-cta a{padding:0.4rem 0.9rem;background:var(--purple);color:white;text-decoration:none;border-radius:4px;font-size:12px;font-weight:600;white-space:nowrap}
+.tool-cta{display:inline-block;margin:2rem 0 1rem;padding:0.75rem 1.5rem;background:var(--purple);color:white;text-decoration:none;border-radius:6px;font-weight:500;font-size:14px}
+.tool-cta:hover{filter:brightness(1.1)}
+.related{font-size:12px;opacity:0.7;margin:1.5rem 0;padding-top:1rem;border-top:1px solid var(--border)}
+.related a{color:var(--purple);text-decoration:none;margin-right:0.75rem}
+table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:13px}
+th,td{padding:0.6rem 0.75rem;border:1px solid var(--border);text-align:left}
+th{background:var(--surface);color:var(--purple);font-weight:600}
+tr:nth-child(even) td{background:rgba(255,255,255,0.02)}
+ul,ol{margin:0.75rem 0 1rem 1.5rem;opacity:0.9}
+li{margin-bottom:0.4rem;line-height:1.7}
+.warn{background:#1a0f00;border:1px solid var(--orange);border-radius:6px;padding:1rem;margin:1.5rem 0;font-size:12px;color:#fba44a;line-height:1.6}
+.xlink{display:inline-block;margin:0.25rem 0.25rem 0.25rem 0;padding:0.25rem 0.6rem;background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);border-radius:4px;font-size:12px;color:var(--purple);text-decoration:none}
+.xlink:hover{background:rgba(108,99,255,0.2)}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+footer a{color:var(--text);text-decoration:none;opacity:0.6}
+.disclaimer{width:100%;text-align:center;font-size:11px;opacity:0.4;margin-top:0.75rem;line-height:1.6}
+@media(max-width:600px){nav .right{display:none}footer{flex-direction:column;text-align:center}h1{font-size:1.3rem}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="brand">HttpFixer <span>/</span> Fix</a>
+  <div class="right">
+    <a href="/">Headers</a>
+    <a href="/cors/">CORS</a>
+    <a href="/oauth/">OAuth</a>
+    <a href="/csp/">CSP</a>
+    <a href="/edge/">Edge</a>
+    <a href="/speedfixer/">Speed</a>
+    <a href="/webhook/">Webhook</a>
+    <a href="/cookies/">Cookies</a>
+    <a href="/blog/">Blog</a>
+  </div>
+</nav>
+<main>
+  <div class="bc"><a href="/">HttpFixer</a> &rarr; <a href="/fix/">Fix</a> &rarr; <a href="/fix/cookies/">Cookies</a> &rarr; Safari ITP Blocking Cookies</div>
+  <span class="tag orange">Safari ITP</span>
+  <h1>Fix: Safari Blocking Third-Party Cookies (ITP)</h1>
+  <p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p>
+  <div class="inline-cta">
+    <span>Audit your cookies automatically.</span>
+    <a href="/cookies/">Cookie Partitioning Auditor &rarr;</a>
+  </div>
+
+  <p class="lead">Safari's Intelligent Tracking Prevention (ITP) has blocked third-party cookies by default since Safari 13.1 (March 2020) — three years before Chrome. If your cross-site functionality works in Chrome but not Safari, ITP is why.</p>
+
+  <h2>What Safari ITP blocks</h2>
+  <table>
+    <thead><tr><th>Cookie type</th><th>Safari ITP behaviour</th></tr></thead>
+    <tbody>
+      <tr><td>Third-party cookies (cross-site)</td><td>Blocked by default since Safari 13.1</td></tr>
+      <tr><td>SameSite=None without Partitioned</td><td>Blocked in third-party context</td></tr>
+      <tr><td>First-party cookies</td><td>Allowed, but capped at 7 days if set via JS</td></tr>
+      <tr><td>First-party cookies set via HTTP</td><td>Allowed up to expiry (no cap)</td></tr>
+      <tr><td>Partitioned cookies (CHIPS)</td><td>Allowed in third-party context</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Fix 1 — Add Partitioned (CHIPS)</h2>
+  <p>Safari supports the <code>Partitioned</code> attribute. Adding it allows cookies to work in third-party context scoped to the top-level site:</p>
+  <pre>Set-Cookie: session=abc; SameSite=None; Secure; Partitioned; HttpOnly; Path=/</pre>
+
+  <h2>Fix 2 — Storage Access API</h2>
+  <p>For embedded iframes that need access to first-party cookies, request storage access explicitly. The user must grant permission:</p>
+  <pre>// Inside your iframe — request storage access
+document.requestStorageAccess().then(() => {
+  // Storage access granted — cookies now accessible
+  console.log('Storage access granted');
+}).catch(() => {
+  // User denied or browser blocked
+  console.log('Storage access denied');
+});</pre>
+
+  <h2>Fix 3 — Move to first-party context</h2>
+  <p>The most robust fix — serve your embedded content from the same domain as the parent site, or use a subdomain with Related Website Sets (Chrome) or first-party framing.</p>
+
+  <h2>ITP and the 7-day cap on JS-set cookies</h2>
+  <p>Even first-party cookies set via <code>document.cookie</code> (JavaScript) are capped at 7 days expiry by Safari ITP. To avoid this, set cookies server-side via HTTP response headers — the cap doesn't apply:</p>
+  <pre># Server-side Set-Cookie — not capped by ITP
+Set-Cookie: pref=dark; SameSite=Lax; Secure; HttpOnly; Path=/; Max-Age=31536000
+
+# document.cookie in JS — capped at 7 days by Safari ITP
+document.cookie = "pref=dark; max-age=31536000"; // ITP reduces to 7 days</pre>
+
+  <div class="related">
+    <strong>Related:</strong>
+    <a class="xlink" href="/fix/cookies/chrome-blocking-cookies/">Chrome blocking cookies</a>
+    <a class="xlink" href="/fix/cookies/samesite-none-partitioned/">SameSite=None + Partitioned</a>
+    <a class="xlink" href="/blog/headers/chips-partitioned-cookies/">CHIPS complete guide</a>
+    <a class="xlink" href="/blog/headers/samesite-cookies-iframes/">SameSite cookies in iframes</a>
+    <a class="xlink" href="/cookies/">Cookie Partitioning Auditor</a>
+  </div>
+  <a href="/cookies/" class="tool-cta">Audit your cookies &rarr; Cookie Partitioning Auditor</a>
+</main>
+<footer>
+  <span>HttpFixer by MetricLogic &middot; <a href="/blog/">Blog</a> &middot; <a href="/generators/">Generators</a> &middot; <a href="/privacy/">Privacy</a></span>
+  <span><a href="https://github.com/metriclogic26/httpfixer">MIT &middot; GitHub &rarr;</a> &middot; <a href="https://github.com/metriclogic26/httpfixer/issues/new">Report issue &rarr;</a></span>
+  <p class="disclaimer">For informational purposes only. Always test in staging before production. MetricLogic accepts no responsibility for issues arising from use of these tools. &copy; 2026 MetricLogic.</p>
+</footer>
+</body>
+</html>
