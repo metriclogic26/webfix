@@ -64,12 +64,12 @@ Everything else runs client-side in vanilla HTML, CSS, and JavaScript.
 
 ## Local development
 
-\`\`\`bash
+```bash
 git clone https://github.com/metriclogic26/httpfixer
 cd httpfixer
 python3 -m http.server 8080
 # open http://localhost:8080
-\`\`\`
+```
 
 No dependencies. Open the HTML files directly.
 
