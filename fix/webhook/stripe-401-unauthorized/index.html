@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Fix Stripe Webhook in Next.js App Router — HttpFixer</title>
-<meta name="description" content="Stripe webhook not working in Next.js App Router? The fix is request.text() before any other body read, plus middleware exclusion for Clerk and NextAuth.">
+<title>Fix Stripe Webhook 401 Unauthorized — HttpFixer</title>
+<meta name="description" content="Stripe webhook returning 401? This is almost always auth middleware (Clerk, NextAuth) intercepting your webhook route before your handler runs. Here's the fix.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -39,7 +39,7 @@ ul{padding-left:20px;color:#8B8FA8;margin-bottom:12px}
 ul li{margin-bottom:4px}
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"HowTo","name":"Fix Stripe Webhook in Next.js App Router","description":"Fix Stripe webhook handler in Next.js App Router using request.text() and middleware exclusion.","tool":{"@type":"SoftwareTool","name":"WebhookFix","url":"https://httpfixer.dev/webhook/"}}
+{"@context":"https://schema.org","@type":"HowTo","name":"Fix Stripe Webhook 401 Unauthorized","description":"Fix Stripe webhook 401 unauthorized error caused by auth middleware blocking the webhook route.","tool":{"@type":"SoftwareTool","name":"WebhookFix","url":"https://httpfixer.dev/webhook/"}}
 </script>
 </head>
 <body>
@@ -61,93 +61,62 @@ ul li{margin-bottom:4px}
     <a href="https://httpfixer.dev/">HttpFixer</a> →
     <a href="https://httpfixer.dev/fix/">Fix</a> →
     <a href="https://httpfixer.dev/fix/webhook/">Webhook</a> →
-    Stripe + Next.js App Router
+    Stripe Webhook 401
   </div>
-  <h1>Fix Stripe Webhook in Next.js App Router</h1>
+  <h1>Fix Stripe Webhook 401 Unauthorized</h1>
 
-  <p>Stripe webhooks in Next.js App Router fail for three reasons that don't apply to Pages Router or Express. This page covers all three.</p>
+  <p>A 401 on your Stripe webhook endpoint is almost never a Stripe problem. It means something on your server is rejecting the request before your handler runs.</p>
 
-  <div class="warn"><strong>App Router breaking change:</strong> <code>export const config = &#123; api: &#123; bodyParser: false &#125; &#125;</code> is deprecated and silently ignored in App Router. It does nothing. Use <code>request.text()</code> instead.</div>
+  <div class="warn"><strong>This failure is silent.</strong> Stripe retries the webhook. Your handler logs show nothing. The 401 comes from middleware, not your code.</div>
 
-  <h2>The complete handler</h2>
-  <pre>// app/api/webhooks/stripe/route.ts
-import Stripe from 'stripe';
-import { NextResponse } from 'next/server';
+  <h2>Cause 1 — Auth middleware (most common)</h2>
+  <p>Clerk, NextAuth, Better Auth, and JWT middleware run on all routes by default. Stripe is not an authenticated user — it sends no session cookie, no Authorization header. The middleware rejects it with 401.</p>
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-const secret = process.env.STRIPE_WEBHOOK_SECRET!;
+  <pre>// middleware.ts — add webhook path to exclusion list
 
-// FIX 1: request.text() — bodyParser: false is deprecated in App Router
-export async function POST(request: Request) {
-  const body = await request.text();
-  const sig  = request.headers.get('stripe-signature');
-
-  if (!sig) {
-    return NextResponse.json({ error: 'Missing stripe-signature' }, { status: 400 });
-  }
-
-  let event: Stripe.Event;
-  try {
-    // FIX 2: Pass raw string — never request.json()
-    event = stripe.webhooks.constructEvent(body, sig, secret);
-  } catch (err: any) {
-    return NextResponse.json({ error: \`Webhook Error: \${err.message}\` }, { status: 400 });
-  }
-
-  switch (event.type) {
-    case 'checkout.session.completed':
-      // fulfill order
-      break;
-    case 'customer.subscription.deleted':
-      // cancel subscription
-      break;
-  }
-
-  return NextResponse.json({ received: true });
-}</pre>
-
-  <h2>FIX 3 — Exclude from auth middleware</h2>
-  <p>If you use Clerk, NextAuth, or Better Auth, add your webhook path to the exclusion list. Without this, the middleware returns 401 before your handler runs — silently, with no log entry.</p>
-  <pre>// middleware.ts
+// Clerk
 import { clerkMiddleware } from '@clerk/nextjs/server';
-
 export default clerkMiddleware();
-
 export const config = {
-  matcher: [
-    // Skip webhook routes, static files, internals
-    '/((?!api/webhooks|_next/static|_next/image|favicon.ico).*)',
-    '/(api|trpc)(.*)',
-  ],
+  matcher: ['/((?!api/webhooks|_next/static|_next/image|favicon.ico).*)'],
+};
+
+// NextAuth / Better Auth — same pattern, different import
+export { default } from 'next-auth/middleware';
+export const config = {
+  matcher: ['/((?!api/webhooks|_next|[^?]*\.(?:html?|css|js)).*)', '/(api|trpc)(.*)'],
 };</pre>
 
-  <h2>Works locally, fails in production?</h2>
-  <div class="step">
-    <div class="step-num">Most common cause</div>
-    <div class="step-title">Auth middleware only runs in production</div>
-    <p>Clerk and NextAuth middleware may not be configured locally. In production, it intercepts all routes including <code>/api/webhooks/stripe</code>. Add the exclusion above and redeploy.</p>
-  </div>
-  <div class="step">
-    <div class="step-num">Second most common cause</div>
-    <div class="step-title">Test vs live signing secret</div>
-    <p>Your local <code>.env</code> uses the test secret, your Vercel environment uses the live secret (or vice versa). They look identical — both start with <code>whsec_</code> — but are different values.</p>
-  </div>
+  <h2>Cause 2 — Express auth middleware order</h2>
+  <pre>// app.js — webhook routes must be registered BEFORE auth middleware
+app.use('/api/webhooks', webhookRouter);       // ✓ no auth check
+app.use('/api', jwtMiddleware, protectedRouter); // auth comes after</pre>
 
-  <h2>Edge Runtime variant</h2>
-  <p>If your route runs on Vercel Edge or Cloudflare Workers, <code>Buffer</code> is not available. Use the Web Crypto API instead — or use <a href="https://httpfixer.dev/webhook/">WebhookFix</a> with the Edge toggle enabled to generate the correct handler.</p>
+  <h2>Cause 3 — Vercel password protection</h2>
+  <p>If you have Vercel password protection enabled on a preview or staging deployment, all requests including webhooks require authentication. Disable it or add the webhook URL to the bypass list in Vercel's project settings.</p>
+
+  <h2>Cause 4 — Wrong webhook URL registered in Stripe</h2>
+  <p>If your webhook URL points to a route that doesn't exist, some frameworks return 401 or 403 instead of 404. Check the Stripe Dashboard → Developers → Webhooks and confirm the endpoint URL matches your deployed route exactly.</p>
+
+  <h2>Diagnose which cause applies</h2>
+  <pre># Send a test request without a Stripe signature
+curl -X POST https://yoursite.com/api/webhooks/stripe   -H "Content-Type: application/json"   -d '{"test": true}'
+
+# If you get 401 → middleware is blocking
+# If you get 400 (missing signature) → handler is reached, middleware is fine
+# If you get 404 → wrong URL</pre>
 
   <div class="cta">
-    <p>Generate this handler automatically — with Edge Runtime and auth middleware toggles.</p>
+    <p>Generate the complete handler with auth middleware exclusion included.</p>
     <a href="https://httpfixer.dev/webhook/">Open WebhookFix →</a>
   </div>
 
   <div class="related">
     <div class="related-title">Related fixes</div>
     <div class="related-links">
-      <a href="https://httpfixer.dev/fix/webhook/stripe-signature-verification-failed/">Signature verification failed</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-nextjs-pages-router/">Stripe + Pages Router</a>
       <a href="https://httpfixer.dev/fix/webhook/stripe-clerk-middleware-401/">Stripe + Clerk 401</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-401-unauthorized/">Stripe webhook 401</a>
+      <a href="https://httpfixer.dev/fix/webhook/stripe-nextjs-app-router/">Stripe + Next.js App Router</a>
+      <a href="https://httpfixer.dev/fix/webhook/stripe-signature-verification-failed/">Signature verification failed</a>
       <a href="https://httpfixer.dev/fix/webhook/stripe-express/">Stripe + Express</a>
     </div>
   </div>

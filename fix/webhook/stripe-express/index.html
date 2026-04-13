@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Fix Stripe Webhook in Next.js App Router — HttpFixer</title>
-<meta name="description" content="Stripe webhook not working in Next.js App Router? The fix is request.text() before any other body read, plus middleware exclusion for Clerk and NextAuth.">
+<title>Fix Stripe Webhook in Express — HttpFixer</title>
+<meta name="description" content="Stripe webhook failing in Express? The fix is express.raw() on the webhook route before express.json() globally. Here's the exact middleware order.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -39,7 +39,7 @@ ul{padding-left:20px;color:#8B8FA8;margin-bottom:12px}
 ul li{margin-bottom:4px}
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"HowTo","name":"Fix Stripe Webhook in Next.js App Router","description":"Fix Stripe webhook handler in Next.js App Router using request.text() and middleware exclusion.","tool":{"@type":"SoftwareTool","name":"WebhookFix","url":"https://httpfixer.dev/webhook/"}}
+{"@context":"https://schema.org","@type":"HowTo","name":"Fix Stripe Webhook in Express","description":"Fix Stripe webhook in Express with correct express.raw() middleware order.","tool":{"@type":"SoftwareTool","name":"WebhookFix","url":"https://httpfixer.dev/webhook/"}}
 </script>
 </head>
 <body>
@@ -61,37 +61,45 @@ ul li{margin-bottom:4px}
     <a href="https://httpfixer.dev/">HttpFixer</a> →
     <a href="https://httpfixer.dev/fix/">Fix</a> →
     <a href="https://httpfixer.dev/fix/webhook/">Webhook</a> →
-    Stripe + Next.js App Router
+    Stripe + Express
   </div>
-  <h1>Fix Stripe Webhook in Next.js App Router</h1>
+  <h1>Fix Stripe Webhook in Express</h1>
 
-  <p>Stripe webhooks in Next.js App Router fail for three reasons that don't apply to Pages Router or Express. This page covers all three.</p>
+  <p>In Express, middleware order is everything. If <code>express.json()</code> runs before your webhook route, it consumes the raw body and Stripe's signature check fails.</p>
 
-  <div class="warn"><strong>App Router breaking change:</strong> <code>export const config = &#123; api: &#123; bodyParser: false &#125; &#125;</code> is deprecated and silently ignored in App Router. It does nothing. Use <code>request.text()</code> instead.</div>
+  <h2>The fix — middleware order in app.js</h2>
+  <pre>// app.js — register webhook routes BEFORE express.json()
+import webhookRouter from './routes/webhooks.js';
 
-  <h2>The complete handler</h2>
-  <pre>// app/api/webhooks/stripe/route.ts
+// ✓ Webhook routes first — with raw body parser
+app.use('/api/webhooks', express.raw({ type: 'application/json' }), webhookRouter);
+
+// ✓ JSON parser after — for all other routes
+app.use(express.json());
+app.use('/api', otherRoutes);</pre>
+
+  <h2>The complete webhook handler</h2>
+  <pre>// routes/webhooks.js
+import express from 'express';
 import Stripe from 'stripe';
-import { NextResponse } from 'next/server';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-const secret = process.env.STRIPE_WEBHOOK_SECRET!;
+const router = express.Router();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const secret = process.env.STRIPE_WEBHOOK_SECRET;
 
-// FIX 1: request.text() — bodyParser: false is deprecated in App Router
-export async function POST(request: Request) {
-  const body = await request.text();
-  const sig  = request.headers.get('stripe-signature');
+router.post('/stripe', express.raw({ type: 'application/json' }), (req, res) => {
+  const sig = req.headers['stripe-signature'];
 
   if (!sig) {
-    return NextResponse.json({ error: 'Missing stripe-signature' }, { status: 400 });
+    return res.status(400).json({ error: 'Missing stripe-signature header' });
   }
 
-  let event: Stripe.Event;
+  let event;
   try {
-    // FIX 2: Pass raw string — never request.json()
-    event = stripe.webhooks.constructEvent(body, sig, secret);
-  } catch (err: any) {
-    return NextResponse.json({ error: \`Webhook Error: \${err.message}\` }, { status: 400 });
+    // req.body is a Buffer when using express.raw()
+    event = stripe.webhooks.constructEvent(req.body, sig, secret);
+  } catch (err) {
+    return res.status(400).json({ error: \`Webhook Error: \${err.message}\` });
   }
 
   switch (event.type) {
@@ -103,52 +111,34 @@ export async function POST(request: Request) {
       break;
   }
 
-  return NextResponse.json({ received: true });
-}</pre>
+  res.json({ received: true });
+});
 
-  <h2>FIX 3 — Exclude from auth middleware</h2>
-  <p>If you use Clerk, NextAuth, or Better Auth, add your webhook path to the exclusion list. Without this, the middleware returns 401 before your handler runs — silently, with no log entry.</p>
-  <pre>// middleware.ts
-import { clerkMiddleware } from '@clerk/nextjs/server';
+export default router;</pre>
 
-export default clerkMiddleware();
+  <div class="warn"><strong>Using bodyParser separately?</strong> The old pattern was <code>bodyParser.raw()</code> from the <code>body-parser</code> package. Since Express 4.16+, <code>express.raw()</code> is built in — no separate package needed.</div>
 
-export const config = {
-  matcher: [
-    // Skip webhook routes, static files, internals
-    '/((?!api/webhooks|_next/static|_next/image|favicon.ico).*)',
-    '/(api|trpc)(.*)',
-  ],
-};</pre>
-
-  <h2>Works locally, fails in production?</h2>
-  <div class="step">
-    <div class="step-num">Most common cause</div>
-    <div class="step-title">Auth middleware only runs in production</div>
-    <p>Clerk and NextAuth middleware may not be configured locally. In production, it intercepts all routes including <code>/api/webhooks/stripe</code>. Add the exclusion above and redeploy.</p>
-  </div>
-  <div class="step">
-    <div class="step-num">Second most common cause</div>
-    <div class="step-title">Test vs live signing secret</div>
-    <p>Your local <code>.env</code> uses the test secret, your Vercel environment uses the live secret (or vice versa). They look identical — both start with <code>whsec_</code> — but are different values.</p>
-  </div>
-
-  <h2>Edge Runtime variant</h2>
-  <p>If your route runs on Vercel Edge or Cloudflare Workers, <code>Buffer</code> is not available. Use the Web Crypto API instead — or use <a href="https://httpfixer.dev/webhook/">WebhookFix</a> with the Edge toggle enabled to generate the correct handler.</p>
+  <h2>Verify middleware order</h2>
+  <pre># Quick check — log which middleware runs on the webhook route
+app.use('/api/webhooks', (req, res, next) => {
+  console.log('Content-Type:', req.headers['content-type']);
+  console.log('Body type:', typeof req.body, Buffer.isBuffer(req.body) ? '(Buffer)' : '');
+  next();
+});</pre>
+  <p>If body type shows <code>object</code> instead of <code>Buffer</code>, <code>express.json()</code> ran first. Fix the route registration order.</p>
 
   <div class="cta">
-    <p>Generate this handler automatically — with Edge Runtime and auth middleware toggles.</p>
+    <p>Generate the complete Express handler with correct middleware order.</p>
     <a href="https://httpfixer.dev/webhook/">Open WebhookFix →</a>
   </div>
 
   <div class="related">
     <div class="related-title">Related fixes</div>
     <div class="related-links">
+      <a href="https://httpfixer.dev/fix/webhook/stripe-nextjs-app-router/">Stripe + Next.js App Router</a>
+      <a href="https://httpfixer.dev/fix/webhook/stripe-fastify/">Stripe + Fastify</a>
       <a href="https://httpfixer.dev/fix/webhook/stripe-signature-verification-failed/">Signature verification failed</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-nextjs-pages-router/">Stripe + Pages Router</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-clerk-middleware-401/">Stripe + Clerk 401</a>
       <a href="https://httpfixer.dev/fix/webhook/stripe-401-unauthorized/">Stripe webhook 401</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-express/">Stripe + Express</a>
     </div>
   </div>
 </div>

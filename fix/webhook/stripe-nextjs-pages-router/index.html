@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Fix Stripe Webhook in Next.js App Router — HttpFixer</title>
-<meta name="description" content="Stripe webhook not working in Next.js App Router? The fix is request.text() before any other body read, plus middleware exclusion for Clerk and NextAuth.">
+<title>Fix Stripe Webhook in Next.js Pages Router — HttpFixer</title>
+<meta name="description" content="Stripe webhook failing in Next.js Pages Router? You need bodyParser: false and the micro buffer. Here's the exact handler.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -39,7 +39,7 @@ ul{padding-left:20px;color:#8B8FA8;margin-bottom:12px}
 ul li{margin-bottom:4px}
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"HowTo","name":"Fix Stripe Webhook in Next.js App Router","description":"Fix Stripe webhook handler in Next.js App Router using request.text() and middleware exclusion.","tool":{"@type":"SoftwareTool","name":"WebhookFix","url":"https://httpfixer.dev/webhook/"}}
+{"@context":"https://schema.org","@type":"HowTo","name":"Fix Stripe Webhook in Next.js Pages Router","description":"Fix Stripe webhook in Next.js Pages Router with bodyParser:false and micro buffer.","tool":{"@type":"SoftwareTool","name":"WebhookFix","url":"https://httpfixer.dev/webhook/"}}
 </script>
 </head>
 <body>
@@ -61,37 +61,48 @@ ul li{margin-bottom:4px}
     <a href="https://httpfixer.dev/">HttpFixer</a> →
     <a href="https://httpfixer.dev/fix/">Fix</a> →
     <a href="https://httpfixer.dev/fix/webhook/">Webhook</a> →
-    Stripe + Next.js App Router
+    Stripe + Next.js Pages Router
   </div>
-  <h1>Fix Stripe Webhook in Next.js App Router</h1>
+  <h1>Fix Stripe Webhook in Next.js Pages Router</h1>
 
-  <p>Stripe webhooks in Next.js App Router fail for three reasons that don't apply to Pages Router or Express. This page covers all three.</p>
+  <p>Pages Router requires two things: disabling the body parser for the webhook route, and reading the raw body with <code>micro</code>. Miss either one and verification fails.</p>
 
-  <div class="warn"><strong>App Router breaking change:</strong> <code>export const config = &#123; api: &#123; bodyParser: false &#125; &#125;</code> is deprecated and silently ignored in App Router. It does nothing. Use <code>request.text()</code> instead.</div>
+  <h2>Install micro</h2>
+  <pre>npm install micro</pre>
 
   <h2>The complete handler</h2>
-  <pre>// app/api/webhooks/stripe/route.ts
+  <pre>// pages/api/webhooks/stripe.ts
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { buffer } from 'micro';
 import Stripe from 'stripe';
-import { NextResponse } from 'next/server';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 const secret = process.env.STRIPE_WEBHOOK_SECRET!;
 
-// FIX 1: request.text() — bodyParser: false is deprecated in App Router
-export async function POST(request: Request) {
-  const body = await request.text();
-  const sig  = request.headers.get('stripe-signature');
+// FIX: Disable bodyParser for this route only
+export const config = {
+  api: { bodyParser: false },
+};
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).end('Method Not Allowed');
+  }
+
+  // Read raw body before any parsing
+  const rawBody = (await buffer(req)).toString('utf8');
+  const sig     = req.headers['stripe-signature'] as string;
 
   if (!sig) {
-    return NextResponse.json({ error: 'Missing stripe-signature' }, { status: 400 });
+    return res.status(400).json({ error: 'Missing stripe-signature header' });
   }
 
   let event: Stripe.Event;
   try {
-    // FIX 2: Pass raw string — never request.json()
-    event = stripe.webhooks.constructEvent(body, sig, secret);
+    event = stripe.webhooks.constructEvent(rawBody, sig, secret);
   } catch (err: any) {
-    return NextResponse.json({ error: \`Webhook Error: \${err.message}\` }, { status: 400 });
+    return res.status(400).json({ error: \`Webhook Error: \${err.message}\` });
   }
 
   switch (event.type) {
@@ -103,52 +114,28 @@ export async function POST(request: Request) {
       break;
   }
 
-  return NextResponse.json({ received: true });
+  res.json({ received: true });
 }</pre>
 
-  <h2>FIX 3 — Exclude from auth middleware</h2>
-  <p>If you use Clerk, NextAuth, or Better Auth, add your webhook path to the exclusion list. Without this, the middleware returns 401 before your handler runs — silently, with no log entry.</p>
-  <pre>// middleware.ts
-import { clerkMiddleware } from '@clerk/nextjs/server';
+  <div class="warn"><strong>Moving to App Router?</strong> The <code>bodyParser: false</code> config export is deprecated in App Router and does nothing. Use <code>request.text()</code> instead. See: <a href="https://httpfixer.dev/fix/webhook/stripe-nextjs-app-router/" style="color:#6C63FF">Stripe + Next.js App Router fix</a>.</div>
 
-export default clerkMiddleware();
-
-export const config = {
-  matcher: [
-    // Skip webhook routes, static files, internals
-    '/((?!api/webhooks|_next/static|_next/image|favicon.ico).*)',
-    '/(api|trpc)(.*)',
-  ],
-};</pre>
-
-  <h2>Works locally, fails in production?</h2>
-  <div class="step">
-    <div class="step-num">Most common cause</div>
-    <div class="step-title">Auth middleware only runs in production</div>
-    <p>Clerk and NextAuth middleware may not be configured locally. In production, it intercepts all routes including <code>/api/webhooks/stripe</code>. Add the exclusion above and redeploy.</p>
-  </div>
-  <div class="step">
-    <div class="step-num">Second most common cause</div>
-    <div class="step-title">Test vs live signing secret</div>
-    <p>Your local <code>.env</code> uses the test secret, your Vercel environment uses the live secret (or vice versa). They look identical — both start with <code>whsec_</code> — but are different values.</p>
-  </div>
-
-  <h2>Edge Runtime variant</h2>
-  <p>If your route runs on Vercel Edge or Cloudflare Workers, <code>Buffer</code> is not available. Use the Web Crypto API instead — or use <a href="https://httpfixer.dev/webhook/">WebhookFix</a> with the Edge toggle enabled to generate the correct handler.</p>
+  <h2>Verify it works</h2>
+  <pre># Test locally with Stripe CLI
+stripe listen --forward-to localhost:3000/api/webhooks/stripe
+stripe trigger checkout.session.completed</pre>
 
   <div class="cta">
-    <p>Generate this handler automatically — with Edge Runtime and auth middleware toggles.</p>
+    <p>Generate the complete Pages Router handler with one click.</p>
     <a href="https://httpfixer.dev/webhook/">Open WebhookFix →</a>
   </div>
 
   <div class="related">
     <div class="related-title">Related fixes</div>
     <div class="related-links">
+      <a href="https://httpfixer.dev/fix/webhook/stripe-nextjs-app-router/">Stripe + App Router</a>
       <a href="https://httpfixer.dev/fix/webhook/stripe-signature-verification-failed/">Signature verification failed</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-nextjs-pages-router/">Stripe + Pages Router</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-clerk-middleware-401/">Stripe + Clerk 401</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-401-unauthorized/">Stripe webhook 401</a>
       <a href="https://httpfixer.dev/fix/webhook/stripe-express/">Stripe + Express</a>
+      <a href="https://httpfixer.dev/fix/webhook/stripe-401-unauthorized/">Stripe webhook 401</a>
     </div>
   </div>
 </div>

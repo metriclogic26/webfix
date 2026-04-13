@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Fix Stripe Webhook in Next.js App Router — HttpFixer</title>
-<meta name="description" content="Stripe webhook not working in Next.js App Router? The fix is request.text() before any other body read, plus middleware exclusion for Clerk and NextAuth.">
+<title>Fix GitHub Webhook in Next.js — HttpFixer</title>
+<meta name="description" content="GitHub webhook signature failing in Next.js? Use request.text() and HMAC-SHA256 with timingSafeEqual. Here's the complete App Router and Pages Router handler.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -39,7 +39,7 @@ ul{padding-left:20px;color:#8B8FA8;margin-bottom:12px}
 ul li{margin-bottom:4px}
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"HowTo","name":"Fix Stripe Webhook in Next.js App Router","description":"Fix Stripe webhook handler in Next.js App Router using request.text() and middleware exclusion.","tool":{"@type":"SoftwareTool","name":"WebhookFix","url":"https://httpfixer.dev/webhook/"}}
+{"@context":"https://schema.org","@type":"HowTo","name":"Fix GitHub Webhook in Next.js","description":"Fix GitHub webhook signature verification in Next.js App Router and Pages Router.","tool":{"@type":"SoftwareTool","name":"WebhookFix","url":"https://httpfixer.dev/webhook/"}}
 </script>
 </head>
 <body>
@@ -61,94 +61,100 @@ ul li{margin-bottom:4px}
     <a href="https://httpfixer.dev/">HttpFixer</a> →
     <a href="https://httpfixer.dev/fix/">Fix</a> →
     <a href="https://httpfixer.dev/fix/webhook/">Webhook</a> →
-    Stripe + Next.js App Router
+    GitHub Webhook + Next.js
   </div>
-  <h1>Fix Stripe Webhook in Next.js App Router</h1>
+  <h1>Fix GitHub Webhook Signature in Next.js</h1>
 
-  <p>Stripe webhooks in Next.js App Router fail for three reasons that don't apply to Pages Router or Express. This page covers all three.</p>
+  <p>GitHub webhooks use HMAC-SHA256 with the <code>X-Hub-Signature-256</code> header. The same raw body problem applies — Next.js parses JSON before you can verify the signature.</p>
 
-  <div class="warn"><strong>App Router breaking change:</strong> <code>export const config = &#123; api: &#123; bodyParser: false &#125; &#125;</code> is deprecated and silently ignored in App Router. It does nothing. Use <code>request.text()</code> instead.</div>
-
-  <h2>The complete handler</h2>
-  <pre>// app/api/webhooks/stripe/route.ts
-import Stripe from 'stripe';
+  <h2>App Router handler</h2>
+  <pre>// app/api/webhooks/github/route.ts
+import { createHmac, timingSafeEqual } from 'crypto';
 import { NextResponse } from 'next/server';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-const secret = process.env.STRIPE_WEBHOOK_SECRET!;
+const secret = process.env.GITHUB_WEBHOOK_SECRET!;
 
-// FIX 1: request.text() — bodyParser: false is deprecated in App Router
 export async function POST(request: Request) {
-  const body = await request.text();
-  const sig  = request.headers.get('stripe-signature');
+  const body = await request.text(); // raw body first
+  const sig  = request.headers.get('x-hub-signature-256');
 
   if (!sig) {
-    return NextResponse.json({ error: 'Missing stripe-signature' }, { status: 400 });
+    return NextResponse.json({ error: 'Missing X-Hub-Signature-256' }, { status: 400 });
   }
 
-  let event: Stripe.Event;
-  try {
-    // FIX 2: Pass raw string — never request.json()
-    event = stripe.webhooks.constructEvent(body, sig, secret);
-  } catch (err: any) {
-    return NextResponse.json({ error: \`Webhook Error: \${err.message}\` }, { status: 400 });
+  const expected = 'sha256=' + createHmac('sha256', secret).update(body).digest('hex');
+
+  // Use timingSafeEqual to prevent timing attacks
+  const sigBuf = Buffer.from(sig);
+  const expBuf = Buffer.from(expected);
+  if (sigBuf.length !== expBuf.length || !timingSafeEqual(sigBuf, expBuf)) {
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
   }
 
-  switch (event.type) {
-    case 'checkout.session.completed':
-      // fulfill order
+  const payload = JSON.parse(body);
+  const event   = request.headers.get('x-github-event');
+
+  switch (event) {
+    case 'push':
+      // handle push
       break;
-    case 'customer.subscription.deleted':
-      // cancel subscription
+    case 'pull_request':
+      // handle PR
+      break;
+    case 'issues':
+      // handle issues
       break;
   }
 
   return NextResponse.json({ received: true });
 }</pre>
 
-  <h2>FIX 3 — Exclude from auth middleware</h2>
-  <p>If you use Clerk, NextAuth, or Better Auth, add your webhook path to the exclusion list. Without this, the middleware returns 401 before your handler runs — silently, with no log entry.</p>
-  <pre>// middleware.ts
-import { clerkMiddleware } from '@clerk/nextjs/server';
+  <div class="warn"><strong>Always use <code>timingSafeEqual</code></strong> for signature comparison. A simple <code>===</code> comparison leaks timing information that can be used to forge signatures.</div>
 
-export default clerkMiddleware();
+  <h2>Pages Router handler</h2>
+  <pre>// pages/api/webhooks/github.ts
+import { buffer } from 'micro';
+import { createHmac, timingSafeEqual } from 'crypto';
+export const config = { api: { bodyParser: false } };
 
-export const config = {
-  matcher: [
-    // Skip webhook routes, static files, internals
-    '/((?!api/webhooks|_next/static|_next/image|favicon.ico).*)',
-    '/(api|trpc)(.*)',
-  ],
-};</pre>
+const secret = process.env.GITHUB_WEBHOOK_SECRET!;
 
-  <h2>Works locally, fails in production?</h2>
-  <div class="step">
-    <div class="step-num">Most common cause</div>
-    <div class="step-title">Auth middleware only runs in production</div>
-    <p>Clerk and NextAuth middleware may not be configured locally. In production, it intercepts all routes including <code>/api/webhooks/stripe</code>. Add the exclusion above and redeploy.</p>
-  </div>
-  <div class="step">
-    <div class="step-num">Second most common cause</div>
-    <div class="step-title">Test vs live signing secret</div>
-    <p>Your local <code>.env</code> uses the test secret, your Vercel environment uses the live secret (or vice versa). They look identical — both start with <code>whsec_</code> — but are different values.</p>
-  </div>
+export default async function handler(req, res) {
+  const rawBody = (await buffer(req)).toString('utf8');
+  const sig     = req.headers['x-hub-signature-256'] as string;
 
-  <h2>Edge Runtime variant</h2>
-  <p>If your route runs on Vercel Edge or Cloudflare Workers, <code>Buffer</code> is not available. Use the Web Crypto API instead — or use <a href="https://httpfixer.dev/webhook/">WebhookFix</a> with the Edge toggle enabled to generate the correct handler.</p>
+  if (!sig) return res.status(400).json({ error: 'Missing signature' });
+
+  const expected = 'sha256=' + createHmac('sha256', secret).update(rawBody).digest('hex');
+  const sigBuf   = Buffer.from(sig);
+  const expBuf   = Buffer.from(expected);
+
+  if (sigBuf.length !== expBuf.length || !timingSafeEqual(sigBuf, expBuf)) {
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  const event   = req.headers['x-github-event'];
+  const payload = JSON.parse(rawBody);
+
+  res.json({ received: true });
+}</pre>
+
+  <h2>Set the secret in GitHub</h2>
+  <pre>Repository → Settings → Webhooks → Edit → Secret
+# Add the same value as GITHUB_WEBHOOK_SECRET in your .env
+# GitHub hashes the payload with this secret using HMAC-SHA256</pre>
 
   <div class="cta">
-    <p>Generate this handler automatically — with Edge Runtime and auth middleware toggles.</p>
+    <p>Generate the complete GitHub webhook handler for your framework.</p>
     <a href="https://httpfixer.dev/webhook/">Open WebhookFix →</a>
   </div>
 
   <div class="related">
     <div class="related-title">Related fixes</div>
     <div class="related-links">
+      <a href="https://httpfixer.dev/fix/webhook/stripe-nextjs-app-router/">Stripe + Next.js App Router</a>
+      <a href="https://httpfixer.dev/fix/webhook/shopify-webhook-nextjs/">Shopify + Next.js</a>
       <a href="https://httpfixer.dev/fix/webhook/stripe-signature-verification-failed/">Signature verification failed</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-nextjs-pages-router/">Stripe + Pages Router</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-clerk-middleware-401/">Stripe + Clerk 401</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-401-unauthorized/">Stripe webhook 401</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-express/">Stripe + Express</a>
     </div>
   </div>
 </div>

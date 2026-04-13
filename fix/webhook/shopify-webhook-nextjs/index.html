@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Fix Stripe Webhook in Next.js App Router — HttpFixer</title>
-<meta name="description" content="Stripe webhook not working in Next.js App Router? The fix is request.text() before any other body read, plus middleware exclusion for Clerk and NextAuth.">
+<title>Fix Shopify Webhook in Next.js — HttpFixer</title>
+<meta name="description" content="Shopify webhook signature failing in Next.js? Shopify uses Base64-encoded HMAC-SHA256, not hex. Here's the complete handler for App Router and Pages Router.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -39,7 +39,7 @@ ul{padding-left:20px;color:#8B8FA8;margin-bottom:12px}
 ul li{margin-bottom:4px}
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"HowTo","name":"Fix Stripe Webhook in Next.js App Router","description":"Fix Stripe webhook handler in Next.js App Router using request.text() and middleware exclusion.","tool":{"@type":"SoftwareTool","name":"WebhookFix","url":"https://httpfixer.dev/webhook/"}}
+{"@context":"https://schema.org","@type":"HowTo","name":"Fix Shopify Webhook in Next.js","description":"Fix Shopify webhook signature verification in Next.js using Base64 HMAC-SHA256.","tool":{"@type":"SoftwareTool","name":"WebhookFix","url":"https://httpfixer.dev/webhook/"}}
 </script>
 </head>
 <body>
@@ -61,94 +61,73 @@ ul li{margin-bottom:4px}
     <a href="https://httpfixer.dev/">HttpFixer</a> →
     <a href="https://httpfixer.dev/fix/">Fix</a> →
     <a href="https://httpfixer.dev/fix/webhook/">Webhook</a> →
-    Stripe + Next.js App Router
+    Shopify Webhook + Next.js
   </div>
-  <h1>Fix Stripe Webhook in Next.js App Router</h1>
+  <h1>Fix Shopify Webhook Signature in Next.js</h1>
 
-  <p>Stripe webhooks in Next.js App Router fail for three reasons that don't apply to Pages Router or Express. This page covers all three.</p>
+  <p>Shopify webhook verification uses HMAC-SHA256 but encodes the result as <strong>Base64</strong>, not hex. This is different from Stripe and GitHub. Using <code>.digest('hex')</code> instead of <code>.digest('base64')</code> causes every verification to fail.</p>
 
-  <div class="warn"><strong>App Router breaking change:</strong> <code>export const config = &#123; api: &#123; bodyParser: false &#125; &#125;</code> is deprecated and silently ignored in App Router. It does nothing. Use <code>request.text()</code> instead.</div>
-
-  <h2>The complete handler</h2>
-  <pre>// app/api/webhooks/stripe/route.ts
-import Stripe from 'stripe';
+  <h2>App Router handler</h2>
+  <pre>// app/api/webhooks/shopify/route.ts
+import { createHmac, timingSafeEqual } from 'crypto';
 import { NextResponse } from 'next/server';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-const secret = process.env.STRIPE_WEBHOOK_SECRET!;
+const secret = process.env.SHOPIFY_WEBHOOK_SECRET!;
 
-// FIX 1: request.text() — bodyParser: false is deprecated in App Router
 export async function POST(request: Request) {
   const body = await request.text();
-  const sig  = request.headers.get('stripe-signature');
+  const sig  = request.headers.get('x-shopify-hmac-sha256');
 
   if (!sig) {
-    return NextResponse.json({ error: 'Missing stripe-signature' }, { status: 400 });
+    return NextResponse.json({ error: 'Missing X-Shopify-Hmac-Sha256' }, { status: 400 });
   }
 
-  let event: Stripe.Event;
-  try {
-    // FIX 2: Pass raw string — never request.json()
-    event = stripe.webhooks.constructEvent(body, sig, secret);
-  } catch (err: any) {
-    return NextResponse.json({ error: \`Webhook Error: \${err.message}\` }, { status: 400 });
+  // Shopify uses Base64, not hex
+  const computed = createHmac('sha256', secret).update(body, 'utf8').digest('base64');
+
+  const sigBuf  = Buffer.from(sig);
+  const compBuf = Buffer.from(computed);
+
+  if (sigBuf.length !== compBuf.length || !timingSafeEqual(sigBuf, compBuf)) {
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
   }
 
-  switch (event.type) {
-    case 'checkout.session.completed':
-      // fulfill order
+  const payload = JSON.parse(body);
+  const topic   = request.headers.get('x-shopify-topic');
+
+  switch (topic) {
+    case 'orders/create':
+      // handle new order
       break;
-    case 'customer.subscription.deleted':
-      // cancel subscription
+    case 'orders/cancelled':
+      // handle cancellation
+      break;
+    case 'customers/create':
+      // handle new customer
       break;
   }
 
   return NextResponse.json({ received: true });
 }</pre>
 
-  <h2>FIX 3 — Exclude from auth middleware</h2>
-  <p>If you use Clerk, NextAuth, or Better Auth, add your webhook path to the exclusion list. Without this, the middleware returns 401 before your handler runs — silently, with no log entry.</p>
-  <pre>// middleware.ts
-import { clerkMiddleware } from '@clerk/nextjs/server';
+  <div class="warn"><strong>Base64 not hex.</strong> Shopify sends <code>X-Shopify-Hmac-Sha256</code> as a Base64-encoded HMAC. Using <code>.digest('hex')</code> (like Stripe or GitHub) produces the wrong value and every verification fails.</div>
 
-export default clerkMiddleware();
-
-export const config = {
-  matcher: [
-    // Skip webhook routes, static files, internals
-    '/((?!api/webhooks|_next/static|_next/image|favicon.ico).*)',
-    '/(api|trpc)(.*)',
-  ],
-};</pre>
-
-  <h2>Works locally, fails in production?</h2>
-  <div class="step">
-    <div class="step-num">Most common cause</div>
-    <div class="step-title">Auth middleware only runs in production</div>
-    <p>Clerk and NextAuth middleware may not be configured locally. In production, it intercepts all routes including <code>/api/webhooks/stripe</code>. Add the exclusion above and redeploy.</p>
-  </div>
-  <div class="step">
-    <div class="step-num">Second most common cause</div>
-    <div class="step-title">Test vs live signing secret</div>
-    <p>Your local <code>.env</code> uses the test secret, your Vercel environment uses the live secret (or vice versa). They look identical — both start with <code>whsec_</code> — but are different values.</p>
-  </div>
-
-  <h2>Edge Runtime variant</h2>
-  <p>If your route runs on Vercel Edge or Cloudflare Workers, <code>Buffer</code> is not available. Use the Web Crypto API instead — or use <a href="https://httpfixer.dev/webhook/">WebhookFix</a> with the Edge toggle enabled to generate the correct handler.</p>
+  <h2>Get the webhook secret</h2>
+  <pre># Shopify Admin → Settings → Notifications → Webhooks
+# Each webhook has its own signing secret shown under the endpoint
+# Or via Admin API: GET /admin/api/webhooks.json</pre>
 
   <div class="cta">
-    <p>Generate this handler automatically — with Edge Runtime and auth middleware toggles.</p>
+    <p>Generate the complete Shopify webhook handler for your framework.</p>
     <a href="https://httpfixer.dev/webhook/">Open WebhookFix →</a>
   </div>
 
   <div class="related">
     <div class="related-title">Related fixes</div>
     <div class="related-links">
+      <a href="https://httpfixer.dev/fix/webhook/stripe-nextjs-app-router/">Stripe + Next.js App Router</a>
+      <a href="https://httpfixer.dev/fix/webhook/github-webhook-nextjs/">GitHub + Next.js</a>
       <a href="https://httpfixer.dev/fix/webhook/stripe-signature-verification-failed/">Signature verification failed</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-nextjs-pages-router/">Stripe + Pages Router</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-clerk-middleware-401/">Stripe + Clerk 401</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-401-unauthorized/">Stripe webhook 401</a>
-      <a href="https://httpfixer.dev/fix/webhook/stripe-express/">Stripe + Express</a>
     </div>
   </div>
 </div>
