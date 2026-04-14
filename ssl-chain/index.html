@@ -140,7 +140,7 @@
   <div class="tab-panel active" id="tab-chain">
     <div class="url-row">
       <input type="text" class="url-input" id="chainDomain" placeholder="example.com" onkeydown="if(event.key==='Enter')scanChain()">
-      <button class="scan-btn" id="chainBtn" onclick="scanChain()">Check chain <span class="spinner" id="chainSpinner" style="display:none"></span></button>
+      <button class="scan-btn" id="chainBtn" onclick="scanChain()">Check chain <span class="spinner" id="chainSpinner" style="display:none"></span></button> <button class="parse-btn" style="background:var(--surface);border:1px solid var(--border);color:var(--text);margin-left:0.5rem" onclick="document.getElementById('chainDomain').value='github.com';scanChain()">Try example</button>
     </div>
     <div id="chainOutput">
       <div class="empty-state">Enter a domain to visualize its SSL certificate trust chain.<br><br><span style="opacity:0.5">Leaf certificate → Intermediate CA → Root CA</span></div>
