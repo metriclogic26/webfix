@@ -31,37 +31,139 @@
 <script>
 const PROXY = "https://headers-proxy.metriclogicllc.workers.dev";
 
-function cleanDomain(input) { return input.trim() .replace(/^https?:\/\//, "") .replace(/\/.*$/, "") .toLowerCase();
+function cleanDomain(input) {
+  return input.trim().replace(/^https?:\/\//, "").replace(/\/.*$/, "").toLowerCase();
 }
 
-async function checkPreload() { const raw = document.getElementById("domainInput").value; const domain = cleanDomain(raw); const status = document.getElementById("status"); const err = document.getElementById("err"); const results = document.getElementById("results"); const btn = document.getElementById("checkBtn"); err.textContent = ""; results.innerHTML = ""; if (!domain) { err.textContent = "Enter a domain name."; return; } if (domain.includes("/") || !domain.includes(".")) { err.textContent = "Enter a domain only — e.g. yourapp.com"; return; } btn.disabled = true; status.textContent = `Checking ${domain}...`; try { // Run both checks in parallel const [preloadResult, headersResult] = await Promise.allSettled([ fetchPreloadStatus(domain), fetchSiteHeaders(domain) ]); const preload = preloadResult.status === "fulfilled" ? preloadResult.value : null; let headers = headersResult.status === "fulfilled" ? headersResult.value : {}; let hstsHeader = findHSTS(headers); let headerHost = domain; if (!hstsHeader && !domain.startsWith("www.")) { const wwwHeaders = await fetchSiteHeaders("www." + domain); if (findHSTS(wwwHeaders)) { headers = wwwHeaders; hstsHeader = findHSTS(wwwHeaders); headerHost = "www." + domain; } } status.textContent = ""; renderResults(domain, preload, hstsHeader, headers, headerHost); } catch(e) { err.textContent = `Error: ${e.message}`; status.textContent = ""; } finally { btn.disabled = false; }
+async function checkPreload() {
+  const raw = document.getElementById("domainInput").value;
+  const domain = cleanDomain(raw);
+  const status = document.getElementById("status");
+  const err = document.getElementById("err");
+  const results = document.getElementById("results");
+  const btn = document.getElementById("checkBtn");
+  err.textContent = "";
+  results.innerHTML = "";
+  if (!domain) { err.textContent = "Enter a domain name."; return; }
+  if (domain.includes("/") || !domain.includes(".")) { err.textContent = "Enter a domain only — e.g. yourapp.com"; return; }
+  btn.disabled = true;
+  status.textContent = "Checking " + domain + "...";
+  try {
+    const [preloadResult, headersResult] = await Promise.allSettled([
+      fetchPreloadStatus(domain),
+      fetchSiteHeaders(domain)
+    ]);
+    const preload = preloadResult.status === "fulfilled" ? preloadResult.value : null;
+    let headers = headersResult.status === "fulfilled" ? headersResult.value : {};
+    let hstsHeader = findHSTS(headers);
+    let headerHost = domain;
+    if (!hstsHeader && !domain.startsWith("www.")) {
+      const wwwHeaders = await fetchSiteHeaders("www." + domain);
+      if (findHSTS(wwwHeaders)) {
+        headers = wwwHeaders;
+        hstsHeader = findHSTS(wwwHeaders);
+        headerHost = "www." + domain;
+      }
+    }
+    status.textContent = "";
+    renderResults(domain, preload, hstsHeader, headers, headerHost);
+  } catch(e) {
+    err.textContent = "Error: " + e.message;
+    status.textContent = "";
+  } finally {
+    btn.disabled = false;
+  }
 }
 
-async function fetchPreloadStatus(domain) { const proxyUrl = 'https://headers-proxy.metriclogicllc.workers.dev/?body=true&url=' + encodeURIComponent('https://hstspreload.org/api/v2/status?domain=' + domain);
-  const res = await fetch(proxyUrl); if (!res.ok) throw new Error("Could not reach hstspreload.org API"); const text = await res.text(); try { const data = JSON.parse(text); return { isPreloaded: data.status === "preloaded", rawStatus: data.status }; } catch(e) { const trimmed = text.trim(); return { isPreloaded: trimmed === "preloaded", rawStatus: trimmed }; }
+async function fetchPreloadStatus(domain) {
+  const proxyUrl = PROXY + '/?body=true&url=' + encodeURIComponent('https://hstspreload.org/api/v2/status?domain=' + domain);
+  const res = await fetch(proxyUrl);
+  if (!res.ok) throw new Error("Could not reach hstspreload.org API");
+  const text = await res.text();
+  try {
+    const data = JSON.parse(text);
+    return { isPreloaded: data.status === "preloaded", rawStatus: data.status };
+  } catch(e) {
+    const trimmed = text.trim();
+    return { isPreloaded: trimmed === "preloaded", rawStatus: trimmed };
+  }
 }
 
-async function fetchSiteHeaders(domain) { try { const res = await fetch(`${PROXY}/?url=${encodeURIComponent("https://" + domain)}`); if (!res.ok) return {}; const data = await res.json(); const h = data.headers || data; const norm = {}; for (const [k, v] of Object.entries(h)) { norm[k.toLowerCase()] = Array.isArray(v) ? v.join(", ") : String(v); } return norm; } catch{ return {}; }
+async function fetchSiteHeaders(domain) {
+  try {
+    const res = await fetch(PROXY + '/?url=' + encodeURIComponent("https://" + domain));
+    if (!res.ok) return {};
+    const data = await res.json();
+    const h = data.headers || data;
+    const norm = {};
+    for (const [k, v] of Object.entries(h)) {
+      norm[k.toLowerCase()] = Array.isArray(v) ? v.join(", ") : String(v);
+    }
+    return norm;
+  } catch(e) {
+    return {};
+  }
 }
 
-function findHSTS(headers) { return headers["strict-transport-security"] || null;
+function findHSTS(headers) {
+  return headers["strict-transport-security"] || null;
 }
 
-function parseHSTS(hsts) { if (!hsts) return { maxAge: 0, includeSubDomains: false, preload: false }; const lc = hsts.toLowerCase(); const maxAgeMatch = lc.match(/max-age=(\d+)/); return { maxAge: maxAgeMatch ? parseInt(maxAgeMatch[1]) : 0, includeSubDomains: lc.includes("includesubdomains"), preload: lc.includes("preload") };
+function parseHSTS(hsts) {
+  if (!hsts) return { maxAge: 0, includeSubDomains: false, preload: false };
+  const lc = hsts.toLowerCase();
+  const maxAgeMatch = lc.match(/max-age=(\d+)/);
+  return {
+    maxAge: maxAgeMatch ? parseInt(maxAgeMatch[1]) : 0,
+    includeSubDomains: lc.includes("includesubdomains"),
+    preload: lc.includes("preload")
+  };
 }
 
-function fmtDur(s) { if (!s) return "0"; if (s < 60) return s + "s"; if (s < 3600) return Math.round(s/60) + " min"; if (s < 86400) return Math.round(s/3600) + " hours"; return Math.round(s/86400) + " days";
+function fmtDur(s) {
+  if (!s) return "0";
+  if (s < 60) return s + "s";
+  if (s < 3600) return Math.round(s/60) + " min";
+  if (s < 86400) return Math.round(s/3600) + " hours";
+  return Math.round(s/86400) + " days";
 }
 
-function renderResults(domain, preload, hstsHeader, allHeaders, headerHost) { if (headerHost == null) headerHost = domain; const statusMap = { preloaded:  { cls: "badge-preloaded", icon: "✅", label: "Preloaded" }, pending: { cls: "badge-pending", icon: "⏳", label: "Pending (submitted, not yet in browsers)" }, eligible: { cls: "badge-eligible",  icon: "🟣", label: "Eligible — ready to submit" }, "unknown":  { cls: "badge-unknown", icon: "⬜", label: "Not on preload list" }, }; const isPreloaded = !!(preload && preload.isPreloaded); const status = isPreloaded ? "preloaded" : (preload && preload.rawStatus && statusMap[preload.rawStatus] ? preload.rawStatus : "unknown"); const s = statusMap[status] || statusMap["unknown"]; const parsed = parseHSTS(hstsHeader); const MIN_MAX_AGE = 31536000; const checks = [ { pass: !!hstsHeader, label: "HSTS header present", desc: hstsHeader ? `Strict-Transport-Security: ${hstsHeader}` + (headerHost !== domain ? ` (from https://${headerHost})` : "") : "No Strict-Transport-Security header found on https://" + domain + (domain.startsWith("www.") ? "" : " or https://www." + domain) }, { pass: parsed.maxAge >= MIN_MAX_AGE, warn: parsed.maxAge > 0 && parsed.maxAge < MIN_MAX_AGE, label: "max-age &ge; 1 year (31536000s)", desc: parsed.maxAge ? `Current max-age: ${parsed.maxAge} (${fmtDur(parsed.maxAge)}). Required: 31536000 (365 days).` : "max-age not found or is 0." }, { pass: parsed.includeSubDomains, label: "includeSubDomains present", desc: parsed.includeSubDomains ? "includeSubDomains is set. All subdomains will also require HTTPS." : "includeSubDomains is missing. Required for preload list. All subdomains must support HTTPS before adding this." }, { pass: parsed.preload, label: "preload directive present", desc: parsed.preload ? "preload is set. This signals you want to be on the preload list." : "preload directive is missing. Add it to your HSTS header, then submit at hstspreload.org." } ]; const allPass = checks.every(c => c.pass); const checksHtml = checks.map(c => ` <li> <span class="ck ${c.pass ? "ck-pass" : c.warn ? "ck-warn" : "ck-fail"}"> ${c.pass ? "&#10003;" : c.warn ? "&#9888;" : "&#10007;"} </span> <div> <div>${c.label}</div> <div class="check-desc">${c.desc}</div> </div> </li>`).join(""); const nginxFix = `add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;`; const apacheFix = `Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"`; const submitSection = allPass && status !== "preloaded" ? ` <div class="submit-cta"> <p>&#10004; Your HSTS config meets all preload requirements.</p> <p>Submit your domain at <a href="https://hstspreload.org/?domain=${domain}" target="_blank" rel="noopener">hstspreload.org &rarr;</a> to be added to the browser preload list. After submission it takes 2&ndash;3 months before your domain appears in Chrome, Firefox, and Safari stable releases.</p> </div>` : ""; const fixSection = !allPass ? ` <div class="section-title">The exact fix</div> <div style="font-size:12px;opacity:0.6;margin-bottom:0.5rem">Nginx &mdash; add to your HTTPS server block:</div> <div class="hsts-value" style="color:var(--green)">${nginxFix}</div> <div style="font-size:12px;opacity:0.6;margin:0.75rem 0 0.5rem">Apache:</div> <div class="hsts-value" style="color:var(--green)">${apacheFix}</div> <div style="font-size:12px;opacity:0.5;margin-top:0.5rem"> &#9888; Only add the preload directive once all your subdomains support HTTPS and you have verified max-age works correctly. <a href="/blog/headers/nginx-hsts-max-age/" style="color:var(--purple)">Read the HSTS ramp-up guide &rarr;</a> </div>` : ""; document.getElementById("results").innerHTML = ` <div class="result-card"> <div class="domain-label">Domain checked</div> <div class="domain-value">${domain}</div> <div class="status-badge ${s.cls}">${s.icon} ${s.label}</div> <div class="section-title">HSTS Header</div> <div class="hsts-value">${hstsHeader || '<span style="opacity:0.4">— no HSTS header found</span>'}</div> <div class="section-title">Requirements checklist</div> <ul class="check-list">${checksHtml}</ul> ${submitSection} ${fixSection} <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border);font-size:12px"> <a href="/" style="color:var(--purple);text-decoration:none">Scan all 9 security headers &rarr; HeadersFixer</a> &nbsp;&middot;&nbsp; <a href="/blog/headers/fix-hsts/" style="color:var(--purple);text-decoration:none">HSTS fix guide &rarr;</a> &nbsp;&middot;&nbsp; <a href="/blog/headers/nginx-hsts-max-age/" style="color:var(--purple);text-decoration:none">Nginx HSTS best practices &rarr;</a> </div> </div> `;
+function renderResults(domain, preload, hstsHeader, allHeaders, headerHost) {
+  if (headerHost == null) headerHost = domain;
+  const statusMap = {
+    preloaded: { cls: "badge-preloaded", icon: "&#10003;", label: "Preloaded" },
+    pending: { cls: "badge-pending", icon: "&#8987;", label: "Pending (submitted, not yet in browsers)" },
+    eligible: { cls: "badge-eligible", icon: "&#128995;", label: "Eligible — ready to submit" },
+    "unknown": { cls: "badge-unknown", icon: "&#9744;", label: "Not on preload list" },
+  };
+  const isPreloaded = !!(preload && preload.isPreloaded);
+  const status = isPreloaded ? "preloaded" : (preload && preload.rawStatus && statusMap[preload.rawStatus] ? preload.rawStatus : "unknown");
+  const s = statusMap[status] || statusMap["unknown"];
+  const parsed = parseHSTS(hstsHeader);
+  const MIN_MAX_AGE = 31536000;
+  const checks = [
+    { pass: !!hstsHeader, label: "HSTS header present", desc: hstsHeader ? "Strict-Transport-Security: " + hstsHeader + (headerHost !== domain ? " (from https://" + headerHost + ")" : "") : "No Strict-Transport-Security header found on https://" + domain + (domain.startsWith("www.") ? "" : " or https://www." + domain) },
+    { pass: parsed.maxAge >= MIN_MAX_AGE, warn: parsed.maxAge > 0 && parsed.maxAge < MIN_MAX_AGE, label: "max-age &ge; 1 year (31536000s)", desc: parsed.maxAge ? "Current max-age: " + parsed.maxAge + " (" + fmtDur(parsed.maxAge) + "). Required: 31536000 (365 days)." : "max-age not found or is 0." },
+    { pass: parsed.includeSubDomains, label: "includeSubDomains present", desc: parsed.includeSubDomains ? "includeSubDomains is set." : "includeSubDomains is missing. Required for preload list." },
+    { pass: parsed.preload, label: "preload directive present", desc: parsed.preload ? "preload is set." : "preload directive is missing. Add it to your HSTS header, then submit at hstspreload.org." }
+  ];
+  const allPass = checks.every(function(c) { return c.pass; });
+  const checksHtml = checks.map(function(c) {
+    return '<li><span class="ck ' + (c.pass ? "ck-pass" : c.warn ? "ck-warn" : "ck-fail") + '">' + (c.pass ? "&#10003;" : c.warn ? "&#9888;" : "&#10007;") + '</span><div><div>' + c.label + '</div><div class="check-desc">' + c.desc + '</div></div></li>';
+  }).join("");
+  const nginxFix = 'add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;';
+  const apacheFix = 'Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"';
+  const submitSection = allPass && status !== "preloaded" ? '<div class="submit-cta"><p>&#10004; Your HSTS config meets all preload requirements.</p><p>Submit your domain at <a href="https://hstspreload.org/?domain=' + domain + '" target="_blank" rel="noopener">hstspreload.org &rarr;</a></p></div>' : "";
+  const fixSection = !allPass ? '<div class="section-title">The exact fix</div><div style="font-size:12px;opacity:0.6;margin-bottom:0.5rem">Nginx — add to your HTTPS server block:</div><div class="hsts-value" style="color:var(--green)">' + nginxFix + '</div><div style="font-size:12px;opacity:0.6;margin:0.75rem 0 0.5rem">Apache:</div><div class="hsts-value" style="color:var(--green)">' + apacheFix + '</div>' : "";
+  document.getElementById("results").innerHTML = '<div class="result-card"><div class="domain-label">Domain checked</div><div class="domain-value">' + domain + '</div><div class="status-badge ' + s.cls + '">' + s.icon + ' ' + s.label + '</div><div class="section-title">HSTS Header</div><div class="hsts-value">' + (hstsHeader || '<span style="opacity:0.4">— no HSTS header found</span>') + '</div><div class="section-title">Requirements checklist</div><ul class="check-list">' + checksHtml + '</ul>' + submitSection + fixSection + '<div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border);font-size:12px"><a href="/" style="color:var(--purple);text-decoration:none">Scan all security headers &rarr; HeadersFixer</a></div></div>';
 }
 
-function loadExample(domain) { document.getElementById("domainInput").value = domain; checkPreload();
+function loadExample(domain) {
+  document.getElementById("domainInput").value = domain;
+  checkPreload();
 }
-
-document.addEventListener("keydown", e => { if (e.key === "Enter") checkPreload();
-});
 </script>
+
 <div style="border-top:1px solid #252836;padding:1rem 2rem 0.5rem;text-align:center;font-size:11px;opacity:0.4;margin-top:0.5rem"> MetricLogic network: <a href="https://configclarity.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">configclarity.dev</a> &middot; <a href="https://domainpreflight.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">domainpreflight.dev</a> &middot; <a href="https://httpfixer.dev" target="_blank" rel="noopener" style="color:#E2E4F0;text-decoration:none">httpfixer.dev</a></div>
 
 <!-- Nav Tools Dropdown -->
@@ -107,7 +209,7 @@ document.addEventListener("keydown", e => { if (e.key === "Enter") checkPreload(
     var navRight = document.querySelector('nav .right') || document.querySelector('nav div');
     if (!navRight) return;
 
-    // Don't add if already added
+
     if (document.getElementById('nav-tools-dropdown')) return;
 
     var wrap = document.createElement('div');
@@ -124,7 +226,7 @@ document.addEventListener("keydown", e => { if (e.key === "Enter") checkPreload(
     menu.className = 'nav-dropdown-menu';
     menu.setAttribute('role', 'menu');
 
-    // Core tools section
+
     var s1 = document.createElement('div');
     s1.className = 'dd-section';
     s1.textContent = 'Core tools';
@@ -143,7 +245,7 @@ document.addEventListener("keydown", e => { if (e.key === "Enter") checkPreload(
     div.className = 'dd-divider';
     menu.appendChild(div);
 
-    // More tools section
+
     var s2 = document.createElement('div');
     s2.className = 'dd-section';
     s2.textContent = 'More tools';
@@ -158,7 +260,7 @@ document.addEventListener("keydown", e => { if (e.key === "Enter") checkPreload(
       menu.appendChild(a);
     });
 
-    // View all link
+
     var all = document.createElement('a');
     all.className = 'dd-all';
     all.href = '/tools/';
@@ -168,7 +270,7 @@ document.addEventListener("keydown", e => { if (e.key === "Enter") checkPreload(
     wrap.appendChild(btn);
     wrap.appendChild(menu);
 
-    // Remove existing "Tools" link if present to avoid duplicate
+
     var existingLinks = navRight.querySelectorAll('a');
     existingLinks.forEach(function(a) {
       if (a.textContent.trim() === 'Tools' && a.href.indexOf('/tools/') !== -1) {
@@ -184,20 +286,20 @@ document.addEventListener("keydown", e => { if (e.key === "Enter") checkPreload(
 
     navRight.appendChild(wrap);
 
-    // Toggle
+
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
       var isOpen = wrap.classList.toggle('open');
       btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
 
-    // Close on outside click
+
     document.addEventListener('click', function() {
       wrap.classList.remove('open');
       btn.setAttribute('aria-expanded', 'false');
     });
 
-    // Close on Escape
+
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         wrap.classList.remove('open');
