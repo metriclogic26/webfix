@@ -4,7 +4,156 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="shortcut icon" href="/favicon.svg">
 </head>
-<body> <nav> <span class="brand">HttpFixer <span>/</span> Blog</span> <div class="right"><a href="/" class="nav-tool">Headers</a> <a href="/cors/" class="nav-tool">CORS</a> <a href="/oauth/" class="nav-tool">OAuth</a> <a href="/csp/" class="nav-tool">CSP</a> <a href="/edge/" class="nav-tool">Edge</a> <a href="/speedfixer/" class="nav-tool">Speed</a> <a href="/webhook/" class="nav-tool">Webhook</a> <a href="/cookies/" class="nav-tool">Cookies</a> <a href="/diff/" class="nav-tool">Diff</a></div> </nav> <main> <article> <nav class="breadcrumb" aria-label="Breadcrumb"> <a href="../../">HttpFixer</a><span class="sep">→</span><a href="../">Blog</a><span class="sep">→</span>SharePoint CSP Fix 2026 </nav> <h1>SharePoint CSP "Refused to Load" Errors — March 2026 Fix</h1>
+<body> <nav> <span class="brand">HttpFixer <span>/</span> Blog</span> <div class="right"><a href="/" class="nav-tool">Headers</a> <a href="/cors/" class="nav-tool">CORS</a> <a href="/oauth/" class="nav-tool">OAuth</a> <a href="/csp/" class="nav-tool">CSP</a> <a href="/edge/" class="nav-tool">Edge</a> <a href="/speedfixer/" class="nav-tool">Speed</a> <a href="/webhook/" class="nav-tool">Webhook</a> <a href="/cookies/" class="nav-tool">Cookies</a> <a href="/diff/" class="nav-tool">Diff</a></div> <!-- Nav Tools Dropdown -->
+<style>
+.nav-dropdown-wrap{position:relative;display:inline-flex;align-items:center}
+.nav-dropdown-btn{background:none;border:none;color:var(--text,#E2E4F0);font-family:"JetBrains Mono",monospace;font-size:13px;opacity:0.6;cursor:pointer;display:flex;align-items:center;gap:0.25rem;padding:0;text-decoration:none}
+.nav-dropdown-btn:hover{opacity:1;color:var(--purple,#6C63FF)}
+.nav-dropdown-btn .dd-arrow{font-size:9px;transition:transform 0.15s}
+.nav-dropdown-wrap.open .dd-arrow{transform:rotate(180deg)}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 0.75rem);right:0;background:#12151F;border:1px solid #252836;border-radius:8px;min-width:220px;padding:0.4rem 0;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.4)}
+.nav-dropdown-wrap.open .nav-dropdown-menu{display:block}
+.dd-section{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;opacity:0.35;padding:0.5rem 1rem 0.25rem;font-family:"JetBrains Mono",monospace}
+.dd-item{display:flex;align-items:center;gap:0.5rem;padding:0.45rem 1rem;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:"JetBrains Mono",monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s}
+.dd-item:hover{background:rgba(108,99,255,0.1);opacity:1;color:#6C63FF}
+.dd-item .dd-icon{font-size:13px;width:18px;text-align:center;flex-shrink:0}
+.dd-divider{height:1px;background:#252836;margin:0.3rem 0}
+.dd-all{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 1rem;text-decoration:none;color:#6C63FF;font-size:12px;font-family:"JetBrains Mono",monospace;border-top:1px solid #252836;margin-top:0.25rem}
+.dd-all:hover{background:rgba(108,99,255,0.1)}
+</style>
+<script>
+(function() {
+  var TOOLS = [
+    {icon:'🔒', name:'HeadersFixer', url:'/', desc:'Security headers'},
+    {icon:'⚡', name:'CORSFixer', url:'/cors/', desc:'CORS errors'},
+    {icon:'🔑', name:'OAuthFixer', url:'/oauth/', desc:'OAuth & OIDC'},
+    {icon:'🛡', name:'CSPFixer', url:'/csp/', desc:'Content Security Policy'},
+    {icon:'📦', name:'EdgeFix', url:'/edge/', desc:'CDN & cache headers'},
+    {icon:'🚀', name:'SpeedFixer', url:'/speedfixer/', desc:'PageSpeed fixes'},
+    {icon:'⚡', name:'WebhookFix', url:'/webhook/', desc:'Webhook handlers'},
+    {icon:'🍪', name:'CookieFix', url:'/cookies/', desc:'CHIPS partitioned cookies'},
+    {icon:'⚖️', name:'Header Diff', url:'/diff/', desc:'Compare headers'},
+  ];
+  var MORE = [
+    {icon:'🔍', name:'JWT Debugger', url:'/tools/jwt/'},
+    {icon:'✅', name:'CSP Validator', url:'/tools/csp-validator/'},
+    {icon:'📊', name:'Header Scorer', url:'/tools/header-scorer/'},
+    {icon:'⚠️', name:'Mixed Content Fixer', url:'/tools/mixed-content/'},
+    {icon:'🔗', name:'Redirect Chain', url:'/tools/redirect-chain/'},
+    {icon:'⚡', name:'Cache-Control Generator', url:'/generators/cache-control/'},
+  ];
+
+  function build() {
+    var navRight = document.querySelector('nav .right') || document.querySelector('nav div');
+    if (!navRight) return;
+
+    // Don't add if already added
+    if (document.getElementById('nav-tools-dropdown')) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'nav-dropdown-wrap';
+    wrap.id = 'nav-tools-dropdown';
+
+    var btn = document.createElement('button');
+    btn.className = 'nav-dropdown-btn';
+    btn.innerHTML = 'Tools <span class="dd-arrow">▼</span>';
+    btn.setAttribute('aria-haspopup', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+
+    var menu = document.createElement('div');
+    menu.className = 'nav-dropdown-menu';
+    menu.setAttribute('role', 'menu');
+
+    // Core tools section
+    var s1 = document.createElement('div');
+    s1.className = 'dd-section';
+    s1.textContent = 'Core tools';
+    menu.appendChild(s1);
+
+    TOOLS.forEach(function(t) {
+      var a = document.createElement('a');
+      a.className = 'dd-item';
+      a.href = t.url;
+      a.innerHTML = '<span class="dd-icon">' + t.icon + '</span>' + t.name;
+      a.setAttribute('role', 'menuitem');
+      menu.appendChild(a);
+    });
+
+    var div = document.createElement('div');
+    div.className = 'dd-divider';
+    menu.appendChild(div);
+
+    // More tools section
+    var s2 = document.createElement('div');
+    s2.className = 'dd-section';
+    s2.textContent = 'More tools';
+    menu.appendChild(s2);
+
+    MORE.forEach(function(t) {
+      var a = document.createElement('a');
+      a.className = 'dd-item';
+      a.href = t.url;
+      a.innerHTML = '<span class="dd-icon">' + t.icon + '</span>' + t.name;
+      a.setAttribute('role', 'menuitem');
+      menu.appendChild(a);
+    });
+
+    // View all link
+    var all = document.createElement('a');
+    all.className = 'dd-all';
+    all.href = '/tools/';
+    all.innerHTML = 'View all tools <span>→</span>';
+    menu.appendChild(all);
+
+    wrap.appendChild(btn);
+    wrap.appendChild(menu);
+
+    // Remove existing "Tools" link if present to avoid duplicate
+    var existingLinks = navRight.querySelectorAll('a');
+    existingLinks.forEach(function(a) {
+      if (a.textContent.trim() === 'Tools' && a.href.indexOf('/tools/') !== -1) {
+        a.parentNode.removeChild(a);
+      }
+    });
+    var existingSpans = navRight.querySelectorAll('span, .nav-tool');
+    existingSpans.forEach(function(s) {
+      if (s.textContent.trim() === 'Tools') {
+        s.parentNode.removeChild(s);
+      }
+    });
+
+    navRight.appendChild(wrap);
+
+    // Toggle
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var isOpen = wrap.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function() {
+      wrap.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        wrap.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', build);
+  } else {
+    build();
+  }
+})();
+</script>
+</nav> <main> <article> <nav class="breadcrumb" aria-label="Breadcrumb"> <a href="../../">HttpFixer</a><span class="sep">→</span><a href="../">Blog</a><span class="sep">→</span>SharePoint CSP Fix 2026 </nav> <h1>SharePoint CSP "Refused to Load" Errors — March 2026 Fix</h1>
 <p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p> <p class="lead">Microsoft enforced Content Security Policy for SharePoint Online on March 1, 2026, with a final deadline of June 1, 2026. IT departments are seeing "Refused to load the script" and "Refused to load the stylesheet" console errors. Here’s what changed, plus the exact config to fix it.</p> <h2>What Changed in March 2026</h2> <p>Microsoft began enforcing CSP headers on SharePoint Online pages. Custom web parts, SPFx solutions, and third-party scripts that load from unapproved origins are now being blocked. The error typically looks like:</p> <p class="callout">"Refused to load the script 'https://cdn.example.com/widget.js' because it violates the following Content Security Policy directive: script-src..."</p> <h2>Why You're Seeing These Errors</h2> <p>SharePoint's enforced CSP defines directives such as <code>default-src</code> and <code>script-src</code> that primarily allow Microsoft's own CDNs and tenant-approved sources. Any custom script or stylesheet loaded from an external CDN that is not on your allowlist is blocked by the browser.</p> <h2>The Fix — Add Your Domain to the SharePoint CSP Allowlist</h2> <p>Update your tenant policy so legitimate origins are permitted:</p> <ol> <li>Go to <strong>SharePoint Admin Center</strong> → <strong>Policies</strong> → <strong>Other features</strong> → <strong>Content Security Policy</strong>.</li> <li>Add your external script hosts to the <strong>script-src</strong> allowlist.</li> <li>Add your external stylesheet hosts to the <strong>style-src</strong> allowlist.</li> <li>Save and wait up to 15 minutes for propagation across the service.</li> </ol> <h2>Fix for SPFx Web Parts</h2> <p>SPFx solutions that load external resources may need <code>package-solution.json</code> updated with a matching <code>webApiPermissionRequests</code> entry—or bundle assets locally instead of loading from an external CDN so they satisfy the enforced policy.</p> <h2>Quick Check — Use CSPFixer</h2> <div class="cta-block"> <p>Not sure which domains are being blocked? CSPFixer scans your page's actual resources and generates a working CSP automatically.</p> <a class="cta-btn" href="https://httpfixer.dev/csp/">Scan your page with CSPFixer →</a> </div> <h2>Temporary Workaround (use with caution)</h2> <p>Microsoft provides an optional deferral that pushes strict enforcement to <strong>June 1, 2026</strong>, via a tenant-level setting in the Microsoft 365 admin experience (check Message center and SharePoint admin release notes for the exact toggle name in your wave). Enabling it reduces breakage in the short term but does not replace fixing your allowlists; treat it as breathing room while you add legitimate origins, not as the final solution.</p> <h2>Resources</h2> <ul> <li><a href="https://learn.microsoft.com/en-us/sharepoint/sharepoint-online" target="_blank" rel="noopener">Microsoft Learn — SharePoint Online documentation</a> (official updates; use admin <strong>Message center</strong> for CSP enforcement announcements tied to your tenant)</li> <li><a href="https://owasp.org/www-project-secure-headers/" target="_blank" rel="noopener">OWASP Content Security Policy guide (Secure Headers project)</a></li> <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy" target="_blank" rel="noopener">MDN CSP reference</a></li> </ul> </article> </main> <footer> <span><a href="https://httpfixer.dev" target="_blank" rel="noopener">CSPFixer by HttpFixer</a> · Also try <a href="https://configclarity.dev" target="_blank" rel="noopener">configclarity.dev</a> · <a href="https://domainpreflight.dev" target="_blank" rel="noopener">domainpreflight.dev</a> · <a href="https://packagefix.dev" target="_blank" rel="noopener">packagefix.dev</a></span> <span>Open source · MIT · <a href="https://github.com/metriclogic26/httpfixer" target="_blank" rel="noopener">GitHub →</a> · <a href="https://github.com/metriclogic26/httpfixer/issues/new" target="_blank" rel="noopener">Report issue →</a></span> <p class="footer-disclaimer">Configurations are based on open standards (OWASP, RFC, MDN). Always test in a staging environment before deploying to production. MetricLogic provides these tools for informational purposes only and accepts no liability for misconfiguration, data loss, or security incidents.</p> <p class="footer-disclaimer">© 2026 MetricLogic. MIT Licensed — <a href="https://github.com/metriclogic26/httpfixer" target="_blank" rel="noopener">view source</a>. Config syntax (Nginx, Apache, Vercel) and open standards (OWASP, RFC, schema.org) are not copyrightable. Generated configs are yours to use freely.</p> </footer>
 </body>
 </html>

@@ -6,6 +6,155 @@
 </head>
 <body>
 <nav> <a href="/" class="brand">HttpFixer</a> <div class="right"><a href="/" class="nav-tool">Headers</a> <a href="/cors/" class="nav-tool">CORS</a> <a href="/oauth/" class="nav-tool">OAuth</a> <a href="/csp/" class="nav-tool">CSP</a> <a href="/edge/" class="nav-tool">Edge</a> <a href="/speedfixer/" class="nav-tool">Speed</a> <a href="/webhook/" class="nav-tool">Webhook</a> <a href="/cookies/" class="nav-tool">Cookies</a> <a href="/diff/" class="nav-tool">Diff</a></div>
+<!-- Nav Tools Dropdown -->
+<style>
+.nav-dropdown-wrap{position:relative;display:inline-flex;align-items:center}
+.nav-dropdown-btn{background:none;border:none;color:var(--text,#E2E4F0);font-family:"JetBrains Mono",monospace;font-size:13px;opacity:0.6;cursor:pointer;display:flex;align-items:center;gap:0.25rem;padding:0;text-decoration:none}
+.nav-dropdown-btn:hover{opacity:1;color:var(--purple,#6C63FF)}
+.nav-dropdown-btn .dd-arrow{font-size:9px;transition:transform 0.15s}
+.nav-dropdown-wrap.open .dd-arrow{transform:rotate(180deg)}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 0.75rem);right:0;background:#12151F;border:1px solid #252836;border-radius:8px;min-width:220px;padding:0.4rem 0;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.4)}
+.nav-dropdown-wrap.open .nav-dropdown-menu{display:block}
+.dd-section{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;opacity:0.35;padding:0.5rem 1rem 0.25rem;font-family:"JetBrains Mono",monospace}
+.dd-item{display:flex;align-items:center;gap:0.5rem;padding:0.45rem 1rem;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:"JetBrains Mono",monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s}
+.dd-item:hover{background:rgba(108,99,255,0.1);opacity:1;color:#6C63FF}
+.dd-item .dd-icon{font-size:13px;width:18px;text-align:center;flex-shrink:0}
+.dd-divider{height:1px;background:#252836;margin:0.3rem 0}
+.dd-all{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 1rem;text-decoration:none;color:#6C63FF;font-size:12px;font-family:"JetBrains Mono",monospace;border-top:1px solid #252836;margin-top:0.25rem}
+.dd-all:hover{background:rgba(108,99,255,0.1)}
+</style>
+<script>
+(function() {
+  var TOOLS = [
+    {icon:'🔒', name:'HeadersFixer', url:'/', desc:'Security headers'},
+    {icon:'⚡', name:'CORSFixer', url:'/cors/', desc:'CORS errors'},
+    {icon:'🔑', name:'OAuthFixer', url:'/oauth/', desc:'OAuth & OIDC'},
+    {icon:'🛡', name:'CSPFixer', url:'/csp/', desc:'Content Security Policy'},
+    {icon:'📦', name:'EdgeFix', url:'/edge/', desc:'CDN & cache headers'},
+    {icon:'🚀', name:'SpeedFixer', url:'/speedfixer/', desc:'PageSpeed fixes'},
+    {icon:'⚡', name:'WebhookFix', url:'/webhook/', desc:'Webhook handlers'},
+    {icon:'🍪', name:'CookieFix', url:'/cookies/', desc:'CHIPS partitioned cookies'},
+    {icon:'⚖️', name:'Header Diff', url:'/diff/', desc:'Compare headers'},
+  ];
+  var MORE = [
+    {icon:'🔍', name:'JWT Debugger', url:'/tools/jwt/'},
+    {icon:'✅', name:'CSP Validator', url:'/tools/csp-validator/'},
+    {icon:'📊', name:'Header Scorer', url:'/tools/header-scorer/'},
+    {icon:'⚠️', name:'Mixed Content Fixer', url:'/tools/mixed-content/'},
+    {icon:'🔗', name:'Redirect Chain', url:'/tools/redirect-chain/'},
+    {icon:'⚡', name:'Cache-Control Generator', url:'/generators/cache-control/'},
+  ];
+
+  function build() {
+    var navRight = document.querySelector('nav .right') || document.querySelector('nav div');
+    if (!navRight) return;
+
+    // Don't add if already added
+    if (document.getElementById('nav-tools-dropdown')) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'nav-dropdown-wrap';
+    wrap.id = 'nav-tools-dropdown';
+
+    var btn = document.createElement('button');
+    btn.className = 'nav-dropdown-btn';
+    btn.innerHTML = 'Tools <span class="dd-arrow">▼</span>';
+    btn.setAttribute('aria-haspopup', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+
+    var menu = document.createElement('div');
+    menu.className = 'nav-dropdown-menu';
+    menu.setAttribute('role', 'menu');
+
+    // Core tools section
+    var s1 = document.createElement('div');
+    s1.className = 'dd-section';
+    s1.textContent = 'Core tools';
+    menu.appendChild(s1);
+
+    TOOLS.forEach(function(t) {
+      var a = document.createElement('a');
+      a.className = 'dd-item';
+      a.href = t.url;
+      a.innerHTML = '<span class="dd-icon">' + t.icon + '</span>' + t.name;
+      a.setAttribute('role', 'menuitem');
+      menu.appendChild(a);
+    });
+
+    var div = document.createElement('div');
+    div.className = 'dd-divider';
+    menu.appendChild(div);
+
+    // More tools section
+    var s2 = document.createElement('div');
+    s2.className = 'dd-section';
+    s2.textContent = 'More tools';
+    menu.appendChild(s2);
+
+    MORE.forEach(function(t) {
+      var a = document.createElement('a');
+      a.className = 'dd-item';
+      a.href = t.url;
+      a.innerHTML = '<span class="dd-icon">' + t.icon + '</span>' + t.name;
+      a.setAttribute('role', 'menuitem');
+      menu.appendChild(a);
+    });
+
+    // View all link
+    var all = document.createElement('a');
+    all.className = 'dd-all';
+    all.href = '/tools/';
+    all.innerHTML = 'View all tools <span>→</span>';
+    menu.appendChild(all);
+
+    wrap.appendChild(btn);
+    wrap.appendChild(menu);
+
+    // Remove existing "Tools" link if present to avoid duplicate
+    var existingLinks = navRight.querySelectorAll('a');
+    existingLinks.forEach(function(a) {
+      if (a.textContent.trim() === 'Tools' && a.href.indexOf('/tools/') !== -1) {
+        a.parentNode.removeChild(a);
+      }
+    });
+    var existingSpans = navRight.querySelectorAll('span, .nav-tool');
+    existingSpans.forEach(function(s) {
+      if (s.textContent.trim() === 'Tools') {
+        s.parentNode.removeChild(s);
+      }
+    });
+
+    navRight.appendChild(wrap);
+
+    // Toggle
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var isOpen = wrap.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function() {
+      wrap.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        wrap.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', build);
+  } else {
+    build();
+  }
+})();
+</script>
 </nav>
 <main> <div style="font-size:12px;opacity:0.5;margin-bottom:1.5rem"><a href="/" style="color:var(--purple);text-decoration:none">HttpFixer</a> &rarr; Errors</div> <h1>HTTP Error Messages</h1> <p class="lead">Every error message decoded — what it means, what broke, and the exact fix. No generic advice. Stack-specific config every time.</p> <h2><span class="tag tag-cors">CORS</span> Cross-Origin Errors</h2> <div class="grid"> <a href="/errors/no-access-control-allow-origin/" class="card"> <div class="card-title">No 'Access-Control-Allow-Origin' header</div> <div class="card-desc">The most common CORS error. Server isn't returning ACAO header on responses or OPTIONS preflight.</div> </a> <a href="/errors/blocked-by-cors-policy/" class="card"> <div class="card-title">Blocked by CORS policy</div> <div class="card-desc">Preflight returned the wrong status or headers don't match. Exact fix for Nginx, Express, Cloudflare.</div> </a> <a href="/errors/cors-error-messages/" class="card"> <div class="card-title">All CORS error messages decoded</div> <div class="card-desc">Every CORS console error from Chrome, Firefox, and Safari — decoded with exact server-side fix.</div> </a> <a href="/errors/preflight-failed/" class="card"> <div class="card-title">Preflight request failed</div> <div class="card-desc">OPTIONS request returned non-2xx or missing CORS headers. Fix the OPTIONS handler.</div> </a> <a href="/errors/request-header-not-allowed/" class="card"> <div class="card-title">Request header field not allowed</div> <div class="card-desc">Authorization or Content-Type missing from Access-Control-Allow-Headers in preflight response.</div> </a> </div> <h2><span class="tag tag-csp">CSP</span> Content Security Policy Violations</h2> <div class="grid"> <a href="/errors/refused-to-load-script-csp/" class="card"> <div class="card-title">Refused to load the script</div> <div class="card-desc">Script blocked by CSP. Source not in script-src allowlist. Get the exact policy update.</div> </a> <a href="/errors/csp-refused-to-connect/" class="card"> <div class="card-title">Refused to connect — CSP violation</div> <div class="card-desc">fetch() or XHR blocked by connect-src. API domain missing from CSP connect-src directive.</div> </a> <a href="/errors/csp-directive-violated/" class="card"> <div class="card-title">CSP directive violated</div> <div class="card-desc">Generic CSP violation message. How to read it, find what's blocked, and add the right source.</div> </a> <a href="/errors/csp-refused-to-load-script/" class="card"> <div class="card-title">Refused to load script (unsafe-inline)</div> <div class="card-desc">Inline script blocked. Move to nonces or external files. CSP generator builds the policy.</div> </a> </div> <h2><span class="tag tag-http">OAuth</span> Auth Errors</h2> <div class="grid"> <a href="/errors/invalid-grant-error/" class="card"> <div class="card-title">invalid_grant</div> <div class="card-desc">Authorization code expired, already used, or redirect_uri mismatch. Provider-specific fixes.</div> </a> <a href="/errors/redirect-uri-mismatch/" class="card"> <div class="card-title">redirect_uri mismatch</div> <div class="card-desc">Registered URI doesn't match what the app sends. Trailing slash, port, or scheme difference.</div> </a> <a href="/errors/pkce-required/" class="card"> <div class="card-title">PKCE required</div> <div class="card-desc">Provider requires PKCE for public clients. Auth0, Okta, Cognito config to enable it.</div> </a> </div> <h2><span class="tag tag-http">HTTP</span> Status Code Errors</h2> <div class="grid"> <a href="/blog/errors/401-vs-403/" class="card"> <div class="card-title">401 vs 403 — what's the difference</div> <div class="card-desc">401 = not authenticated. 403 = not authorized. Using the wrong one breaks OAuth clients.</div> </a> <a href="/blog/errors/502-bad-gateway/" class="card"> <div class="card-title">502 Bad Gateway</div> <div class="card-desc">Upstream server returned invalid response. Check if app is running, check Nginx upstream config.</div> </a> <a href="/errors/err-too-many-redirects/" class="card"> <div class="card-title">ERR_TOO_MANY_REDIRECTS</div> <div class="card-desc">Redirect loop. HTTP&rarr;HTTPS redirect conflicting with reverse proxy or CDN settings.</div> </a> <a href="/errors/mixed-content-blocked/" class="card"> <div class="card-title">Mixed Content Blocked</div> <div class="card-desc">HTTPS page loading HTTP resources. upgrade-insecure-requests CSP directive or fix asset URLs.</div> </a> <a href="/errors/err-blocked-by-response/" class="card"> <div class="card-title">ERR_BLOCKED_BY_RESPONSE</div> <div class="card-desc">Cross-origin resource blocked by CORP or other security policy. Exact header to add.</div> </a> </div> <div style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)"> <p style="font-size:13px;opacity:0.6">Can't find your error? <a href="/cors/" style="color:var(--purple)">Run CORSFixer</a> &middot; <a href="/" style="color:var(--purple)">Scan headers</a> &middot; <a href="/oauth/" style="color:var(--purple)">Diagnose OAuth</a></p> </div>
 </main>

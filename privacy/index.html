@@ -6,6 +6,155 @@
 </head>
 <body>
 <nav> <a href="/" class="brand">HttpFixer <span>/</span> Privacy</a> <div class="right"><a href="/" class="nav-tool">Headers</a> <a href="/cors/" class="nav-tool">CORS</a> <a href="/oauth/" class="nav-tool">OAuth</a> <a href="/csp/" class="nav-tool">CSP</a> <a href="/edge/" class="nav-tool">Edge</a> <a href="/speedfixer/" class="nav-tool">Speed</a> <a href="/webhook/" class="nav-tool">Webhook</a> <a href="/cookies/" class="nav-tool">Cookies</a> <a href="/diff/" class="nav-tool">Diff</a></div>
+<!-- Nav Tools Dropdown -->
+<style>
+.nav-dropdown-wrap{position:relative;display:inline-flex;align-items:center}
+.nav-dropdown-btn{background:none;border:none;color:var(--text,#E2E4F0);font-family:"JetBrains Mono",monospace;font-size:13px;opacity:0.6;cursor:pointer;display:flex;align-items:center;gap:0.25rem;padding:0;text-decoration:none}
+.nav-dropdown-btn:hover{opacity:1;color:var(--purple,#6C63FF)}
+.nav-dropdown-btn .dd-arrow{font-size:9px;transition:transform 0.15s}
+.nav-dropdown-wrap.open .dd-arrow{transform:rotate(180deg)}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 0.75rem);right:0;background:#12151F;border:1px solid #252836;border-radius:8px;min-width:220px;padding:0.4rem 0;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.4)}
+.nav-dropdown-wrap.open .nav-dropdown-menu{display:block}
+.dd-section{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;opacity:0.35;padding:0.5rem 1rem 0.25rem;font-family:"JetBrains Mono",monospace}
+.dd-item{display:flex;align-items:center;gap:0.5rem;padding:0.45rem 1rem;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:"JetBrains Mono",monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s}
+.dd-item:hover{background:rgba(108,99,255,0.1);opacity:1;color:#6C63FF}
+.dd-item .dd-icon{font-size:13px;width:18px;text-align:center;flex-shrink:0}
+.dd-divider{height:1px;background:#252836;margin:0.3rem 0}
+.dd-all{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 1rem;text-decoration:none;color:#6C63FF;font-size:12px;font-family:"JetBrains Mono",monospace;border-top:1px solid #252836;margin-top:0.25rem}
+.dd-all:hover{background:rgba(108,99,255,0.1)}
+</style>
+<script>
+(function() {
+  var TOOLS = [
+    {icon:'🔒', name:'HeadersFixer', url:'/', desc:'Security headers'},
+    {icon:'⚡', name:'CORSFixer', url:'/cors/', desc:'CORS errors'},
+    {icon:'🔑', name:'OAuthFixer', url:'/oauth/', desc:'OAuth & OIDC'},
+    {icon:'🛡', name:'CSPFixer', url:'/csp/', desc:'Content Security Policy'},
+    {icon:'📦', name:'EdgeFix', url:'/edge/', desc:'CDN & cache headers'},
+    {icon:'🚀', name:'SpeedFixer', url:'/speedfixer/', desc:'PageSpeed fixes'},
+    {icon:'⚡', name:'WebhookFix', url:'/webhook/', desc:'Webhook handlers'},
+    {icon:'🍪', name:'CookieFix', url:'/cookies/', desc:'CHIPS partitioned cookies'},
+    {icon:'⚖️', name:'Header Diff', url:'/diff/', desc:'Compare headers'},
+  ];
+  var MORE = [
+    {icon:'🔍', name:'JWT Debugger', url:'/tools/jwt/'},
+    {icon:'✅', name:'CSP Validator', url:'/tools/csp-validator/'},
+    {icon:'📊', name:'Header Scorer', url:'/tools/header-scorer/'},
+    {icon:'⚠️', name:'Mixed Content Fixer', url:'/tools/mixed-content/'},
+    {icon:'🔗', name:'Redirect Chain', url:'/tools/redirect-chain/'},
+    {icon:'⚡', name:'Cache-Control Generator', url:'/generators/cache-control/'},
+  ];
+
+  function build() {
+    var navRight = document.querySelector('nav .right') || document.querySelector('nav div');
+    if (!navRight) return;
+
+    // Don't add if already added
+    if (document.getElementById('nav-tools-dropdown')) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'nav-dropdown-wrap';
+    wrap.id = 'nav-tools-dropdown';
+
+    var btn = document.createElement('button');
+    btn.className = 'nav-dropdown-btn';
+    btn.innerHTML = 'Tools <span class="dd-arrow">▼</span>';
+    btn.setAttribute('aria-haspopup', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+
+    var menu = document.createElement('div');
+    menu.className = 'nav-dropdown-menu';
+    menu.setAttribute('role', 'menu');
+
+    // Core tools section
+    var s1 = document.createElement('div');
+    s1.className = 'dd-section';
+    s1.textContent = 'Core tools';
+    menu.appendChild(s1);
+
+    TOOLS.forEach(function(t) {
+      var a = document.createElement('a');
+      a.className = 'dd-item';
+      a.href = t.url;
+      a.innerHTML = '<span class="dd-icon">' + t.icon + '</span>' + t.name;
+      a.setAttribute('role', 'menuitem');
+      menu.appendChild(a);
+    });
+
+    var div = document.createElement('div');
+    div.className = 'dd-divider';
+    menu.appendChild(div);
+
+    // More tools section
+    var s2 = document.createElement('div');
+    s2.className = 'dd-section';
+    s2.textContent = 'More tools';
+    menu.appendChild(s2);
+
+    MORE.forEach(function(t) {
+      var a = document.createElement('a');
+      a.className = 'dd-item';
+      a.href = t.url;
+      a.innerHTML = '<span class="dd-icon">' + t.icon + '</span>' + t.name;
+      a.setAttribute('role', 'menuitem');
+      menu.appendChild(a);
+    });
+
+    // View all link
+    var all = document.createElement('a');
+    all.className = 'dd-all';
+    all.href = '/tools/';
+    all.innerHTML = 'View all tools <span>→</span>';
+    menu.appendChild(all);
+
+    wrap.appendChild(btn);
+    wrap.appendChild(menu);
+
+    // Remove existing "Tools" link if present to avoid duplicate
+    var existingLinks = navRight.querySelectorAll('a');
+    existingLinks.forEach(function(a) {
+      if (a.textContent.trim() === 'Tools' && a.href.indexOf('/tools/') !== -1) {
+        a.parentNode.removeChild(a);
+      }
+    });
+    var existingSpans = navRight.querySelectorAll('span, .nav-tool');
+    existingSpans.forEach(function(s) {
+      if (s.textContent.trim() === 'Tools') {
+        s.parentNode.removeChild(s);
+      }
+    });
+
+    navRight.appendChild(wrap);
+
+    // Toggle
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var isOpen = wrap.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function() {
+      wrap.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        wrap.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', build);
+  } else {
+    build();
+  }
+})();
+</script>
 </nav>
 <main> <div class="breadcrumb"><a href="/">HttpFixer</a> → Privacy & Terms</div> <h1>Privacy Policy & Terms of Use</h1> <p class="updated">Last updated: April 3, 2026 · Applies to httpfixer.dev</p> <div class="highlight"> <strong>Short version:</strong> HttpFixer collects no personal data, runs entirely in your browser, and has no backend server. Your URLs, configs, and credentials never leave your device. </div> <h2>1. What We Collect</h2> <p><strong>Nothing.</strong> HttpFixer does not collect, store, or transmit any personal information. Specifically:</p> <ul> <li>No account registration or login required</li> <li>No cookies set by HttpFixer (third-party fonts may set cookies)</li> <li>No analytics tracking on individual users</li> <li>No server logs containing your IP address or browsing behavior</li> <li>No data submitted to any HttpFixer backend — because there is no backend</li> </ul> <h2>2. How the Tools Work</h2> <p>All HttpFixer tools run entirely in your browser using client-side JavaScript:</p> <ul> <li><strong>HeadersFixer, CORSFixer, CSPFixer, EdgeFix, SpeedFixer</strong> — fetch data directly from the URL you provide, from your browser. The response is processed locally and never sent to our servers.</li> <li><strong>OAuthFixer</strong> — processes your OAuth error codes locally. No OAuth tokens or credentials are transmitted to HttpFixer.</li> <li><strong>Generator pages</strong> — all config generation happens in-browser JavaScript. No data is sent anywhere.</li> </ul> <p>The only network requests made are:</p> <ul> <li>From your browser to the URL you provide (to fetch headers)</li> <li>From our Cloudflare Workers proxy — stateless, discards requests immediately, logs nothing</li> <li>To Google PageSpeed Insights API (SpeedFixer only) — subject to Google's privacy policy</li> </ul> <h2>3. Third-Party Services</h2> <p>HttpFixer uses the following third-party services:</p> <ul> <li><strong>Vercel</strong> — static site hosting. Vercel may log request metadata (IP address, user agent) per their privacy policy at vercel.com/legal/privacy-policy</li> <li><strong>Cloudflare</strong> — DNS, CDN, and Workers proxy. Subject to Cloudflare's privacy policy</li> <li><strong>Google Fonts</strong> — JetBrains Mono font. Google may log font requests per their privacy policy</li> <li><strong>Google PageSpeed Insights API</strong> — used by SpeedFixer to fetch audit data. Subject to Google's API terms</li> </ul> <p>HttpFixer has no affiliation with these services beyond standard usage. We do not share user data with them — we simply use their infrastructure.</p> <h2>4. Affiliate Links</h2> <p>Some tool result pages include affiliate links to hosting providers (Cloudflare, Hetzner, DigitalOcean, Vercel, WP Rocket). If you click these links and make a purchase, HttpFixer may earn a commission at no cost to you. Affiliate links are clearly associated with the fix action they relate to and are never placed deceptively.</p> <h2>5. Open Source</h2> <p>HttpFixer is MIT licensed. All tool code is public at <a href="https://github.com/metriclogic26/httpfixer" style="color:var(--purple)">github.com/metriclogic26/httpfixer</a>. You can verify exactly what the tools do by reading the source code.</p> <h2>6. Terms of Use</h2> <p>By using HttpFixer, you agree to the following:</p> <ul> <li>You will only scan URLs and configurations that you own or have explicit permission to test</li> <li>You will not use HttpFixer to scan systems without authorization</li> <li>HttpFixer provides configurations for informational purposes only — always test in a staging environment before deploying to production</li> <li>HttpFixer accepts no liability for misconfiguration, data loss, security incidents, or downtime resulting from configurations generated by these tools</li> </ul> <h2>7. Disclaimer</h2> <p>Configurations generated by HttpFixer are based on open standards (OWASP, RFC, MDN, schema.org). They are provided as informational starting points, not guarantees. HttpFixer does not claim that its output will make your site GDPR compliant, PCI DSS certified, or free from security vulnerabilities. Always verify manually and consult a security professional for production systems handling sensitive data.</p> <h2>8. Changes to This Policy</h2> <p>If this policy changes materially, the "Last updated" date above will be updated. Since we collect no data, most changes will be clarifications rather than substantive policy shifts.</p> <h2>9. Contact</h2> <p>Questions about this policy: open an issue at <a href="https://github.com/metriclogic26/httpfixer/issues" style="color:var(--purple)">github.com/metriclogic26/httpfixer/issues</a>. We do not have a support email — GitHub issues are the best way to reach us.</p>
 </main>

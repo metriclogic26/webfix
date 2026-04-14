@@ -7,6 +7,155 @@
 </head>
 <body>
 <nav> <a href="/" class="brand">HttpFixer <span>/</span> Blog</a> <div class="right"><a href="/" class="nav-tool">Headers</a> <a href="/cors/" class="nav-tool">CORS</a> <a href="/oauth/" class="nav-tool">OAuth</a> <a href="/csp/" class="nav-tool">CSP</a> <a href="/edge/" class="nav-tool">Edge</a> <a href="/speedfixer/" class="nav-tool">Speed</a> <a href="/webhook/" class="nav-tool">Webhook</a> <a href="/cookies/" class="nav-tool">Cookies</a> <a href="/diff/" class="nav-tool">Diff</a></div>
+<!-- Nav Tools Dropdown -->
+<style>
+.nav-dropdown-wrap{position:relative;display:inline-flex;align-items:center}
+.nav-dropdown-btn{background:none;border:none;color:var(--text,#E2E4F0);font-family:"JetBrains Mono",monospace;font-size:13px;opacity:0.6;cursor:pointer;display:flex;align-items:center;gap:0.25rem;padding:0;text-decoration:none}
+.nav-dropdown-btn:hover{opacity:1;color:var(--purple,#6C63FF)}
+.nav-dropdown-btn .dd-arrow{font-size:9px;transition:transform 0.15s}
+.nav-dropdown-wrap.open .dd-arrow{transform:rotate(180deg)}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 0.75rem);right:0;background:#12151F;border:1px solid #252836;border-radius:8px;min-width:220px;padding:0.4rem 0;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.4)}
+.nav-dropdown-wrap.open .nav-dropdown-menu{display:block}
+.dd-section{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;opacity:0.35;padding:0.5rem 1rem 0.25rem;font-family:"JetBrains Mono",monospace}
+.dd-item{display:flex;align-items:center;gap:0.5rem;padding:0.45rem 1rem;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:"JetBrains Mono",monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s}
+.dd-item:hover{background:rgba(108,99,255,0.1);opacity:1;color:#6C63FF}
+.dd-item .dd-icon{font-size:13px;width:18px;text-align:center;flex-shrink:0}
+.dd-divider{height:1px;background:#252836;margin:0.3rem 0}
+.dd-all{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 1rem;text-decoration:none;color:#6C63FF;font-size:12px;font-family:"JetBrains Mono",monospace;border-top:1px solid #252836;margin-top:0.25rem}
+.dd-all:hover{background:rgba(108,99,255,0.1)}
+</style>
+<script>
+(function() {
+  var TOOLS = [
+    {icon:'🔒', name:'HeadersFixer', url:'/', desc:'Security headers'},
+    {icon:'⚡', name:'CORSFixer', url:'/cors/', desc:'CORS errors'},
+    {icon:'🔑', name:'OAuthFixer', url:'/oauth/', desc:'OAuth & OIDC'},
+    {icon:'🛡', name:'CSPFixer', url:'/csp/', desc:'Content Security Policy'},
+    {icon:'📦', name:'EdgeFix', url:'/edge/', desc:'CDN & cache headers'},
+    {icon:'🚀', name:'SpeedFixer', url:'/speedfixer/', desc:'PageSpeed fixes'},
+    {icon:'⚡', name:'WebhookFix', url:'/webhook/', desc:'Webhook handlers'},
+    {icon:'🍪', name:'CookieFix', url:'/cookies/', desc:'CHIPS partitioned cookies'},
+    {icon:'⚖️', name:'Header Diff', url:'/diff/', desc:'Compare headers'},
+  ];
+  var MORE = [
+    {icon:'🔍', name:'JWT Debugger', url:'/tools/jwt/'},
+    {icon:'✅', name:'CSP Validator', url:'/tools/csp-validator/'},
+    {icon:'📊', name:'Header Scorer', url:'/tools/header-scorer/'},
+    {icon:'⚠️', name:'Mixed Content Fixer', url:'/tools/mixed-content/'},
+    {icon:'🔗', name:'Redirect Chain', url:'/tools/redirect-chain/'},
+    {icon:'⚡', name:'Cache-Control Generator', url:'/generators/cache-control/'},
+  ];
+
+  function build() {
+    var navRight = document.querySelector('nav .right') || document.querySelector('nav div');
+    if (!navRight) return;
+
+    // Don't add if already added
+    if (document.getElementById('nav-tools-dropdown')) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'nav-dropdown-wrap';
+    wrap.id = 'nav-tools-dropdown';
+
+    var btn = document.createElement('button');
+    btn.className = 'nav-dropdown-btn';
+    btn.innerHTML = 'Tools <span class="dd-arrow">▼</span>';
+    btn.setAttribute('aria-haspopup', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+
+    var menu = document.createElement('div');
+    menu.className = 'nav-dropdown-menu';
+    menu.setAttribute('role', 'menu');
+
+    // Core tools section
+    var s1 = document.createElement('div');
+    s1.className = 'dd-section';
+    s1.textContent = 'Core tools';
+    menu.appendChild(s1);
+
+    TOOLS.forEach(function(t) {
+      var a = document.createElement('a');
+      a.className = 'dd-item';
+      a.href = t.url;
+      a.innerHTML = '<span class="dd-icon">' + t.icon + '</span>' + t.name;
+      a.setAttribute('role', 'menuitem');
+      menu.appendChild(a);
+    });
+
+    var div = document.createElement('div');
+    div.className = 'dd-divider';
+    menu.appendChild(div);
+
+    // More tools section
+    var s2 = document.createElement('div');
+    s2.className = 'dd-section';
+    s2.textContent = 'More tools';
+    menu.appendChild(s2);
+
+    MORE.forEach(function(t) {
+      var a = document.createElement('a');
+      a.className = 'dd-item';
+      a.href = t.url;
+      a.innerHTML = '<span class="dd-icon">' + t.icon + '</span>' + t.name;
+      a.setAttribute('role', 'menuitem');
+      menu.appendChild(a);
+    });
+
+    // View all link
+    var all = document.createElement('a');
+    all.className = 'dd-all';
+    all.href = '/tools/';
+    all.innerHTML = 'View all tools <span>→</span>';
+    menu.appendChild(all);
+
+    wrap.appendChild(btn);
+    wrap.appendChild(menu);
+
+    // Remove existing "Tools" link if present to avoid duplicate
+    var existingLinks = navRight.querySelectorAll('a');
+    existingLinks.forEach(function(a) {
+      if (a.textContent.trim() === 'Tools' && a.href.indexOf('/tools/') !== -1) {
+        a.parentNode.removeChild(a);
+      }
+    });
+    var existingSpans = navRight.querySelectorAll('span, .nav-tool');
+    existingSpans.forEach(function(s) {
+      if (s.textContent.trim() === 'Tools') {
+        s.parentNode.removeChild(s);
+      }
+    });
+
+    navRight.appendChild(wrap);
+
+    // Toggle
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var isOpen = wrap.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function() {
+      wrap.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        wrap.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', build);
+  } else {
+    build();
+  }
+})();
+</script>
 </nav>
 <main> <div class="bc"><a href="/">HttpFixer</a> &rarr; <a href="/blog/">Blog</a> &rarr; Security Headers Guides</div> <h1>Security Headers Guides</h1>
 <p style="font-size:11px;opacity:0.4;margin-bottom:0.75rem;margin-top:-0.5rem">Updated April 2026</p> <p class="lead">Add, fix, and understand HTTP security headers — HSTS, CSP, X-Frame-Options, Permissions-Policy, COOP, COEP, Clear-Site-Data, and more.</p> <span class="count">26 articles</span> <ul> <li> <a href="/blog/headers/security-headers-checklist/"> <span class="arr">&rarr;</span> HTTP Security Headers Checklist </a> </li> <li> <a href="/blog/headers/fix-x-frame-options/"> <span class="arr">&rarr;</span> Fix Missing X-Frame-Options </a> </li> <li> <a href="/blog/headers/fix-hsts/"> <span class="arr">&rarr;</span> HSTS Not Working — Fix It </a> </li> <li> <a href="/blog/headers/nginx-hsts-max-age/"> <span class="arr">&rarr;</span> Nginx HSTS max-age Best Practices </a> </li> <li> <a href="/blog/headers/coop-coep-sharedarraybuffer/"> <span class="arr">&rarr;</span> COOP and COEP for SharedArrayBuffer </a> </li> <li> <a href="/blog/headers/permissions-policy-guide/"> <span class="arr">&rarr;</span> Permissions-Policy Guide </a> </li> <li> <a href="/blog/headers/clear-site-data/"> <span class="arr">&rarr;</span> Clear-Site-Data — Secure Logout </a> </li> <li> <a href="/blog/headers/secure-httponly-cookies/"> <span class="arr">&rarr;</span> Secure + HttpOnly Cookies </a> </li> <li> <a href="/blog/headers/samesite-cookies-iframes/"> <span class="arr">&rarr;</span> SameSite Cookies in Iframes </a> </li> <li> <a href="/blog/headers/chips-partitioned-cookies/"> <span class="arr">&rarr;</span> CHIPS — Partitioned Cookies 2026 </a> </li> <li> <a href="/blog/headers/301-vs-308-redirect/"> <span class="arr">&rarr;</span> 301 vs 308 Redirect Guide </a> </li> <li> <a href="/blog/headers/cloudflare-page-rules-vs-transform-rules/"> <span class="arr">&rarr;</span> Cloudflare Page Rules vs Transform Rules </a> </li> <li> <a href="/blog/headers/security-headers-saas/"> <span class="arr">&rarr;</span> Security Headers for SaaS Apps </a> </li> <li> <a href="/blog/headers/security-headers-github-pages/"> <span class="arr">&rarr;</span> Security Headers for GitHub Pages </a> </li> <li> <a href="/blog/headers/websocket-security-headers/"> <span class="arr">&rarr;</span> WebSockets Security Headers </a> </li> <li> <a href="/blog/headers/server-timing/"> <span class="arr">&rarr;</span> Server-Timing Headers </a> </li> <li> <a href="/blog/headers/timing-allow-origin/"> <span class="arr">&rarr;</span> Timing-Allow-Origin </a> </li> <li> <a href="/blog/headers/alt-svc-http3/"> <span class="arr">&rarr;</span> Alt-Svc and HTTP/3 </a> </li> <li> <a href="/blog/headers/vary-header-caching/"> <span class="arr">&rarr;</span> Vary Header — Fix Caching Bugs </a> </li> <li> <a href="/blog/headers/webhook-signature-security/"> <span class="arr">&rarr;</span> Webhook Signature Security </a> </li> <li> <a href="/blog/headers/expect-ct-deprecated/"> <span class="arr">&rarr;</span> Expect-CT Deprecated </a> </li> <li> <a href="/blog/headers/upgrade-insecure-requests/"> <span class="arr">&rarr;</span> upgrade-insecure-requests </a> </li> <li> <a href="/blog/headers/82-percent-expose-server-header/"> <span class="arr">&rarr;</span> 82% of Sites Expose Server Version </a> </li> <li> <a href="/blog/headers/csp-adoption-only-27-percent/"> <span class="arr">&rarr;</span> Only 27% of Sites Have CSP </a> </li> <li> <a href="/blog/headers/most-commonly-missing-security-header/"> <span class="arr">&rarr;</span> Most Commonly Missing Security Header </a> </li> <li> <a href="/blog/headers/headless-cms-security-headers/"> <span class="arr">&rarr;</span> Headless CMS Security Headers </a> </li> </ul> <a href="/" class="tool-cta">Scan your live site &rarr; HttpFixer Tools</a>

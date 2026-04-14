@@ -64,6 +64,155 @@ footer a{color:var(--text);text-decoration:none;opacity:0.6}
 <nav>
   <a href="/" class="brand">HttpFixer <span>/</span> Fix</a>
   <div class="right"><a href="/" class="nav-tool">Headers</a> <a href="/cors/" class="nav-tool">CORS</a> <a href="/oauth/" class="nav-tool">OAuth</a> <a href="/csp/" class="nav-tool">CSP</a> <a href="/edge/" class="nav-tool">Edge</a> <a href="/speedfixer/" class="nav-tool">Speed</a> <a href="/webhook/" class="nav-tool">Webhook</a> <a href="/cookies/" class="nav-tool">Cookies</a> <a href="/diff/" class="nav-tool">Diff</a></div>
+<!-- Nav Tools Dropdown -->
+<style>
+.nav-dropdown-wrap{position:relative;display:inline-flex;align-items:center}
+.nav-dropdown-btn{background:none;border:none;color:var(--text,#E2E4F0);font-family:"JetBrains Mono",monospace;font-size:13px;opacity:0.6;cursor:pointer;display:flex;align-items:center;gap:0.25rem;padding:0;text-decoration:none}
+.nav-dropdown-btn:hover{opacity:1;color:var(--purple,#6C63FF)}
+.nav-dropdown-btn .dd-arrow{font-size:9px;transition:transform 0.15s}
+.nav-dropdown-wrap.open .dd-arrow{transform:rotate(180deg)}
+.nav-dropdown-menu{display:none;position:absolute;top:calc(100% + 0.75rem);right:0;background:#12151F;border:1px solid #252836;border-radius:8px;min-width:220px;padding:0.4rem 0;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.4)}
+.nav-dropdown-wrap.open .nav-dropdown-menu{display:block}
+.dd-section{font-size:10px;text-transform:uppercase;letter-spacing:0.07em;opacity:0.35;padding:0.5rem 1rem 0.25rem;font-family:"JetBrains Mono",monospace}
+.dd-item{display:flex;align-items:center;gap:0.5rem;padding:0.45rem 1rem;text-decoration:none;color:#E2E4F0;font-size:12px;font-family:"JetBrains Mono",monospace;opacity:0.8;transition:background 0.1s,opacity 0.1s}
+.dd-item:hover{background:rgba(108,99,255,0.1);opacity:1;color:#6C63FF}
+.dd-item .dd-icon{font-size:13px;width:18px;text-align:center;flex-shrink:0}
+.dd-divider{height:1px;background:#252836;margin:0.3rem 0}
+.dd-all{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 1rem;text-decoration:none;color:#6C63FF;font-size:12px;font-family:"JetBrains Mono",monospace;border-top:1px solid #252836;margin-top:0.25rem}
+.dd-all:hover{background:rgba(108,99,255,0.1)}
+</style>
+<script>
+(function() {
+  var TOOLS = [
+    {icon:'🔒', name:'HeadersFixer', url:'/', desc:'Security headers'},
+    {icon:'⚡', name:'CORSFixer', url:'/cors/', desc:'CORS errors'},
+    {icon:'🔑', name:'OAuthFixer', url:'/oauth/', desc:'OAuth & OIDC'},
+    {icon:'🛡', name:'CSPFixer', url:'/csp/', desc:'Content Security Policy'},
+    {icon:'📦', name:'EdgeFix', url:'/edge/', desc:'CDN & cache headers'},
+    {icon:'🚀', name:'SpeedFixer', url:'/speedfixer/', desc:'PageSpeed fixes'},
+    {icon:'⚡', name:'WebhookFix', url:'/webhook/', desc:'Webhook handlers'},
+    {icon:'🍪', name:'CookieFix', url:'/cookies/', desc:'CHIPS partitioned cookies'},
+    {icon:'⚖️', name:'Header Diff', url:'/diff/', desc:'Compare headers'},
+  ];
+  var MORE = [
+    {icon:'🔍', name:'JWT Debugger', url:'/tools/jwt/'},
+    {icon:'✅', name:'CSP Validator', url:'/tools/csp-validator/'},
+    {icon:'📊', name:'Header Scorer', url:'/tools/header-scorer/'},
+    {icon:'⚠️', name:'Mixed Content Fixer', url:'/tools/mixed-content/'},
+    {icon:'🔗', name:'Redirect Chain', url:'/tools/redirect-chain/'},
+    {icon:'⚡', name:'Cache-Control Generator', url:'/generators/cache-control/'},
+  ];
+
+  function build() {
+    var navRight = document.querySelector('nav .right') || document.querySelector('nav div');
+    if (!navRight) return;
+
+    // Don't add if already added
+    if (document.getElementById('nav-tools-dropdown')) return;
+
+    var wrap = document.createElement('div');
+    wrap.className = 'nav-dropdown-wrap';
+    wrap.id = 'nav-tools-dropdown';
+
+    var btn = document.createElement('button');
+    btn.className = 'nav-dropdown-btn';
+    btn.innerHTML = 'Tools <span class="dd-arrow">▼</span>';
+    btn.setAttribute('aria-haspopup', 'true');
+    btn.setAttribute('aria-expanded', 'false');
+
+    var menu = document.createElement('div');
+    menu.className = 'nav-dropdown-menu';
+    menu.setAttribute('role', 'menu');
+
+    // Core tools section
+    var s1 = document.createElement('div');
+    s1.className = 'dd-section';
+    s1.textContent = 'Core tools';
+    menu.appendChild(s1);
+
+    TOOLS.forEach(function(t) {
+      var a = document.createElement('a');
+      a.className = 'dd-item';
+      a.href = t.url;
+      a.innerHTML = '<span class="dd-icon">' + t.icon + '</span>' + t.name;
+      a.setAttribute('role', 'menuitem');
+      menu.appendChild(a);
+    });
+
+    var div = document.createElement('div');
+    div.className = 'dd-divider';
+    menu.appendChild(div);
+
+    // More tools section
+    var s2 = document.createElement('div');
+    s2.className = 'dd-section';
+    s2.textContent = 'More tools';
+    menu.appendChild(s2);
+
+    MORE.forEach(function(t) {
+      var a = document.createElement('a');
+      a.className = 'dd-item';
+      a.href = t.url;
+      a.innerHTML = '<span class="dd-icon">' + t.icon + '</span>' + t.name;
+      a.setAttribute('role', 'menuitem');
+      menu.appendChild(a);
+    });
+
+    // View all link
+    var all = document.createElement('a');
+    all.className = 'dd-all';
+    all.href = '/tools/';
+    all.innerHTML = 'View all tools <span>→</span>';
+    menu.appendChild(all);
+
+    wrap.appendChild(btn);
+    wrap.appendChild(menu);
+
+    // Remove existing "Tools" link if present to avoid duplicate
+    var existingLinks = navRight.querySelectorAll('a');
+    existingLinks.forEach(function(a) {
+      if (a.textContent.trim() === 'Tools' && a.href.indexOf('/tools/') !== -1) {
+        a.parentNode.removeChild(a);
+      }
+    });
+    var existingSpans = navRight.querySelectorAll('span, .nav-tool');
+    existingSpans.forEach(function(s) {
+      if (s.textContent.trim() === 'Tools') {
+        s.parentNode.removeChild(s);
+      }
+    });
+
+    navRight.appendChild(wrap);
+
+    // Toggle
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var isOpen = wrap.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    // Close on outside click
+    document.addEventListener('click', function() {
+      wrap.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        wrap.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', build);
+  } else {
+    build();
+  }
+})();
+</script>
 </nav>
 <main>
   <div class="bc"><a href="/">HttpFixer</a> &rarr; <a href="/fix/">Fix</a> &rarr; <a href="/fix/cookies/">Cookies</a> &rarr; Next.js + Partitioned</div>
