@@ -342,7 +342,7 @@ function parseCipher() {
 
   // PFS — check for ECDHE/DHE
   result.pfs = result.cipher && (result.cipher.includes('ECDHE') || result.cipher.includes('DHE') ||
-    result.tls === 'TLSv1.3'); // TLS 1.3 always has PFS
+    result.tls === 'TLSv1.3');
 
   // Compression
   result.compressed = text.includes('Compression: zlib') || text.includes('DEFLATE');

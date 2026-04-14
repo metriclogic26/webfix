@@ -1352,7 +1352,7 @@ strict-transport-security: max-age=3600
           out.apache = 'Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"';
           out.vercel = vercelHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
           out.cloudflare = 'Transform Rule → Modify Response Header';
-          out.express = 'app.use(helmet.permittedCrossDomainPolicies()); // then set manually: res.setHeader(\'Permissions-Policy\', \'camera=(), microphone=(), geolocation=()\')';
+          out.express = 'app.use(helmet.permittedCrossDomainPolicies()); res.setHeader(\'Permissions-Policy\', \'camera=(), microphone=(), geolocation=()\')';
           out.caddy = 'header Permissions-Policy "camera=(), microphone=(), geolocation=()"';
           out.nextjs = nextJsHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
           out.fastapi = fastapiMiddleware('Permissions-Policy', 'camera=(), microphone=(), geolocation=()') + GRADIO_STREAMLIT_APPEND;
