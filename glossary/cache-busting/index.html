@@ -5,7 +5,7 @@
   <link rel="shortcut icon" href="/favicon.svg">
 </head>
 <body>
-<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/">Errors</a><a href="/glossary/" style="color:var(--purple);opacity:1">Glossary</a><a href="/blog/">Blog</a> </div>
+<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"><a href="/" class="nav-tool">Headers</a> <a href="/cors/" class="nav-tool">CORS</a> <a href="/oauth/" class="nav-tool">OAuth</a> <a href="/csp/" class="nav-tool">CSP</a> <a href="/edge/" class="nav-tool">Edge</a> <a href="/speedfixer/" class="nav-tool">Speed</a> <a href="/webhook/" class="nav-tool">Webhook</a> <a href="/cookies/" class="nav-tool">Cookies</a> <a href="/diff/" class="nav-tool">Diff</a></div>
 </nav>
 <main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/glossary/">Glossary</a> &rarr; Cache Busting</div> <div class="date">Updated April 2026</div> <h1>Cache Busting</h1> <div class="quick-answer"><p>Cache busting is a technique that forces browsers and CDNs to load a new version of a file instead of serving a cached copy. Because long-lived cache policies (max-age=31536000) prevent re-fetching, the filename or URL is changed so the browser treats it as a new resource.</p></div> <h2>Why cache busting is necessary</h2>
 <p>For optimal performance, static assets should be cached for 1 year with <code>Cache-Control: public, max-age=31536000, immutable</code>. But this means the browser won't check for updates. Cache busting solves this by changing the URL when the file changes — forcing a fresh fetch.</p>

@@ -5,7 +5,7 @@
   <link rel="shortcut icon" href="/favicon.svg">
 </head>
 <body>
-<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/">Errors</a><a href="/glossary/" style="color:var(--purple);opacity:1">Glossary</a><a href="/blog/">Blog</a> </div>
+<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"><a href="/" class="nav-tool">Headers</a> <a href="/cors/" class="nav-tool">CORS</a> <a href="/oauth/" class="nav-tool">OAuth</a> <a href="/csp/" class="nav-tool">CSP</a> <a href="/edge/" class="nav-tool">Edge</a> <a href="/speedfixer/" class="nav-tool">Speed</a> <a href="/webhook/" class="nav-tool">Webhook</a> <a href="/cookies/" class="nav-tool">Cookies</a> <a href="/diff/" class="nav-tool">Diff</a></div>
 </nav>
 <main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/glossary/">Glossary</a> &rarr; Rate Limiting</div> <div class="date">Updated April 2026</div> <h1>Rate Limiting</h1> <div class="quick-answer"><p>Rate limiting restricts how many requests a client can make within a time window. When the limit is exceeded, the server returns 429 Too Many Requests. It prevents brute-force attacks, API abuse, and DDoS while protecting backend resources.</p></div> <h2>How it works</h2>
 <p>The server tracks request counts per client (by IP, API key, or user ID). When the count exceeds the configured limit, subsequent requests get a 429 response until the window resets.</p>

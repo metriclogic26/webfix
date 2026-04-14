@@ -5,7 +5,7 @@
   <link rel="shortcut icon" href="/favicon.svg">
 </head>
 <body>
-<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/">Errors</a><a href="/glossary/" style="color:var(--purple);opacity:1">Glossary</a><a href="/blog/">Blog</a> </div>
+<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"><a href="/" class="nav-tool">Headers</a> <a href="/cors/" class="nav-tool">CORS</a> <a href="/oauth/" class="nav-tool">OAuth</a> <a href="/csp/" class="nav-tool">CSP</a> <a href="/edge/" class="nav-tool">Edge</a> <a href="/speedfixer/" class="nav-tool">Speed</a> <a href="/webhook/" class="nav-tool">Webhook</a> <a href="/cookies/" class="nav-tool">Cookies</a> <a href="/diff/" class="nav-tool">Diff</a></div>
 </nav>
 <main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/glossary/">Glossary</a> &rarr; CORS</div> <div class="date">Updated April 2026</div> <h1>CORS</h1> <div class="quick-answer"><p>CORS is a browser security mechanism that controls which cross-origin requests are allowed. Browsers block requests to different domains by default. CORS lets servers explicitly permit them by returning Access-Control-Allow-Origin and related headers.</p></div> <h2>What CORS is and why it exists</h2>
 <p>By default, browsers enforce the <a href="/glossary/same-origin-policy/" style="color:var(--purple)">Same-Origin Policy</a> — scripts on <code>app.example.com</code> cannot fetch data from <code>api.other.com</code>. This prevents malicious scripts from silently accessing APIs on your behalf.</p>

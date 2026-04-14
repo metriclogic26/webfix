@@ -5,7 +5,7 @@
   <link rel="shortcut icon" href="/favicon.svg">
 </head>
 <body>
-<nav> <a href="/" class="brand">HttpFixer <span>/</span> JWT Debugger</a> <div class="right"> <a href="/">Headers</a><a href="/oauth/">OAuth</a><a href="/cors/">CORS</a> <a href="/tools/">Tools</a><a href="/blog/">Blog</a> </div>
+<nav> <a href="/" class="brand">HttpFixer <span>/</span> JWT Debugger</a> <div class="right"><a href="/" class="nav-tool">Headers</a> <a href="/cors/" class="nav-tool">CORS</a> <a href="/oauth/" class="nav-tool">OAuth</a> <a href="/csp/" class="nav-tool">CSP</a> <a href="/edge/" class="nav-tool">Edge</a> <a href="/speedfixer/" class="nav-tool">Speed</a> <a href="/webhook/" class="nav-tool">Webhook</a> <a href="/cookies/" class="nav-tool">Cookies</a> <a href="/diff/" class="nav-tool">Diff</a></div>
 </nav>
 
 <div class="main"> <h1>JWT Debugger</h1> <p class="subtitle">Decode and validate JSON Web Tokens. Flags security issues including none algorithm, missing expiry, and expired tokens.</p> <div class="privacy-note">Decoded entirely in your browser. Your token never leaves this page — no network requests are made.</div> <textarea class="token-input" id="tokenInput" placeholder="Paste your JWT here — eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." oninput="decode()" rows="3"></textarea> <div class="token-colored" id="tokenColored" style="display:none"></div> <div class="btn-row"> <button class="btn" onclick="decode()">Decode</button> <button class="btn-ghost" onclick="loadExample()">Load example</button> <button class="btn-ghost" onclick="clear_()">Clear</button> </div> <div class="grid" id="output"> <div class="empty-state">Paste a JWT above to decode</div> </div>

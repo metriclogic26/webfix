@@ -5,7 +5,7 @@
   <link rel="shortcut icon" href="/favicon.svg">
 </head>
 <body>
-<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/">Errors</a><a href="/glossary/" style="color:var(--purple);opacity:1">Glossary</a><a href="/blog/">Blog</a> </div>
+<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"><a href="/" class="nav-tool">Headers</a> <a href="/cors/" class="nav-tool">CORS</a> <a href="/oauth/" class="nav-tool">OAuth</a> <a href="/csp/" class="nav-tool">CSP</a> <a href="/edge/" class="nav-tool">Edge</a> <a href="/speedfixer/" class="nav-tool">Speed</a> <a href="/webhook/" class="nav-tool">Webhook</a> <a href="/cookies/" class="nav-tool">Cookies</a> <a href="/diff/" class="nav-tool">Diff</a></div>
 </nav>
 <main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/glossary/">Glossary</a> &rarr; HSTS (HTTP Strict Transport Security)</div> <div class="date">Updated April 2026</div> <h1>HSTS (HTTP Strict Transport Security)</h1> <div class="quick-answer"><p>HSTS (HTTP Strict Transport Security) is a response header that tells browsers to only connect to this domain via HTTPS — never HTTP. Once cached, the browser refuses HTTP connections for the duration of max-age, preventing downgrade attacks and accidental insecure connections.</p></div> <h2>The problem HSTS solves</h2>
 <p>HTTPS protects connections, but not the first connection. If a user types <code>example.com</code>, their browser first makes an HTTP request that a network attacker can intercept — before any HTTPS redirect happens. HSTS eliminates this gap after the first visit.</p>

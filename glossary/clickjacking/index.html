@@ -5,7 +5,7 @@
   <link rel="shortcut icon" href="/favicon.svg">
 </head>
 <body>
-<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/">Errors</a><a href="/glossary/" style="color:var(--purple);opacity:1">Glossary</a><a href="/blog/">Blog</a> </div>
+<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"><a href="/" class="nav-tool">Headers</a> <a href="/cors/" class="nav-tool">CORS</a> <a href="/oauth/" class="nav-tool">OAuth</a> <a href="/csp/" class="nav-tool">CSP</a> <a href="/edge/" class="nav-tool">Edge</a> <a href="/speedfixer/" class="nav-tool">Speed</a> <a href="/webhook/" class="nav-tool">Webhook</a> <a href="/cookies/" class="nav-tool">Cookies</a> <a href="/diff/" class="nav-tool">Diff</a></div>
 </nav>
 <main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/glossary/">Glossary</a> &rarr; Clickjacking</div> <div class="date">Updated April 2026</div> <h1>Clickjacking</h1> <div class="quick-answer"><p>Clickjacking embeds a target site in a transparent iframe overlaid on a malicious page. The attacker positions invisible buttons over the victim's interface, tricking users into clicking on actions they didn't intend — like authorizing an app, making a purchase, or liking a post.</p></div> <h2>How it works</h2>
 <p>The attacker creates a page with a hidden iframe pointing to your site. CSS makes the iframe transparent and positioned over a fake button. The user thinks they're clicking the fake button, but actually clicking a real button on your site — like "Transfer funds" or "Authorize app".</p>

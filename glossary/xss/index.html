@@ -5,7 +5,7 @@
   <link rel="shortcut icon" href="/favicon.svg">
 </head>
 <body>
-<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"> <a href="/">Headers</a><a href="/cors/">CORS</a><a href="/oauth/">OAuth</a> <a href="/csp/">CSP</a><a href="/edge/">Edge</a><a href="/tools/">Tools</a> <a href="/errors/">Errors</a><a href="/glossary/" style="color:var(--purple);opacity:1">Glossary</a><a href="/blog/">Blog</a> </div>
+<nav> <a href="/" class="brand">HttpFixer</a> <div class="right"><a href="/" class="nav-tool">Headers</a> <a href="/cors/" class="nav-tool">CORS</a> <a href="/oauth/" class="nav-tool">OAuth</a> <a href="/csp/" class="nav-tool">CSP</a> <a href="/edge/" class="nav-tool">Edge</a> <a href="/speedfixer/" class="nav-tool">Speed</a> <a href="/webhook/" class="nav-tool">Webhook</a> <a href="/cookies/" class="nav-tool">Cookies</a> <a href="/diff/" class="nav-tool">Diff</a></div>
 </nav>
 <main> <div class="breadcrumb"><a href="/">HttpFixer</a> &rarr; <a href="/glossary/">Glossary</a> &rarr; XSS (Cross-Site Scripting)</div> <div class="date">Updated April 2026</div> <h1>XSS (Cross-Site Scripting)</h1> <div class="quick-answer"><p>XSS (Cross-Site Scripting) is an attack where malicious JavaScript is injected into a page and executed in other users' browsers. The primary header defense is Content Security Policy (CSP), which prevents unauthorized scripts from running even if injected.</p></div> <h2>How XSS works</h2>
 <p>An attacker finds a way to inject a script into your page — through a user comment, URL parameter, or compromised third-party dependency. When another user visits the page, the injected script runs in their browser with access to cookies, localStorage, and the ability to make authenticated requests.</p>
