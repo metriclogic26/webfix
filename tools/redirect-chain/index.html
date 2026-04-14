@@ -51,45 +51,239 @@
 </footer>
 
 <script>
-var PROXY = 'https:
-var PROXY_FOLLOW = 'https:
+var PROXY = 'https://headers-proxy.metriclogicllc.workers.dev/?nofollow=1&url=';
 var MAX_HOPS = 12;
 
-function detectStack(headers) { var stacks = []; if (headers['cf-ray'] || headers['cf-cache-status'] || headers['cf-request-id']) stacks.push('cloudflare'); if (headers['x-vercel-id'] || headers['x-vercel-cache']) stacks.push('vercel'); var srv = (headers['server'] || '').toLowerCase(); if (srv.indexOf('nginx') !== -1) stacks.push('nginx'); if (srv.indexOf('apache') !== -1) stacks.push('apache'); if (headers['x-nf-request-id']) stacks.push('netlify'); return stacks;
+function detectStack(headers) {
+  var stacks = [];
+  if (headers['cf-ray'] || headers['cf-cache-status']) stacks.push('cloudflare');
+  if (headers['x-vercel-id'] || headers['x-vercel-cache']) stacks.push('vercel');
+  var srv = (headers['server'] || '').toLowerCase();
+  if (srv.indexOf('nginx') !== -1) stacks.push('nginx');
+  if (srv.indexOf('apache') !== -1) stacks.push('apache');
+  if (headers['x-nf-request-id']) stacks.push('netlify');
+  return stacks;
 }
 
-function stackBadge(s) { var map = { cloudflare:['Cloudflare','badge-cf'], vercel:['Vercel','badge-vercel'], nginx:['Nginx','badge-nginx'], apache:['Apache','badge-apache'], netlify:['Netlify','badge-netlify'] }; var m = map[s] || [s,'']; return '<span class="badge ' + m[1] + '">' + m[0] + '</span>';
+function stackBadge(s) {
+  var map = { cloudflare:['Cloudflare','badge-cf'], vercel:['Vercel','badge-vercel'], nginx:['Nginx','badge-nginx'], apache:['Apache','badge-apache'], netlify:['Netlify','badge-netlify'] };
+  var m = map[s] || [s,''];
+  return '<span class="badge ' + m[1] + '">' + m[0] + '</span>';
 }
 
-function statusDotClass(code) { if (!code) return 'sunknown'; if (code === 301) return 's301'; if (code === 302) return 's302'; if (code === 307) return 's307'; if (code === 308) return 's308'; if (code >= 200 && code < 300) return 's200'; return 's4xx';
+function statusDotClass(code) {
+  if (!code) return 'sunknown';
+  if (code === 301) return 's301';
+  if (code === 302) return 's302';
+  if (code === 307) return 's307';
+  if (code === 308) return 's308';
+  if (code >= 200 && code < 300) return 's200';
+  return 's4xx';
 }
 
-function statusLabel(code) { var map = {301:'Moved Permanently',302:'Found (Temporary)',307:'Temporary Redirect',308:'Permanent Redirect',200:'OK',404:'Not Found',500:'Server Error'}; return code ? (code + ' ' + (map[code] || '')) : '?';
+function statusLabel(code) {
+  var map = {301:'Moved Permanently',302:'Found (Temporary)',307:'Temporary Redirect',308:'Permanent Redirect',200:'OK',404:'Not Found',500:'Server Error'};
+  return code ? (code + ' ' + (map[code] || '')) : '?';
 }
 
-async function fetchHop(url) { var start = Date.now(); try { var resp = await fetch(PROXY + encodeURIComponent(url)); var data = await resp.json(); var ms = Date.now() - start; var status = data.status || null; var headers = data.headers || {}; var location = headers['location'] || null; if (location && location.startsWith('/')) { try { location = new URL(location, url).href; } catch(e) { location = location; } } return { url: url, status: status, location: location, headers: headers, ms: ms, error: data.error || null }; } catch(e) { return { url: url, status: null, location: null, headers: {}, ms: Date.now() - start, error: e.message }; }
+async function fetchHop(url) {
+  var start = Date.now();
+  try {
+    var resp = await fetch(PROXY + encodeURIComponent(url));
+    var data = await resp.json();
+    var ms = Date.now() - start;
+    var status = data.status || null;
+    var headers = data.headers || {};
+    var loc = headers['location'] || null;
+    if (loc && loc.startsWith('/')) {
+      var resolved = loc;
+      try { resolved = new URL(loc, url).href; } catch(ex) { resolved = loc; }
+      loc = resolved;
+    }
+    return { url: url, status: status, location: loc, headers: headers, ms: ms, error: data.error || null };
+  } catch(e) {
+    return { url: url, status: null, location: null, headers: {}, ms: Date.now() - start, error: e.message };
+  }
 }
 
-async function scan() { var raw = document.getElementById('urlInput').value.trim(); if (!raw) return; if (!raw.startsWith('http')) raw = 'https:
+async function scan() {
+  var raw = document.getElementById('urlInput').value.trim();
+  if (!raw) return;
+  if (!raw.startsWith('http')) raw = 'https://' + raw;
+  var btn = document.getElementById('scanBtn');
+  btn.disabled = true;
+  document.getElementById('spinner').style.display = 'inline-block';
+  document.getElementById('output').innerHTML = '<div style="opacity:0.4;font-size:13px;padding:2rem 0">Following redirect chain...</div>';
+  var hops = [];
+  var visited = {};
+  var current = raw;
+  var isLoop = false;
+  var allStacks = {};
+  for (var i = 0; i < MAX_HOPS; i++) {
+    if (visited[current]) {
+      isLoop = true;
+      hops.push({ url: current, status: null, location: null, headers: {}, ms: 0, loop: true });
+      break;
+    }
+    visited[current] = true;
+    document.getElementById('output').innerHTML = '<div style="opacity:0.4;font-size:13px;padding:1rem 0">Hop ' + (i+1) + ': ' + current.substring(0, 60) + '</div>';
+    var hop = await fetchHop(current);
+    hops.push(hop);
+    var st = detectStack(hop.headers);
+    st.forEach(function(s) { allStacks[s] = true; });
+    var sc = hop.status;
+    if (!sc || sc < 300 || sc >= 400 || !hop.location) break;
+    current = hop.location;
+  }
+  btn.disabled = false;
+  document.getElementById('spinner').style.display = 'none';
+  renderResults(hops, isLoop, Object.keys(allStacks));
 }
 
-function renderResults(hops, isLoop, stacks) { var totalMs = hops.reduce(function(a, h) { return a + (h.ms || 0); }, 0); var redirectCount = hops.filter(function(h) { return h.status && h.status >= 300 && h.status < 400; }).length; var finalHop = hops[hops.length - 1]; var sumStatus = isLoop ? 'bad' : (redirectCount > 3 ? 'warn' : 'good'); var sumMsg = isLoop ? '🔴 Redirect loop detected' : (finalHop && finalHop.status === 200 ? '✅ Resolves cleanly' : redirectCount > 3 ? '⚠️ Chain is too long' : '✅ Chain OK'); var html = '<div class="summary">'; html += stat(hops.length, 'Hops', hops.length > 3 ? 'warn' : 'good'); html += stat(redirectCount, 'Redirects', redirectCount > 3 ? 'warn' : 'good'); html += stat(totalMs < 1000 ? totalMs + 'ms' : (totalMs/1000).toFixed(1) + 's', 'Latency', totalMs > 2000 ? 'warn' : 'good'); html += '<div style="flex:1;font-size:13px;font-weight:600">' + sumMsg + '</div>'; html += '</div>'; if (stacks.length) { html += '<div class="stack-row">Stack detected: ' + stacks.map(stackBadge).join(' ') + '</div>'; }
+function stat(val, label, cls) {
+  return '<div class="sum-stat"><div class="sum-num ' + cls + '">' + val + '</div><div class="sum-label">' + label + '</div></div>';
 }
 
-function stat(val, label, cls) { return '<div class="sum-stat"><div class="sum-num ' + cls + '">' + val + '</div><div class="sum-label">' + label + '</div></div>';
+function renderResults(hops, isLoop, stacks) {
+  var totalMs = hops.reduce(function(a, h) { return a + (h.ms || 0); }, 0);
+  var redirectCount = hops.filter(function(h) { return h.status && h.status >= 300 && h.status < 400; }).length;
+  var finalHop = hops[hops.length - 1];
+  var sumMsg = isLoop ? 'Redirect loop detected' : (finalHop && finalHop.status === 200 ? 'Resolves cleanly' : redirectCount > 3 ? 'Chain is too long' : 'Chain OK');
+  var html = '<div class="summary">';
+  html += stat(hops.length, 'Hops', hops.length > 3 ? 'warn' : 'good');
+  html += stat(redirectCount, 'Redirects', redirectCount > 3 ? 'warn' : 'good');
+  html += stat(totalMs < 1000 ? totalMs + 'ms' : (totalMs/1000).toFixed(1) + 's', 'Latency', totalMs > 2000 ? 'warn' : 'good');
+  html += '<div style="flex:1;font-size:13px;font-weight:600">' + (isLoop ? '🔴 ' : '') + sumMsg + '</div>';
+  html += '</div>';
+  if (stacks.length) {
+    html += '<div class="stack-row">Stack detected: ' + stacks.map(stackBadge).join(' ') + '</div>';
+  }
+  html += '<div class="chain-wrap">';
+  hops.forEach(function(hop, i) {
+    var isLast = i === hops.length - 1;
+    var sc = hop.loop ? 'sloop' : statusDotClass(hop.status);
+    var hopStacks = detectStack(hop.headers);
+    var cc = hop.loop ? 'loop' : (isLast ? 'final' : '');
+    var dotLabel = hop.loop ? '?' : (hop.status || '?');
+    html += '<div class="hop"><div class="hop-left">';
+    html += '<div class="hop-dot ' + sc + '">' + dotLabel + '</div>';
+    if (!isLast) html += '<div class="hop-line"></div>';
+    html += '</div><div class="hop-content ' + cc + '">';
+    html += '<div class="hop-url">' + hop.url + '</div>';
+    html += '<div class="hop-meta">';
+    if (hop.status) html += '<span>' + statusLabel(hop.status) + '</span>';
+    if (hop.ms) html += '<span>' + hop.ms + 'ms</span>';
+    if (hop.location) html += '<span style="opacity:0.7">to: ' + hop.location.substring(0, 80) + '</span>';
+    hopStacks.forEach(function(s) { html += ' ' + stackBadge(s); });
+    if (hop.loop) html += ' <span class="badge badge-loop">LOOP</span>';
+    if (hop.error) html += '<span style="color:var(--red)">' + hop.error + '</span>';
+    html += '</div></div></div>';
+  });
+  html += '</div>';
+  var fixes = generateFixes(hops, isLoop, stacks);
+  if (fixes.length) {
+    html += '<div class="fix-section"><div class="fix-title">The fix</div>';
+    fixes.forEach(function(fix, fi) {
+      html += '<div class="fix-card ' + fix.level + '"><div class="fix-card-title">' + fix.icon + ' ' + fix.title + '</div>';
+      html += '<div class="fix-card-desc">' + fix.desc + '</div>';
+      if (fix.code) {
+        html += '<div class="code-block"><pre id="fc' + fi + '">' + fix.code + '</pre><button class="copy-btn" onclick="cp(\'fc' + fi + '\',this)">Copy</button></div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+  html += '<div style="font-size:12px;opacity:0.5;margin-top:2rem;border-top:1px solid var(--border);padding-top:1rem">';
+  html += 'Related: <a href="/errors/err-too-many-redirects/" style="color:var(--purple)">ERR_TOO_MANY_REDIRECTS guide</a>';
+  html += '</div>';
+  html += curlModeHTML();
+  document.getElementById('output').innerHTML = html;
 }
 
-function generateFixes(hops, isLoop, stacks) { var fixes = []; var hasCF = stacks.indexOf('cloudflare') !== -1; var hasVercel = stacks.indexOf('vercel') !== -1; var hasNginx = stacks.indexOf('nginx') !== -1; var hasApache = stacks.indexOf('apache') !== -1; var redirectCount = hops.filter(function(h) { return h.status && h.status >= 300 && h.status < 400; }).length; if (!isLoop && redirectCount <= 1) { fixes.push({ level:'pass', icon:'✅', title:'Chain looks healthy', desc:'No redirect loop detected. If you are still seeing ERR_TOO_MANY_REDIRECTS, clear browser cookies and try incognito — cached redirects can persist.', code:null }); return fixes; } if (isLoop) { if (hasCF && (hasNginx || hasApache || !hasVercel)) { fixes.push({ level:'critical', icon:'🚨', title:'Cloudflare + origin redirect loop — SSL mode is likely Flexible', desc:'Cloudflare SSL "Flexible" sends HTTP to your origin. Your origin redirects HTTP→HTTPS. This loops infinitely. Fix: change Cloudflare SSL mode to Full (Strict).', code:'# Step 1 — Cloudflare Dashboard\nSSL/TLS → Overview → change "Flexible" to "Full (Strict)"\n\n# Step 2 — Your origin must have a valid SSL certificate\n# Let\'s Encrypt (Certbot) works:\ncertbot --nginx -d example.com -d www.example.com\n\n# Step 3 — Nginx redirect block (optional — Cloudflare handles HTTPS now)\nserver {\n listen 80;\n server_name example.com www.example.com;\n return 301 https:
-}
-function parseCurl() { var text = document.getElementById('curlInput').value.trim(); if (!text) return; var hops = []; var current = { status: null, location: null, headers: {}, url: '?' }; var lines = text.split('\n'); lines.forEach(function(line) { line = line.trim(); var httpMatch = line.match(/^HTTP\/[\d.]+ (\d+)/); if (httpMatch) { if (current.status) hops.push(current); current = { status: parseInt(httpMatch[1]), location: null, headers: {}, url: current.location || '?' }; return; } var locMatch = line.match(/^[Ll]ocation:\s*(.+)/); if (locMatch) { current.location = locMatch[1].trim(); return; } var cfMatch = line.match(/^cf-ray:/i); if (cfMatch) current.headers['cf-ray'] = '1'; var vercelMatch = line.match(/^x-vercel-id:/i); if (vercelMatch) current.headers['x-vercel-id'] = '1'; var srvMatch = line.match(/^[Ss]erver:\s*(.+)/); if (srvMatch) current.headers['server'] = srvMatch[1].trim(); var nfMatch = line.match(/^x-nf-request-id:/i); if (nfMatch) current.headers['x-nf-request-id'] = '1'; }); if (current.status) hops.push(current);
+function generateFixes(hops, isLoop, stacks) {
+  var fixes = [];
+  var hasCF = stacks.indexOf('cloudflare') !== -1;
+  var hasVercel = stacks.indexOf('vercel') !== -1;
+  var hasNginx = stacks.indexOf('nginx') !== -1;
+  var hasApache = stacks.indexOf('apache') !== -1;
+  var redirectCount = hops.filter(function(h) { return h.status && h.status >= 300 && h.status < 400; }).length;
+  if (!isLoop && redirectCount <= 1) {
+    fixes.push({ level:'pass', icon:'OK', title:'Chain looks healthy', desc:'No redirect loop. If still seeing ERR_TOO_MANY_REDIRECTS, clear browser cookies and try incognito.', code:null });
+    return fixes;
+  }
+  if (isLoop) {
+    if (hasCF && !hasVercel) {
+      fixes.push({ level:'critical', icon:'!', title:'Cloudflare + origin redirect loop', desc:'Cloudflare SSL Flexible sends HTTP to origin. Origin redirects to HTTPS. This loops. Change SSL mode to Full (Strict).', code:'Cloudflare Dashboard: SSL/TLS > Overview > change to Full (Strict)\nEnsure origin has valid SSL cert (certbot --nginx -d example.com)' });
+    }
+    if (hasCF && hasVercel) {
+      fixes.push({ level:'critical', icon:'!', title:'Cloudflare + Vercel loop', desc:'Set Cloudflare SSL to Full (not Flexible).', code:'Cloudflare Dashboard: SSL/TLS > Overview > set to Full' });
+    }
+    if (!hasCF && hasNginx) {
+      fixes.push({ level:'critical', icon:'!', title:'Nginx redirect loop', desc:'Only the HTTP block should redirect. Remove redirect from HTTPS block.', code:'server {\n  listen 80;\n  server_name example.com www.example.com;\n  return 301 https://example.com$request_uri;\n}\nserver {\n  listen 443 ssl;\n  server_name example.com;\n  # No redirect here - this is the destination\n}' });
+    }
+    if (!hasCF && hasApache) {
+      fixes.push({ level:'critical', icon:'!', title:'Apache redirect loop', desc:'Add X-Forwarded-Proto check.', code:'RewriteEngine On\nRewriteCond %{HTTP:X-Forwarded-Proto} !https\nRewriteCond %{HTTPS} off\nRewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]' });
+    }
+    if (fixes.length === 0) {
+      fixes.push({ level:'critical', icon:'!', title:'Redirect loop detected', desc:'Chain redirects back to a visited URL.', code:'Debug: curl -sIL --max-redirs 15 https://yoursite.com | grep -E "^HTTP|^location"' });
+    }
+  }
+  if (!isLoop && redirectCount >= 4) {
+    fixes.push({ level:'warning', icon:'~', title: redirectCount + ' redirects - chain too long', desc:'Collapse into one hop.', code:'server {\n  listen 80;\n  server_name example.com www.example.com;\n  return 301 https://example.com$request_uri;\n}' });
+  }
+  var has302 = hops.some(function(h) { return h.status === 302; });
+  if (has302 && !isLoop) {
+    fixes.push({ level:'warning', icon:'~', title:'302 Temporary redirect', desc:'Use 301 if permanent - 302s are not cached.', code:'Nginx: return 301 https://example.com$request_uri;\nApache: Redirect 301 /old https://example.com/new\nExpress: res.redirect(301, url);' });
+  }
+  return fixes;
 }
 
-function curlModeHTML() { return '<div class="curl-mode" style="margin-top:2rem"><h3>Also: paste curl output for precise hop analysis</h3>' + '<p style="font-size:12px;opacity:0.55;margin-bottom:0.75rem">Run in terminal for exact status codes per hop:</p>' + '<div class="code-block" style="margin-bottom:0.75rem"><pre>curl -sIL --max-redirs 15 https:
+function parseCurl() {
+  var text = document.getElementById('curlInput').value.trim();
+  if (!text) return;
+  var hops = [];
+  var current = { status: null, location: null, headers: {}, url: '?' };
+  var lines = text.split('\n');
+  lines.forEach(function(line) {
+    line = line.trim();
+    var httpMatch = line.match(/^HTTP\/[\d.]+ (\d+)/);
+    if (httpMatch) {
+      if (current.status) hops.push(current);
+      current = { status: parseInt(httpMatch[1]), location: null, headers: {}, url: current.location || '?' };
+      return;
+    }
+    var locMatch = line.match(/^[Ll]ocation:\s*(.+)/);
+    if (locMatch) { current.location = locMatch[1].trim(); return; }
+    if (line.match(/^cf-ray:/i)) current.headers['cf-ray'] = '1';
+    if (line.match(/^x-vercel-id:/i)) current.headers['x-vercel-id'] = '1';
+    var srvMatch = line.match(/^[Ss]erver:\s*(.+)/);
+    if (srvMatch) current.headers['server'] = srvMatch[1].trim();
+    if (line.match(/^x-nf-request-id:/i)) current.headers['x-nf-request-id'] = '1';
+  });
+  if (current.status) hops.push(current);
+  var visited = {};
+  var isLoop = false;
+  var allStacks = {};
+  hops.forEach(function(h) {
+    detectStack(h.headers).forEach(function(s) { allStacks[s] = true; });
+    if (h.url && h.url !== '?') visited[h.url] = true;
+  });
+  hops.forEach(function(h) { if (h.location && visited[h.location]) isLoop = true; });
+  renderResults(hops, isLoop, Object.keys(allStacks));
 }
 
-function cp(id, btn) { navigator.clipboard.writeText(document.getElementById(id).textContent).then(function() { btn.textContent = 'Copied!'; setTimeout(function() { btn.textContent = 'Copy'; }, 1500); });
+function curlModeHTML() {
+  return '<div class="curl-mode" style="margin-top:2rem"><h3>Also: paste curl output</h3><textarea id="curlInput" placeholder="HTTP/2 301&#10;location: https://example.com/&#10;&#10;HTTP/2 200&#10;server: nginx"></textarea><button class="btn-sm" onclick="parseCurl()">Analyse curl output</button></div>';
+}
+
+function cp(id, btn) {
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(function() {
+    btn.textContent = 'Copied!';
+    setTimeout(function() { btn.textContent = 'Copy'; }, 1500);
+  });
 }
 </script>
+
 
 <!-- Nav Tools Dropdown -->
 <style>
@@ -133,6 +327,8 @@ function cp(id, btn) { navigator.clipboard.writeText(document.getElementById(id)
   function build() {
     var navRight = document.querySelector('nav .right') || document.querySelector('nav div');
     if (!navRight) return;
+
+    // Don't add if already added
     if (document.getElementById('nav-tools-dropdown')) return;
 
     var wrap = document.createElement('div');
@@ -148,6 +344,8 @@ function cp(id, btn) { navigator.clipboard.writeText(document.getElementById(id)
     var menu = document.createElement('div');
     menu.className = 'nav-dropdown-menu';
     menu.setAttribute('role', 'menu');
+
+    // Core tools section
     var s1 = document.createElement('div');
     s1.className = 'dd-section';
     s1.textContent = 'Core tools';
@@ -165,6 +363,8 @@ function cp(id, btn) { navigator.clipboard.writeText(document.getElementById(id)
     var div = document.createElement('div');
     div.className = 'dd-divider';
     menu.appendChild(div);
+
+    // More tools section
     var s2 = document.createElement('div');
     s2.className = 'dd-section';
     s2.textContent = 'More tools';
@@ -178,6 +378,8 @@ function cp(id, btn) { navigator.clipboard.writeText(document.getElementById(id)
       a.setAttribute('role', 'menuitem');
       menu.appendChild(a);
     });
+
+    // View all link
     var all = document.createElement('a');
     all.className = 'dd-all';
     all.href = '/tools/';
@@ -186,6 +388,8 @@ function cp(id, btn) { navigator.clipboard.writeText(document.getElementById(id)
 
     wrap.appendChild(btn);
     wrap.appendChild(menu);
+
+    // Remove existing "Tools" link if present to avoid duplicate
     var existingLinks = navRight.querySelectorAll('a');
     existingLinks.forEach(function(a) {
       if (a.textContent.trim() === 'Tools' && a.href.indexOf('/tools/') !== -1) {
@@ -200,15 +404,21 @@ function cp(id, btn) { navigator.clipboard.writeText(document.getElementById(id)
     });
 
     navRight.appendChild(wrap);
+
+    // Toggle
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
       var isOpen = wrap.classList.toggle('open');
       btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
+
+    // Close on outside click
     document.addEventListener('click', function() {
       wrap.classList.remove('open');
       btn.setAttribute('aria-expanded', 'false');
     });
+
+    // Close on Escape
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         wrap.classList.remove('open');
