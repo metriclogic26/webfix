@@ -36,7 +36,6 @@ function setMode(mode, btn) { document.querySelectorAll('.mode-tab').forEach(fun
 
 function loadExample() { document.getElementById('htmlInput').value = [ '<!DOCTYPE html><html><head>', '<link rel="stylesheet" href="http://cdn.example.com/style.css">', '<script src="http://cdn.example.com/analytics.js"><\/script>', '</head><body>', '<img src="http://images.example.com/logo.png" alt="logo">', '<img src="https://images.example.com/hero.jpg" alt="hero">', '<script src="https://cdn.example.com/app.js"><\/script>', '</body></html>'].join('\n'); analyseHTML();
 }
-</script>
 <!-- Nav Tools Dropdown -->
 <style>
 .nav-dropdown-wrap{position:relative;display:inline-flex;align-items:center}
@@ -187,6 +186,7 @@ function loadExample() { document.getElementById('htmlInput').value = [ '<!DOCTY
 })();
 </script>
 
+<script>
 function analyseHTML() { var html = document.getElementById('htmlInput').value.trim(); if (!html) return; var parser = new DOMParser(); var doc = parser.parseFromString(html, 'text/html'); var resources = []; var checks = [ { sel:'script[src]', attr:'src',  type:'script', sev:'active'  }, { sel:'link[rel=stylesheet]',  attr:'href', type:'style',  sev:'active'  }, { sel:'img[src]', attr:'src',  type:'img', sev:'passive' }, { sel:'source[src]', attr:'src',  type:'img', sev:'passive' }, { sel:'video[src]', attr:'src',  type:'img', sev:'passive' }, { sel:'audio[src]', attr:'src',  type:'img', sev:'passive' }, { sel:'iframe[src]', attr:'src',  type:'other',  sev:'active'  }, { sel:'link[rel=preload]', attr:'href', type:'other',  sev:'passive' }, ]; for (var i = 0; i < checks.length; i++) { var c = checks[i]; var els = doc.querySelectorAll(c.sel); for (var j = 0; j < els.length; j++) { var src = els[j].getAttribute(c.attr); if (src && src.indexOf('http://') === 0) { resources.push({ url: src, type: c.type, sev: c.sev }); } } } renderResults(resources);
 }
 
