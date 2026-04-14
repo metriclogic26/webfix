@@ -89,7 +89,8 @@ function statusLabel(code) {
 async function fetchHop(url) {
   var start = Date.now();
   try {
-    var resp = await fetch(PROXY + encodeURIComponent(url));
+    var proxyUrl = url.replace(/^http:/, 'https:');
+    var resp = await fetch(PROXY + encodeURIComponent(proxyUrl));
     var data = await resp.json();
     var ms = Date.now() - start;
     var status = data.status || null;
