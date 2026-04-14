@@ -51,8 +51,8 @@
 </footer>
 
 <script>
-var PROXY = 'https://headers-proxy.metriclogicllc.workers.dev/?nofollow=1&url=';
-var PROXY_FOLLOW = 'https://headers-proxy.metriclogicllc.workers.dev/?url=';
+var PROXY = 'https:
+var PROXY_FOLLOW = 'https:
 var MAX_HOPS = 12;
 
 function detectStack(headers) { var stacks = []; if (headers['cf-ray'] || headers['cf-cache-status'] || headers['cf-request-id']) stacks.push('cloudflare'); if (headers['x-vercel-id'] || headers['x-vercel-cache']) stacks.push('vercel'); var srv = (headers['server'] || '').toLowerCase(); if (srv.indexOf('nginx') !== -1) stacks.push('nginx'); if (srv.indexOf('apache') !== -1) stacks.push('apache'); if (headers['x-nf-request-id']) stacks.push('netlify'); return stacks;
@@ -70,23 +70,21 @@ function statusLabel(code) { var map = {301:'Moved Permanently',302:'Found (Temp
 async function fetchHop(url) { var start = Date.now(); try { var resp = await fetch(PROXY + encodeURIComponent(url)); var data = await resp.json(); var ms = Date.now() - start; var status = data.status || null; var headers = data.headers || {}; var location = headers['location'] || null; if (location && location.startsWith('/')) { try { location = new URL(location, url).href; } catch(e) { location = location; } } return { url: url, status: status, location: location, headers: headers, ms: ms, error: data.error || null }; } catch(e) { return { url: url, status: null, location: null, headers: {}, ms: Date.now() - start, error: e.message }; }
 }
 
-async function scan() { var raw = document.getElementById('urlInput').value.trim(); if (!raw) return; if (!raw.startsWith('http')) raw = 'https://' + raw; var btn = document.getElementById('scanBtn'); btn.disabled = true; document.getElementById('spinner').style.display = 'inline-block'; document.getElementById('output').innerHTML = '<div style="opacity:0.4;font-size:13px;padding:2rem 0">Following redirect chain...</div>'; var hops = []; var visited = {}; var current = raw; var isLoop = false; var allStacks = {}; for (var i = 0; i < MAX_HOPS; i++) { if (visited[current]) { isLoop = true; hops.push({ url: current, status: null, location: null, headers: {}, ms: 0, loop: true }); break; } visited[current] = true; // Show progress document.getElementById('output').innerHTML = '<div style="opacity:0.4;font-size:13px;padding:1rem 0">Hop ' + (i+1) + ': fetching ' + current.substring(0, 60) + (current.length > 60 ? '…' : '') + '</div>'; var hop = await fetchHop(current); hops.push(hop); var stacks = detectStack(hop.headers); stacks.forEach(function(s) { allStacks[s] = true; }); // Stop if not a redirect or no location var s = hop.status; if (!s || s < 300 || s >= 400 || !hop.location) break; current = hop.location; } btn.disabled = false; document.getElementById('spinner').style.display = 'none'; renderResults(hops, isLoop, Object.keys(allStacks));
+async function scan() { var raw = document.getElementById('urlInput').value.trim(); if (!raw) return; if (!raw.startsWith('http')) raw = 'https:
 }
 
-function renderResults(hops, isLoop, stacks) { var totalMs = hops.reduce(function(a, h) { return a + (h.ms || 0); }, 0); var redirectCount = hops.filter(function(h) { return h.status && h.status >= 300 && h.status < 400; }).length; var finalHop = hops[hops.length - 1]; var sumStatus = isLoop ? 'bad' : (redirectCount > 3 ? 'warn' : 'good'); var sumMsg = isLoop ? '🔴 Redirect loop detected' : (finalHop && finalHop.status === 200 ? '✅ Resolves cleanly' : redirectCount > 3 ? '⚠️ Chain is too long' : '✅ Chain OK'); var html = '<div class="summary">'; html += stat(hops.length, 'Hops', hops.length > 3 ? 'warn' : 'good'); html += stat(redirectCount, 'Redirects', redirectCount > 3 ? 'warn' : 'good'); html += stat(totalMs < 1000 ? totalMs + 'ms' : (totalMs/1000).toFixed(1) + 's', 'Latency', totalMs > 2000 ? 'warn' : 'good'); html += '<div style="flex:1;font-size:13px;font-weight:600">' + sumMsg + '</div>'; html += '</div>'; if (stacks.length) { html += '<div class="stack-row">Stack detected: ' + stacks.map(stackBadge).join(' ') + '</div>'; } // Chain vis html += '<div class="chain-wrap">'; hops.forEach(function(hop, i) { var isLast = i === hops.length - 1; var sc = hop.loop ? 'sloop' : statusDotClass(hop.status); var hopStacks = detectStack(hop.headers); var cc = hop.loop ? 'loop' : (isLast && !hop.loop ? 'final' : ''); var dotLabel = hop.loop ? '∞' : (hop.status || '?'); html += '<div class="hop"><div class="hop-left">'; html += '<div class="hop-dot ' + sc + '">' + dotLabel + '</div>'; if (!isLast) html += '<div class="hop-line"></div>'; html += '</div><div class="hop-content ' + cc + '">'; html += '<div class="hop-url">' + hop.url + '</div>'; html += '<div class="hop-meta">'; if (hop.status) html += '<span>' + statusLabel(hop.status) + '</span>'; if (hop.ms) html += '<span>' + hop.ms + 'ms</span>'; if (hop.location) html += '<span style="opacity:0.7">→ ' + hop.location.substring(0, 80) + (hop.location.length > 80 ? '…' : '') + '</span>'; hopStacks.forEach(function(s) { html += ' ' + stackBadge(s); }); if (hop.loop) html += ' <span class="badge badge-loop">LOOP</span>'; if (hop.error) html += '<span style="color:var(--red)">' + hop.error + '</span>'; html += '</div></div></div>'; }); html += '</div>'; // Fixes var fixes = generateFixes(hops, isLoop, stacks); if (fixes.length) { html += '<div class="fix-section"><div class="fix-title">The fix</div>'; fixes.forEach(function(fix, fi) { html += '<div class="fix-card ' + fix.level + '"><div class="fix-card-title">' + fix.icon + ' ' + fix.title + '</div>'; html += '<div class="fix-card-desc">' + fix.desc + '</div>'; if (fix.code) { html += '<div class="code-block"><pre id="fc' + fi + '">' + fix.code + '</pre><button class="copy-btn" onclick="cp(\'fc' + fi + '\',this)">Copy</button></div>'; } html += '</div>'; }); html += '</div>'; } html += '<div style="font-size:12px;opacity:0.5;margin-top:2rem;border-top:1px solid var(--border);padding-top:1rem">'; html += 'Related: <a href="/errors/err-too-many-redirects/" style="color:var(--purple)">ERR_TOO_MANY_REDIRECTS guide</a> &nbsp;'; html += '<a href="/" style="color:var(--purple)">HeadersFixer</a> &nbsp;'; html += '<a href="/tools/header-scorer/" style="color:var(--purple)">Security Headers Scorer</a>'; html += '</div>'; // Keep curl mode below html += curlModeHTML(); document.getElementById('output').innerHTML = html;
+function renderResults(hops, isLoop, stacks) { var totalMs = hops.reduce(function(a, h) { return a + (h.ms || 0); }, 0); var redirectCount = hops.filter(function(h) { return h.status && h.status >= 300 && h.status < 400; }).length; var finalHop = hops[hops.length - 1]; var sumStatus = isLoop ? 'bad' : (redirectCount > 3 ? 'warn' : 'good'); var sumMsg = isLoop ? '🔴 Redirect loop detected' : (finalHop && finalHop.status === 200 ? '✅ Resolves cleanly' : redirectCount > 3 ? '⚠️ Chain is too long' : '✅ Chain OK'); var html = '<div class="summary">'; html += stat(hops.length, 'Hops', hops.length > 3 ? 'warn' : 'good'); html += stat(redirectCount, 'Redirects', redirectCount > 3 ? 'warn' : 'good'); html += stat(totalMs < 1000 ? totalMs + 'ms' : (totalMs/1000).toFixed(1) + 's', 'Latency', totalMs > 2000 ? 'warn' : 'good'); html += '<div style="flex:1;font-size:13px;font-weight:600">' + sumMsg + '</div>'; html += '</div>'; if (stacks.length) { html += '<div class="stack-row">Stack detected: ' + stacks.map(stackBadge).join(' ') + '</div>'; }
 }
 
 function stat(val, label, cls) { return '<div class="sum-stat"><div class="sum-num ' + cls + '">' + val + '</div><div class="sum-label">' + label + '</div></div>';
 }
 
-function generateFixes(hops, isLoop, stacks) { var fixes = []; var hasCF = stacks.indexOf('cloudflare') !== -1; var hasVercel = stacks.indexOf('vercel') !== -1; var hasNginx = stacks.indexOf('nginx') !== -1; var hasApache = stacks.indexOf('apache') !== -1; var redirectCount = hops.filter(function(h) { return h.status && h.status >= 300 && h.status < 400; }).length; if (!isLoop && redirectCount <= 1) { fixes.push({ level:'pass', icon:'✅', title:'Chain looks healthy', desc:'No redirect loop detected. If you are still seeing ERR_TOO_MANY_REDIRECTS, clear browser cookies and try incognito — cached redirects can persist.', code:null }); return fixes; } if (isLoop) { if (hasCF && (hasNginx || hasApache || !hasVercel)) { fixes.push({ level:'critical', icon:'🚨', title:'Cloudflare + origin redirect loop — SSL mode is likely Flexible', desc:'Cloudflare SSL "Flexible" sends HTTP to your origin. Your origin redirects HTTP→HTTPS. This loops infinitely. Fix: change Cloudflare SSL mode to Full (Strict).', code:'# Step 1 — Cloudflare Dashboard\nSSL/TLS → Overview → change "Flexible" to "Full (Strict)"\n\n# Step 2 — Your origin must have a valid SSL certificate\n# Let\'s Encrypt (Certbot) works:\ncertbot --nginx -d example.com -d www.example.com\n\n# Step 3 — Nginx redirect block (optional — Cloudflare handles HTTPS now)\nserver {\n listen 80;\n server_name example.com www.example.com;\n return 301 https://example.com$request_uri;\n # You can keep or remove this — with Full Strict, Cloudflare\n # always connects to origin over HTTPS regardless\n}' }); } if (hasCF && hasVercel) { fixes.push({ level:'critical', icon:'🚨', title:'Cloudflare + Vercel redirect loop', desc:'Cloudflare SSL "Flexible" sends HTTP to Vercel. Vercel enforces HTTPS. Loop. Fix: set Cloudflare SSL to Full (not Flexible, not Full Strict — Vercel\'s cert is valid).', code:'# Cloudflare Dashboard\nSSL/TLS → Overview → set to "Full"\n(Not Flexible, not Full Strict — Vercel\'s certificate is valid)\n\n# vercel.json — no HTTP redirect rules needed\n# Vercel handles HTTPS automatically\n# Remove any http→https redirects if present in vercel.json' }); } if (!hasCF && hasNginx) { fixes.push({ level:'critical', icon:'🚨', title:'Nginx redirect loop — conflicting server blocks', desc:'A server block is redirecting back to itself. The HTTPS block should not contain a redirect.', code:'# Correct pattern — one redirect block, one serving block\nserver {\n listen 80;\n server_name example.com www.example.com;\n return 301 https://example.com$request_uri;\n # Only HTTP block redirects\n}\n\nserver {\n listen 443 ssl;\n server_name example.com;\n # NO return 301 here — this is the final destination\n ssl_certificate /etc/nginx/ssl/fullchain.pem;\n ssl_certificate_key /etc/nginx/ssl/privkey.pem;\n root /var/www/html;\n # ... your location blocks\n}\n\n# Test: nginx -t && nginx -s reload' }); } if (!hasCF && hasApache) { fixes.push({ level:'critical', icon:'🚨', title:'Apache redirect loop — missing X-Forwarded-Proto check', desc:'RewriteRule fires on HTTPS requests too. Add X-Forwarded-Proto condition to prevent looping behind proxies.', code:'# .htaccess — correct HTTP→HTTPS redirect\nRewriteEngine On\nRewriteCond %{HTTP:X-Forwarded-Proto} !https\nRewriteCond %{HTTPS} off\nRewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]\n\n# The X-Forwarded-Proto check prevents the rule from firing\n# on requests that are already HTTPS at the proxy layer' }); } if (fixes.length === 0) { fixes.push({ level:'critical', icon:'🚨', title:'Redirect loop detected', desc:'The chain redirects back to a previously visited URL.', code:'# Debug with curl (bypasses browser cache and cookies):\ncurl -sIL --max-redirs 15 https://yoursite.com | grep -E "^HTTP|^[Ll]ocation"\n\n# Common causes:\n# 1. Cloudflare SSL mode Flexible + origin HTTPS redirect → change to Full\n# 2. www + non-www both redirecting to each other → pick one direction\n# 3. HTTP→HTTPS in both CDN and origin → remove one\n# 4. Cookie-based redirect loop → test in curl (no cookies)' }); } } if (!isLoop && redirectCount >= 4) { fixes.push({ level:'warning', icon:'⚠️', title: redirectCount + ' redirects — chain is too long', desc:'Each redirect adds latency. Collapse multiple hops into one direct redirect.', code:'# Combine HTTP + www redirect into a single hop\nserver {\n listen 80;\n server_name example.com www.example.com;\n return 301 https://example.com$request_uri;\n # One hop: any HTTP → final HTTPS non-www\n}\n\nserver {\n listen 443 ssl;\n server_name www.example.com;\n return 301 https://example.com$request_uri;\n # One hop: HTTPS www → final HTTPS non-www\n}' }); } var has302 = hops.some(function(h) { return h.status === 302; }); if (has302 && !isLoop) { fixes.push({ level:'warning', icon:'⚠️', title:'302 Temporary redirect — should this be 301?', desc:'302 redirects are not cached by browsers and do not pass SEO authority. If permanent, use 301.', code:'# Nginx\nreturn 301 https://example.com$request_uri;\n\n# Apache\nRedirect 301 /old https://example.com/new\n\n# Express\nres.redirect(301, "https://example.com/new");' }); } return fixes;
+function generateFixes(hops, isLoop, stacks) { var fixes = []; var hasCF = stacks.indexOf('cloudflare') !== -1; var hasVercel = stacks.indexOf('vercel') !== -1; var hasNginx = stacks.indexOf('nginx') !== -1; var hasApache = stacks.indexOf('apache') !== -1; var redirectCount = hops.filter(function(h) { return h.status && h.status >= 300 && h.status < 400; }).length; if (!isLoop && redirectCount <= 1) { fixes.push({ level:'pass', icon:'✅', title:'Chain looks healthy', desc:'No redirect loop detected. If you are still seeing ERR_TOO_MANY_REDIRECTS, clear browser cookies and try incognito — cached redirects can persist.', code:null }); return fixes; } if (isLoop) { if (hasCF && (hasNginx || hasApache || !hasVercel)) { fixes.push({ level:'critical', icon:'🚨', title:'Cloudflare + origin redirect loop — SSL mode is likely Flexible', desc:'Cloudflare SSL "Flexible" sends HTTP to your origin. Your origin redirects HTTP→HTTPS. This loops infinitely. Fix: change Cloudflare SSL mode to Full (Strict).', code:'# Step 1 — Cloudflare Dashboard\nSSL/TLS → Overview → change "Flexible" to "Full (Strict)"\n\n# Step 2 — Your origin must have a valid SSL certificate\n# Let\'s Encrypt (Certbot) works:\ncertbot --nginx -d example.com -d www.example.com\n\n# Step 3 — Nginx redirect block (optional — Cloudflare handles HTTPS now)\nserver {\n listen 80;\n server_name example.com www.example.com;\n return 301 https:
+}
+function parseCurl() { var text = document.getElementById('curlInput').value.trim(); if (!text) return; var hops = []; var current = { status: null, location: null, headers: {}, url: '?' }; var lines = text.split('\n'); lines.forEach(function(line) { line = line.trim(); var httpMatch = line.match(/^HTTP\/[\d.]+ (\d+)/); if (httpMatch) { if (current.status) hops.push(current); current = { status: parseInt(httpMatch[1]), location: null, headers: {}, url: current.location || '?' }; return; } var locMatch = line.match(/^[Ll]ocation:\s*(.+)/); if (locMatch) { current.location = locMatch[1].trim(); return; } var cfMatch = line.match(/^cf-ray:/i); if (cfMatch) current.headers['cf-ray'] = '1'; var vercelMatch = line.match(/^x-vercel-id:/i); if (vercelMatch) current.headers['x-vercel-id'] = '1'; var srvMatch = line.match(/^[Ss]erver:\s*(.+)/); if (srvMatch) current.headers['server'] = srvMatch[1].trim(); var nfMatch = line.match(/^x-nf-request-id:/i); if (nfMatch) current.headers['x-nf-request-id'] = '1'; }); if (current.status) hops.push(current);
 }
 
-// ── curl output parser ────────────────────────────────────────────────────────
-function parseCurl() { var text = document.getElementById('curlInput').value.trim(); if (!text) return; var hops = []; var current = { status: null, location: null, headers: {}, url: '?' }; var lines = text.split('\n'); lines.forEach(function(line) { line = line.trim(); var httpMatch = line.match(/^HTTP\/[\d.]+ (\d+)/); if (httpMatch) { if (current.status) hops.push(current); current = { status: parseInt(httpMatch[1]), location: null, headers: {}, url: current.location || '?' }; return; } var locMatch = line.match(/^[Ll]ocation:\s*(.+)/); if (locMatch) { current.location = locMatch[1].trim(); return; } var cfMatch = line.match(/^cf-ray:/i); if (cfMatch) current.headers['cf-ray'] = '1'; var vercelMatch = line.match(/^x-vercel-id:/i); if (vercelMatch) current.headers['x-vercel-id'] = '1'; var srvMatch = line.match(/^[Ss]erver:\s*(.+)/); if (srvMatch) current.headers['server'] = srvMatch[1].trim(); var nfMatch = line.match(/^x-nf-request-id:/i); if (nfMatch) current.headers['x-nf-request-id'] = '1'; }); if (current.status) hops.push(current); // Detect loop — check if any location points to a previously seen URL var visited = {}; var isLoop = false; var allStacks = {}; hops.forEach(function(h) { detectStack(h.headers).forEach(function(s) { allStacks[s] = true; }); if (h.url && h.url !== '?') { visited[h.url] = true; } }); // Check if any hop's location points back to a visited URL hops.forEach(function(h) { if (h.location && visited[h.location]) isLoop = true; }); // Also check if same URL appears more than once as a hop destination var destCount = {}; hops.forEach(function(h) { if (h.location) { destCount[h.location] = (destCount[h.location] || 0) + 1; if (destCount[h.location] > 1) isLoop = true; } }); renderResults(hops, isLoop, Object.keys(allStacks));
-}
-
-function curlModeHTML() { return '<div class="curl-mode" style="margin-top:2rem"><h3>Also: paste curl output for precise hop analysis</h3>' + '<p style="font-size:12px;opacity:0.55;margin-bottom:0.75rem">Run in terminal for exact status codes per hop:</p>' + '<div class="code-block" style="margin-bottom:0.75rem"><pre>curl -sIL --max-redirs 15 https://yoursite.com | grep -E "^HTTP|^[Ll]ocation|^[Ss]erver|^cf-ray|^x-vercel"</pre></div>' + '<textarea id="curlInput" placeholder="HTTP/2 301&#10;location: https://example.com/&#10;&#10;HTTP/2 200&#10;server: nginx"></textarea>' + '<button class="btn-sm" onclick="parseCurl()">Analyse curl output</button></div>';
+function curlModeHTML() { return '<div class="curl-mode" style="margin-top:2rem"><h3>Also: paste curl output for precise hop analysis</h3>' + '<p style="font-size:12px;opacity:0.55;margin-bottom:0.75rem">Run in terminal for exact status codes per hop:</p>' + '<div class="code-block" style="margin-bottom:0.75rem"><pre>curl -sIL --max-redirs 15 https:
 }
 
 function cp(id, btn) { navigator.clipboard.writeText(document.getElementById(id).textContent).then(function() { btn.textContent = 'Copied!'; setTimeout(function() { btn.textContent = 'Copy'; }, 1500); });
@@ -135,8 +133,6 @@ function cp(id, btn) { navigator.clipboard.writeText(document.getElementById(id)
   function build() {
     var navRight = document.querySelector('nav .right') || document.querySelector('nav div');
     if (!navRight) return;
-
-    // Don't add if already added
     if (document.getElementById('nav-tools-dropdown')) return;
 
     var wrap = document.createElement('div');
@@ -152,8 +148,6 @@ function cp(id, btn) { navigator.clipboard.writeText(document.getElementById(id)
     var menu = document.createElement('div');
     menu.className = 'nav-dropdown-menu';
     menu.setAttribute('role', 'menu');
-
-    // Core tools section
     var s1 = document.createElement('div');
     s1.className = 'dd-section';
     s1.textContent = 'Core tools';
@@ -171,8 +165,6 @@ function cp(id, btn) { navigator.clipboard.writeText(document.getElementById(id)
     var div = document.createElement('div');
     div.className = 'dd-divider';
     menu.appendChild(div);
-
-    // More tools section
     var s2 = document.createElement('div');
     s2.className = 'dd-section';
     s2.textContent = 'More tools';
@@ -186,8 +178,6 @@ function cp(id, btn) { navigator.clipboard.writeText(document.getElementById(id)
       a.setAttribute('role', 'menuitem');
       menu.appendChild(a);
     });
-
-    // View all link
     var all = document.createElement('a');
     all.className = 'dd-all';
     all.href = '/tools/';
@@ -196,8 +186,6 @@ function cp(id, btn) { navigator.clipboard.writeText(document.getElementById(id)
 
     wrap.appendChild(btn);
     wrap.appendChild(menu);
-
-    // Remove existing "Tools" link if present to avoid duplicate
     var existingLinks = navRight.querySelectorAll('a');
     existingLinks.forEach(function(a) {
       if (a.textContent.trim() === 'Tools' && a.href.indexOf('/tools/') !== -1) {
@@ -212,21 +200,15 @@ function cp(id, btn) { navigator.clipboard.writeText(document.getElementById(id)
     });
 
     navRight.appendChild(wrap);
-
-    // Toggle
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
       var isOpen = wrap.classList.toggle('open');
       btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
     });
-
-    // Close on outside click
     document.addEventListener('click', function() {
       wrap.classList.remove('open');
       btn.setAttribute('aria-expanded', 'false');
     });
-
-    // Close on Escape
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         wrap.classList.remove('open');
