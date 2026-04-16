@@ -86,17 +86,6 @@ Step-by-step fix guides for common errors:
 
 ---
 
-## Part of the MetricLogic network
-
-| Tool | Domain | What it fixes |
-|---|---|---|
-| ConfigClarity | configclarity.dev | Server & DevOps |
-| DomainPreflight | domainpreflight.dev | DNS & Email |
-| PackageFix | packagefix.dev | Dependencies |
-| HttpFixer | httpfixer.dev | Web App Security & Performance |
-
----
-
 ## Alternatives
 
 Looking for a securityheaders.com, Mozilla Observatory, GTmetrix, Lighthouse, CORS Anywhere, or MXToolbox replacement? See [httpfixer.dev/vs/](https://httpfixer.dev/vs/)
