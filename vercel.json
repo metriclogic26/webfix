@@ -2,6 +2,16 @@
   "cleanUrls": true,
   "redirects": [
     {
+      "source": "/blog/cors/fix-cors-fastapi",
+      "destination": "/fix/cors/fastapi/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/cors/fix-cors-fastapi/",
+      "destination": "/fix/cors/fastapi/",
+      "permanent": true
+    },
+    {
       "source": "/errors/starlette-cors-wildcard-credentials",
       "destination": "/errors/starlette-cors-wildcard-credentials/",
       "permanent": true
